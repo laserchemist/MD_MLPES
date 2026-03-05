@@ -1,0 +1,9 @@
+{
+  "molecule": "formaldehyde_oxide_displaced",
+  "method": "B3LYP",
+  "basis": "cc-pVDZ",
+  "temperature": 600,
+  "timestep": 0.5,
+  "n_steps": 500,
+  "thermostat": "berendsen"
+}

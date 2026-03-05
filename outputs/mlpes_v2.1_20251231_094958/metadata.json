@@ -1,0 +1,66 @@
+{
+  "theory": {
+    "method": "wB97X-D",
+    "basis": "6-31+G**",
+    "reference": "RHF",
+    "functional": "wB97X-D"
+  },
+  "molecule": {
+    "name": "methanol",
+    "formula": "CH3OH",
+    "n_atoms": 6,
+    "symbols": [
+      "C",
+      "O",
+      "H",
+      "H",
+      "H",
+      "H"
+    ],
+    "source": "library"
+  },
+  "training": {
+    "n_configs": 755,
+    "n_trajectories": 5,
+    "temperatures": [
+      200,
+      300,
+      400,
+      500,
+      600
+    ],
+    "energy_range_kcal": 29.879499329574173,
+    "energy_std_kcal": 6.301895679463601,
+    "training_type": "energy_only",
+    "date_created": "2025-12-31T09:48:53.412502",
+    "generation_time_hours": 1.39,
+    "source": "generated"
+  },
+  "model": {
+    "descriptor": "coulomb_matrix",
+    "model_type": "kernel_ridge",
+    "gamma": 0.1,
+    "alpha": 0.01,
+    "train_rmse_kcal": 0.0,
+    "test_rmse_kcal": 0.2471407201133444,
+    "r2_score": 0.9986165008134834,
+    "date_trained": "2025-12-31T11:12:24.524523"
+  },
+  "files": {
+    "training_data": "outputs/mlpes_v2.1_20251231_094958/training_data.npz",
+    "model_file": "outputs/mlpes_v2.1_20251231_094958/mlpes_model_v2.1.pkl",
+    "output_directory": "outputs/mlpes_v2.1_20251231_094958",
+    "visualizations": [
+      "outputs/mlpes_v2.1_20251231_094958/trajectory_energies.png",
+      "outputs/mlpes_v2.1_20251231_094958/training_results.png"
+    ]
+  },
+  "adaptive": {
+    "used": false,
+    "base_theory": null,
+    "high_theory": null,
+    "n_adaptive_points": 0,
+    "energy_offset_applied": 0.0
+  },
+  "version": "2.1"
+}

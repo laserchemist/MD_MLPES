@@ -1,0 +1,54 @@
+{
+  "theory": {
+    "method": null,
+    "basis": null,
+    "reference": "RHF",
+    "functional": null
+  },
+  "molecule": {
+    "name": null,
+    "formula": null,
+    "n_atoms": 0,
+    "symbols": [],
+    "source": null
+  },
+  "training": {
+    "n_configs": 2058,
+    "n_trajectories": 0,
+    "temperatures": [],
+    "energy_range_kcal": 0.0,
+    "energy_std_kcal": 0.0,
+    "training_type": "energy_forces",
+    "date_created": null,
+    "generation_time_hours": 0.0,
+    "source": "loaded"
+  },
+  "model": {
+    "descriptor": "coulomb_matrix",
+    "model_type": "kernel_ridge",
+    "gamma": 0.1,
+    "alpha": 0.01,
+    "train_rmse_kcal": 0.0,
+    "test_rmse_kcal": 0.5650870236990618,
+    "r2_score": 0.99347937734909,
+    "date_trained": "2026-01-02T23:16:53.795166"
+  },
+  "files": {
+    "training_data": "outputs/diagnostic_phase1_20260102_204852/augmented_training_data.npz",
+    "model_file": "outputs/refined_20260102_231652/mlpes_model_energy_forces.pkl",
+    "output_directory": "outputs/refined_20260102_231652",
+    "visualizations": [
+      "outputs/refined_20260102_231652/training_results_energy_forces.png",
+      "outputs/refined_20260102_231652/force_comparison.png"
+    ]
+  },
+  "adaptive": {
+    "used": false,
+    "method": null,
+    "base_theory": null,
+    "high_theory": null,
+    "n_adaptive_points": 0,
+    "energy_offset_applied": 0.0
+  },
+  "version": "2.2"
+}

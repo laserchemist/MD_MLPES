@@ -1,0 +1,269 @@
+{
+  "molecules": {
+    "water": {
+      "name": "water",
+      "computations": [
+        {
+          "molecule": "water",
+          "method": "HF",
+          "basis": "STO-3G",
+          "frames": 303,
+          "energy_range": [
+            -74.96590679850316,
+            -74.94884179425856
+          ],
+          "file": "training_data/combined_training_data.npz",
+          "status": "completed",
+          "timestamp": "2025-12-30T17:44:01.525526"
+        },
+        {
+          "molecule": "water",
+          "method": "HF",
+          "basis": "STO-3G",
+          "frames": 101,
+          "energy_range": [
+            -74.96590679850316,
+            -74.96001580278707
+          ],
+          "file": "training_data/trajectory_1_T200K/water_trajectory.npz",
+          "status": "completed",
+          "timestamp": "2025-12-30T17:42:29.788596"
+        },
+        {
+          "molecule": "water",
+          "method": "HF",
+          "basis": "STO-3G",
+          "frames": 21,
+          "energy_range": [
+            -74.9658221685066,
+            -74.95971932697375
+          ],
+          "file": "analysis/test_trajectory/water_trajectory.npz",
+          "status": "completed",
+          "timestamp": "2025-12-30T17:44:06.480312"
+        }
+      ]
+    },
+    "water_displaced": {
+      "name": "water_displaced",
+      "computations": [
+        {
+          "molecule": "water_displaced",
+          "method": "HF",
+          "basis": "STO-3G",
+          "frames": 101,
+          "energy_range": [
+            -74.96567895830844,
+            -74.94884179425856
+          ],
+          "file": "training_data/trajectory_2_T300K/water_displaced_trajectory.npz",
+          "status": "completed",
+          "timestamp": "2025-12-30T17:43:15.487244"
+        },
+        {
+          "molecule": "water_displaced",
+          "method": "HF",
+          "basis": "STO-3G",
+          "frames": 101,
+          "energy_range": [
+            -74.96586276365457,
+            -74.95899143251768
+          ],
+          "file": "training_data/trajectory_3_T400K/water_displaced_trajectory.npz",
+          "status": "completed",
+          "timestamp": "2025-12-30T17:44:01.523091"
+        }
+      ]
+    }
+  },
+  "computations": {
+    "running": [],
+    "completed": [
+      {
+        "molecule": "water",
+        "method": "HF",
+        "basis": "STO-3G",
+        "frames": 303,
+        "energy_range": [
+          -74.96590679850316,
+          -74.94884179425856
+        ],
+        "file": "training_data/combined_training_data.npz",
+        "status": "completed",
+        "timestamp": "2025-12-30T17:44:01.525526"
+      },
+      {
+        "molecule": "water",
+        "method": "HF",
+        "basis": "STO-3G",
+        "frames": 101,
+        "energy_range": [
+          -74.96590679850316,
+          -74.96001580278707
+        ],
+        "file": "training_data/trajectory_1_T200K/water_trajectory.npz",
+        "status": "completed",
+        "timestamp": "2025-12-30T17:42:29.788596"
+      },
+      {
+        "molecule": "water_displaced",
+        "method": "HF",
+        "basis": "STO-3G",
+        "frames": 101,
+        "energy_range": [
+          -74.96567895830844,
+          -74.94884179425856
+        ],
+        "file": "training_data/trajectory_2_T300K/water_displaced_trajectory.npz",
+        "status": "completed",
+        "timestamp": "2025-12-30T17:43:15.487244"
+      },
+      {
+        "molecule": "water_displaced",
+        "method": "HF",
+        "basis": "STO-3G",
+        "frames": 101,
+        "energy_range": [
+          -74.96586276365457,
+          -74.95899143251768
+        ],
+        "file": "training_data/trajectory_3_T400K/water_displaced_trajectory.npz",
+        "status": "completed",
+        "timestamp": "2025-12-30T17:44:01.523091"
+      },
+      {
+        "molecule": "water",
+        "method": "HF",
+        "basis": "STO-3G",
+        "frames": 21,
+        "energy_range": [
+          -74.9658221685066,
+          -74.95971932697375
+        ],
+        "file": "analysis/test_trajectory/water_trajectory.npz",
+        "status": "completed",
+        "timestamp": "2025-12-30T17:44:06.480312"
+      }
+    ],
+    "queued": []
+  },
+  "files": [
+    {
+      "name": "training_curves.png",
+      "path": "analysis/visualizations/training_curves.png",
+      "size_kb": 133.1728515625,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:44:11.108170"
+    },
+    {
+      "name": "psi4_vs_mlpes_comparison.png",
+      "path": "analysis/visualizations/psi4_vs_mlpes_comparison.png",
+      "size_kb": 326.666015625,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:44:10.443775"
+    },
+    {
+      "name": "trajectory_summary.png",
+      "path": "analysis/visualizations/test/trajectory_summary.png",
+      "size_kb": 487.7861328125,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:44:09.921883"
+    },
+    {
+      "name": "energy_trajectory.png",
+      "path": "analysis/visualizations/test/energy_trajectory.png",
+      "size_kb": 192.1455078125,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:44:09.084348"
+    },
+    {
+      "name": "trajectory_summary.png",
+      "path": "analysis/visualizations/training/trajectory_summary.png",
+      "size_kb": 820.025390625,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:44:08.764893"
+    },
+    {
+      "name": "force_magnitudes.png",
+      "path": "analysis/visualizations/training/force_magnitudes.png",
+      "size_kb": 1073.080078125,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:44:07.890971"
+    },
+    {
+      "name": "energy_trajectory.png",
+      "path": "analysis/visualizations/training/energy_trajectory.png",
+      "size_kb": 293.298828125,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:44:07.274320"
+    },
+    {
+      "name": "water_trajectory.npz",
+      "path": "analysis/test_trajectory/water_trajectory.npz",
+      "size_kb": 5.095703125,
+      "type": "trajectory",
+      "format": "NPZ",
+      "timestamp": "2025-12-30T17:44:06.480312"
+    },
+    {
+      "name": "combined_training_data.npz",
+      "path": "training_data/combined_training_data.npz",
+      "size_kb": 50.8076171875,
+      "type": "trajectory",
+      "format": "NPZ",
+      "timestamp": "2025-12-30T17:44:01.525526"
+    },
+    {
+      "name": "water_displaced_trajectory.npz",
+      "path": "training_data/trajectory_3_T400K/water_displaced_trajectory.npz",
+      "size_kb": 18.3076171875,
+      "type": "trajectory",
+      "format": "NPZ",
+      "timestamp": "2025-12-30T17:44:01.523091"
+    },
+    {
+      "name": "water_displaced_trajectory.npz",
+      "path": "training_data/trajectory_2_T300K/water_displaced_trajectory.npz",
+      "size_kb": 18.2880859375,
+      "type": "trajectory",
+      "format": "NPZ",
+      "timestamp": "2025-12-30T17:43:15.487244"
+    },
+    {
+      "name": "water_trajectory.npz",
+      "path": "training_data/trajectory_1_T200K/water_trajectory.npz",
+      "size_kb": 18.2373046875,
+      "type": "trajectory",
+      "format": "NPZ",
+      "timestamp": "2025-12-30T17:42:29.788596"
+    }
+  ],
+  "statistics": {
+    "total_molecules": 2,
+    "total_trajectories": 5,
+    "total_frames": 627,
+    "total_computation_time": 0.0
+  },
+  "recent_activity": [
+    {
+      "timestamp": "2025-12-30T17:44:06.480312",
+      "message": "Completed MD for water (21 steps, HF/STO-3G)"
+    },
+    {
+      "timestamp": "2025-12-30T17:44:01.525526",
+      "message": "Completed MD for water (303 steps, HF/STO-3G)"
+    },
+    {
+      "timestamp": "2025-12-30T17:44:01.523091",
+      "message": "Completed MD for water_displaced (101 steps, HF/STO-3G)"
+    },
+    {
+      "timestamp": "2025-12-30T17:43:15.487244",
+      "message": "Completed MD for water_displaced (101 steps, HF/STO-3G)"
+    },
+    {
+      "timestamp": "2025-12-30T17:42:29.788596",
+      "message": "Completed MD for water (101 steps, HF/STO-3G)"
+    }
+  ]
+}

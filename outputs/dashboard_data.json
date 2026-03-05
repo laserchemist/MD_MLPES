@@ -1,0 +1,217 @@
+{
+  "molecules": {
+    "unknown": {
+      "name": "unknown",
+      "computations": [
+        {
+          "molecule": "unknown",
+          "method": "unknown",
+          "basis": "unknown",
+          "frames": 11,
+          "energy_range": [
+            -99.97421579,
+            -99.08346465
+          ],
+          "file": "demo_run/trajectory_converted.npz",
+          "status": "completed",
+          "timestamp": "2025-12-30T19:31:44"
+        },
+        {
+          "molecule": "unknown",
+          "method": "unknown",
+          "basis": "unknown",
+          "frames": 11,
+          "energy_range": [
+            -99.97421579,
+            -99.08346465
+          ],
+          "file": "demo_run/trajectory.extxyz",
+          "status": "completed",
+          "timestamp": "2025-12-30T19:31:44"
+        },
+        {
+          "molecule": "unknown",
+          "method": "unknown",
+          "basis": "unknown",
+          "frames": 11,
+          "energy_range": [
+            -99.97421579,
+            -99.08346465
+          ],
+          "file": "demo_run/water_trajectory.extxyz",
+          "status": "completed",
+          "timestamp": "2025-12-30T19:31:44"
+        }
+      ]
+    },
+    "water": {
+      "name": "water",
+      "computations": [
+        {
+          "molecule": "water",
+          "method": "HF",
+          "basis": "STO-3G",
+          "frames": 11,
+          "energy_range": [
+            -99.97421578507632,
+            -99.083464645275
+          ],
+          "file": "demo_run/trajectory.npz",
+          "status": "completed",
+          "timestamp": "2025-12-30T19:31:44"
+        }
+      ]
+    }
+  },
+  "computations": {
+    "running": [],
+    "completed": [
+      {
+        "molecule": "unknown",
+        "method": "unknown",
+        "basis": "unknown",
+        "frames": 11,
+        "energy_range": [
+          -99.97421579,
+          -99.08346465
+        ],
+        "file": "demo_run/trajectory_converted.npz",
+        "status": "completed",
+        "timestamp": "2025-12-30T19:31:44"
+      },
+      {
+        "molecule": "water",
+        "method": "HF",
+        "basis": "STO-3G",
+        "frames": 11,
+        "energy_range": [
+          -99.97421578507632,
+          -99.083464645275
+        ],
+        "file": "demo_run/trajectory.npz",
+        "status": "completed",
+        "timestamp": "2025-12-30T19:31:44"
+      },
+      {
+        "molecule": "unknown",
+        "method": "unknown",
+        "basis": "unknown",
+        "frames": 11,
+        "energy_range": [
+          -99.97421579,
+          -99.08346465
+        ],
+        "file": "demo_run/trajectory.extxyz",
+        "status": "completed",
+        "timestamp": "2025-12-30T19:31:44"
+      },
+      {
+        "molecule": "unknown",
+        "method": "unknown",
+        "basis": "unknown",
+        "frames": 11,
+        "energy_range": [
+          -99.97421579,
+          -99.08346465
+        ],
+        "file": "demo_run/water_trajectory.extxyz",
+        "status": "completed",
+        "timestamp": "2025-12-30T19:31:44"
+      }
+    ],
+    "queued": []
+  },
+  "files": [
+    {
+      "name": "trajectory_summary.png",
+      "path": "demo_run/visualizations/trajectory_summary.png",
+      "size_kb": 473.2255859375,
+      "type": "visualization",
+      "timestamp": "2025-12-30T19:31:47"
+    },
+    {
+      "name": "dipole_trajectory.png",
+      "path": "demo_run/visualizations/dipole_trajectory.png",
+      "size_kb": 171.2333984375,
+      "type": "visualization",
+      "timestamp": "2025-12-30T19:31:46"
+    },
+    {
+      "name": "structure_frame_0.png",
+      "path": "demo_run/visualizations/structure_frame_0.png",
+      "size_kb": 522.9404296875,
+      "type": "visualization",
+      "timestamp": "2025-12-30T19:31:46"
+    },
+    {
+      "name": "force_magnitudes.png",
+      "path": "demo_run/visualizations/force_magnitudes.png",
+      "size_kb": 390.4453125,
+      "type": "visualization",
+      "timestamp": "2025-12-30T19:31:45"
+    },
+    {
+      "name": "energy_trajectory.png",
+      "path": "demo_run/visualizations/energy_trajectory.png",
+      "size_kb": 191.7353515625,
+      "type": "visualization",
+      "timestamp": "2025-12-30T19:31:44"
+    },
+    {
+      "name": "trajectory_converted.npz",
+      "path": "demo_run/trajectory_converted.npz",
+      "size_kb": 1.94921875,
+      "type": "trajectory",
+      "format": "NPZ",
+      "timestamp": "2025-12-30T19:31:44"
+    },
+    {
+      "name": "trajectory.npz",
+      "path": "demo_run/trajectory.npz",
+      "size_kb": 2.9111328125,
+      "type": "trajectory",
+      "format": "NPZ",
+      "timestamp": "2025-12-30T19:31:44"
+    },
+    {
+      "name": "trajectory.extxyz",
+      "path": "demo_run/trajectory.extxyz",
+      "size_kb": 4.37890625,
+      "type": "trajectory",
+      "format": "EXTXYZ",
+      "timestamp": "2025-12-30T19:31:44"
+    },
+    {
+      "name": "water_trajectory.extxyz",
+      "path": "demo_run/water_trajectory.extxyz",
+      "size_kb": 4.37890625,
+      "type": "trajectory",
+      "format": "EXTXYZ",
+      "timestamp": "2025-12-30T19:31:44"
+    }
+  ],
+  "statistics": {
+    "total_molecules": 2,
+    "total_trajectories": 4,
+    "total_frames": 44,
+    "total_computation_time": 0.0
+  },
+  "recent_activity": [
+    {
+      "timestamp": "2025-12-30T19:31:44",
+      "message": "Completed MD for unknown (11 steps, unknown/unknown)"
+    },
+    {
+      "timestamp": "2025-12-30T19:31:44",
+      "message": "Completed MD for water (11 steps, HF/STO-3G)"
+    },
+    {
+      "timestamp": "2025-12-30T19:31:44",
+      "message": "Completed MD for unknown (11 steps, unknown/unknown)"
+    },
+    {
+      "timestamp": "2025-12-30T19:31:44",
+      "message": "Completed MD for unknown (11 steps, unknown/unknown)"
+    }
+  ]
+}

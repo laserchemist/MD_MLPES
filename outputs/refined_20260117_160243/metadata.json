@@ -1,0 +1,54 @@
+{
+  "theory": {
+    "method": null,
+    "basis": null,
+    "reference": "RHF",
+    "functional": null
+  },
+  "molecule": {
+    "name": null,
+    "formula": null,
+    "n_atoms": 0,
+    "symbols": [],
+    "source": null
+  },
+  "training": {
+    "n_configs": 101,
+    "n_trajectories": 0,
+    "temperatures": [],
+    "energy_range_kcal": 0.0,
+    "energy_std_kcal": 0.0,
+    "training_type": "energy_forces",
+    "date_created": null,
+    "generation_time_hours": 0.0,
+    "source": "loaded"
+  },
+  "model": {
+    "descriptor": "coulomb_matrix",
+    "model_type": "kernel_ridge",
+    "gamma": 0.01,
+    "alpha": 0.01,
+    "train_rmse_kcal": 0.0,
+    "test_rmse_kcal": 0.5088947274089699,
+    "r2_score": 0.9323937565967098,
+    "date_trained": "2026-01-17T16:02:45.059279"
+  },
+  "files": {
+    "training_data": "outputs/training_with_dipoles_ammonia_20260115_175409/trajectory_250K.npz",
+    "model_file": "outputs/refined_20260117_160243/mlpes_model_energy_forces.pkl",
+    "output_directory": "outputs/refined_20260117_160243",
+    "visualizations": [
+      "outputs/refined_20260117_160243/training_results_energy_forces.png",
+      "outputs/refined_20260117_160243/force_comparison.png"
+    ]
+  },
+  "adaptive": {
+    "used": false,
+    "method": null,
+    "base_theory": null,
+    "high_theory": null,
+    "n_adaptive_points": 0,
+    "energy_offset_applied": 0.0
+  },
+  "version": "2.2"
+}

@@ -1,0 +1,9 @@
+{
+  "molecule": "water",
+  "method": "B3LYP",
+  "basis": "6-31G*",
+  "temperature": 300,
+  "timestep": 0.5,
+  "n_steps": 20,
+  "thermostat": "berendsen"
+}

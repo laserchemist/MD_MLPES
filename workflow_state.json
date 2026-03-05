@@ -1,0 +1,12 @@
+{
+  "trajectory_dir": "outputs/training_with_dipoles_ammonia_20260115_175409",
+  "training_data": "outputs/training_with_dipoles_ammonia_20260115_175409/training_data.npz",
+  "ml_pes_model": "outputs/refined_20260117_160243/mlpes_model_energy_forces.pkl",
+  "dipole_model": null,
+  "ir_output_dir": null,
+  "completed_steps": [
+    "step3",
+    "step1"
+  ],
+  "last_updated": "2026-01-17T16:22:33.846385"
+}

@@ -1,0 +1,9 @@
+{
+  "molecule": "methanol_displaced",
+  "method": "wB97X-D",
+  "basis": "6-31+G**",
+  "temperature": 600,
+  "timestep": 0.5,
+  "n_steps": 300,
+  "thermostat": "berendsen"
+}

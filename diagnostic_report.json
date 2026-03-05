@@ -1,0 +1,146 @@
+{
+  "scan_date": "2025-12-31T11:48:17.723003",
+  "files": [
+    {
+      "filepath": "outputs/ml_pes_workflow_20251230_174144/training_data/combined_training_data.npz",
+      "exists": true,
+      "readable": true,
+      "has_data": true,
+      "has_metadata": true,
+      "metadata_valid": false,
+      "details": {
+        "n_configs": 303,
+        "n_atoms": 3,
+        "symbols": "O H H",
+        "formula": "H2O",
+        "has_forces": true,
+        "has_coords": true,
+        "energy_range_kcal": 10.708443748524633,
+        "energy_mean_kcal": -47038.692760691716,
+        "energy_std_kcal": 2.5214828827993765
+      }
+    },
+    {
+      "filepath": "outputs/improved_mlpes_20251230_180012/training_data/filtered_training_data.npz",
+      "exists": true,
+      "readable": true,
+      "has_data": true,
+      "has_metadata": true,
+      "metadata_valid": false,
+      "details": {
+        "n_configs": 1005,
+        "n_atoms": 3,
+        "symbols": "O H H",
+        "formula": "H2O",
+        "has_forces": true,
+        "has_coords": true,
+        "energy_range_kcal": 6.781119660735956,
+        "energy_mean_kcal": -47695.52735065432,
+        "energy_std_kcal": 1.4517313134014926
+      }
+    },
+    {
+      "filepath": "outputs/improved_mlpes_20251230_183101/training_data/filtered_training_data.npz",
+      "exists": true,
+      "readable": true,
+      "has_data": true,
+      "has_metadata": true,
+      "metadata_valid": false,
+      "details": {
+        "n_configs": 2106,
+        "n_atoms": 3,
+        "symbols": "O H H",
+        "formula": "H2O",
+        "has_forces": true,
+        "has_coords": true,
+        "energy_range_kcal": 14.842802011345762,
+        "energy_mean_kcal": -47944.200897924726,
+        "energy_std_kcal": 2.8514094657080147
+      }
+    },
+    {
+      "filepath": "outputs/temp_test_traj/water_trajectory.npz",
+      "exists": true,
+      "readable": true,
+      "has_data": true,
+      "has_metadata": true,
+      "metadata_valid": false,
+      "details": {
+        "n_configs": 121,
+        "n_atoms": 3,
+        "symbols": "O H H",
+        "formula": "H2O",
+        "has_forces": true,
+        "has_coords": true,
+        "energy_range_kcal": 2.57509718587724,
+        "energy_mean_kcal": -47946.3254610581,
+        "energy_std_kcal": 0.7663269878833139
+      }
+    },
+    {
+      "filepath": "outputs/adaptive_mlpes_20251231_014106/enhanced_training_data.npz",
+      "exists": true,
+      "readable": true,
+      "has_data": true,
+      "has_metadata": true,
+      "metadata_valid": false,
+      "details": {
+        "n_configs": 2739,
+        "n_atoms": 3,
+        "symbols": "O H H",
+        "formula": "H2O",
+        "has_forces": true,
+        "has_coords": true,
+        "energy_range_kcal": 184.75870513452662,
+        "energy_mean_kcal": -47920.47535661277,
+        "energy_std_kcal": 43.64834639972825
+      }
+    },
+    {
+      "filepath": "outputs/mlpes_v2_20251231_040244/training_data.npz",
+      "exists": true,
+      "readable": true,
+      "has_data": true,
+      "has_metadata": true,
+      "metadata_valid": false,
+      "details": {
+        "n_configs": 2008,
+        "n_atoms": 5,
+        "symbols": "C O O H H",
+        "formula": "CH2O2",
+        "has_forces": true,
+        "has_coords": true,
+        "energy_range_kcal": 38.79864667995163,
+        "energy_mean_kcal": -118955.59837392377,
+        "energy_std_kcal": 6.906713126457922
+      }
+    },
+    {
+      "filepath": "outputs/mlpes_v2.1_20251231_094958/training_data.npz",
+      "exists": true,
+      "readable": true,
+      "has_data": true,
+      "has_metadata": true,
+      "metadata_valid": false,
+      "details": {
+        "n_configs": 755,
+        "n_atoms": 6,
+        "symbols": "C O H H H H",
+        "formula": "CH4O",
+        "has_forces": true,
+        "has_coords": true,
+        "energy_range_kcal": 29.879499329580497,
+        "energy_mean_kcal": -72586.34144978836,
+        "energy_std_kcal": 6.301895679463638
+      }
+    }
+  ],
+  "database_exists": true,
+  "database_entries": 1,
+  "summary": {
+    "total_files": 7,
+    "files_with_data": 7,
+    "files_with_valid_metadata": 0,
+    "files_need_migration": 7
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "molecule": "water",
+  "method": "HF",
+  "basis": "STO-3G",
+  "temperature": 300,
+  "timestep": 0.5,
+  "n_steps": 20,
+  "thermostat": "berendsen"
+}

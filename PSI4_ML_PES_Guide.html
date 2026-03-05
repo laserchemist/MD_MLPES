@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSI4-MD ML-PES Framework - Complete Guide</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --code-bg: #1e293b;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 100px;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+        }
+
+        .nav-content a {
+            padding: 1rem 0;
+            color: var(--dark);
+            text-decoration: none;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-content a:hover,
+        .nav-content a.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem 0;
+        }
+
+        h4 {
+            color: var(--dark);
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        .code-title {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: -1rem;
+            margin-top: 1rem;
+        }
+
+        /* Inline code */
+        p code, li code {
+            background: #f1f5f9;
+            color: var(--primary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-color: var(--primary);
+            color: #1e40af;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-color: var(--success);
+            color: #065f46;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-color: var(--warning);
+            color: #92400e;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            border-color: var(--danger);
+            color: #991b1b;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--light);
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+        }
+
+        /* Collapsible Sections */
+        .collapsible {
+            background: var(--light);
+            color: var(--dark);
+            cursor: pointer;
+            padding: 1rem;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .collapsible:hover {
+            background: var(--border);
+        }
+
+        .collapsible:after {
+            content: '\002B';
+            color: var(--primary);
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+
+        .collapsible.active:after {
+            content: "\2212";
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: white;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .content-inner {
+            padding: 1rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .card h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        /* Workflow Diagram */
+        .workflow {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .workflow-step {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .workflow-arrow {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-content {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .workflow {
+                flex-direction: column;
+            }
+            
+            .workflow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #c792ea; }
+        .string { color: #c3e88d; }
+        .comment { color: #546e7a; font-style: italic; }
+        .function { color: #82aaff; }
+        .number { color: #f78c6c; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🚀 PSI4-MD ML-PES Framework</h1>
+            <p class="subtitle">Complete Guide to Machine Learning Potential Energy Surfaces from Direct Dynamics</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-content">
+            <a href="#overview">Overview</a>
+            <a href="#quickstart">Quick Start</a>
+            <a href="#workflows">Workflows</a>
+            <a href="#modules">Modules</a>
+            <a href="#examples">Examples</a>
+            <a href="#visualization">Visualization</a>
+            <a href="#troubleshooting">Troubleshooting</a>
+            <a href="#api">API Reference</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- OVERVIEW SECTION -->
+        <section id="overview">
+            <h2>📚 Framework Overview</h2>
+            
+            <div class="alert alert-info">
+                <strong>What is this framework?</strong><br>
+                A complete, production-ready system for creating machine learning potential energy surfaces (ML-PES) from quantum chemistry calculations, with adaptive refinement and production molecular dynamics capabilities.
+            </div>
+
+            <h3>Key Capabilities</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4>⚡ Direct Dynamics</h4>
+                    <p>Generate training data using PSI4 quantum chemistry calculations with automatic trajectory generation.</p>
+                </div>
+                <div class="card">
+                    <h4>🤖 ML Training</h4>
+                    <p>Train accurate ML models with Coulomb matrix descriptors and Kernel Ridge Regression (&lt;1 kcal/mol RMSE).</p>
+                </div>
+                <div class="card">
+                    <h4>🔄 Adaptive Refinement</h4>
+                    <p>Two-phase diagnostic workflow with automatic error-based refinement (30-50% improvement per iteration).</p>
+                </div>
+                <div class="card">
+                    <h4>🚀 Production MD</h4>
+                    <p>Run molecular dynamics 100-1000x faster than quantum chemistry using trained ML models.</p>
+                </div>
+                <div class="card">
+                    <h4>📊 Visualization</h4>
+                    <p>Publication-quality plots including energy trajectories, temperature evolution, and 3D structures.</p>
+                </div>
+                <div class="card">
+                    <h4>💾 Data Management</h4>
+                    <p>Multi-format trajectory I/O, metadata tracking, and computation database for easy organization.</p>
+                </div>
+            </div>
+
+            <h3>Performance Benchmarks</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operation</th>
+                        <th>Time</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Training Data Generation</td>
+                        <td>2-6 hours</td>
+                        <td>2000 configs, PSI4 B3LYP/6-31G*</td>
+                    </tr>
+                    <tr>
+                        <td>ML-PES Training</td>
+                        <td>2-5 minutes</td>
+                        <td>KRR with auto-tuning</td>
+                    </tr>
+                    <tr>
+                        <td>Two-Phase Diagnostic</td>
+                        <td>10-15 minutes</td>
+                        <td>1000 steps + 50 validations</td>
+                    </tr>
+                    <tr>
+                        <td>Refinement</td>
+                        <td>5-10 minutes</td>
+                        <td>Add 50 points + retrain</td>
+                    </tr>
+                    <tr>
+                        <td>Production MD (10 ps)</td>
+                        <td>10-30 seconds</td>
+                        <td>100-1000x faster than PSI4</td>
+                    </tr>
+                    <tr>
+                        <td>Visualization</td>
+                        <td>10-30 seconds</td>
+                        <td>All plots</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Architecture</h3>
+            <div class="workflow">
+                <div class="workflow-step">
+                    <strong>Direct Dynamics</strong><br>
+                    <small>PSI4 MD</small>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <strong>Training Data</strong><br>
+                    <small>2000+ configs</small>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <strong>ML Training</strong><br>
+                    <small>KRR Model</small>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <strong>Refinement</strong><br>
+                    <small>Error-based</small>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <strong>Production MD</strong><br>
+                    <small>Fast dynamics</small>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <strong>Analysis</strong><br>
+                    <small>Visualization</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUICK START SECTION -->
+        <section id="quickstart">
+            <h2>🚀 Quick Start Guide</h2>
+
+            <div class="alert alert-success">
+                <strong>Goal:</strong> Create your first ML-PES model in 30 minutes!
+            </div>
+
+            <h3>Prerequisites</h3>
+            <div class="code-title">Install Dependencies</div>
+            <pre><code><span class="comment"># Create conda environment</span>
+conda create -n mlpes python=3.10
+conda activate mlpes
+
+<span class="comment"># Install PSI4</span>
+conda install -c psi4 psi4
+
+<span class="comment"># Install Python packages</span>
+pip install numpy scipy matplotlib scikit-learn tqdm</code></pre>
+
+            <h3>Step 1: List Available Data</h3>
+            <p>First, see what training data and models you have:</p>
+            
+            <div class="code-title">list_models.py</div>
+            <pre><code>python3 list_models.py</code></pre>
+
+            <p><strong>Output:</strong></p>
+            <pre><code>================================================================================
+  ML-PES MODELS (.pkl)
+================================================================================
+
+[1] 🔄 REFINED retrained_mlpes_model.pkl
+    📁 diagnostic_phase1_20260102_204852/
+    🧪 C O O H H | B3LYP/6-31G*
+    ✅ RMSE: 0.190 kcal/mol
+    📊 Training configs: 2058
+
+================================================================================
+  TRAINING DATA (.npz)
+================================================================================
+
+[1] 🔄 REFINED (1x) augmented_training_data.npz
+    📁 diagnostic_phase1_20260102_204852/
+    🧪 C O O H H | B3LYP/6-31G*
+    📊 2058 configs | Forces: Yes ✅
+
+================================================================================
+  RECOMMENDATIONS
+================================================================================
+
+💡 Recommended for production:
+   python3 simple_production_md.py \
+       --model outputs/.../retrained_mlpes_model.pkl \
+       --training-data outputs/.../augmented_training_data.npz \
+       --temp 300 --steps 10000</code></pre>
+
+            <h3>Step 2: Run Production MD</h3>
+            <p>Use the recommended paths from above:</p>
+
+            <div class="code-title">simple_production_md.py</div>
+            <pre><code>python3 simple_production_md.py \
+    --model outputs/diagnostic_phase1_20260102_204852/retrained_mlpes_model.pkl \
+    --training-data outputs/diagnostic_phase1_20260102_204852/augmented_training_data.npz \
+    --temp 300 \
+    --steps 10000 \
+    --output my_first_md.npz</code></pre>
+
+            <p><strong>Expected output:</strong></p>
+            <pre><code>✅ MD simulation complete!
+💾 Saved trajectory: my_first_md.npz
+
+📊 Statistics:
+   Frames: 1000
+   Total time: 5.0 ps
+   Temperature: 300.0 ± 15.2 K
+   Energy range: -118950.1 to -118920.3 kcal/mol
+   Force magnitude: 18.45 ± 5.67 kcal/mol/Å
+
+💡 You can now:
+   • Visualize: python3 visualize_trajectory.py my_first_md.npz</code></pre>
+
+            <h3>Step 3: Visualize Results</h3>
+            <div class="code-title">visualize_trajectory.py</div>
+            <pre><code>python3 visualize_trajectory.py my_first_md.npz --all</code></pre>
+
+            <p><strong>Creates:</strong></p>
+            <ul>
+                <li>✅ <code>my_first_md_analysis/energy_trajectory.png</code></li>
+                <li>✅ <code>my_first_md_analysis/temperature.png</code></li>
+                <li>✅ <code>my_first_md_analysis/forces.png</code></li>
+                <li>✅ <code>my_first_md_analysis/structure_frame_*.png</code></li>
+                <li>✅ <code>my_first_md_analysis/summary_dashboard.png</code></li>
+            </ul>
+
+            <div class="alert alert-success">
+                <strong>🎉 Success!</strong> You've run your first ML-PES molecular dynamics and created visualizations!
+            </div>
+        </section>
+
+        <!-- WORKFLOWS SECTION -->
+        <section id="workflows">
+            <h2>🔄 Complete Workflows</h2>
+
+            <button class="collapsible">Workflow 1: From Scratch to Production (Full Pipeline)</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Time: 1 day (2-8 hours active work)</h4>
+
+                    <h4>Step 1: Generate Training Data (2-6 hours)</h4>
+                    <div class="code-title">complete_workflow_v2.2.py</div>
+                    <pre><code>python3 complete_workflow_v2.2.py
+
+<span class="comment"># Menu navigation:</span>
+[2] Compute new molecule
+[1] From molecule library
+[3] formaldehyde_oxide (CH2OO)
+
+<span class="comment"># Configure:</span>
+Number of trajectories: 4
+Temperatures: 50, 100, 150, 200
+Steps per trajectory: 500</code></pre>
+
+                    <p><strong>Output:</strong> <code>outputs/mlpes_v2_YYYYMMDD/training_data.npz</code> (2000+ configs)</p>
+
+                    <h4>Step 2: Train Initial ML-PES (2-5 minutes)</h4>
+                    <pre><code>python3 complete_workflow_v2.2.py
+
+[1] Work with existing data
+[1] Use computation database
+[1] formaldehyde_oxide
+[1] Energy-only training</code></pre>
+
+                    <p><strong>Output:</strong> <code>initial_mlpes_model.pkl</code> (RMSE: ~0.2-0.3 kcal/mol)</p>
+
+                    <h4>Step 3: Diagnostic & Refinement (10-15 min)</h4>
+                    <pre><code>python3 complete_workflow_v2.2.py
+
+[1] Work with existing data
+[1] Use computation database
+[1] formaldehyde_oxide
+[5] Two-phase diagnostic & validation
+
+<span class="comment"># Parameters:</span>
+Steps: 1000
+Temperature: 100K
+Validate: 50 snapshots
+
+<span class="comment"># When prompted:</span>
+Refine? [y/n]: y
+Strategy: [2] (≥2 kcal/mol)</code></pre>
+
+                    <p><strong>Output:</strong></p>
+                    <ul>
+                        <li><code>augmented_training_data.npz</code> (2058 configs)</li>
+                        <li><code>retrained_mlpes_model.pkl</code> (RMSE: ~0.19 kcal/mol)</li>
+                        <li><code>diagnostic_plots.png</code> (6-panel analysis)</li>
+                    </ul>
+
+                    <h4>Step 4: Verify Refined Model (10 min)</h4>
+                    <pre><code>python3 two_phase_workflow.py \
+    --model retrained_mlpes_model.pkl \
+    --training-data augmented_training_data.npz \
+    --temp 150 --steps 1000</code></pre>
+
+                    <p><strong>Expected:</strong> Mean error &lt; 5 kcal/mol ✅</p>
+
+                    <h4>Step 5: Production MD (minutes)</h4>
+                    <pre><code>python3 simple_production_md.py \
+    --model retrained_mlpes_model.pkl \
+    --training-data augmented_training_data.npz \
+    --temp 300 --steps 50000 \
+    --output production_300K_25ps.npz</code></pre>
+
+                    <p><strong>Time:</strong> ~1 minute for 25 ps (vs weeks with PSI4!)</p>
+
+                    <h4>Step 6: Visualization (30 seconds)</h4>
+                    <pre><code>python3 visualize_trajectory.py production_300K_25ps.npz --all</code></pre>
+
+                    <div class="alert alert-success">
+                        <strong>✅ Done!</strong> You have a production-ready ML-PES model!
+                    </div>
+                </div>
+            </div>
+
+            <button class="collapsible">Workflow 2: Quick Diagnostic (If You Have Training Data)</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Time: 15 minutes</h4>
+
+                    <p>If you already have training data and want to quickly test a model:</p>
+
+                    <pre><code>python3 two_phase_workflow.py \
+    --model existing_model.pkl \
+    --training-data existing_data.npz \
+    --temp 100 \
+    --steps 1000 \
+    --validate-max 50</code></pre>
+
+                    <p><strong>What you get:</strong></p>
+                    <ul>
+                        <li>Fast diagnostic (~10 min)</li>
+                        <li>Error analysis</li>
+                        <li>6-panel diagnostic plots</li>
+                        <li>Option to refine immediately</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="collapsible">Workflow 3: Production MD Campaign (Multiple Conditions)</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Run MD at multiple temperatures/conditions</h4>
+
+                    <div class="code-title">batch_production_md.sh</div>
+                    <pre><code><span class="comment">#!/bin/bash</span>
+<span class="comment"># Run multiple temperatures</span>
+
+<span class="keyword">for</span> TEMP <span class="keyword">in</span> 100 200 300 400 500; <span class="keyword">do</span>
+    python3 simple_production_md.py \
+        --model best_model.pkl \
+        --training-data best_data.npz \
+        --temp $TEMP \
+        --steps 50000 \
+        --output md_${TEMP}K.npz
+    
+    python3 visualize_trajectory.py md_${TEMP}K.npz --all
+<span class="keyword">done</span>
+
+<span class="keyword">echo</span> <span class="string">"✅ Temperature study complete!"</span></code></pre>
+
+                    <p><strong>Creates comprehensive temperature study in ~30 minutes!</strong></p>
+                </div>
+            </div>
+
+            <button class="collapsible">Workflow 4: Iterative Refinement (Best Accuracy)</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Iteratively improve your model</h4>
+
+                    <h4>Iteration 1:</h4>
+                    <pre><code>python3 two_phase_workflow.py \
+    --model initial_model.pkl \
+    --training-data training_data.npz \
+    --temp 100 --steps 1000 --validate-max 50
+
+<span class="comment"># Refine with strategy [2]</span>
+<span class="comment"># Result: Mean error 12.5 → 6.2 kcal/mol (50% improvement)</span></code></pre>
+
+                    <h4>Iteration 2:</h4>
+                    <pre><code>python3 two_phase_workflow.py \
+    --model retrained_mlpes_model.pkl \
+    --training-data augmented_training_data.npz \
+    --temp 150 --steps 1000 --validate-max 50
+
+<span class="comment"># Refine with strategy [3] (higher errors only)</span>
+<span class="comment"># Result: Mean error 6.2 → 3.1 kcal/mol (50% improvement)</span></code></pre>
+
+                    <h4>Iteration 3:</h4>
+                    <pre><code>python3 two_phase_workflow.py \
+    --model retrained_mlpes_model.pkl \
+    --training-data augmented_training_data.npz \
+    --temp 200 --steps 1000 --validate-max 50
+
+<span class="comment"># Result: Mean error < 2 kcal/mol ✅ Production ready!</span></code></pre>
+
+                    <p><strong>Total improvement:</strong> 75% reduction in errors over 3 iterations (~1 hour)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULES SECTION -->
+        <section id="modules">
+            <h2>🔧 Core Modules</h2>
+
+            <button class="collapsible">direct_md.py - PSI4 Molecular Dynamics</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Purpose:</h4>
+                    <p>Run molecular dynamics with PSI4 quantum chemistry calculations or ML-PES.</p>
+
+                    <h4>Key Classes:</h4>
+                    <div class="code-title">DirectMDConfig</div>
+                    <pre><code><span class="keyword">from</span> modules.direct_md <span class="keyword">import</span> DirectMDConfig, run_direct_md
+
+<span class="comment"># Configure MD</span>
+config = DirectMDConfig(
+    method=<span class="string">'B3LYP'</span>,
+    basis=<span class="string">'6-31G*'</span>,
+    temperature=<span class="number">300.0</span>,
+    n_steps=<span class="number">1000</span>,
+    timestep=<span class="number">0.5</span>,  <span class="comment"># fs</span>
+    save_every=<span class="number">10</span>
+)
+
+<span class="comment"># Run MD with PSI4</span>
+trajectory = run_direct_md(
+    symbols=[<span class="string">'C'</span>, <span class="string">'O'</span>, <span class="string">'O'</span>, <span class="string">'H'</span>, <span class="string">'H'</span>],
+    initial_coords=coords,
+    config=config,
+    use_ml_pes=<span class="keyword">False</span>  <span class="comment"># Use PSI4</span>
+)</code></pre>
+
+                    <h4>Features:</h4>
+                    <ul>
+                        <li>Velocity Verlet integration</li>
+                        <li>Temperature control (velocity rescaling)</li>
+                        <li>SCF convergence handling</li>
+                        <li>Dissociation detection</li>
+                        <li>Progress tracking with tqdm</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="collapsible">ml_pes.py - Machine Learning Training</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Purpose:</h4>
+                    <p>Train and predict with ML potential energy surface models.</p>
+
+                    <h4>Key Functions:</h4>
+                    <div class="code-title">Training Example</div>
+                    <pre><code><span class="keyword">from</span> modules.ml_pes <span class="keyword">import</span> train_ml_pes
+
+<span class="comment"># Train model</span>
+model_data = train_ml_pes(
+    trajectory_data,
+    training_type=<span class="string">'energy_forces'</span>,  <span class="comment"># or 'energy_only'</span>
+    test_size=<span class="number">0.2</span>
+)
+
+<span class="comment"># Model metadata</span>
+<span class="keyword">print</span>(<span class="string">f"RMSE: {model_data['metadata']['model']['test_rmse_kcal']} kcal/mol"</span>)
+<span class="keyword">print</span>(<span class="string">f"R²: {model_data['metadata']['model']['r2_score']}"</span>)</code></pre>
+
+                    <h4>Features:</h4>
+                    <ul>
+                        <li>Coulomb matrix descriptors</li>
+                        <li>StandardScaler preprocessing</li>
+                        <li>Auto-tuned hyperparameters</li>
+                        <li>Energy + force training</li>
+                        <li>Comprehensive metadata tracking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="collapsible">data_formats.py - Universal Trajectory I/O</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Purpose:</h4>
+                    <p>Universal trajectory data handling with multi-format support.</p>
+
+                    <h4>Supported Formats:</h4>
+                    <div class="code-title">Loading & Saving</div>
+                    <pre><code><span class="keyword">from</span> modules.data_formats <span class="keyword">import</span> load_trajectory, save_trajectory
+
+<span class="comment"># Load any format (auto-detected)</span>
+traj = load_trajectory(<span class="string">'trajectory.npz'</span>)
+traj = load_trajectory(<span class="string">'trajectory.xyz'</span>)
+traj = load_trajectory(<span class="string">'trajectory.extxyz'</span>)
+traj = load_trajectory(<span class="string">'trajectory.h5'</span>)
+
+<span class="comment"># Access data</span>
+<span class="keyword">print</span>(<span class="string">f"Frames: {traj.n_frames}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Atoms: {traj.n_atoms}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Symbols: {traj.symbols}"</span>)
+
+energies = traj.energies  <span class="comment"># (n_frames,) in Hartree</span>
+forces = traj.forces      <span class="comment"># (n_frames, n_atoms, 3) in Ha/Å</span>
+coords = traj.coordinates <span class="comment"># (n_frames, n_atoms, 3) in Å</span>
+
+<span class="comment"># Save to any format</span>
+save_trajectory(traj, <span class="string">'output.npz'</span>)</code></pre>
+
+                    <h4>Features:</h4>
+                    <ul>
+                        <li>Automatic format detection</li>
+                        <li>Metadata preservation</li>
+                        <li>NPZ, XYZ, ExtXYZ, HDF5 support</li>
+                        <li>Conversion utilities</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="collapsible">visualization.py - Publication-Quality Plots</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Purpose:</h4>
+                    <p>Create publication-quality plots for MD trajectories.</p>
+
+                    <h4>Usage:</h4>
+                    <div class="code-title">Creating Plots</div>
+                    <pre><code><span class="keyword">from</span> modules.visualization <span class="keyword">import</span> TrajectoryVisualizer
+
+viz = TrajectoryVisualizer(trajectory, output_dir=<span class="string">'plots/'</span>)
+
+<span class="comment"># Energy trajectory</span>
+viz.plot_energy_trajectory(unit=<span class="string">'kcal/mol'</span>, save=<span class="keyword">True</span>)
+
+<span class="comment"># Forces</span>
+viz.plot_forces(save=<span class="keyword">True</span>)
+
+<span class="comment"># 3D structure</span>
+viz.plot_3d_structure(frame=<span class="number">0</span>, save=<span class="keyword">True</span>)
+
+<span class="comment"># Summary dashboard (6-panel)</span>
+viz.plot_summary_dashboard(save=<span class="keyword">True</span>)</code></pre>
+
+                    <h4>Features:</h4>
+                    <ul>
+                        <li>300 DPI publication quality</li>
+                        <li>Proper units and labels</li>
+                        <li>Customizable styling</li>
+                        <li>Multiple plot types</li>
+                        <li>Automatic color schemes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="collapsible">test_molecules.py - Molecule Library</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Purpose:</h4>
+                    <p>Pre-optimized molecule geometries for quick testing.</p>
+
+                    <h4>Usage:</h4>
+                    <div class="code-title">Getting Molecules</div>
+                    <pre><code><span class="keyword">from</span> modules.test_molecules <span class="keyword">import</span> get_molecule
+
+<span class="comment"># Available molecules:</span>
+molecules = [
+    <span class="string">'water'</span>,              <span class="comment"># H2O</span>
+    <span class="string">'formaldehyde_oxide'</span>, <span class="comment"># CH2OO (Criegee)</span>
+    <span class="string">'ammonia'</span>,            <span class="comment"># NH3</span>
+    <span class="string">'methane'</span>,            <span class="comment"># CH4</span>
+    <span class="comment"># ... many more</span>
+]
+
+<span class="comment"># Get geometry</span>
+coords, symbols = get_molecule(<span class="string">'formaldehyde_oxide'</span>)
+
+<span class="keyword">print</span>(<span class="string">f"Atoms: {len(symbols)}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Symbols: {symbols}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Coordinates shape: {coords.shape}"</span>)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXAMPLES SECTION -->
+        <section id="examples">
+            <h2>💻 Code Examples</h2>
+
+            <button class="collapsible">Example 1: Generate Custom Training Data</button>
+            <div class="content">
+                <div class="content-inner">
+                    <div class="code-title">custom_training_data.py</div>
+                    <pre><code><span class="comment">#!/usr/bin/env python3</span>
+<span class="string">"""Generate training data with custom settings."""</span>
+
+<span class="keyword">from</span> modules.direct_md <span class="keyword">import</span> DirectMDConfig, run_direct_md
+<span class="keyword">from</span> modules.test_molecules <span class="keyword">import</span> get_molecule
+<span class="keyword">from</span> modules.data_formats <span class="keyword">import</span> save_trajectory
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># Get starting geometry</span>
+coords, symbols = get_molecule(<span class="string">'formaldehyde_oxide'</span>)
+
+<span class="comment"># Run MD at multiple temperatures</span>
+temperatures = [<span class="number">50</span>, <span class="number">100</span>, <span class="number">150</span>, <span class="number">200</span>, <span class="number">250</span>]
+all_coords = []
+all_energies = []
+all_forces = []
+
+<span class="keyword">for</span> temp <span class="keyword">in</span> temperatures:
+    <span class="keyword">print</span>(<span class="string">f"\n🔥 Running MD at {temp}K..."</span>)
+    
+    config = DirectMDConfig(
+        method=<span class="string">'B3LYP'</span>,
+        basis=<span class="string">'6-31G*'</span>,
+        temperature=temp,
+        n_steps=<span class="number">500</span>,
+        timestep=<span class="number">0.5</span>,
+        save_every=<span class="number">5</span>
+    )
+    
+    traj = run_direct_md(symbols, coords, config, use_ml_pes=<span class="keyword">False</span>)
+    
+    all_coords.append(traj.coordinates)
+    all_energies.append(traj.energies)
+    all_forces.append(traj.forces)
+
+<span class="comment"># Combine all trajectories</span>
+combined_coords = np.vstack(all_coords)
+combined_energies = np.concatenate(all_energies)
+combined_forces = np.vstack(all_forces)
+
+<span class="comment"># Save</span>
+<span class="keyword">from</span> modules.data_formats <span class="keyword">import</span> TrajectoryData
+
+combined_traj = TrajectoryData(
+    symbols=symbols,
+    coordinates=combined_coords,
+    energies=combined_energies,
+    forces=combined_forces,
+    metadata={
+        <span class="string">'temperatures'</span>: temperatures,
+        <span class="string">'theory'</span>: {<span class="string">'method'</span>: <span class="string">'B3LYP'</span>, <span class="string">'basis'</span>: <span class="string">'6-31G*'</span>}
+    }
+)
+
+save_trajectory(combined_traj, <span class="string">'custom_training_data.npz'</span>)
+<span class="keyword">print</span>(<span class="string">f"\n✅ Saved {len(combined_energies)} configurations!"</span>)</code></pre>
+                </div>
+            </div>
+
+            <button class="collapsible">Example 2: Train Custom ML-PES</button>
+            <div class="content">
+                <div class="content-inner">
+                    <div class="code-title">train_custom_model.py</div>
+                    <pre><code><span class="comment">#!/usr/bin/env python3</span>
+<span class="string">"""Train ML-PES with custom hyperparameters."""</span>
+
+<span class="keyword">from</span> modules.data_formats <span class="keyword">import</span> load_trajectory
+<span class="keyword">from</span> modules.ml_pes <span class="keyword">import</span> train_ml_pes
+<span class="keyword">import</span> pickle
+
+<span class="comment"># Load training data</span>
+data = load_trajectory(<span class="string">'training_data.npz'</span>)
+<span class="keyword">print</span>(<span class="string">f"Loaded {data.n_frames} configurations"</span>)
+
+<span class="comment"># Train model with energy + forces</span>
+model_data = train_ml_pes(
+    data,
+    training_type=<span class="string">'energy_forces'</span>,
+    test_size=<span class="number">0.2</span>
+)
+
+<span class="comment"># Check performance</span>
+metadata = model_data[<span class="string">'metadata'</span>]
+<span class="keyword">print</span>(<span class="string">f"\n📊 Model Performance:"</span>)
+<span class="keyword">print</span>(<span class="string">f"   RMSE: {metadata['model']['test_rmse_kcal']:.3f} kcal/mol"</span>)
+<span class="keyword">print</span>(<span class="string">f"   R²: {metadata['model']['r2_score']:.4f}"</span>)
+
+<span class="comment"># Save model</span>
+<span class="keyword">with</span> open(<span class="string">'my_model.pkl'</span>, <span class="string">'wb'</span>) <span class="keyword">as</span> f:
+    pickle.dump(model_data, f)
+
+<span class="keyword">print</span>(<span class="string">"\n✅ Model saved: my_model.pkl"</span>)</code></pre>
+                </div>
+            </div>
+
+            <button class="collapsible">Example 3: Batch Production MD</button>
+            <div class="content">
+                <div class="content-inner">
+                    <div class="code-title">batch_md.py</div>
+                    <pre><code><span class="comment">#!/usr/bin/env python3</span>
+<span class="string">"""Run MD at multiple temperatures in batch."""</span>
+
+<span class="keyword">import</span> subprocess
+
+MODEL = <span class="string">"outputs/.../retrained_mlpes_model.pkl"</span>
+DATA = <span class="string">"outputs/.../augmented_training_data.npz"</span>
+TEMPS = [<span class="number">100</span>, <span class="number">200</span>, <span class="number">300</span>, <span class="number">400</span>, <span class="number">500</span>]
+STEPS = <span class="number">50000</span>
+
+<span class="keyword">for</span> temp <span class="keyword">in</span> TEMPS:
+    output = <span class="string">f"md_{temp}K.npz"</span>
+    
+    <span class="keyword">print</span>(<span class="string">f"\n🔥 Running MD at {temp}K..."</span>)
+    
+    cmd = [
+        <span class="string">"python3"</span>, <span class="string">"simple_production_md.py"</span>,
+        <span class="string">"--model"</span>, MODEL,
+        <span class="string">"--training-data"</span>, DATA,
+        <span class="string">"--temp"</span>, <span class="function">str</span>(temp),
+        <span class="string">"--steps"</span>, <span class="function">str</span>(STEPS),
+        <span class="string">"--output"</span>, output
+    ]
+    
+    subprocess.run(cmd, check=<span class="keyword">True</span>)
+    
+    <span class="comment"># Visualize</span>
+    subprocess.run([<span class="string">"python3"</span>, <span class="string">"visualize_trajectory.py"</span>, output, <span class="string">"--all"</span>])
+
+<span class="keyword">print</span>(<span class="string">"\n✅ Temperature study complete!"</span>)</code></pre>
+                </div>
+            </div>
+
+            <button class="collapsible">Example 4: Custom Analysis</button>
+            <div class="content">
+                <div class="content-inner">
+                    <div class="code-title">custom_analysis.py</div>
+                    <pre><code><span class="comment">#!/usr/bin/env python3</span>
+<span class="string">"""Custom trajectory analysis."""</span>
+
+<span class="keyword">from</span> modules.data_formats <span class="keyword">import</span> load_trajectory
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+
+<span class="comment"># Load trajectory</span>
+traj = load_trajectory(<span class="string">'production_md_300K.npz'</span>)
+
+<span class="comment"># Calculate bond distances</span>
+<span class="keyword">def</span> <span class="function">calculate_bond</span>(coords, i, j):
+    <span class="keyword">return</span> np.linalg.norm(coords[:, i, :] - coords[:, j, :], axis=<span class="number">1</span>)
+
+<span class="comment"># C-O bond distance over time</span>
+co_distance = calculate_bond(traj.coordinates, <span class="number">0</span>, <span class="number">1</span>)
+
+<span class="comment"># Plot</span>
+plt.figure(figsize=(<span class="number">10</span>, <span class="number">6</span>))
+plt.plot(co_distance, linewidth=<span class="number">1</span>)
+plt.xlabel(<span class="string">'Frame'</span>)
+plt.ylabel(<span class="string">'C-O Distance (Å)'</span>)
+plt.title(<span class="string">'C-O Bond Evolution'</span>)
+plt.grid(<span class="keyword">True</span>, alpha=<span class="number">0.3</span>)
+plt.savefig(<span class="string">'co_bond_analysis.png'</span>, dpi=<span class="number">300</span>)
+
+<span class="keyword">print</span>(<span class="string">f"Mean C-O distance: {co_distance.mean():.3f} Å"</span>)
+<span class="keyword">print</span>(<span class="string">f"Std: {co_distance.std():.3f} Å"</span>)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISUALIZATION SECTION -->
+        <section id="visualization">
+            <h2>📊 Visualization Guide</h2>
+
+            <h3>Available Visualization Tools</h3>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>Energy Trajectories</h4>
+                    <p>Time series of total energy with running averages and fluctuations.</p>
+                </div>
+                <div class="card">
+                    <h4>Temperature Evolution</h4>
+                    <p>Target vs actual temperature, thermostat performance.</p>
+                </div>
+                <div class="card">
+                    <h4>Force Distributions</h4>
+                    <p>Per-atom force magnitudes, ML-PES quality assessment.</p>
+                </div>
+                <div class="card">
+                    <h4>3D Structures</h4>
+                    <p>Ball-and-stick visualization at multiple time points.</p>
+                </div>
+                <div class="card">
+                    <h4>Summary Dashboard</h4>
+                    <p>6-panel comprehensive overview of all metrics.</p>
+                </div>
+                <div class="card">
+                    <h4>Diagnostic Plots</h4>
+                    <p>Error analysis, parity plots, ML-PES validation.</p>
+                </div>
+            </div>
+
+            <h3>Quick Visualization Commands</h3>
+
+            <div class="code-title">Basic Usage</div>
+            <pre><code><span class="comment"># Create all plots (recommended)</span>
+python3 visualize_trajectory.py trajectory.npz --all
+
+<span class="comment"># Just energy trajectory</span>
+python3 visualize_trajectory.py trajectory.npz --energy
+
+<span class="comment"># Just 3D structures</span>
+python3 visualize_trajectory.py trajectory.npz --structure
+
+<span class="comment"># Summary dashboard only</span>
+python3 visualize_trajectory.py trajectory.npz --summary
+
+<span class="comment"># Custom output directory</span>
+python3 visualize_trajectory.py trajectory.npz --all --output analysis/</code></pre>
+
+            <h3>Programmatic Visualization</h3>
+
+            <div class="code-title">Custom Plots</div>
+            <pre><code><span class="keyword">from</span> modules.data_formats <span class="keyword">import</span> load_trajectory
+<span class="keyword">from</span> modules.visualization <span class="keyword">import</span> TrajectoryVisualizer
+
+<span class="comment"># Load data</span>
+traj = load_trajectory(<span class="string">'production_md.npz'</span>)
+
+<span class="comment"># Create visualizer</span>
+viz = TrajectoryVisualizer(traj, output_dir=<span class="string">'custom_plots'</span>)
+
+<span class="comment"># Create specific plots</span>
+fig1 = viz.plot_energy_trajectory(unit=<span class="string">'kcal/mol'</span>, save=<span class="keyword">True</span>)
+fig2 = viz.plot_forces(save=<span class="keyword">True</span>)
+fig3 = viz.plot_3d_structure(frame=<span class="number">0</span>, save=<span class="keyword">True</span>)
+fig4 = viz.plot_summary_dashboard(save=<span class="keyword">True</span>)</code></pre>
+
+            <div class="alert alert-info">
+                <strong>💡 Tip:</strong> All plots are saved at 300 DPI with proper labels and units - perfect for publications!
+            </div>
+        </section>
+
+        <!-- TROUBLESHOOTING SECTION -->
+        <section id="troubleshooting">
+            <h2>🔧 Troubleshooting</h2>
+
+            <button class="collapsible">Issue: High ML-PES Errors (&gt;100 kcal/mol)</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Symptoms:</h4>
+                    <pre><code>Mean error: 3397 kcal/mol
+All errors very similar</code></pre>
+
+                    <h4>Diagnosis:</h4>
+                    <pre><code>python3 diagnose_huge_errors.py --model model.pkl --training-data data.npz</code></pre>
+
+                    <h4>Common Causes:</h4>
+                    <ol>
+                        <li><strong>Coordinate unit mismatch</strong> (Angstrom vs Bohr)
+                            <ul>
+                                <li>Fixed in two_phase_workflow.py v2.2</li>
+                            </ul>
+                        </li>
+                        <li><strong>Energy reference offset</strong>
+                            <ul>
+                                <li>Check if energies are relative vs absolute</li>
+                            </ul>
+                        </li>
+                        <li><strong>Theory level mismatch</strong>
+                            <ul>
+                                <li>Training: HF/STO-3G, Validation: B3LYP/6-31G*</li>
+                                <li>Re-generate with consistent theory</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <div class="alert alert-success">
+                        <strong>Solution:</strong> Use latest two_phase_workflow.py (units fixed). Verify theory levels match.
+                    </div>
+                </div>
+            </div>
+
+            <button class="collapsible">Issue: SCF Convergence Failures</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Symptoms:</h4>
+                    <pre><code>PSI4 error: SCF failed to converge
+MD stuck at step 234</code></pre>
+
+                    <h4>Solution:</h4>
+                    <pre><code><span class="comment"># In PSI4 settings:</span>
+psi4.set_options({
+    <span class="string">'maxiter'</span>: <span class="number">500</span>,          <span class="comment"># Increase from 200</span>
+    <span class="string">'e_convergence'</span>: <span class="number">1e-8</span>,   <span class="comment"># Tighter</span>
+    <span class="string">'d_convergence'</span>: <span class="number">1e-8</span>,
+    <span class="string">'damping_percentage'</span>: <span class="number">20</span>  <span class="comment"># Add damping</span>
+})</code></pre>
+                </div>
+            </div>
+
+            <button class="collapsible">Issue: Model Not Improving with Refinement</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Symptoms:</h4>
+                    <pre><code>Original RMSE: 5.2 kcal/mol
+After refinement: 5.1 kcal/mol (only 2% improvement)</code></pre>
+
+                    <h4>Possible Causes:</h4>
+                    <ol>
+                        <li>Model converged (good sign!)</li>
+                        <li>Descriptor not expressive enough</li>
+                        <li>Not enough high-error points</li>
+                        <li>Systematic bias</li>
+                    </ol>
+
+                    <h4>Solutions:</h4>
+                    <ul>
+                        <li>Accept current quality if &lt; 5 kcal/mol</li>
+                        <li>Try different descriptor (SOAP, MBTR)</li>
+                        <li>Use strategy [1] (add all points)</li>
+                        <li>Consider different ML method (neural network)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="collapsible">Issue: Memory Errors</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Symptoms:</h4>
+                    <pre><code>MemoryError: Unable to allocate array</code></pre>
+
+                    <h4>Solutions:</h4>
+                    <ol>
+                        <li>Reduce validation set size:
+                            <pre><code>python3 two_phase_workflow.py --validate-max 25  # Instead of 50</code></pre>
+                        </li>
+                        <li>Reduce memory usage:
+                            <ul>
+                                <li>Smaller batches</li>
+                                <li>Fewer hyperparameter combinations</li>
+                                <li>Use simpler descriptors</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <button class="collapsible">Issue: TrajectoryData Missing Forces Error</button>
+            <div class="content">
+                <div class="content-inner">
+                    <h4>Symptoms:</h4>
+                    <pre><code>TypeError: TrajectoryData.__init__() missing 1 required positional argument: 'forces'</code></pre>
+
+                    <h4>Solution:</h4>
+                    <div class="alert alert-warning">
+                        <strong>You're using an old version of simple_production_md.py!</strong>
+                        Re-download the fixed version from the chat.
+                    </div>
+
+                    <p>Or manually fix by adding forces saving in MD loop (see QUICK_FIX_FORCES.md)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- API REFERENCE SECTION -->
+        <section id="api">
+            <h2>📖 API Reference</h2>
+
+            <h3>Quick Reference Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Script</th>
+                        <th>Purpose</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>complete_workflow_v2.2.py</code></td>
+                        <td>Menu-driven training & refinement</td>
+                        <td>Hours</td>
+                    </tr>
+                    <tr>
+                        <td><code>two_phase_workflow.py</code></td>
+                        <td>Fast diagnostic & refinement</td>
+                        <td>10-15 min</td>
+                    </tr>
+                    <tr>
+                        <td><code>simple_production_md.py</code></td>
+                        <td>Production MD runner</td>
+                        <td>Seconds</td>
+                    </tr>
+                    <tr>
+                        <td><code>list_models.py</code></td>
+                        <td>Find models & data</td>
+                        <td>Instant</td>
+                    </tr>
+                    <tr>
+                        <td><code>visualize_trajectory.py</code></td>
+                        <td>Create all plots</td>
+                        <td>30 sec</td>
+                    </tr>
+                    <tr>
+                        <td><code>diagnose_huge_errors.py</code></td>
+                        <td>Debug ML-PES issues</td>
+                        <td>1 min</td>
+                    </tr>
+                    <tr>
+                        <td><code>register_in_database.py</code></td>
+                        <td>Add to database</td>
+                        <td>Instant</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Command-Line Arguments</h3>
+
+            <h4>simple_production_md.py</h4>
+            <pre><code>--model PATH              Path to ML-PES model (.pkl)
+--training-data PATH      Path to training data (.npz)
+--temp FLOAT              Temperature in Kelvin (default: 300.0)
+--steps INT               Number of MD steps (default: 10000)
+--timestep FLOAT          Timestep in fs (default: 0.5)
+--save-every INT          Save interval (default: 10)
+--output PATH             Output filename (default: auto-generated)</code></pre>
+
+            <h4>two_phase_workflow.py</h4>
+            <pre><code>--model PATH              Path to ML-PES model (.pkl)
+--training-data PATH      Path to training data (.npz)
+--temp FLOAT              Temperature in Kelvin (default: 100.0)
+--steps INT               Number of MD steps (default: 1000)
+--validate-max INT        Max snapshots to validate (default: 50)
+--refine PATH             Refinement-only mode with results file</code></pre>
+
+            <h4>visualize_trajectory.py</h4>
+            <pre><code>trajectory                Trajectory file path
+--output DIR              Output directory for plots
+--all                     Create all available plots
+--energy                  Energy trajectory only
+--structure               3D structures only
+--temperature             Temperature plot only
+--forces                  Force distributions only
+--summary                 Summary dashboard only</code></pre>
+
+            <h4>list_models.py</h4>
+            <pre><code>--detailed                Show detailed information
+--molecule FORMULA        Filter by molecule (e.g., CH2OO)
+--outputs-dir PATH        Directory to scan (default: outputs)</code></pre>
+        </section>
+
+    </main>
+
+    <footer>
+        <p><strong>PSI4-MD ML-PES Framework v2.2</strong></p>
+        <p>Production-Ready Machine Learning Potential Energy Surfaces</p>
+        <p style="margin-top: 1rem; opacity: 0.8;">Created: January 2026 | Status: ✅ Production Ready</p>
+    </footer>
+
+    <script>
+        // Collapsible sections
+        var coll = document.getElementsByClassName("collapsible");
+        for (var i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Update active link
+                document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Highlight current section in navigation
+        window.addEventListener('scroll', () => {
+            let current = '';
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('nav a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').slice(1) === current) {
+                    a.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

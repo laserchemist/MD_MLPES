@@ -1,0 +1,98 @@
+{
+  "molecules": {
+    "water": {
+      "name": "water",
+      "computations": [
+        {
+          "molecule": "water",
+          "method": "HF",
+          "basis": "STO-3G",
+          "frames": 11,
+          "energy_range": [
+            -74.96531035108262,
+            -74.96034873194462
+          ],
+          "file": "md_simulation/water_trajectory.npz",
+          "status": "completed",
+          "timestamp": "2025-12-30T17:29:48.462469"
+        }
+      ]
+    }
+  },
+  "computations": {
+    "running": [],
+    "completed": [
+      {
+        "molecule": "water",
+        "method": "HF",
+        "basis": "STO-3G",
+        "frames": 11,
+        "energy_range": [
+          -74.96531035108262,
+          -74.96034873194462
+        ],
+        "file": "md_simulation/water_trajectory.npz",
+        "status": "completed",
+        "timestamp": "2025-12-30T17:29:48.462469"
+      }
+    ],
+    "queued": []
+  },
+  "files": [
+    {
+      "name": "trajectory_summary.png",
+      "path": "visualizations/trajectory_summary.png",
+      "size_kb": 546.6044921875,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:29:51.538651"
+    },
+    {
+      "name": "structure_frame_0.png",
+      "path": "visualizations/structure_frame_0.png",
+      "size_kb": 551.060546875,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:29:50.626935"
+    },
+    {
+      "name": "dipole_trajectory.png",
+      "path": "visualizations/dipole_trajectory.png",
+      "size_kb": 257.0361328125,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:29:50.258632"
+    },
+    {
+      "name": "force_magnitudes.png",
+      "path": "visualizations/force_magnitudes.png",
+      "size_kb": 529.1015625,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:29:49.725536"
+    },
+    {
+      "name": "energy_trajectory.png",
+      "path": "visualizations/energy_trajectory.png",
+      "size_kb": 206.880859375,
+      "type": "visualization",
+      "timestamp": "2025-12-30T17:29:49.174064"
+    },
+    {
+      "name": "water_trajectory.npz",
+      "path": "md_simulation/water_trajectory.npz",
+      "size_kb": 3.4189453125,
+      "type": "trajectory",
+      "format": "NPZ",
+      "timestamp": "2025-12-30T17:29:48.462469"
+    }
+  ],
+  "statistics": {
+    "total_molecules": 1,
+    "total_trajectories": 1,
+    "total_frames": 11,
+    "total_computation_time": 0.0
+  },
+  "recent_activity": [
+    {
+      "timestamp": "2025-12-30T17:29:48.462469",
+      "message": "Completed MD for water (11 steps, HF/STO-3G)"
+    }
+  ]
+}

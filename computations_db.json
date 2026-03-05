@@ -1,0 +1,107 @@
+{
+  "version": "2.2",
+  "last_updated": "2025-12-31T12:17:36.289794",
+  "computations": {
+    "comp_20251231_114001": {
+      "id": "comp_20251231_114001",
+      "filepath": "outputs/temp_test_traj/water_trajectory.npz",
+      "theory": {
+        "method": "unknown",
+        "basis": "unknown"
+      },
+      "molecule": {
+        "name": "water",
+        "formula": "H2O",
+        "n_atoms": 3,
+        "symbols": [
+          "O",
+          "H",
+          "H"
+        ]
+      },
+      "training": {
+        "n_configs": 121,
+        "n_trajectories": 0,
+        "temperatures": [],
+        "training_type": "energy_forces",
+        "has_forces": true,
+        "energy_range_kcal": 2.57509718587724
+      },
+      "metadata": {
+        "date_created": "2025-12-31T11:40:01.057462",
+        "date_modified": "2025-12-31T12:17:36.289790",
+        "notes": "",
+        "valid": true
+      }
+    },
+    "comp_20251231_114940": {
+      "id": "comp_20251231_114940",
+      "filepath": "outputs/mlpes_v2_20251231_040244/training_data.npz",
+      "theory": {
+        "method": "unknown",
+        "basis": "unknown"
+      },
+      "molecule": {
+        "name": "formaldehyde_oxide",
+        "formula": "CH2O2",
+        "n_atoms": 5,
+        "symbols": [
+          "C",
+          "O",
+          "O",
+          "H",
+          "H"
+        ]
+      },
+      "training": {
+        "n_configs": 2008,
+        "n_trajectories": 0,
+        "temperatures": [],
+        "training_type": "energy_forces",
+        "has_forces": true,
+        "energy_range_kcal": 38.79864667995163
+      },
+      "metadata": {
+        "date_created": "2025-12-31T11:49:40.428155",
+        "date_modified": "2025-12-31T12:17:36.288007",
+        "notes": "",
+        "valid": true
+      }
+    },
+    "comp_20251231_121736": {
+      "id": "comp_20251231_121736",
+      "filepath": "outputs/mlpes_v2.1_20251231_094958/training_data.npz",
+      "theory": {
+        "method": "unknown",
+        "basis": "unknown"
+      },
+      "molecule": {
+        "name": "methanol",
+        "formula": "CH4O",
+        "n_atoms": 6,
+        "symbols": [
+          "C",
+          "O",
+          "H",
+          "H",
+          "H",
+          "H"
+        ]
+      },
+      "training": {
+        "n_configs": 755,
+        "n_trajectories": 0,
+        "temperatures": [],
+        "training_type": "energy_forces",
+        "has_forces": true,
+        "energy_range_kcal": 29.879499329580497
+      },
+      "metadata": {
+        "date_created": "2025-12-31T12:17:36.284020",
+        "date_modified": "2025-12-31T12:17:36.284021",
+        "notes": "",
+        "valid": true
+      }
+    }
+  }
+}

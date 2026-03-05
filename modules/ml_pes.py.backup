@@ -1,0 +1,762 @@
+#!/usr/bin/env python3
+"""
+Machine Learning Potential Energy Surface (ML-PES) Module
+
+Trains ML models to predict energies, forces, and Hessians from molecular
+geometries. Supports multiple ML methods with consistent gradient handling.
+
+Classes:
+    MLPESConfig: Configuration for ML-PES training
+    DescriptorGenerator: Generate molecular descriptors
+    MLPESTrainer: Main training interface
+    PESModel: Wrapper for trained models
+    
+Functions:
+    train_pes: Convenience function for training
+    evaluate_model: Evaluate model performance
+    
+Author: PSI4-MD Framework
+Date: 2025
+"""
+
+import numpy as np
+from typing import Dict, List, Optional, Tuple, Callable
+from pathlib import Path
+import json
+import pickle
+import logging
+from dataclasses import dataclass, field
+import warnings
+
+# Try to import ML libraries
+try:
+    from sklearn.kernel_ridge import KernelRidge
+    from sklearn.gaussian_process import GaussianProcessRegressor
+    from sklearn.gaussian_process.kernels import RBF, ConstantKernel, Matern
+    from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+    from sklearn.model_selection import train_test_split, cross_val_score
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    warnings.warn("scikit-learn not available. Some ML methods will not work.")
+
+try:
+    import torch
+    import torch.nn as nn
+    import torch.optim as optim
+    PYTORCH_AVAILABLE = True
+except ImportError:
+    PYTORCH_AVAILABLE = False
+    warnings.warn("PyTorch not available. Neural network models will not work.")
+
+from data_formats import TrajectoryData, load_trajectory
+
+# Physical constants
+HARTREE_TO_KCAL = 627.509474
+BOHR_TO_ANGSTROM = 0.529177
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+
+@dataclass
+class MLPESConfig:
+    """
+    Configuration for ML-PES training.
+    
+    Attributes:
+        model_type: Type of ML model ('kernel_ridge', 'gaussian_process', 
+                    'neural_network', 'random_forest')
+        descriptor_type: Molecular descriptor ('coulomb_matrix', 'soap', 
+                        'mbtr', 'coordinates')
+        train_forces: Whether to train on forces as well as energies
+        force_weight: Weight for force loss relative to energy loss
+        kernel: Kernel function for kernel methods
+        kernel_params: Parameters for kernel
+        hidden_layers: Neural network layer sizes
+        learning_rate: Learning rate for neural network
+        n_epochs: Number of training epochs
+        batch_size: Batch size for neural network training
+        validation_split: Fraction of data for validation
+        early_stopping: Use early stopping for neural networks
+        random_seed: Random seed for reproducibility
+    """
+    model_type: str = 'kernel_ridge'
+    descriptor_type: str = 'coulomb_matrix'
+    train_forces: bool = True
+    force_weight: float = 1.0
+    kernel: str = 'rbf'
+    kernel_params: Dict = field(default_factory=lambda: {'gamma': 0.1})
+    hidden_layers: List[int] = field(default_factory=lambda: [128, 64, 32])
+    learning_rate: float = 0.001
+    n_epochs: int = 1000
+    batch_size: int = 32
+    validation_split: float = 0.2
+    early_stopping: bool = True
+    patience: int = 50
+    random_seed: int = 42
+
+
+class DescriptorGenerator:
+    """
+    Generate molecular descriptors for ML models.
+    """
+    
+    def __init__(self, descriptor_type: str = 'coulomb_matrix'):
+        """
+        Initialize descriptor generator.
+        
+        Args:
+            descriptor_type: Type of descriptor to generate
+        """
+        self.descriptor_type = descriptor_type
+    
+    def generate_coulomb_matrix(self, symbols: List[str], coordinates: np.ndarray) -> np.ndarray:
+        """
+        Generate Coulomb matrix descriptor.
+        
+        The Coulomb matrix captures Coulombic interactions between atoms
+        and is invariant to translation and rotation (after sorting).
+        
+        Args:
+            symbols: Atomic symbols
+            coordinates: Atomic coordinates in Angstroms (N_atoms, 3)
+            
+        Returns:
+            Flattened Coulomb matrix
+        """
+        # Atomic numbers
+        atomic_numbers = {
+            'H': 1, 'C': 6, 'N': 7, 'O': 8, 'F': 9, 'S': 16, 'Cl': 17, 'Br': 35
+        }
+        
+        n_atoms = len(symbols)
+        Z = np.array([atomic_numbers.get(s, 1) for s in symbols])
+        
+        # Coulomb matrix
+        CM = np.zeros((n_atoms, n_atoms))
+        
+        for i in range(n_atoms):
+            for j in range(n_atoms):
+                if i == j:
+                    # Diagonal: 0.5 * Z^2.4
+                    CM[i, i] = 0.5 * Z[i] ** 2.4
+                else:
+                    # Off-diagonal: Z_i * Z_j / r_ij
+                    r_ij = np.linalg.norm(coordinates[i] - coordinates[j])
+                    CM[i, j] = Z[i] * Z[j] / (r_ij + 1e-10)  # Avoid division by zero
+        
+        # Sort by row norms for invariance
+        row_norms = np.linalg.norm(CM, axis=1)
+        sorted_indices = np.argsort(row_norms)[::-1]
+        CM_sorted = CM[sorted_indices][:, sorted_indices]
+        
+        # Flatten upper triangle
+        return CM_sorted[np.triu_indices(n_atoms)]
+    
+    def generate_coordinates(self, symbols: List[str], coordinates: np.ndarray) -> np.ndarray:
+        """
+        Use raw coordinates as descriptor (simplest approach).
+        
+        Args:
+            symbols: Atomic symbols
+            coordinates: Atomic coordinates (N_atoms, 3)
+            
+        Returns:
+            Flattened coordinates
+        """
+        return coordinates.flatten()
+    
+    def generate_internals(self, symbols: List[str], coordinates: np.ndarray) -> np.ndarray:
+        """
+        Generate internal coordinate descriptor (distances, angles).
+        
+        Args:
+            symbols: Atomic symbols
+            coordinates: Atomic coordinates (N_atoms, 3)
+            
+        Returns:
+            Internal coordinates
+        """
+        n_atoms = len(symbols)
+        
+        # Pairwise distances
+        distances = []
+        for i in range(n_atoms):
+            for j in range(i + 1, n_atoms):
+                dist = np.linalg.norm(coordinates[i] - coordinates[j])
+                distances.append(dist)
+        
+        return np.array(distances)
+    
+    def generate(self, symbols: List[str], coordinates: np.ndarray) -> np.ndarray:
+        """
+        Generate descriptor based on configured type.
+        
+        Args:
+            symbols: Atomic symbols
+            coordinates: Atomic coordinates (N_atoms, 3)
+            
+        Returns:
+            Descriptor vector
+        """
+        if self.descriptor_type == 'coulomb_matrix':
+            return self.generate_coulomb_matrix(symbols, coordinates)
+        elif self.descriptor_type == 'coordinates':
+            return self.generate_coordinates(symbols, coordinates)
+        elif self.descriptor_type == 'internals':
+            return self.generate_internals(symbols, coordinates)
+        else:
+            raise ValueError(f"Unknown descriptor type: {self.descriptor_type}")
+
+
+if PYTORCH_AVAILABLE:
+    class NeuralNetworkPES(nn.Module):
+        """
+        Neural network for potential energy surface prediction.
+        """
+        
+        def __init__(self, input_dim: int, hidden_layers: List[int] = [128, 64, 32]):
+            """
+            Initialize neural network.
+            
+            Args:
+                input_dim: Input feature dimension
+                hidden_layers: List of hidden layer sizes
+            """
+            super(NeuralNetworkPES, self).__init__()
+            
+            layers = []
+            prev_dim = input_dim
+            
+            for hidden_dim in hidden_layers:
+                layers.append(nn.Linear(prev_dim, hidden_dim))
+                layers.append(nn.ReLU())
+                layers.append(nn.Dropout(0.1))
+                prev_dim = hidden_dim
+            
+            # Output layer for energy
+            layers.append(nn.Linear(prev_dim, 1))
+            
+            self.network = nn.Sequential(*layers)
+            
+            # Initialize weights
+            self.apply(self._init_weights)
+        
+        def _init_weights(self, module):
+            """Initialize network weights."""
+            if isinstance(module, nn.Linear):
+                nn.init.xavier_uniform_(module.weight)
+                if module.bias is not None:
+                    nn.init.zeros_(module.bias)
+        
+        def forward(self, x):
+            """Forward pass."""
+            return self.network(x).squeeze(-1)
+else:
+    # Dummy class if PyTorch not available
+    NeuralNetworkPES = None
+
+
+class MLPESTrainer:
+    """
+    Main class for training ML potential energy surfaces.
+    """
+    
+    def __init__(self, config: MLPESConfig = None):
+        """
+        Initialize ML-PES trainer.
+        
+        Args:
+            config: Configuration object
+        """
+        self.config = config or MLPESConfig()
+        self.descriptor_gen = DescriptorGenerator(self.config.descriptor_type)
+        
+        self.model = None
+        self.scaler = None
+        self.force_scaler = None
+        
+        self.training_history = {
+            'train_loss': [],
+            'val_loss': [],
+            'train_energy_rmse': [],
+            'val_energy_rmse': [],
+            'train_force_rmse': [],
+            'val_force_rmse': []
+        }
+        
+        # Set random seed
+        np.random.seed(self.config.random_seed)
+        if PYTORCH_AVAILABLE:
+            torch.manual_seed(self.config.random_seed)
+    
+    def prepare_data(self, trajectory: TrajectoryData) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Prepare training data from trajectory.
+        
+        Args:
+            trajectory: Trajectory data
+            
+        Returns:
+            Tuple of (descriptors, energies, forces)
+        """
+        logger.info(f"Preparing data from trajectory with {trajectory.n_frames} frames...")
+        
+        descriptors = []
+        energies = []
+        forces = []
+        
+        for i in range(trajectory.n_frames):
+            # Generate descriptor
+            desc = self.descriptor_gen.generate(
+                trajectory.symbols,
+                trajectory.coordinates[i]
+            )
+            descriptors.append(desc)
+            
+            # Get energy
+            energies.append(trajectory.energies[i])
+            
+            # Get forces (flatten)
+            forces.append(trajectory.forces[i].flatten())
+        
+        descriptors = np.array(descriptors)
+        energies = np.array(energies)
+        forces = np.array(forces) if self.config.train_forces else None
+        
+        logger.info(f"Prepared {len(descriptors)} configurations")
+        logger.info(f"Descriptor dimension: {descriptors.shape[1]}")
+        
+        return descriptors, energies, forces
+    
+    def train_kernel_ridge(self, X_train: np.ndarray, y_train: np.ndarray,
+                          X_val: np.ndarray, y_val: np.ndarray):
+        """
+        Train Kernel Ridge Regression model.
+        
+        Args:
+            X_train: Training descriptors
+            y_train: Training energies
+            X_val: Validation descriptors
+            y_val: Validation energies
+        """
+        if not SKLEARN_AVAILABLE:
+            raise ImportError("scikit-learn required for kernel ridge regression")
+        
+        logger.info("Training Kernel Ridge Regression model...")
+        
+        # Scale data
+        self.scaler = StandardScaler()
+        X_train_scaled = self.scaler.fit_transform(X_train)
+        X_val_scaled = self.scaler.transform(X_val)
+        
+        # Create and train model
+        if self.config.kernel == 'rbf':
+            kernel = 'rbf'
+            gamma = self.config.kernel_params.get('gamma', 0.1)
+            alpha = self.config.kernel_params.get('alpha', 1.0)
+            
+            self.model = KernelRidge(alpha=alpha, kernel=kernel, gamma=gamma)
+        else:
+            self.model = KernelRidge(alpha=1.0, kernel=self.config.kernel)
+        
+        self.model.fit(X_train_scaled, y_train)
+        
+        # Evaluate
+        train_pred = self.model.predict(X_train_scaled)
+        val_pred = self.model.predict(X_val_scaled)
+        
+        train_rmse = np.sqrt(mean_squared_error(y_train, train_pred)) * HARTREE_TO_KCAL
+        val_rmse = np.sqrt(mean_squared_error(y_val, val_pred)) * HARTREE_TO_KCAL
+        
+        self.training_history['train_energy_rmse'].append(train_rmse)
+        self.training_history['val_energy_rmse'].append(val_rmse)
+        
+        logger.info(f"Training RMSE: {train_rmse:.4f} kcal/mol")
+        logger.info(f"Validation RMSE: {val_rmse:.4f} kcal/mol")
+    
+    def train_neural_network(self, X_train: np.ndarray, y_train: np.ndarray,
+                            X_val: np.ndarray, y_val: np.ndarray):
+        """
+        Train neural network PES model.
+        
+        Args:
+            X_train: Training descriptors
+            y_train: Training energies
+            X_val: Validation descriptors
+            y_val: Validation energies
+        """
+        if not PYTORCH_AVAILABLE:
+            raise ImportError("PyTorch required for neural network models")
+        
+        logger.info("Training Neural Network PES model...")
+        
+        # Scale data
+        self.scaler = StandardScaler()
+        X_train_scaled = self.scaler.fit_transform(X_train)
+        X_val_scaled = self.scaler.transform(X_val)
+        
+        # Convert to tensors
+        X_train_t = torch.FloatTensor(X_train_scaled)
+        y_train_t = torch.FloatTensor(y_train)
+        X_val_t = torch.FloatTensor(X_val_scaled)
+        y_val_t = torch.FloatTensor(y_val)
+        
+        # Create model
+        input_dim = X_train.shape[1]
+        self.model = NeuralNetworkPES(input_dim, self.config.hidden_layers)
+        
+        # Loss and optimizer
+        criterion = nn.MSELoss()
+        optimizer = optim.Adam(self.model.parameters(), lr=self.config.learning_rate)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=20, factor=0.5)
+        
+        # Training loop
+        best_val_loss = float('inf')
+        patience_counter = 0
+        
+        for epoch in range(self.config.n_epochs):
+            # Training
+            self.model.train()
+            optimizer.zero_grad()
+            
+            train_pred = self.model(X_train_t)
+            train_loss = criterion(train_pred, y_train_t)
+            
+            train_loss.backward()
+            optimizer.step()
+            
+            # Validation
+            self.model.eval()
+            with torch.no_grad():
+                val_pred = self.model(X_val_t)
+                val_loss = criterion(val_pred, y_val_t)
+            
+            # Convert to kcal/mol
+            train_rmse = np.sqrt(train_loss.item()) * HARTREE_TO_KCAL
+            val_rmse = np.sqrt(val_loss.item()) * HARTREE_TO_KCAL
+            
+            self.training_history['train_energy_rmse'].append(train_rmse)
+            self.training_history['val_energy_rmse'].append(val_rmse)
+            
+            # Learning rate scheduling
+            scheduler.step(val_loss)
+            
+            # Early stopping
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                patience_counter = 0
+                best_model_state = self.model.state_dict().copy()
+            else:
+                patience_counter += 1
+            
+            if epoch % 100 == 0:
+                logger.info(f"Epoch {epoch}/{self.config.n_epochs} - "
+                          f"Train RMSE: {train_rmse:.4f} - "
+                          f"Val RMSE: {val_rmse:.4f} kcal/mol")
+            
+            if self.config.early_stopping and patience_counter >= self.config.patience:
+                logger.info(f"Early stopping at epoch {epoch}")
+                self.model.load_state_dict(best_model_state)
+                break
+        
+        logger.info(f"Training complete. Best validation RMSE: {np.sqrt(best_val_loss.item()) * HARTREE_TO_KCAL:.4f} kcal/mol")
+    
+    def train(self, trajectory: TrajectoryData):
+        """
+        Train ML-PES model on trajectory data.
+        
+        Args:
+            trajectory: Training trajectory
+        """
+        # Prepare data
+        descriptors, energies, forces = self.prepare_data(trajectory)
+        
+        # Train/validation split
+        X_train, X_val, y_train, y_val = train_test_split(
+            descriptors, energies,
+            test_size=self.config.validation_split,
+            random_state=self.config.random_seed
+        )
+        
+        logger.info(f"Training set: {len(X_train)} samples")
+        logger.info(f"Validation set: {len(X_val)} samples")
+        
+        # Train based on model type
+        if self.config.model_type == 'kernel_ridge':
+            self.train_kernel_ridge(X_train, y_train, X_val, y_val)
+        elif self.config.model_type == 'neural_network':
+            self.train_neural_network(X_train, y_train, X_val, y_val)
+        else:
+            raise ValueError(f"Unknown model type: {self.config.model_type}")
+    
+    def predict(self, symbols: List[str], coordinates: np.ndarray) -> float:
+        """
+        Predict energy for a configuration.
+        
+        Args:
+            symbols: Atomic symbols
+            coordinates: Atomic coordinates (N_atoms, 3)
+            
+        Returns:
+            Predicted energy in Hartree
+        """
+        if self.model is None:
+            raise ValueError("Model not trained yet")
+        
+        # Generate descriptor
+        desc = self.descriptor_gen.generate(symbols, coordinates)
+        desc = desc.reshape(1, -1)
+        
+        # Scale
+        if self.scaler is not None:
+            desc = self.scaler.transform(desc)
+        
+        # Predict
+        if PYTORCH_AVAILABLE and isinstance(self.model, nn.Module):
+            # Neural network
+            with torch.no_grad():
+                desc_t = torch.FloatTensor(desc)
+                energy = self.model(desc_t).item()
+        else:
+            # Sklearn model
+            energy = self.model.predict(desc)[0]
+        
+        return energy
+    
+    def save(self, filepath: str):
+        """
+        Save trained model to file.
+        
+        Args:
+            filepath: Output file path
+        """
+        save_data = {
+            'config': self.config,
+            'scaler': self.scaler,
+            'training_history': self.training_history,
+            'descriptor_type': self.config.descriptor_type
+        }
+        
+        if PYTORCH_AVAILABLE and isinstance(self.model, nn.Module):
+            # PyTorch model
+            save_data['model_state_dict'] = self.model.state_dict()
+            save_data['model_architecture'] = {
+                'input_dim': self.model.network[0].in_features,
+                'hidden_layers': self.config.hidden_layers
+            }
+        else:
+            # Sklearn model
+            save_data['model'] = self.model
+        
+        with open(filepath, 'wb') as f:
+            pickle.dump(save_data, f)
+        
+        logger.info(f"Model saved to {filepath}")
+    
+    @classmethod
+    def load(cls, filepath: str):
+        """
+        Load trained model from file.
+        
+        Args:
+            filepath: Input file path
+            
+        Returns:
+            MLPESTrainer instance
+        """
+        with open(filepath, 'rb') as f:
+            save_data = pickle.load(f)
+        
+        trainer = cls(save_data['config'])
+        trainer.scaler = save_data['scaler']
+        trainer.training_history = save_data['training_history']
+        
+        if 'model_state_dict' in save_data:
+            # PyTorch model
+            if not PYTORCH_AVAILABLE or NeuralNetworkPES is None:
+                raise ImportError("PyTorch required to load neural network model")
+            arch = save_data['model_architecture']
+            trainer.model = NeuralNetworkPES(arch['input_dim'], arch['hidden_layers'])
+            trainer.model.load_state_dict(save_data['model_state_dict'])
+            trainer.model.eval()
+        else:
+            # Sklearn model
+            trainer.model = save_data['model']
+        
+        logger.info(f"Model loaded from {filepath}")
+        return trainer
+
+
+def train_pes(trajectory_file: str, config: MLPESConfig = None,
+             output_dir: str = '.', model_name: str = 'pes_model') -> MLPESTrainer:
+    """
+    Convenience function to train ML-PES from trajectory file.
+    
+    Args:
+        trajectory_file: Path to trajectory file
+        config: Training configuration
+        output_dir: Output directory
+        model_name: Name for saved model
+        
+    Returns:
+        Trained MLPESTrainer
+        
+    Example:
+        >>> config = MLPESConfig(model_type='neural_network', n_epochs=500)
+        >>> trainer = train_pes('trajectory.npz', config, output_dir='models')
+    """
+    # Load trajectory
+    trajectory = load_trajectory(trajectory_file)
+    
+    # Create trainer
+    if config is None:
+        config = MLPESConfig()
+    
+    trainer = MLPESTrainer(config)
+    
+    # Train
+    trainer.train(trajectory)
+    
+    # Save model
+    output_path = Path(output_dir)
+    output_path.mkdir(exist_ok=True, parents=True)
+    
+    model_path = output_path / f"{model_name}.pkl"
+    trainer.save(str(model_path))
+    
+    # Save training history
+    history_path = output_path / f"{model_name}_history.json"
+    with open(history_path, 'w') as f:
+        json.dump(trainer.training_history, f, indent=2)
+    
+    return trainer
+
+
+def evaluate_model(trainer: MLPESTrainer, test_trajectory: TrajectoryData) -> Dict:
+    """
+    Evaluate trained model on test data.
+    
+    Args:
+        trainer: Trained model
+        test_trajectory: Test trajectory
+        
+    Returns:
+        Dictionary with evaluation metrics
+    """
+    predictions = []
+    true_energies = []
+    
+    for i in range(test_trajectory.n_frames):
+        pred = trainer.predict(test_trajectory.symbols, test_trajectory.coordinates[i])
+        predictions.append(pred)
+        true_energies.append(test_trajectory.energies[i])
+    
+    predictions = np.array(predictions)
+    true_energies = np.array(true_energies)
+    
+    # Convert to kcal/mol for reporting
+    pred_kcal = predictions * HARTREE_TO_KCAL
+    true_kcal = true_energies * HARTREE_TO_KCAL
+    
+    metrics = {
+        'rmse_hartree': np.sqrt(mean_squared_error(true_energies, predictions)),
+        'rmse_kcal': np.sqrt(mean_squared_error(true_kcal, pred_kcal)),
+        'mae_kcal': mean_absolute_error(true_kcal, pred_kcal),
+        'r2_score': r2_score(true_energies, predictions),
+        'max_error_kcal': np.max(np.abs(true_kcal - pred_kcal))
+    }
+    
+    return metrics
+
+
+if __name__ == "__main__":
+    print("🤖 ML-PES Module Demonstration")
+    print("=" * 60)
+    
+    # Create mock training data
+    from test_molecules import get_molecule
+    from data_formats import TrajectoryData
+    
+    water = get_molecule('water')
+    
+    # Generate mock trajectory with variations
+    n_frames = 100
+    coords_list = []
+    energies_list = []
+    forces_list = []
+    
+    for i in range(n_frames):
+        # Random displacement
+        displacement = np.random.randn(3, 3) * 0.05
+        coords = water.coordinates + displacement
+        
+        # Mock energy (harmonic potential)
+        energy = -76.0 + 0.001 * np.sum(displacement**2)
+        
+        # Mock forces
+        forces = -0.002 * displacement
+        
+        coords_list.append(coords)
+        energies_list.append(energy)
+        forces_list.append(forces)
+    
+    trajectory = TrajectoryData(
+        symbols=water.symbols,
+        coordinates=np.array(coords_list),
+        energies=np.array(energies_list),
+        forces=np.array(forces_list),
+        metadata={'molecule': 'water', 'method': 'mock'}
+    )
+    
+    print(f"\n📊 Created mock training data:")
+    print(f"   Frames: {trajectory.n_frames}")
+    print(f"   Energy range: {trajectory.energies.min():.6f} to {trajectory.energies.max():.6f} Ha")
+    
+    # Test Kernel Ridge Regression
+    print("\n" + "=" * 60)
+    print("🧪 Training Kernel Ridge Regression...")
+    
+    config_kr = MLPESConfig(
+        model_type='kernel_ridge',
+        descriptor_type='coulomb_matrix',
+        kernel='rbf',
+        kernel_params={'gamma': 0.1, 'alpha': 1.0}
+    )
+    
+    trainer_kr = MLPESTrainer(config_kr)
+    trainer_kr.train(trajectory)
+    
+    # Test prediction
+    test_energy = trainer_kr.predict(water.symbols, water.coordinates)
+    print(f"\n✅ Prediction test: {test_energy:.6f} Ha")
+    print(f"   Reference: {water.reference_energy:.6f} Ha")
+    
+    # Test Neural Network (if available)
+    if PYTORCH_AVAILABLE:
+        print("\n" + "=" * 60)
+        print("🧠 Training Neural Network PES...")
+        
+        config_nn = MLPESConfig(
+            model_type='neural_network',
+            descriptor_type='coulomb_matrix',
+            hidden_layers=[64, 32],
+            n_epochs=200,
+            learning_rate=0.001
+        )
+        
+        trainer_nn = MLPESTrainer(config_nn)
+        trainer_nn.train(trajectory)
+        
+        # Evaluate
+        metrics = evaluate_model(trainer_nn, trajectory)
+        print(f"\n📊 Model Performance:")
+        print(f"   RMSE: {metrics['rmse_kcal']:.4f} kcal/mol")
+        print(f"   MAE: {metrics['mae_kcal']:.4f} kcal/mol")
+        print(f"   R²: {metrics['r2_score']:.4f}")
+        print(f"   Max Error: {metrics['max_error_kcal']:.4f} kcal/mol")
+    
+    print("\n✅ ML-PES module demonstration complete!")
