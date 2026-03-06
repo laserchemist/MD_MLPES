@@ -19,56 +19,53 @@ import shutil
 sys.path.insert(0, str(Path(__file__).parent.parent / 'modules'))
 
 from ml_pes import (
-    MLPESConfig, DescriptorGenerator, MLPESTrainer,
-    train_pes, evaluate_model, SKLEARN_AVAILABLE, PYTORCH_AVAILABLE
+    MLPESConfig, CoulombMatrixDescriptor, MLPESTrainer,
+    train_pes, evaluate_model, SKLEARN_AVAILABLE
 )
+PYTORCH_AVAILABLE = False  # Neural network training not supported in this module
 from test_molecules import get_molecule
 from data_formats import TrajectoryData
 
 
 class TestDescriptorGenerator(unittest.TestCase):
     """Test descriptor generation."""
-    
+
     def setUp(self):
         """Create test molecule."""
         self.water = get_molecule('water')
-    
+
     def test_coulomb_matrix(self):
         """Test Coulomb matrix generation."""
-        gen = DescriptorGenerator('coulomb_matrix')
-        desc = gen.generate(self.water.symbols, self.water.coordinates)
-        
+        desc_gen = CoulombMatrixDescriptor()
+        desc = desc_gen.compute(self.water.symbols, self.water.coordinates)
+
         # Should be flattened upper triangle
         n_atoms = len(self.water.symbols)
         expected_size = n_atoms * (n_atoms + 1) // 2
-        
+
         self.assertEqual(len(desc), expected_size)
         self.assertTrue(np.all(np.isfinite(desc)))
-    
-    def test_coordinates_descriptor(self):
-        """Test raw coordinates descriptor."""
-        gen = DescriptorGenerator('coordinates')
-        desc = gen.generate(self.water.symbols, self.water.coordinates)
-        
-        # Should be flattened coordinates
-        expected_size = len(self.water.symbols) * 3
-        
-        self.assertEqual(len(desc), expected_size)
-        np.testing.assert_array_almost_equal(
-            desc, self.water.coordinates.flatten()
-        )
-    
-    def test_internals_descriptor(self):
-        """Test internal coordinates descriptor."""
-        gen = DescriptorGenerator('internals')
-        desc = gen.generate(self.water.symbols, self.water.coordinates)
-        
-        # Should be pairwise distances
+
+    def test_coulomb_matrix_batch(self):
+        """Test batch Coulomb matrix generation."""
+        desc_gen = CoulombMatrixDescriptor()
+        coords_batch = np.stack([self.water.coordinates] * 5)
+        descs = desc_gen.compute_batch(self.water.symbols, coords_batch)
+
         n_atoms = len(self.water.symbols)
-        expected_size = n_atoms * (n_atoms - 1) // 2
-        
-        self.assertEqual(len(desc), expected_size)
-        self.assertTrue(np.all(desc > 0))  # All distances should be positive
+        expected_size = n_atoms * (n_atoms + 1) // 2
+
+        self.assertEqual(descs.shape, (5, expected_size))
+        self.assertTrue(np.all(np.isfinite(descs)))
+
+    def test_diagonal_elements(self):
+        """Test that diagonal elements follow 0.5 * Z^2.4 formula."""
+        desc_gen = CoulombMatrixDescriptor()
+        # Single-atom check: descriptor for H should have 0.5 * 1^2.4 = 0.5
+        # Use a two-atom system and verify the first diagonal element
+        desc = desc_gen.compute(['H', 'H'], np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]]))
+        expected_diag = 0.5 * 1 ** 2.4
+        self.assertAlmostEqual(desc[0], expected_diag, places=6)
 
 
 class TestMLPESConfig(unittest.TestCase):
@@ -80,21 +77,22 @@ class TestMLPESConfig(unittest.TestCase):
         
         self.assertEqual(config.model_type, 'kernel_ridge')
         self.assertEqual(config.descriptor_type, 'coulomb_matrix')
-        self.assertTrue(config.train_forces)
+        self.assertFalse(config.train_forces)
         self.assertEqual(config.validation_split, 0.2)
     
     def test_custom_config(self):
         """Test custom configuration."""
         config = MLPESConfig(
-            model_type='neural_network',
-            descriptor_type='coordinates',
-            hidden_layers=[128, 64],
-            n_epochs=500
+            kernel='rbf',
+            gamma=0.5,
+            alpha=0.1,
+            tune_hyperparameters=False
         )
-        
-        self.assertEqual(config.model_type, 'neural_network')
-        self.assertEqual(config.n_epochs, 500)
-        self.assertEqual(len(config.hidden_layers), 2)
+
+        self.assertEqual(config.kernel, 'rbf')
+        self.assertAlmostEqual(config.gamma, 0.5)
+        self.assertAlmostEqual(config.alpha, 0.1)
+        self.assertFalse(config.tune_hyperparameters)
 
 
 class TestMLPESTrainer(unittest.TestCase):
@@ -129,14 +127,14 @@ class TestMLPESTrainer(unittest.TestCase):
         )
     
     def test_data_preparation(self):
-        """Test data preparation."""
-        config = MLPESConfig(descriptor_type='coulomb_matrix')
-        trainer = MLPESTrainer(config)
-        
-        descriptors, energies, forces = trainer.prepare_data(self.trajectory)
-        
+        """Test descriptor computation matches trajectory size."""
+        desc_gen = CoulombMatrixDescriptor()
+        descriptors = desc_gen.compute_batch(
+            self.trajectory.symbols, self.trajectory.coordinates
+        )
+
         self.assertEqual(len(descriptors), self.trajectory.n_frames)
-        self.assertEqual(len(energies), self.trajectory.n_frames)
+        self.assertEqual(len(self.trajectory.energies), self.trajectory.n_frames)
         self.assertTrue(descriptors.ndim == 2)
     
     @unittest.skipIf(not SKLEARN_AVAILABLE, "scikit-learn not available")
@@ -144,20 +142,23 @@ class TestMLPESTrainer(unittest.TestCase):
         """Test kernel ridge regression training."""
         config = MLPESConfig(
             model_type='kernel_ridge',
-            descriptor_type='coulomb_matrix'
+            descriptor_type='coulomb_matrix',
+            tune_hyperparameters=False
         )
         trainer = MLPESTrainer(config)
-        
+
         # Train
         trainer.train(self.trajectory)
-        
-        # Check model exists
+
+        # Check model and scalers exist
         self.assertIsNotNone(trainer.model)
-        self.assertIsNotNone(trainer.scaler)
-        
-        # Check training history
-        self.assertGreater(len(trainer.training_history['train_energy_rmse']), 0)
-        self.assertGreater(len(trainer.training_history['val_energy_rmse']), 0)
+        self.assertIsNotNone(trainer.scaler_X)
+        self.assertIsNotNone(trainer.scaler_y)
+
+        # Check training history keys
+        self.assertIn('rmse_kcal', trainer.training_history)
+        self.assertIn('mae_kcal', trainer.training_history)
+        self.assertGreater(trainer.training_history['rmse_kcal'], 0)
     
     @unittest.skipIf(not SKLEARN_AVAILABLE, "scikit-learn not available")
     def test_prediction(self):
@@ -172,28 +173,22 @@ class TestMLPESTrainer(unittest.TestCase):
         self.assertIsInstance(energy, float)
         self.assertTrue(np.isfinite(energy))
     
-    @unittest.skipIf(not PYTORCH_AVAILABLE, "PyTorch not available")
-    def test_neural_network_training(self):
-        """Test neural network training."""
+    @unittest.skipIf(not SKLEARN_AVAILABLE, "scikit-learn not available")
+    def test_hyperparameter_tuning(self):
+        """Test training with hyperparameter tuning enabled."""
         config = MLPESConfig(
-            model_type='neural_network',
-            hidden_layers=[32, 16],
-            n_epochs=50,
-            early_stopping=False
+            model_type='kernel_ridge',
+            tune_hyperparameters=True,
+            gamma_range=[0.01, 0.1],
+            alpha_range=[0.01, 0.1]
         )
         trainer = MLPESTrainer(config)
-        
-        # Train
         trainer.train(self.trajectory)
-        
-        # Check model exists
+
         self.assertIsNotNone(trainer.model)
-        
-        # Check training happened
-        self.assertEqual(
-            len(trainer.training_history['train_energy_rmse']), 
-            config.n_epochs
-        )
+        self.assertIn('best_rmse_kcal', trainer.training_history)
+        self.assertIn('all_results', trainer.training_history)
+        self.assertGreater(trainer.training_history['best_rmse_kcal'], 0)
 
 
 class TestModelPersistence(unittest.TestCase):
