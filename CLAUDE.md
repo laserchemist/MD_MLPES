@@ -29,6 +29,18 @@ python3 two_phase_workflow.py         # ML-PES phase only (no PSI4 needed)
 python3 simple_production_workflow.py # Streamlined pipeline
 ```
 
+**Generate training data via normal mode distortions + high-T PSI4 MD:**
+```bash
+python3 generate_nm_training.py \
+    --training-data outputs/.../augmented_training_data.npz \
+    --T-nm 1000 --n-amplitudes 4 --max-factor 3 \
+    --md-temps 300,600,1000 --md-steps 50
+# Skip MD, NM only:
+python3 generate_nm_training.py --training-data <data.npz> --no-md
+# Skip NM, MD only:
+python3 generate_nm_training.py --training-data <data.npz> --no-nm
+```
+
 **Compute IR spectrum from existing trajectory:**
 ```bash
 python3 compute_ir_workflow.py
@@ -45,10 +57,12 @@ python3 compute_ir_workflow.py
 - `test_molecules.py` — Pre-optimized test molecule library (B3LYP/6-31G*)
 - `visualization.py` — Matplotlib-based trajectory and training plots
 - `ir_spectroscopy.py` — `DipoleSurface` and `IRSpectrumCalculator` (dipole ACF → IR spectrum)
+- `normal_modes.py` — Hessian via PSI4, normal mode diagonalization, NM-displaced geometry generation
 
 **Root directory** — Workflow orchestration scripts (~67 scripts). Key ones:
 - `master_workflow.py` — Menu-driven interface with JSON state tracking
 - `complete_workflow_v2.2.py` — Full end-to-end pipeline (latest complete version)
+- `generate_nm_training.py` — **Primary training data generator**: NM distortions + multi-T PSI4 MD
 - `adaptive_sampling_workflow.py` — Adaptive data collection loop
 - `on_the_fly_validation.py` — Validation during training
 
@@ -103,7 +117,7 @@ All code has a mock-calculation fallback for testing without PSI4.
 
 The following extensions were scoped by the user and should be built consistently with existing conventions:
 
-1. **Normal mode distortions for adaptive sampling**: Generate displaced geometries along normal modes to add training points that cover the PES near equilibrium more densely. Compute Hessian via PSI4 or finite differences on ML-PES, get normal mode vectors, then displace by ±nQ amplitudes.
+1. **Normal mode distortions for adaptive sampling**: ✅ **Implemented** in `modules/normal_modes.py` + `generate_nm_training.py`. Computes PSI4 Hessian, diagonalises mass-weighted Hessian, displaces ±n×a_thermal(T) along each mode (FREQ_CONV = 5140.48 cm⁻¹/√(Hartree/(Bohr²·amu))). Run: `python3 generate_nm_training.py --training-data <data.npz> --T-nm 1000 --n-amplitudes 4 --max-factor 3`.
 
 2. **ML-PES quality testing via normal modes and MD**: After training, compute normal mode frequencies on the ML-PES and compare to PSI4 frequencies. Run short ML-MD and flag frames where ML energy/force error exceeds threshold; add those frames to training set.
 
