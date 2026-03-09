@@ -112,6 +112,7 @@ All code has a mock-calculation fallback for testing without PSI4.
 - **Coulomb matrix descriptor**: Simple upper-triangle of `Z_i*Z_j/r_ij` (off-diagonal) and `0.5*Z_i^2.4` (diagonal). Robust but not permutation-invariant — atom ordering must be consistent.
 - **Dipole surface separate from energy surface**: `DipoleSurface` in `ir_spectroscopy.py` is a separate KRR model predicting 3-component dipole vectors. The energy `MLPESTrainer` only predicts scalar energy.
 - **Mock PSI4 fallback**: All direct MD functions detect PSI4 absence and return physically plausible mock values for testing.
+- **CRITICAL — PSI4 version consistency**: ALL training data, NM displacement energies, and validation energies must be computed with the SAME PSI4 installation. The Dec 2025 training data gave energies ~8.5 kcal/mol lower than PSI4 1.10 (current). Mixing data from different PSI4 versions causes systematic offsets that make ML-PES validation fail catastrophically (15–40 kcal/mol errors). When starting fresh or after PSI4 upgrades, regenerate ALL training data with the current PSI4. The safe pipeline is: `generate_nm_training.py` (NM + PSI4 MD, all fresh) → `two_phase_workflow.py` (validation).
 
 ## Planned Features (In Progress / Next Steps)
 
@@ -129,8 +130,21 @@ The following extensions were scoped by the user and should be built consistentl
 
 ## Output Conventions
 
-- Training data: `outputs/training_with_dipoles_*/`
-- Trained models: `outputs/refined_*/mlpes_model_*.pkl`
+- Training data: `outputs/nm_training_YYYYMMDD_HHMMSS/combined_training_data.npz`
+- NM displacements: `outputs/nm_training_.../nm_displacements.npz`
+- PSI4 MD data: `outputs/nm_training_.../multi_T_md.npz`
+- Clean PSI4 1.10 training data: `outputs/clean_psi410_*/training_data.npz`
+- Trained models: `outputs/nm_training_.../mlpes_model_nm.pkl`
+- Phase 1 diagnostics: `outputs/diagnostic_phase1_*/phase1_snapshots.pkl`
+- Phase 2 validation: `outputs/diagnostic_phase2_*/validation_results.pkl`
 - MD trajectories: `md_output/`
 - IR spectra: `ir_spectrum_output/`
 - Workflow state: JSON files tracking completed steps and file paths
+
+## Current Best Model (March 2026)
+
+- **Model**: `outputs/nm_training_20260308_203606/mlpes_model_nm.pkl`
+- **Training data**: `outputs/clean_psi410_20260308_203552/training_data.npz`
+- **344 frames**: 72 NM displacements + 202 PSI4 MD + 70 Phase 2 validation frames
+- **Validation RMSE**: 0.64 kcal/mol mean, 1.23 kcal/mol max (all 20 frames < 2 kcal/mol)
+- **Note**: All data computed with PSI4 1.10; older training data (pre-2026-03-08) is incompatible

@@ -12,6 +12,9 @@ This is 10x faster and gives much better diagnostics!
 import sys
 import numpy as np
 from pathlib import Path
+
+# Ensure modules/ is in sys.path so pickle can reconstruct ml_pes objects
+sys.path.insert(0, str(Path(__file__).parent / 'modules'))
 from datetime import datetime
 import pickle
 import json
@@ -313,7 +316,7 @@ def compute_psi4_energy_forces_dipole(symbols, coords, method='B3LYP', basis='6-
     
     try:
         # Create molecule (relaxed validation for MD geometries)
-        mol = psi4.geometry(mol_str, tooclose=0.1)
+        mol = psi4.geometry(mol_str)
         
         # Settings
         psi4.set_options({
@@ -483,25 +486,24 @@ def run_phase2_validation(snapshot_data, ml_predictor, max_validate=50):
     failed_validations = 0
     
     for i, idx in enumerate(tqdm(indices, desc="Validations")):
-        snapshot = snapshots[idx]
-        coords = snapshot['coords']
-        
+        coords = snapshots[idx]
+
         # ML predictions
         e_ml = ml_predictor.predict_energy(coords)
         f_ml = ml_predictor.predict_forces(coords)
-        
+
         # PSI4 validation with dipoles
         e_psi4, f_psi4, dipole, error = compute_psi4_energy_forces_dipole(
             symbols, coords, method_str, basis_str
         )
-        
+
         if error:
             failed_validations += 1
             continue
-        
+
         # Store results
         results['valid_indices'].append(idx)
-        results['valid_steps'].append(snapshot['step'])
+        results['valid_steps'].append(snapshot_data['steps'][idx])
         results['coords_list'].append(coords)
         results['energies_ml'].append(e_ml)
         results['energies_psi4'].append(e_psi4)
@@ -530,7 +532,10 @@ def run_phase2_validation(snapshot_data, ml_predictor, max_validate=50):
     
     # Dipole statistics
     dipoles = results['dipoles_psi4']
-    valid_dipoles = dipoles[~np.all(dipoles == 0, axis=1)]
+    if dipoles.ndim < 2 or len(dipoles) == 0:
+        valid_dipoles = np.empty((0, 3))
+    else:
+        valid_dipoles = dipoles[~np.all(dipoles == 0, axis=1)]
     if len(valid_dipoles) > 0:
         mags = np.linalg.norm(valid_dipoles, axis=1)
         print(f"\n💧 Dipole moments collected: {len(valid_dipoles)}")
@@ -553,35 +558,35 @@ def run_phase2_validation(snapshot_data, ml_predictor, max_validate=50):
 def analyze_errors(results):
     """Comprehensive error analysis."""
     
-    if len(results['energy_errors']) == 0:
+    if len(results['errors_energy']) == 0:
         print("\n❌ No successful validations to analyze")
         return
-    
-    errors = results['energy_errors']
-    
+
+    errors = results['errors_energy']
+
     print("\n" + "=" * 80)
     print("  ERROR ANALYSIS")
     print("=" * 80)
-    
+
     print(f"\n📊 Energy errors:")
     print(f"   Mean: {errors.mean():.2f} kcal/mol")
     print(f"   Median: {np.median(errors):.2f} kcal/mol")
     print(f"   Std: {errors.std():.2f} kcal/mol")
     print(f"   Max: {errors.max():.2f} kcal/mol")
     print(f"   Min: {errors.min():.2f} kcal/mol")
-    
+
     # Categorize
     bins = [(0, 2), (2, 10), (10, 100), (100, np.inf)]
     labels = ['< 2', '2-10', '10-100', '> 100']
-    
+
     print(f"\n📊 Error distribution:")
     for (low, high), label in zip(bins, labels):
         count = ((errors >= low) & (errors < high)).sum()
         pct = count / len(errors) * 100
         print(f"   {label} kcal/mol: {count} ({pct:.1f}%)")
-    
-    if results['force_errors'].size > 0:
-        f_errors = results['force_errors']
+
+    f_errors = results['errors_forces']
+    if f_errors.size > 0:
         print(f"\n📊 Force errors:")
         print(f"   Mean: {f_errors.mean():.2f} kcal/mol/Å")
         print(f"   Max: {f_errors.max():.2f} kcal/mol/Å")
@@ -600,7 +605,7 @@ def refine_with_high_error_points(snapshot_data, validation_results, ml_predicto
     This implements adaptive refinement based on observed MD errors.
     """
     
-    if len(validation_results['energy_errors']) == 0:
+    if len(validation_results['errors_energy']) == 0:
         print("\n❌ No validation results to refine with")
         return None
     
@@ -608,18 +613,18 @@ def refine_with_high_error_points(snapshot_data, validation_results, ml_predicto
     print("  REFINEMENT WITH HIGH-ERROR POINTS")
     print("=" * 80)
     
-    energy_errors = validation_results['energy_errors']
+    errors_energy = validation_results['errors_energy']
     valid_indices = validation_results['valid_indices']
     
     print(f"\n📊 Refinement options:")
-    print(f"   Available points: {len(energy_errors)}")
-    print(f"   Error range: {energy_errors.min():.2f} - {energy_errors.max():.2f} kcal/mol")
+    print(f"   Available points: {len(errors_energy)}")
+    print(f"   Error range: {errors_energy.min():.2f} - {errors_energy.max():.2f} kcal/mol")
     
     # Categorize errors
-    low_error = (energy_errors < 2.0).sum()
-    medium_error = ((energy_errors >= 2.0) & (energy_errors < 10.0)).sum()
-    high_error = ((energy_errors >= 10.0) & (energy_errors < 50.0)).sum()
-    huge_error = (energy_errors >= 50.0).sum()
+    low_error = (errors_energy < 2.0).sum()
+    medium_error = ((errors_energy >= 2.0) & (errors_energy < 10.0)).sum()
+    high_error = ((errors_energy >= 10.0) & (errors_energy < 50.0)).sum()
+    huge_error = (errors_energy >= 50.0).sum()
     
     print(f"\n   Error distribution:")
     print(f"   • < 2 kcal/mol: {low_error}")
@@ -628,7 +633,7 @@ def refine_with_high_error_points(snapshot_data, validation_results, ml_predicto
     print(f"   • > 50 kcal/mol: {huge_error}")
     
     print(f"\n💡 Refinement strategies:")
-    print(f"   [1] Add ALL validated points ({len(energy_errors)} points)")
+    print(f"   [1] Add ALL validated points ({len(errors_energy)} points)")
     print(f"       → Maximum data, best coverage")
     print(f"   [2] Add medium + high + huge errors ({medium_error + high_error + huge_error} points, ≥2 kcal/mol)")
     print(f"       → Good balance, skip very accurate regions")
@@ -647,24 +652,24 @@ def refine_with_high_error_points(snapshot_data, validation_results, ml_predicto
     
     # Select points based on choice
     if choice == '1':
-        mask = np.ones(len(energy_errors), dtype=bool)
+        mask = np.ones(len(errors_energy), dtype=bool)
         threshold_name = "all points"
     elif choice == '2':
-        mask = energy_errors >= 2.0
+        mask = errors_energy >= 2.0
         threshold_name = "≥2 kcal/mol"
     elif choice == '3':
-        mask = energy_errors >= 10.0
+        mask = errors_energy >= 10.0
         threshold_name = "≥10 kcal/mol"
     elif choice == '4':
-        mask = energy_errors >= 50.0
+        mask = errors_energy >= 50.0
         threshold_name = "≥50 kcal/mol"
     elif choice == '5':
         threshold = float(input("   Enter error threshold (kcal/mol): ").strip())
-        mask = energy_errors >= threshold
+        mask = errors_energy >= threshold
         threshold_name = f"≥{threshold} kcal/mol"
     else:
         print("   Invalid choice, using option [2]")
-        mask = energy_errors >= 2.0
+        mask = errors_energy >= 2.0
         threshold_name = "≥2 kcal/mol"
     
     n_points = mask.sum()
@@ -680,7 +685,7 @@ def refine_with_high_error_points(snapshot_data, validation_results, ml_predicto
     selected_energies = validation_results['energies_psi4'][mask]
     selected_forces = np.array(validation_results['forces_psi4'])[mask]
     selected_dipoles = validation_results['dipoles_psi4'][mask]  # NEW!
-    selected_errors = energy_errors[mask]    
+    selected_errors = errors_energy[mask]    
     print(f"   Mean error of selected points: {selected_errors.mean():.2f} kcal/mol")
     print(f"   Max error of selected points: {selected_errors.max():.2f} kcal/mol")
     
@@ -884,7 +889,7 @@ def refine_with_high_error_points(snapshot_data, validation_results, ml_predicto
 def create_diagnostic_plots(snapshot_data, results, output_dir):
     """Create comprehensive diagnostic plots."""
     
-    if len(results['energy_errors']) == 0:
+    if len(results['errors_energy']) == 0:
         print("\n⚠️  No data to plot")
         return None
     
@@ -900,7 +905,7 @@ def create_diagnostic_plots(snapshot_data, results, output_dir):
     valid_steps = results['valid_steps']
     energies_ml = results['energies_ml'] * 627.509
     energies_psi4 = results['energies_psi4'] * 627.509
-    energy_errors = results['energy_errors']
+    errors_energy = results['errors_energy']
     
     # 1. Energy trajectory
     ax1 = fig.add_subplot(gs[0, 0])
@@ -914,7 +919,7 @@ def create_diagnostic_plots(snapshot_data, results, output_dir):
     
     # 2. Errors over time
     ax2 = fig.add_subplot(gs[0, 1])
-    ax2.semilogy(valid_steps, energy_errors, 'go-', linewidth=1.5, markersize=5, alpha=0.7)
+    ax2.semilogy(valid_steps, errors_energy, 'go-', linewidth=1.5, markersize=5, alpha=0.7)
     ax2.axhline(2, color='orange', linestyle='--', label='2 kcal/mol', linewidth=2, alpha=0.7)
     ax2.axhline(10, color='red', linestyle='--', label='10 kcal/mol', linewidth=2, alpha=0.7)
     ax2.set_xlabel('MD Step', fontsize=11)
@@ -925,13 +930,13 @@ def create_diagnostic_plots(snapshot_data, results, output_dir):
     
     # 3. Error histogram
     ax3 = fig.add_subplot(gs[0, 2])
-    errors_plot = energy_errors[energy_errors < 100]
+    errors_plot = errors_energy[errors_energy < 100]
     if len(errors_plot) > 0:
         ax3.hist(errors_plot, bins=25, alpha=0.7, color='green', edgecolor='black')
-        ax3.axvline(energy_errors.mean(), color='blue', linestyle='--', 
-                    label=f'Mean: {energy_errors.mean():.1f}', linewidth=2)
-        ax3.axvline(np.median(energy_errors), color='red', linestyle='--',
-                    label=f'Median: {np.median(energy_errors):.1f}', linewidth=2)
+        ax3.axvline(errors_energy.mean(), color='blue', linestyle='--', 
+                    label=f'Mean: {errors_energy.mean():.1f}', linewidth=2)
+        ax3.axvline(np.median(errors_energy), color='red', linestyle='--',
+                    label=f'Median: {np.median(errors_energy):.1f}', linewidth=2)
     ax3.set_xlabel('Energy Error (kcal/mol)', fontsize=11)
     ax3.set_ylabel('Count', fontsize=11)
     ax3.set_title('Error Distribution (< 100 shown)', fontsize=13, fontweight='bold')
@@ -940,9 +945,9 @@ def create_diagnostic_plots(snapshot_data, results, output_dir):
     
     # 4. Energy parity
     ax4 = fig.add_subplot(gs[1, 0])
-    scatter = ax4.scatter(energies_psi4, energies_ml, c=energy_errors, 
+    scatter = ax4.scatter(energies_psi4, energies_ml, c=errors_energy, 
                          cmap='RdYlGn_r', s=50, alpha=0.6, 
-                         norm=plt.matplotlib.colors.LogNorm(vmin=max(energy_errors.min(), 0.1)))
+                         norm=plt.matplotlib.colors.LogNorm(vmin=max(errors_energy.min(), 0.1)))
     min_e = min(energies_psi4.min(), energies_ml.min())
     max_e = max(energies_psi4.max(), energies_ml.max())
     ax4.plot([min_e, max_e], [min_e, max_e], 'k--', linewidth=2, alpha=0.5)
@@ -955,9 +960,9 @@ def create_diagnostic_plots(snapshot_data, results, output_dir):
     # 5. Trajectory position vs error
     ax5 = fig.add_subplot(gs[1, 1])
     traj_frac = np.array(valid_steps) / max(all_steps)
-    ax5.scatter(traj_frac * 100, energy_errors, c=energy_errors, 
+    ax5.scatter(traj_frac * 100, errors_energy, c=errors_energy, 
                 cmap='RdYlGn_r', s=50, alpha=0.6,
-                norm=plt.matplotlib.colors.LogNorm(vmin=max(energy_errors.min(), 0.1)))
+                norm=plt.matplotlib.colors.LogNorm(vmin=max(errors_energy.min(), 0.1)))
     ax5.set_xlabel('Trajectory Progress (%)', fontsize=11)
     ax5.set_ylabel('Energy Error (kcal/mol, log scale)', fontsize=11)
     ax5.set_title('Where Does ML-PES Struggle?', fontsize=13, fontweight='bold')
@@ -978,17 +983,17 @@ Phase 1 (Fast MD):
   
 Phase 2 (Validation):
   • Validated: {len(valid_steps)} snapshots
-  • Failed: {len(results['failed_indices'])}
+  • Successful: {len(results['valid_indices'])}
   
 Error Analysis:
-  • Mean: {energy_errors.mean():.2f} kcal/mol
-  • Median: {np.median(energy_errors):.2f} kcal/mol
-  • Max: {energy_errors.max():.2f} kcal/mol
+  • Mean: {errors_energy.mean():.2f} kcal/mol
+  • Median: {np.median(errors_energy):.2f} kcal/mol
+  • Max: {errors_energy.max():.2f} kcal/mol
   
 Quality Assessment:
 """
     
-    mean_err = energy_errors.mean()
+    mean_err = errors_energy.mean()
     if mean_err < 2:
         summary_text += "  ✅ EXCELLENT (<2 kcal/mol)\n  Ready for production!"
     elif mean_err < 5:
@@ -1001,7 +1006,7 @@ Quality Assessment:
     ax6.text(0.1, 0.5, summary_text, fontsize=10, family='monospace',
              verticalalignment='center', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
     
-    plt.suptitle(f'Two-Phase Diagnostic Results - Mean Error: {energy_errors.mean():.2f} kcal/mol',
+    plt.suptitle(f'Two-Phase Diagnostic Results - Mean Error: {errors_energy.mean():.2f} kcal/mol',
                  fontsize=16, fontweight='bold')
     
     plot_path = output_dir / 'diagnostic_plots.png'
@@ -1019,10 +1024,10 @@ Quality Assessment:
 def provide_recommendations(results, snapshot_data):
     """Provide specific recommendations based on results."""
     
-    if len(results['energy_errors']) == 0:
+    if len(results['errors_energy']) == 0:
         return
     
-    errors = results['energy_errors']
+    errors = results['errors_energy']
     mean_err = errors.mean()
     max_err = errors.max()
     high_err_count = (errors > 10).sum()
@@ -1203,17 +1208,17 @@ def main():
         return
     
     # PHASE 2
-    results = run_phase2_validation(snapshot_data, ml_predictor, max_validate=args.validate_max)
-    
+    results, phase2_dir = run_phase2_validation(snapshot_data, ml_predictor, max_validate=args.validate_max)
+
     if results is None:
         return
-    
+
     # Save results
     results_file = output_dir / 'phase2_results.pkl'
     with open(results_file, 'wb') as f:
         pickle.dump(results, f)
     print(f"\n💾 Saved: {results_file}")
-    
+
     # ANALYSIS
     mean_err, max_err = analyze_errors(results)
     

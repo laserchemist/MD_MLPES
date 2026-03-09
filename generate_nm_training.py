@@ -47,7 +47,11 @@ from pathlib import Path
 import numpy as np
 
 # ── path setup ────────────────────────────────────────────────────────────────
-sys.path.insert(0, str(Path(__file__).parent / 'modules'))
+# Add repo root so modules/ can be imported as a package (required for
+# relative imports inside modules/direct_md.py etc.)
+REPO_ROOT = Path(__file__).parent
+sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT / 'modules'))
 
 logging.basicConfig(level=logging.WARNING, format='%(levelname)s:%(name)s:%(message)s')
 logger = logging.getLogger(__name__)
@@ -67,9 +71,13 @@ from normal_modes import (
     generate_nm_displacements, ATOMIC_MASSES, FREQ_CONV,
 )
 from data_formats import TrajectoryData, save_trajectory, load_trajectory
-from direct_md import DirectMDConfig, DirectMDRunner, initialize_velocities
-from test_molecules import TestMolecule
 from ml_pes import MLPESConfig, MLPESTrainer
+
+# MD imports are lazy — only loaded when --no-md is not set
+def _import_md():
+    from modules.direct_md import DirectMDConfig, DirectMDRunner
+    from modules.test_molecules import TestMolecule
+    return DirectMDConfig, DirectMDRunner, TestMolecule
 
 HARTREE_TO_KCAL  = 627.509474
 ANGSTROM_TO_BOHR = 1.88972612456
@@ -249,6 +257,8 @@ def run_multi_temp_md(symbols, coords_eq, method, basis,
     print("  MULTI-TEMPERATURE PSI4 MD")
     print("=" * 70)
 
+    DirectMDConfig, DirectMDRunner, TestMolecule = _import_md()
+
     # Build a TestMolecule for DirectMDRunner
     formula = ''.join(
         f"{s}{symbols.count(s)}" if symbols.count(s) > 1 else s
@@ -280,11 +290,7 @@ def run_multi_temp_md(symbols, coords_eq, method, basis,
             save_dipole       = True,
         )
         runner = DirectMDRunner(config)
-
-        # Use a fresh molecule with randomised velocities each temperature
-        import tempfile
-        with tempfile.TemporaryDirectory() as tmpdir:
-            traj = runner.run(mol)          # DirectMDRunner.run returns TrajectoryData
+        traj = runner.run(mol)              # DirectMDRunner.run returns TrajectoryData
 
         if traj is None or traj.n_frames == 0:
             print(f"   ⚠️  No frames from {T} K run")
