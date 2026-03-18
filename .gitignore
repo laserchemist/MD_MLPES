@@ -34,3 +34,15 @@ Thumbs.db
 
 # Claude Code (optional — omit if you want to share these with teammates)
 # .claude/
+
+# PSI4 scratch / timing files
+timer.dat
+psi.*.clean
+psi4_md.out
+psi4_output.dat
+
+# Large binary outputs (models, trajectories, training data)
+# Keep figures (*.png) — small and document results
+outputs/**
+!outputs/**/
+!outputs/**/*.png
