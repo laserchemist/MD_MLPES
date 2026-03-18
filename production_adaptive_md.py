@@ -453,6 +453,12 @@ def adaptive_loop(model_path: str,
     print(f"  Final training data : {current_data}")
     print(f"  Summary saved       : {output_dir / 'summary.json'}")
 
+    # Generate figure
+    try:
+        plot_production_run(output_dir, summary)
+    except Exception as exc:
+        print(f"\n  ⚠️  Figure generation failed: {exc}")
+
     if summary['converged']:
         print(f"\n  ✅ Converged in {len(history)} cycle(s)!")
     else:
@@ -466,6 +472,211 @@ def adaptive_loop(model_path: str,
         print(f"        --training-data {current_data} \\")
         print(f"        --steps {n_steps} --temp {temperature} "
               f"--max-cycles {max_cycles}")
+
+
+# ==============================================================================
+# Figure generation
+# ==============================================================================
+
+def plot_production_run(output_dir: Path, summary: dict) -> Path:
+    """
+    Create a comprehensive diagnostic figure for the adaptive production run.
+
+    Panels:
+      Row 1 (trajectory):  ML energy trace | ML vs PSI4 parity | error vs time
+      Row 2 (statistics):  error histogram  | force error dist  | cycle summary
+
+    Works for any number of cycles (1 = converged immediately, N = with refinement).
+    Saves as <output_dir>/production_run_figure.png and returns the path.
+    """
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    import matplotlib.gridspec as gridspec
+
+    history = summary['history']
+    n_cycles = len(history)
+    params   = summary['parameters']
+    timestep = params['timestep']
+    snap_every = params['snapshot_every']
+
+    # Load per-cycle data
+    cycle_snaps = []
+    cycle_vals  = []
+    for h in history:
+        c = int(h['cycle'])
+        cdir = output_dir / f"cycle_{c:02d}"
+        with open(cdir / 'snapshots.pkl', 'rb') as fh:
+            cycle_snaps.append(pickle.load(fh))
+        with open(cdir / 'validation.pkl', 'rb') as fh:
+            cycle_vals.append(pickle.load(fh))
+
+    # Use the LAST cycle for trajectory panels
+    snaps = cycle_snaps[-1]
+    val   = cycle_vals[-1]
+
+    steps     = np.array(snaps['steps'])
+    time_fs   = steps * timestep
+    ml_e_Ha   = snaps['energies_ml']
+    psi4_e_Ha = val['energies_psi4']
+    ml_e2_Ha  = val['energies_ml']
+    errors    = val['errors_energy']                    # kcal/mol
+
+    # Relative energies (kcal/mol, relative to PSI4 min)
+    e_ref   = psi4_e_Ha.min()
+    ml_rel  = (ml_e_Ha  - e_ref) * HARTREE_TO_KCAL
+    psi4_rel = (psi4_e_Ha - e_ref) * HARTREE_TO_KCAL
+    ml2_rel  = (ml_e2_Ha  - e_ref) * HARTREE_TO_KCAL
+
+    # Force magnitudes (kcal/mol/Å)
+    f_psi4 = val['forces_psi4']                        # (N, n_atoms, 3) Hartree/Å
+    f_mag  = np.linalg.norm(
+        f_psi4.reshape(len(f_psi4), -1), axis=1
+    ) * HARTREE_TO_KCAL
+
+    # ------------------------------------------------------------------
+    fig = plt.figure(figsize=(15, 9))
+    fig.patch.set_facecolor('#f8f9fa')
+    gs = gridspec.GridSpec(2, 3, figure=fig,
+                           hspace=0.42, wspace=0.35,
+                           left=0.07, right=0.97, top=0.91, bottom=0.08)
+
+    cycle_label = f"Cycle {history[-1]['cycle']}"
+    title_suffix = f"  |  {params['n_steps']} steps · {params['temperature']:.0f} K · " \
+                   f"{params['method']}/{params['basis']}"
+    fig.suptitle(f"Adaptive ML-PES MD — Production Run{title_suffix}",
+                 fontsize=13, fontweight='bold', y=0.97)
+
+    # ── Panel 1: ML energy trace ──────────────────────────────────────
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax1.plot(time_fs, ml_rel, color='steelblue', lw=1.2, label='ML-PES')
+    ax1.scatter(time_fs, ml2_rel, s=14, color='steelblue', zorder=3,
+                label='ML @ validated frames')
+    ax1.scatter(time_fs, psi4_rel, s=14, marker='D', color='firebrick',
+                zorder=4, label='PSI4')
+    ax1.set_xlabel('Time (fs)')
+    ax1.set_ylabel('Energy (kcal/mol, relative)')
+    ax1.set_title(f'Trajectory — {cycle_label}', fontsize=10)
+    ax1.legend(fontsize=7, loc='upper right')
+    ax1.grid(True, alpha=0.3)
+
+    # ── Panel 2: Parity plot ──────────────────────────────────────────
+    ax2 = fig.add_subplot(gs[0, 1])
+    lo = min(psi4_rel.min(), ml2_rel.min()) - 0.5
+    hi = max(psi4_rel.max(), ml2_rel.max()) + 0.5
+    ax2.plot([lo, hi], [lo, hi], 'k--', lw=1, alpha=0.5, label='Perfect')
+    sc = ax2.scatter(psi4_rel, ml2_rel, c=errors, cmap='RdYlGn_r',
+                     vmin=0, vmax=max(2.0, errors.max()), s=30, zorder=3)
+    cb = fig.colorbar(sc, ax=ax2, shrink=0.85)
+    cb.set_label('Error (kcal/mol)', fontsize=8)
+    ax2.set_xlabel('PSI4 energy (kcal/mol, relative)')
+    ax2.set_ylabel('ML-PES energy (kcal/mol, relative)')
+    ax2.set_title(f'ML vs PSI4 Parity — {cycle_label}', fontsize=10)
+    ax2.set_xlim(lo, hi); ax2.set_ylim(lo, hi)
+    ax2.grid(True, alpha=0.3)
+
+    # ── Panel 3: Error vs time ────────────────────────────────────────
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax3.fill_between(time_fs, 0, errors, alpha=0.3, color='tomato')
+    ax3.plot(time_fs, errors, color='tomato', lw=1.2)
+    ax3.axhline(params['error_threshold'], color='navy', lw=1.2,
+                ls='--', label=f"Threshold ({params['error_threshold']} kcal/mol)")
+    ax3.set_xlabel('Time (fs)')
+    ax3.set_ylabel('|ML − PSI4| (kcal/mol)')
+    ax3.set_title(f'Energy Error vs Time — {cycle_label}', fontsize=10)
+    ax3.set_ylim(bottom=0)
+    ax3.legend(fontsize=8)
+    ax3.grid(True, alpha=0.3)
+
+    # ── Panel 4: Error histogram ──────────────────────────────────────
+    ax4 = fig.add_subplot(gs[1, 0])
+    all_errors = np.concatenate([cv['errors_energy'] for cv in cycle_vals])
+    bins = np.linspace(0, max(all_errors.max(), params['error_threshold'] * 1.5), 30)
+    colors = plt.cm.tab10(np.linspace(0, 1, n_cycles))
+    for ci, (cv, col) in enumerate(zip(cycle_vals, colors)):
+        ax4.hist(cv['errors_energy'], bins=bins, alpha=0.55, color=col,
+                 label=f"Cycle {ci}", edgecolor='white', lw=0.5)
+    ax4.axvline(params['error_threshold'], color='navy', lw=1.5,
+                ls='--', label='Threshold')
+    ax4.set_xlabel('|ML − PSI4| (kcal/mol)')
+    ax4.set_ylabel('Count')
+    ax4.set_title('Error Distribution (all cycles)', fontsize=10)
+    ax4.legend(fontsize=8)
+    ax4.grid(True, alpha=0.3)
+
+    # ── Panel 5: Force magnitude distribution ────────────────────────
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax5.hist(f_mag, bins=20, color='mediumseagreen', edgecolor='white',
+             alpha=0.8, lw=0.5)
+    ax5.set_xlabel('PSI4 force magnitude (kcal/mol/Å)')
+    ax5.set_ylabel('Count')
+    ax5.set_title(f'PSI4 Force Magnitudes — {cycle_label}', fontsize=10)
+    ax5.grid(True, alpha=0.3)
+    ax5.axvline(np.median(f_mag), color='darkgreen', lw=1.5,
+                ls='--', label=f'Median {np.median(f_mag):.1f}')
+    ax5.legend(fontsize=8)
+
+    # ── Panel 6: Cycle summary ────────────────────────────────────────
+    ax6 = fig.add_subplot(gs[1, 2])
+    if n_cycles > 1:
+        cycles  = [h['cycle'] for h in history]
+        means   = [h['mean_error'] for h in history]
+        maxes   = [h['max_error'] for h in history]
+        n_train = []
+        for ci, h in enumerate(history):
+            cdir = output_dir / f"cycle_{ci:02d}"
+            aug  = cdir / 'augmented_training_data.npz'
+            if aug.exists():
+                d = np.load(str(aug), allow_pickle=True)
+                n_train.append(len(d['energies']))
+            else:
+                n_train.append(None)
+
+        ax6.plot(cycles, means, 'o-', color='steelblue', label='Mean error', lw=1.5)
+        ax6.plot(cycles, maxes, 's--', color='tomato', label='Max error', lw=1.5)
+        ax6.axhline(params['error_threshold'], color='navy', lw=1,
+                    ls=':', label='Threshold')
+        ax6.set_xlabel('Cycle')
+        ax6.set_ylabel('Error (kcal/mol)')
+        ax6.set_title('Convergence Across Cycles', fontsize=10)
+        ax6.legend(fontsize=8)
+        ax6.grid(True, alpha=0.3)
+        ax6.set_xticks(cycles)
+    else:
+        # Single cycle: show text summary box
+        h = history[0]
+        converged = summary['converged']
+        status = "CONVERGED" if converged else "NOT YET CONVERGED"
+        txt = (
+            f"Run Summary\n"
+            f"{'─' * 26}\n"
+            f"Cycles completed : {n_cycles}\n"
+            f"Status           : {status}\n\n"
+            f"MD trajectory\n"
+            f"  Steps    : {params['n_steps']}\n"
+            f"  Time     : {params['n_steps']*timestep:.0f} fs\n"
+            f"  Temp     : {params['temperature']:.0f} K\n"
+            f"  Snapshots: {h['n_valid']}\n\n"
+            f"Final errors\n"
+            f"  Mean  : {h['mean_error']:.3f} kcal/mol\n"
+            f"  Std   : {h['std_error']:.3f} kcal/mol\n"
+            f"  Max   : {h['max_error']:.3f} kcal/mol\n"
+            f"  > {params['error_threshold']:.1f} : {h['n_above_threshold']} frames\n\n"
+            f"QM level : {params['method']}/{params['basis']}"
+        )
+        ax6.text(0.05, 0.95, txt, transform=ax6.transAxes,
+                 fontsize=9, verticalalignment='top', fontfamily='monospace',
+                 bbox=dict(boxstyle='round,pad=0.5', facecolor='lightyellow',
+                           edgecolor='goldenrod', alpha=0.9))
+        ax6.axis('off')
+        ax6.set_title('Run Summary', fontsize=10)
+
+    # Save
+    fig_path = output_dir / 'production_run_figure.png'
+    fig.savefig(str(fig_path), dpi=180, bbox_inches='tight')
+    plt.close(fig)
+    print(f"\n  Figure saved: {fig_path}")
+    return fig_path
 
 
 # ==============================================================================
