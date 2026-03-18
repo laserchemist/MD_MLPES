@@ -67,6 +67,25 @@ python3 production_adaptive_md.py \
 
 Runs 2000-step (1 ps) ML-MD, validates 100 snapshots with PSI4, and refines automatically if any error exceeds 2 kcal/mol. Saves a diagnostic figure after every run.
 
+### 4. IR spectrum via dipole ACF
+
+```bash
+python3 ir_md_spectrum.py \
+    --model outputs/nm_training_20260308_203606/mlpes_model_nm.pkl \
+    --training-data outputs/clean_psi410_20260308_203552/training_data.npz \
+    --steps 20000 --temp 300 --timestep 0.5 --save-every 1
+```
+
+Full workflow:
+1. Train a KRR ML dipole surface on PSI4 dipoles from the training data.
+2. Compute the ML-PES Hessian numerically (FD of forces) → normal modes and ZPE per mode.
+3. Run dense ML-MD (every step saved) with **ZPE-floor initialisation**: each normal mode starts with kinetic energy ≥ its zero-point energy ½ħω, so every mode is physically excited regardless of temperature.
+4. Predict dipoles along the trajectory with the ML dipole surface.
+5. Compute the dipole autocorrelation function (ACF) and FFT → I(ω) ∝ ω²|FT[C(t)]|².
+6. Save: `ir_spectrum.csv`, `ir_spectrum_clean.png` (publication figure), `ir_spectrum_figure.png` (6-panel diagnostic), `ir_summary.json`.
+
+Add `--no-zpe-init` to use plain Maxwell-Boltzmann initialisation instead.
+
 ---
 
 ## Repository Structure
@@ -84,6 +103,7 @@ modules/                     Core library
 generate_nm_training.py      Generate training data (NM + PSI4 MD) + retrain
 two_phase_workflow.py        Phase 1: ML-MD  |  Phase 2: PSI4 validation
 production_adaptive_md.py    Production MD with automatic adaptive refinement
+ir_md_spectrum.py            ML-MD → ML dipole surface → dipole ACF → IR spectrum
 
 outputs/
   nm_training_TIMESTAMP/     Training data + trained model
@@ -134,11 +154,20 @@ Conversion constants live in `modules/direct_md.py` — do not redefine elsewher
 
 ---
 
+## IR Spectrum Output
+
+`ir_md_spectrum.py` produces two figures per run:
+
+| Figure | Content |
+|--------|---------|
+| `ir_spectrum_clean.png` | Publication-quality IR spectrum with harmonic NM reference lines (blue dashes) and labelled peaks; dipole ACF decay in lower panel |
+| `ir_spectrum_figure.png` | 6-panel diagnostic: energy trajectory, dipole components, ACF, IR spectrum, dipole parity plot, run summary with NM frequency table |
+
+---
+
 ## Planned Extensions
 
-- **ML-PES quality via normal mode comparison** — compute frequencies on ML surface, compare to PSI4
 - **Analytical forces** — KRR gradient w.r.t. coordinates via kernel gradient
-- **IR spectra** — dipole ACF along ML-MD trajectories using `ir_spectroscopy.py`
 - **Multi-state PES family** — `PESFamily` container for multiple electronic states
 
 ---
