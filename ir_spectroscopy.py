@@ -109,8 +109,9 @@ class DipoleSurface:
         
         return descriptor
     
-    def train(self, coords: np.ndarray, dipoles: np.ndarray, 
-              test_size: float = 0.2, verbose: bool = True) -> Dict:
+    def train(self, coords: np.ndarray, dipoles: np.ndarray,
+              test_size: float = 0.2, verbose: bool = True,
+              n_jobs: int = 1) -> Dict:
         """
         Train ML model for dipole prediction.
         
@@ -169,19 +170,26 @@ class DipoleSurface:
         # Hyperparameter tuning
         if verbose:
             print(f"\n🔍 Hyperparameter optimization...")
-        
+
         param_grid = {
             'kernel': ['rbf'],
             'gamma': [0.001, 0.01, 0.1, 1.0],
             'alpha': [1e-5, 1e-4, 1e-3, 1e-2]
         }
-        
+
+        # Hard cap: never use more than 2 parallel jobs.
+        # On Apple Silicon (unified memory), n_jobs=-1 with BLAS-threaded KRR
+        # spawns one process per core; combined CPU/memory saturation caused a
+        # kernel watchdog timeout panic (94 s with no checkins).
+        # The dataset is small (<<1000 samples) so parallelism provides no
+        # meaningful speedup over the forking overhead anyway.
+        safe_jobs = min(n_jobs, 2) if n_jobs > 0 else 1
         grid_search = GridSearchCV(
             KernelRidge(),
             param_grid,
             cv=3,
             scoring='neg_mean_squared_error',
-            n_jobs=-1,
+            n_jobs=safe_jobs,
             verbose=0
         )
         
