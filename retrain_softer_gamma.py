@@ -73,21 +73,17 @@ def train_model(training_data_path: str, gamma: float,
     trainer = MLPESTrainer(config)
     traj    = load_trajectory(training_data_path)
 
-    history = trainer.train(
-        traj.symbols,
-        traj.coordinates,
-        traj.energies,
-        verbose=True,
-    )
+    trainer.train(traj)
 
     if output_path:
         trainer.save(output_path)
 
+    history = trainer.training_history or {}
     return {
         'model_path':  output_path,
         'gamma':       history.get('best_gamma', gamma),
-        'best_alpha':  history.get('best_alpha'),
-        'rmse_kcal':   history.get('best_rmse_kcal'),
+        'best_alpha':  history.get('best_alpha', config.alpha),
+        'rmse_kcal':   history.get('best_rmse_kcal', float('nan')),
         'trainer':     trainer,
         'symbols':     traj.symbols,
         'coords_min_energy': traj.coordinates[np.argmin(traj.energies)],
