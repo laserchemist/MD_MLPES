@@ -58,6 +58,25 @@ ATOMIC_MASSES = {
     'O': 15.999,  'F': 18.9984,   'S': 32.06,  'Cl': 35.453,
 }
 
+# Lookup table: Hill-notation formula → common name
+_MOLECULE_NAMES: dict = {
+    'CH2O2':  'Criegee intermediate (CH₂OO)',
+    'CH2O':   'formaldehyde',
+    'H2O':    'water',
+    'H2O2':   'hydrogen peroxide',
+    'CH4':    'methane',
+    'CO2':    'carbon dioxide',
+    'NH3':    'ammonia',
+    'C2H4':   'ethylene',
+    'C2H2':   'acetylene',
+    'C2H6':   'ethane',
+    'C6H6':   'benzene',
+    'CH3OH':  'methanol',
+    'HNO3':   'nitric acid',
+    'O3':     'ozone',
+    'SO2':    'sulfur dioxide',
+}
+
 # -------------------------------------------------------------------------
 # Imports
 # -------------------------------------------------------------------------
@@ -65,6 +84,106 @@ from data_formats import TrajectoryData, load_trajectory
 from ml_pes import MLPESTrainer
 from ir_spectroscopy import DipoleSurface, IRSpectrumCalculator
 from normal_modes import compute_normal_modes
+
+
+# =============================================================================
+# Molecule identification
+# =============================================================================
+
+def _hill_formula(symbols: list) -> str:
+    """Return Hill-notation stoichiometry string (C, H first; rest alphabetical)."""
+    from collections import Counter
+    import re
+    counts = Counter(str(s) for s in symbols)
+    parts = []
+    for el in ['C', 'H']:
+        if el in counts:
+            n = counts.pop(el)
+            parts.append(el if n == 1 else f'{el}{n}')
+    for el in sorted(counts):
+        n = counts[el]
+        parts.append(el if n == 1 else f'{el}{n}')
+    return ''.join(parts)
+
+
+def _unicode_subscripts(hill: str) -> str:
+    """'CH2O2' → 'CH₂O₂' using Unicode subscript digits."""
+    import re
+    sub = str.maketrans('0123456789', '₀₁₂₃₄₅₆₇₈₉')
+    return re.sub(r'\d+', lambda m: m.group().translate(sub), hill)
+
+
+def identify_molecule(symbols: list, coords: np.ndarray | None = None) -> dict:
+    """
+    Identify molecule from atomic symbols (and optionally coordinates).
+
+    Returns a dict:
+        hill    : 'CH2O2'
+        unicode : 'CH₂O₂'
+        name    : 'Criegee intermediate (CH₂OO)'  (or hill if unknown)
+        label   : 'CH₂O₂ – Criegee intermediate (CH₂OO)'  for figure titles
+        n_atoms : 5
+    """
+    hill = _hill_formula(list(symbols))
+    uni  = _unicode_subscripts(hill)
+    name = _MOLECULE_NAMES.get(hill, hill)
+    if name == hill:
+        label = uni
+    else:
+        label = f'{uni}  –  {name}'
+    return {
+        'hill':    hill,
+        'unicode': uni,
+        'name':    name,
+        'label':   label,
+        'n_atoms': len(symbols),
+    }
+
+
+# =============================================================================
+# XYZ trajectory output
+# =============================================================================
+
+def save_trajectory_xyz(coords_traj: np.ndarray,
+                         symbols: list,
+                         times_fs: np.ndarray,
+                         energies_ml: np.ndarray,
+                         output_path: str,
+                         mol_info: dict | None = None) -> None:
+    """
+    Save a multi-frame ML-MD trajectory to an extended .xyz file.
+
+    Each frame is written as:
+        <n_atoms>
+        Frame N  t=X.XXfs  E=Y.YYYYYYHa  molecule=FORMULA
+        El  x  y  z
+        ...
+
+    The comment line is compatible with ASE, OVITO, VMD, and Avogadro.
+
+    Args:
+        coords_traj  : (n_frames, n_atoms, 3) Angstrom
+        symbols      : list of atomic symbols, length n_atoms
+        times_fs     : (n_frames,) simulation time in fs
+        energies_ml  : (n_frames,) ML-PES energies in Hartree
+        output_path  : destination .xyz file path
+        mol_info     : dict from identify_molecule() — used for the comment line
+    """
+    n_frames = len(coords_traj)
+    n_atoms  = len(symbols)
+    mol_label = mol_info['hill'] if mol_info else ''.join(str(s) for s in symbols)
+
+    with open(output_path, 'w') as fh:
+        for i, (coords, t, e) in enumerate(zip(coords_traj, times_fs, energies_ml)):
+            fh.write(f'{n_atoms}\n')
+            fh.write(
+                f'Frame={i}  time={t:.3f}fs  energy={e:.8f}Ha  molecule={mol_label}\n'
+            )
+            for sym, (x, y, z) in zip(symbols, coords):
+                fh.write(f'{sym:<2s}  {x:16.10f}  {y:16.10f}  {z:16.10f}\n')
+
+    size_kb = Path(output_path).stat().st_size / 1024
+    print(f"\n  Trajectory XYZ     : {output_path}  ({n_frames} frames, {size_kb:.0f} KB)")
 
 
 # =============================================================================
@@ -176,7 +295,9 @@ def _zpe_initialized_velocities(masses_amu: np.ndarray,
                                  T: float,
                                  rng: np.random.Generator,
                                  eigvecs_mw: np.ndarray,
-                                 eigenvalues: np.ndarray) -> np.ndarray:
+                                 eigenvalues: np.ndarray,
+                                 min_freq_zpe: float = 50.0,
+                                 max_freq_zpe: float = 4000.0) -> np.ndarray:
     """
     Maxwell-Boltzmann velocities with a ZPE floor applied per normal mode.
 
@@ -199,6 +320,12 @@ def _zpe_initialized_velocities(masses_amu: np.ndarray,
         rng         : NumPy random generator
         eigvecs_mw  : (3N, n_vib) normalised mass-weighted eigenvectors
         eigenvalues : (n_vib,)    Hartree/(Bohr²·amu)
+        min_freq_zpe: skip ZPE boosting for modes below this value (cm⁻¹).
+                      Guards against near-zero/imaginary modes. Default 50.
+        max_freq_zpe: skip ZPE boosting for modes above this value (cm⁻¹).
+                      Guards against unphysical high-curvature KRR Hessian
+                      artifacts outside the training set hull. Default 4000
+                      (physical C-H stretch max ~3200 cm⁻¹ for CH₂OO).
 
     Returns:
         velocities (n_atoms, 3) Angstrom/fs
@@ -226,11 +353,17 @@ def _zpe_initialized_velocities(masses_amu: np.ndarray,
     # Minimum |Q̇_k|:  Q̇_k_min = sqrt(2·ZPE_k / AMU_TO_AU)
     Q_dot_new = Q_dot.copy()
     n_boosted = 0
+    n_skipped = 0
     for k in range(n_vib):
         ev = eigenvalues[k]
         if ev <= 0:
             continue
         omega_k_cm = np.sqrt(ev) * FREQ_CONV                # cm⁻¹
+        # Skip modes outside the physical frequency window — guards against
+        # unphysical KRR Hessian curvature beyond the training set hull.
+        if omega_k_cm < min_freq_zpe or omega_k_cm > max_freq_zpe:
+            n_skipped += 1
+            continue
         zpe_k      = 0.5 * omega_k_cm / CM_INV_PER_AU       # Hartree
         T_k        = 0.5 * AMU_TO_AU * Q_dot[k] ** 2        # Hartree (from MB)
         if T_k < zpe_k:
@@ -254,8 +387,9 @@ def _zpe_initialized_velocities(masses_amu: np.ndarray,
     total_p   = (masses_au[:, None] * v_au_new).sum(axis=0)
     v_au_new -= total_p / masses_au.sum()
 
-    if n_boosted:
-        print(f"  ZPE floor applied  : {n_boosted}/{n_vib} modes boosted")
+    if n_boosted or n_skipped:
+        print(f"  ZPE floor applied  : {n_boosted}/{n_vib} modes boosted, "
+              f"{n_skipped} skipped (outside [{min_freq_zpe:.0f}, {max_freq_zpe:.0f}] cm⁻¹)")
 
     return v_au_new * BOHR_TO_ANG / FS_TO_AU                # (n_atoms, 3) Ang/fs
 
@@ -276,7 +410,9 @@ def run_ml_md_dense(driver: MLPESDriver,
                     save_every: int = 1,
                     thermostat_tau: float = 100.0,
                     seed: int = 42,
-                    nm_data: tuple | None = None) -> dict:
+                    nm_data: tuple | None = None,
+                    min_freq_zpe: float = 50.0,
+                    max_freq_zpe: float = 4000.0) -> dict:
     """
     Velocity-Verlet ML-MD with Berendsen thermostat.
     Dense output: saves coordinates and ML energy every `save_every` steps.
@@ -308,7 +444,9 @@ def run_ml_md_dense(driver: MLPESDriver,
         # immediately quenched back to the classical k_BT equipartition value.
         thermostat_tau = max(thermostat_tau, 200.0)
         velocities = _zpe_initialized_velocities(
-            masses_amu, temperature, rng, eigvecs_mw, eigenvalues_nm
+            masses_amu, temperature, rng, eigvecs_mw, eigenvalues_nm,
+            min_freq_zpe=min_freq_zpe,
+            max_freq_zpe=max_freq_zpe,
         )
         T_init = _kin_temp(velocities, masses_amu)
         print(f"  ZPE init T_eff     : {T_init:.0f} K  (thermostat target: {temperature:.0f} K, "
@@ -680,11 +818,11 @@ def plot_ir_diagnostics(md_data: dict,
                            hspace=0.42, wspace=0.38,
                            left=0.07, right=0.97, top=0.92, bottom=0.07)
 
-    molecule = '–'.join(dict.fromkeys(symbols))
+    mol_info = identify_molecule(symbols)
     fig.suptitle(
-        f"ML-PES IR Spectrum  |  {molecule}  |  "
-        f"{temperature:.0f} K  |  {n_steps} steps × {timestep} fs",
-        fontsize=13, fontweight='bold', y=0.97,
+        f"ML-PES IR Spectrum  ·  {mol_info['label']}  ·  "
+        f"{temperature:.0f} K  ·  {n_steps} steps × {timestep} fs",
+        fontsize=12, fontweight='bold', y=0.97,
     )
 
     # ── [0,0] ML energy trajectory ────────────────────────────────────
@@ -800,7 +938,7 @@ def plot_ir_diagnostics(md_data: dict,
     txt = (
         f"Run Summary\n"
         f"{'─' * 28}\n"
-        f"Molecule   : {''.join(dict.fromkeys(symbols))}\n"
+        f"Molecule   : {mol_info['label']}\n"
         f"Temperature: {temperature:.0f} K  (ZPE floor init)\n"
         f"MD steps   : {n_steps}  ({n_steps * timestep:.0f} fs)\n"
         f"Δt_eff     : {dt_eff:.2f} fs/frame\n"
@@ -839,7 +977,9 @@ def run_ir_workflow(model_path: str,
                     max_freq: float,
                     window: str,
                     output_dir: Path,
-                    use_zpe_init: bool = True) -> None:
+                    use_zpe_init: bool = True,
+                    min_freq_zpe: float = 50.0,
+                    max_freq_zpe: float = 4000.0) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -865,8 +1005,17 @@ def run_ir_workflow(model_path: str,
     print(f"  Dipole model       : {dipole_model_path or '(will train now)'}")
     print(f"  MD steps           : {n_steps}  (dt={timestep} fs, save every {save_every})")
     print(f"  Temperature        : {temperature} K")
-    print(f"  ZPE floor init     : {'yes' if use_zpe_init else 'no'}")
+    zpe_label = ('yes' if use_zpe_init else 'no')
+    if use_zpe_init:
+        zpe_label += f'  (filter: [{min_freq_zpe:.0f}, {max_freq_zpe:.0f}] cm⁻¹)'
+    print(f"  ZPE floor init     : {zpe_label}")
     print(f"  Output dir         : {output_dir}")
+
+    # ── Identify molecule ─────────────────────────────────────────────
+    driver = MLPESDriver(model_path)
+    traj   = load_trajectory(training_data_path)
+    mol    = identify_molecule(driver.symbols, traj.coordinates[0])
+    print(f"  Molecule           : {mol['label']}  ({mol['n_atoms']} atoms)")
 
     # ── Step 1: Dipole surface ────────────────────────────────────────
     dipole_pkl = output_dir / 'dipole_surface.pkl'
@@ -879,8 +1028,6 @@ def run_ir_workflow(model_path: str,
         )
 
     # ── Step 2: ML-PES normal modes ───────────────────────────────────
-    driver = MLPESDriver(model_path)
-    traj   = load_trajectory(training_data_path)
     start_idx = np.argmin(traj.energies)
     coords0   = traj.coordinates[start_idx].copy()
     print(f"\n  Starting geometry  : frame {start_idx}  "
@@ -901,13 +1048,23 @@ def run_ir_workflow(model_path: str,
         driver, coords0, n_steps, temperature,
         timestep=timestep, save_every=save_every,
         nm_data=nm_data,
+        min_freq_zpe=min_freq_zpe,
+        max_freq_zpe=max_freq_zpe,
     )
 
-    # Save raw trajectory
+    # Save raw trajectory (pickle)
     md_pkl = output_dir / 'md_trajectory.pkl'
     with open(md_pkl, 'wb') as fh:
         pickle.dump(md_data, fh)
     print(f"  MD trajectory saved: {md_pkl}  ({len(md_data['coords_traj'])} frames)")
+
+    # Save XYZ trajectory for external viewers (VMD, Avogadro, OVITO)
+    xyz_path = output_dir / f'{mol["hill"]}_md_trajectory.xyz'
+    save_trajectory_xyz(
+        md_data['coords_traj'], md_data['symbols'],
+        md_data['times_fs'], md_data['energies_ml'],
+        str(xyz_path), mol_info=mol,
+    )
 
     # ── Step 4: Predict dipoles along trajectory ──────────────────────
     print("\n--- Predicting dipoles along MD trajectory ---")
@@ -932,7 +1089,7 @@ def run_ir_workflow(model_path: str,
     save_spectrum_csv(
         frequencies, intensities, str(csv_path),
         metadata={
-            'molecule': ''.join(dict.fromkeys(md_data['symbols'])),
+            'molecule': mol['label'],
             'temperature': temperature,
             'n_steps': n_steps,
             'dt_eff_fs': dt_eff,
@@ -951,7 +1108,7 @@ def run_ir_workflow(model_path: str,
         timestep=timestep,
         dt_eff=dt_eff,
         n_frames=len(dipoles_traj),
-        molecule=''.join(dict.fromkeys(md_data['symbols'])),
+        molecule=mol['label'],
         nm_frequencies=nm_frequencies,
     )
 
@@ -970,6 +1127,9 @@ def run_ir_workflow(model_path: str,
     top_peaks = sorted(peaks, key=lambda p: p[1], reverse=True)[:10]
     summary = {
         'date':              datetime.datetime.now().isoformat(),
+        'molecule_hill':     mol['hill'],
+        'molecule_name':     mol['name'],
+        'molecule_unicode':  mol['unicode'],
         'model_path':        str(model_path),
         'training_data':     str(training_data_path),
         'dipole_model':      str(dipole_pkl),
@@ -979,7 +1139,10 @@ def run_ir_workflow(model_path: str,
         'save_every':        save_every,
         'dt_eff_fs':         dt_eff,
         'zpe_floor_init':    use_zpe_init,
+        'zpe_min_freq_cm-1': min_freq_zpe if use_zpe_init else None,
+        'zpe_max_freq_cm-1': max_freq_zpe if use_zpe_init else None,
         'n_frames_ir':       len(dipoles_traj),
+        'trajectory_xyz':    str(xyz_path),
         'spectrum_csv':      str(csv_path),
         'figure_spectrum':   str(fig_spectrum_path),
         'figure_diagnostic': str(fig_diag_path),
@@ -1004,6 +1167,8 @@ def run_ir_workflow(model_path: str,
     print(f"\n{'=' * 70}")
     print("  IR WORKFLOW COMPLETE")
     print(f"{'=' * 70}")
+    print(f"  Molecule           : {mol['label']}")
+    print(f"  Trajectory XYZ     : {xyz_path}")
     print(f"  Spectrum CSV       : {csv_path}")
     print(f"  Spectrum figure    : {fig_spectrum_path}")
     print(f"  Diagnostic figure  : {fig_diag_path}")
@@ -1055,6 +1220,13 @@ def main():
     parser.add_argument('--no-zpe-init',    action='store_true',
                         help='Disable ZPE-floor velocity initialisation '
                              '(use plain Maxwell-Boltzmann instead)')
+    parser.add_argument('--zpe-min-freq',   type=float, default=50.0,
+                        help='Min frequency (cm⁻¹) for ZPE boosting; modes below are skipped '
+                             '(guards against near-zero/imaginary modes)')
+    parser.add_argument('--zpe-max-freq',   type=float, default=4000.0,
+                        help='Max frequency (cm⁻¹) for ZPE boosting; modes above are skipped '
+                             '(guards against unphysical KRR Hessian artifacts outside '
+                             'the training set hull; physical C-H max ~3200 cm⁻¹)')
     args = parser.parse_args()
 
     ts  = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1073,6 +1245,8 @@ def main():
         window              = args.window,
         output_dir          = out,
         use_zpe_init        = not args.no_zpe_init,
+        min_freq_zpe        = args.zpe_min_freq,
+        max_freq_zpe        = args.zpe_max_freq,
     )
 
 
