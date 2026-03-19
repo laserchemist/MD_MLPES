@@ -14,6 +14,11 @@ except ImportError:
     pass
 
 try:
+    from .bakken import MLPESDriver, minimize_geometry, run_md
+except ImportError:
+    pass
+
+try:
     from .visualization import TrajectoryVisualizer
 except ImportError:
     pass

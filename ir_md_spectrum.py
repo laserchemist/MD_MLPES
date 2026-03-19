@@ -84,6 +84,14 @@ from data_formats import TrajectoryData, load_trajectory
 from ml_pes import MLPESTrainer
 from ir_spectroscopy import DipoleSurface, IRSpectrumCalculator
 from normal_modes import compute_normal_modes
+from bakken import (
+    MLPESDriver,
+    minimize_geometry,
+    maxwell_boltzmann_velocities   as _maxwell_boltzmann,
+    zpe_initialized_velocities     as _zpe_initialized_velocities,
+    kinetic_temperature            as _kin_temp,
+    run_md                         as _run_md_bakken,
+)
 
 
 # =============================================================================
@@ -186,30 +194,9 @@ def save_trajectory_xyz(coords_traj: np.ndarray,
     print(f"\n  Trajectory XYZ     : {output_path}  ({n_frames} frames, {size_kb:.0f} KB)")
 
 
-# =============================================================================
-# ML-PES driver (energy + finite-difference forces)
-# =============================================================================
-
-class MLPESDriver:
-    """Thin wrapper around MLPESTrainer providing energy + FD forces."""
-
-    def __init__(self, model_path: str):
-        self.trainer = MLPESTrainer.load(model_path)
-        self.symbols = self.trainer.symbols
-
-    def energy(self, coords: np.ndarray) -> float:
-        return self.trainer.predict(self.symbols, coords)
-
-    def forces(self, coords: np.ndarray, delta: float = 0.005) -> np.ndarray:
-        """Central finite-difference forces (Hartree/Angstrom)."""
-        n_atoms = len(self.symbols)
-        F = np.zeros_like(coords)
-        for i in range(n_atoms):
-            for ax in range(3):
-                cp = coords.copy(); cp[i, ax] += delta
-                cm = coords.copy(); cm[i, ax] -= delta
-                F[i, ax] = -(self.energy(cp) - self.energy(cm)) / (2 * delta)
-        return F
+# MLPESDriver, minimize_geometry, and the core MD engine are provided by
+# modules/bakken.py (Norwegian for "hill").  They are imported at the top
+# of this file; no local definitions are needed.
 
 
 # =============================================================================
@@ -274,133 +261,8 @@ def compute_mlpes_normal_modes(driver: MLPESDriver,
 
 
 # =============================================================================
-# Velocity-Verlet MD engine (dense output — saves every `save_every` steps)
+# MD engine shim — delegates to bakken (modules/bakken.py)
 # =============================================================================
-
-def _maxwell_boltzmann(masses_amu: np.ndarray, T: float,
-                       rng: np.random.Generator) -> np.ndarray:
-    """Initial velocities (Ang/fs) from Maxwell-Boltzmann distribution."""
-    masses_au = masses_amu * AMU_TO_AU
-    v_au = np.zeros((len(masses_amu), 3))
-    for i in range(len(masses_amu)):
-        sigma = np.sqrt(KB_HARTREE_PER_K * T / masses_au[i])
-        v_au[i] = rng.normal(0.0, sigma, 3)
-    # Remove CoM drift
-    total_p = (masses_au[:, None] * v_au).sum(axis=0)
-    v_au -= total_p / masses_au.sum()
-    return v_au * BOHR_TO_ANG / FS_TO_AU  # a.u. → Ang/fs
-
-
-def _zpe_initialized_velocities(masses_amu: np.ndarray,
-                                 T: float,
-                                 rng: np.random.Generator,
-                                 eigvecs_mw: np.ndarray,
-                                 eigenvalues: np.ndarray,
-                                 min_freq_zpe: float = 50.0,
-                                 max_freq_zpe: float = 4000.0) -> np.ndarray:
-    """
-    Maxwell-Boltzmann velocities with a ZPE floor applied per normal mode.
-
-    For each vibrational mode k (eigenvalue λ_k > 0):
-      • Compute ZPE_k = ½ ω_k  [Hartree],  ω_k = sqrt(λ_k)·FREQ_CONV/CM_INV_PER_AU
-      • Project current MB kinetic energy onto mode k.
-      • If T_k < ZPE_k  →  set T_k = ZPE_k  (random sign preserved).
-
-    Starting at the equilibrium geometry (PE = 0), assigning T_k = ZPE_k puts
-    the total mode energy at the quantum ground state.
-
-    The mass-weighted kinetic energy decomposition used here:
-        q̇  = sqrt(m_amu) × ṙ_bohr_au          [Bohr√amu/au]
-        Q̇_k = L̃_k · q̇                         [Bohr√amu/au]
-        T_k = ½ · AMU_TO_AU · Q̇_k²            [Hartree]
-
-    Args:
-        masses_amu  : (n_atoms,) amu
-        T           : target MB temperature (K)
-        rng         : NumPy random generator
-        eigvecs_mw  : (3N, n_vib) normalised mass-weighted eigenvectors
-        eigenvalues : (n_vib,)    Hartree/(Bohr²·amu)
-        min_freq_zpe: skip ZPE boosting for modes below this value (cm⁻¹).
-                      Guards against near-zero/imaginary modes. Default 50.
-        max_freq_zpe: skip ZPE boosting for modes above this value (cm⁻¹).
-                      Guards against unphysical high-curvature KRR Hessian
-                      artifacts outside the training set hull. Default 4000
-                      (physical C-H stretch max ~3200 cm⁻¹ for CH₂OO).
-
-    Returns:
-        velocities (n_atoms, 3) Angstrom/fs
-    """
-    n_atoms  = len(masses_amu)
-    n_vib    = eigvecs_mw.shape[1]
-    mass_vec = np.repeat(masses_amu, 3)   # (3N,) amu
-    sqrt_m   = np.sqrt(mass_vec)          # (3N,) sqrt(amu)
-
-    # Start with Maxwell-Boltzmann
-    v_mb   = _maxwell_boltzmann(masses_amu, T, rng)         # (n_atoms, 3) Ang/fs
-    v_au   = v_mb * ANG_TO_BOHR * FS_TO_AU                  # (n_atoms, 3) Bohr/au
-    v_flat = v_au.flatten()                                  # (3N,) Bohr/au
-
-    # Mass-weighted velocities q̇  [Bohr√amu/au]
-    q_dot = sqrt_m * v_flat
-
-    # ── Step 1: project onto each vibrational mode ────────────────────
-    # Q̇_k = L̃_k · q̇   (scalar normal-coordinate velocity per mode)
-    Q_dot = eigvecs_mw.T @ q_dot                            # (n_vib,)
-
-    # ── Step 2: apply ZPE floor independently per mode ───────────────
-    # KE of mode k: T_k = ½ · AMU_TO_AU · Q̇_k²   [Hartree]
-    # ZPE_k = ½ · ω_k[cm⁻¹] / CM_INV_PER_AU       [Hartree]
-    # Minimum |Q̇_k|:  Q̇_k_min = sqrt(2·ZPE_k / AMU_TO_AU)
-    Q_dot_new = Q_dot.copy()
-    n_boosted = 0
-    n_skipped = 0
-    for k in range(n_vib):
-        ev = eigenvalues[k]
-        if ev <= 0:
-            continue
-        omega_k_cm = np.sqrt(ev) * FREQ_CONV                # cm⁻¹
-        # Skip modes outside the physical frequency window — guards against
-        # unphysical KRR Hessian curvature beyond the training set hull.
-        if omega_k_cm < min_freq_zpe or omega_k_cm > max_freq_zpe:
-            n_skipped += 1
-            continue
-        zpe_k      = 0.5 * omega_k_cm / CM_INV_PER_AU       # Hartree
-        T_k        = 0.5 * AMU_TO_AU * Q_dot[k] ** 2        # Hartree (from MB)
-        if T_k < zpe_k:
-            sign           = np.sign(Q_dot[k]) if Q_dot[k] != 0 else rng.choice([-1.0, 1.0])
-            Q_dot_new[k]   = sign * np.sqrt(2.0 * zpe_k / AMU_TO_AU)
-            n_boosted     += 1
-
-    # ── Step 3: reconstruct q̇ preserving trans/rot components ─────────
-    # q̇ = q̇_TR + q̇_vib
-    # q̇_TR  = q̇ − (L̃ · Q̇)        (non-vibrational subspace)
-    # q̇_new = q̇_TR + (L̃ · Q̇_new)
-    q_dot_vib_old = eigvecs_mw @ Q_dot                      # (3N,)
-    q_dot_vib_new = eigvecs_mw @ Q_dot_new                  # (3N,)
-    q_dot_new     = q_dot - q_dot_vib_old + q_dot_vib_new   # (3N,)
-
-    # ── Step 4: back to Cartesian [Bohr/au], remove CoM drift ─────────
-    v_flat_new = q_dot_new / sqrt_m
-    v_au_new   = v_flat_new.reshape(n_atoms, 3)
-
-    masses_au = masses_amu * AMU_TO_AU
-    total_p   = (masses_au[:, None] * v_au_new).sum(axis=0)
-    v_au_new -= total_p / masses_au.sum()
-
-    if n_boosted or n_skipped:
-        print(f"  ZPE floor applied  : {n_boosted}/{n_vib} modes boosted, "
-              f"{n_skipped} skipped (outside [{min_freq_zpe:.0f}, {max_freq_zpe:.0f}] cm⁻¹)")
-
-    return v_au_new * BOHR_TO_ANG / FS_TO_AU                # (n_atoms, 3) Ang/fs
-
-
-def _kin_temp(velocities: np.ndarray, masses_amu: np.ndarray) -> float:
-    masses_au = masses_amu * AMU_TO_AU
-    v_au = velocities * ANG_TO_BOHR * FS_TO_AU
-    ke = 0.5 * (masses_au[:, None] * v_au ** 2).sum()
-    n_dof = 3 * len(masses_amu) - 6
-    return 2.0 * ke / (n_dof * KB_HARTREE_PER_K)
-
 
 def run_ml_md_dense(driver: MLPESDriver,
                     coords0: np.ndarray,
@@ -412,105 +274,35 @@ def run_ml_md_dense(driver: MLPESDriver,
                     seed: int = 42,
                     nm_data: tuple | None = None,
                     min_freq_zpe: float = 50.0,
-                    max_freq_zpe: float = 4000.0) -> dict:
+                    max_freq_zpe: float = 4000.0,
+                    preminimize: bool = False,
+                    preminimize_steps: int = 300,
+                    preminimize_tol: float = 0.005) -> dict:
     """
-    Velocity-Verlet ML-MD with Berendsen thermostat.
-    Dense output: saves coordinates and ML energy every `save_every` steps.
+    Velocity-Verlet ML-MD via the bakken engine (modules/bakken.py).
 
-    Args:
-        nm_data : (frequencies, eigvecs_mw, eigenvalues, mass_vec) from
-                  compute_mlpes_normal_modes().  When provided, velocities
-                  are initialised with a ZPE floor so every vibrational mode
-                  starts with at least its zero-point kinetic energy.
-                  thermostat_tau is increased to 200 fs automatically to
-                  preserve the quantum-corrected amplitudes.
+    When preminimize=True, runs steepest-descent on the ML-PES before
+    velocity initialisation so the Hessian is evaluated at a true
+    stationary point, preventing unphysical high-frequency artifacts.
 
-    Returns dict:
-        coords_traj  (n_frames, n_atoms, 3) Angstrom
-        energies_ml  (n_frames,) Hartree
-        times_fs     (n_frames,) femtoseconds
-        symbols      List[str]
-        nm_frequencies (n_vib,) cm⁻¹ or None
+    All arguments and return keys are the same as before; adds:
+        preminimize       : run geometry pre-minimisation (default False)
+        preminimize_steps : max steepest-descent steps (default 300)
+        preminimize_tol   : force convergence Ha/Å (default 0.005)
     """
-    masses_amu = np.array([ATOMIC_MASSES[s] for s in driver.symbols])
-    masses_au  = masses_amu * AMU_TO_AU
-
-    rng    = np.random.default_rng(seed)
-    coords = coords0.copy()
-
-    if nm_data is not None:
-        nm_frequencies, eigvecs_mw, eigenvalues_nm, _ = nm_data
-        # Use a longer thermostat coupling time so ZPE-boosted modes are not
-        # immediately quenched back to the classical k_BT equipartition value.
-        thermostat_tau = max(thermostat_tau, 200.0)
-        velocities = _zpe_initialized_velocities(
-            masses_amu, temperature, rng, eigvecs_mw, eigenvalues_nm,
-            min_freq_zpe=min_freq_zpe,
-            max_freq_zpe=max_freq_zpe,
-        )
-        T_init = _kin_temp(velocities, masses_amu)
-        print(f"  ZPE init T_eff     : {T_init:.0f} K  (thermostat target: {temperature:.0f} K, "
-              f"τ={thermostat_tau:.0f} fs)")
-    else:
-        nm_frequencies = None
-        velocities = _maxwell_boltzmann(masses_amu, temperature, rng)
-
-    forces = driver.forces(coords)
-
-    coords_list  = []
-    energies_list = []
-    times_list   = []
-
-    from tqdm import tqdm
-    pbar = tqdm(range(1, n_steps + 1), desc="ML-MD (dense)", unit="step")
-    for step in pbar:
-        # Half-step velocity
-        F_bohr = forces * ANG_TO_BOHR
-        acc_au = F_bohr / masses_au[:, None]
-        v_au   = velocities * ANG_TO_BOHR * FS_TO_AU
-        v_au  += 0.5 * acc_au * timestep * FS_TO_AU
-
-        # Position update
-        r_au = coords * ANG_TO_BOHR + v_au * timestep * FS_TO_AU
-        coords = r_au * BOHR_TO_ANG
-
-        # New forces
-        forces = driver.forces(coords)
-        F_bohr = forces * ANG_TO_BOHR
-        acc_au = F_bohr / masses_au[:, None]
-        v_au  += 0.5 * acc_au * timestep * FS_TO_AU
-        velocities = v_au * BOHR_TO_ANG / FS_TO_AU
-
-        # Berendsen thermostat
-        T_curr = _kin_temp(velocities, masses_amu)
-        if T_curr > 0:
-            lam = np.sqrt(1.0 + (timestep / thermostat_tau) * (temperature / T_curr - 1.0))
-            velocities *= lam
-
-        # Save
-        if step % save_every == 0:
-            e = driver.energy(coords)
-            coords_list.append(coords.copy())
-            energies_list.append(e)
-            times_list.append(step * timestep)
-
-            if step % max(1, n_steps // 20) == 0:
-                pbar.set_postfix({
-                    'E': f'{e * HARTREE_TO_KCAL:.1f} kcal/mol',
-                    'T': f'{T_curr:.0f} K',
-                })
-
-    return {
-        'coords_traj':   np.array(coords_list),
-        'energies_ml':   np.array(energies_list),
-        'times_fs':      np.array(times_list),
-        'symbols':       driver.symbols,
-        'timestep':      timestep,
-        'save_every':    save_every,
-        'temperature':   temperature,
-        'n_steps':       n_steps,
-        'nm_frequencies': nm_frequencies,
-    }
+    return _run_md_bakken(
+        driver, coords0, n_steps, temperature,
+        timestep=timestep,
+        save_every=save_every,
+        thermostat_tau=thermostat_tau,
+        seed=seed,
+        nm_data=nm_data,
+        min_freq_zpe=min_freq_zpe,
+        max_freq_zpe=max_freq_zpe,
+        preminimize=preminimize,
+        preminimize_steps=preminimize_steps,
+        preminimize_tol=preminimize_tol,
+    )
 
 
 # =============================================================================
@@ -979,7 +771,10 @@ def run_ir_workflow(model_path: str,
                     output_dir: Path,
                     use_zpe_init: bool = True,
                     min_freq_zpe: float = 50.0,
-                    max_freq_zpe: float = 4000.0) -> None:
+                    max_freq_zpe: float = 4000.0,
+                    preminimize: bool = False,
+                    preminimize_steps: int = 300,
+                    preminimize_tol: float = 0.005) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -1009,6 +804,9 @@ def run_ir_workflow(model_path: str,
     if use_zpe_init:
         zpe_label += f'  (filter: [{min_freq_zpe:.0f}, {max_freq_zpe:.0f}] cm⁻¹)'
     print(f"  ZPE floor init     : {zpe_label}")
+    premin_label = (f'yes  (max_steps={preminimize_steps}, tol={preminimize_tol} Ha/Å)'
+                    if preminimize else 'no')
+    print(f"  bakken pre-min     : {premin_label}")
     print(f"  Output dir         : {output_dir}")
 
     # ── Identify molecule ─────────────────────────────────────────────
@@ -1050,6 +848,9 @@ def run_ir_workflow(model_path: str,
         nm_data=nm_data,
         min_freq_zpe=min_freq_zpe,
         max_freq_zpe=max_freq_zpe,
+        preminimize=preminimize,
+        preminimize_steps=preminimize_steps,
+        preminimize_tol=preminimize_tol,
     )
 
     # Save raw trajectory (pickle)
@@ -1141,6 +942,7 @@ def run_ir_workflow(model_path: str,
         'zpe_floor_init':    use_zpe_init,
         'zpe_min_freq_cm-1': min_freq_zpe if use_zpe_init else None,
         'zpe_max_freq_cm-1': max_freq_zpe if use_zpe_init else None,
+        'preminimized':      md_data.get('preminimized', False),
         'n_frames_ir':       len(dipoles_traj),
         'trajectory_xyz':    str(xyz_path),
         'spectrum_csv':      str(csv_path),
@@ -1227,6 +1029,14 @@ def main():
                         help='Max frequency (cm⁻¹) for ZPE boosting; modes above are skipped '
                              '(guards against unphysical KRR Hessian artifacts outside '
                              'the training set hull; physical C-H max ~3200 cm⁻¹)')
+    parser.add_argument('--preminimize',    action='store_true',
+                        help='Run bakken steepest-descent pre-minimisation on the ML-PES '
+                             'before Hessian/MD so the expansion point is a true stationary '
+                             'point, preventing unphysical Hessian curvature')
+    parser.add_argument('--preminimize-steps', type=int, default=300,
+                        help='Max steps for bakken pre-minimiser (default 300)')
+    parser.add_argument('--preminimize-tol',   type=float, default=0.005,
+                        help='Force convergence threshold for pre-minimiser Ha/Å (default 0.005)')
     args = parser.parse_args()
 
     ts  = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1247,6 +1057,9 @@ def main():
         use_zpe_init        = not args.no_zpe_init,
         min_freq_zpe        = args.zpe_min_freq,
         max_freq_zpe        = args.zpe_max_freq,
+        preminimize         = args.preminimize,
+        preminimize_steps   = args.preminimize_steps,
+        preminimize_tol     = args.preminimize_tol,
     )
 
 
