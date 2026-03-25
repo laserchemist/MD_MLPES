@@ -47,6 +47,12 @@ ATOMIC_MASSES = {
     'Br': 79.904,   'I':  126.904,
 }
 
+ATOMIC_NUMBERS = {
+    'H':  1,  'He': 2,  'C':  6,  'N':  7,
+    'O':  8,  'F':  9,  'S':  16, 'Cl': 17,
+    'Br': 35, 'I':  53,
+}
+
 
 # =============================================================================
 # ML-PES driver
@@ -63,13 +69,31 @@ class MLPESDriver:
 
     def __init__(self, model_path: str):
         # Lazy import: works both as package module and via sys.path
-        import importlib, sys
+        import importlib.util, importlib, sys
         spec = importlib.util.find_spec('ml_pes') or importlib.util.find_spec('modules.ml_pes')
         MLPESTrainer = importlib.import_module(spec.name).MLPESTrainer
         self.trainer  = MLPESTrainer.load(model_path)
         self.symbols  = self.trainer.symbols
         self.n_atoms  = len(self.symbols)
         self.masses   = np.array([ATOMIC_MASSES[s] for s in self.symbols])
+
+        # Cache KRR internals for analytic gradient / Hessian
+        try:
+            m = self.trainer.model
+            self._alpha_vec   = m.dual_coef_.flatten()          # (n_train,)
+            self._X_train_sc  = m.X_fit_                        # (n_train, n_desc) scaled
+            self._gamma_krr   = float(self.trainer.config.gamma)
+            self._sx_mean     = self.trainer.scaler_X.mean_     # (n_desc,)
+            self._sx_std      = self.trainer.scaler_X.scale_    # (n_desc,)
+            self._sy_std      = float(self.trainer.scaler_y.scale_[0])
+            self._charges     = np.array([ATOMIC_NUMBERS[s] for s in self.symbols],
+                                         dtype=float)
+            rows, cols        = np.triu_indices(self.n_atoms)
+            self._triu_rows   = rows   # (n_desc,)
+            self._triu_cols   = cols   # (n_desc,)
+            self._has_analytic = True
+        except Exception as exc:
+            self._has_analytic = False
 
     def energy(self, coords: np.ndarray) -> float:
         """Predict ML-PES energy (Hartree)."""
@@ -90,6 +114,170 @@ class MLPESDriver:
                 cm = coords.copy(); cm[i, ax] -= delta
                 F[i, ax] = -(self.energy(cp) - self.energy(cm)) / (2.0 * delta)
         return F
+
+    # ── Analytic gradient / Hessian ──────────────────────────────────────
+
+    def _coulomb_jacobian(self, coords: np.ndarray) -> np.ndarray:
+        """
+        Analytic Jacobian of the Coulomb matrix descriptor w.r.t. Cartesian
+        coordinates (Angstrom).
+
+        For each off-diagonal upper-triangle element C_k = Z_p Z_q / r_pq:
+            dC_k/dR_{p,j} = -Z_p Z_q (R_p - R_q)_j / r_pq³
+            dC_k/dR_{q,j} = +Z_p Z_q (R_p - R_q)_j / r_pq³
+
+        Diagonal elements (0.5 Z^2.4) are constants — zero derivative.
+
+        Returns:
+            J_raw : (n_desc, 3*n_atoms)  [Z·Z / Å²] raw Coulomb Jacobian
+        """
+        n3    = 3 * self.n_atoms
+        n_desc = len(self._triu_rows)
+        J     = np.zeros((n_desc, n3))
+        Z     = self._charges
+        for k, (p, q) in enumerate(zip(self._triu_rows, self._triu_cols)):
+            if p == q:
+                continue  # diagonal — constant
+            d      = coords[p] - coords[q]           # (3,) Å
+            r      = np.linalg.norm(d)
+            if r < 1e-10:
+                continue
+            Zpq        = Z[p] * Z[q]
+            r3_inv     = 1.0 / (r ** 3)
+            J[k, 3*p:3*p+3] = -Zpq * d * r3_inv
+            J[k, 3*q:3*q+3] = +Zpq * d * r3_inv
+        return J
+
+    def _coulomb_hessian2(self, coords: np.ndarray) -> np.ndarray:
+        """
+        Second-order Coulomb descriptor Jacobian: d²C_k / (dR_q dR_r).
+
+        For off-diagonal pair (p,q):
+            d²C_k/dR_{p,j} dR_{p,l} = Z_p Z_q (-δ_{jl}/r³ + 3 d_j d_l / r⁵)
+            d²C_k/dR_{q,j} dR_{q,l} = same as pp
+            d²C_k/dR_{p,j} dR_{q,l} = Z_p Z_q (+δ_{jl}/r³ - 3 d_j d_l / r⁵)
+
+        Returns:
+            H2 : (n_desc, 3N, 3N)
+        """
+        n3     = 3 * self.n_atoms
+        n_desc = len(self._triu_rows)
+        H2     = np.zeros((n_desc, n3, n3))
+        Z      = self._charges
+        I3     = np.eye(3)
+        for k, (p, q) in enumerate(zip(self._triu_rows, self._triu_cols)):
+            if p == q:
+                continue
+            d      = coords[p] - coords[q]
+            r      = np.linalg.norm(d)
+            if r < 1e-10:
+                continue
+            Zpq    = Z[p] * Z[q]
+            r3_inv = 1.0 / r ** 3
+            r5_inv = 1.0 / r ** 5
+            T_pp   = Zpq * (-I3 * r3_inv + 3.0 * np.outer(d, d) * r5_inv)
+            T_pq   = Zpq * (+I3 * r3_inv - 3.0 * np.outer(d, d) * r5_inv)
+            sp, ep = 3*p, 3*p+3
+            sq, eq = 3*q, 3*q+3
+            H2[k, sp:ep, sp:ep] = T_pp
+            H2[k, sq:eq, sq:eq] = T_pp
+            H2[k, sp:ep, sq:eq] = T_pq
+            H2[k, sq:eq, sp:ep] = T_pq
+        return H2
+
+    def analytic_forces(self, coords: np.ndarray) -> np.ndarray:
+        """
+        Analytic forces via KRR gradient chain rule (Hartree/Angstrom).
+
+        Derivation (RBF-KRR with StandardScaler):
+            E       = σ_y · Σ_i α_i K_i + μ_y
+            K_i     = exp(-γ ||x - x_i||²),  x_k = (C_k - μ_X_k) / σ_X_k
+            dE/dR_q = σ_y (-2γ) Σ_k J_scaled[k,q] · g_k
+            g_k     = Σ_i α_i K_i (x_k - x_{i,k})   [weighted desc. gradient]
+            F_q     = -dE/dR_q = +2γ σ_y (J_scaled.T @ g)[q]
+
+        ~30× faster than 3N-pair central finite differences for CH₂OO.
+
+        Falls back to FD forces if analytic internals unavailable.
+
+        Returns:
+            F : (n_atoms, 3)  Hartree/Angstrom
+        """
+        if not self._has_analytic:
+            return self.forces(coords)
+
+        desc  = self.trainer.descriptor.compute(self.symbols, coords)  # (n_desc,)
+        x     = (desc - self._sx_mean) / self._sx_std                  # scaled
+
+        Δx    = x[None, :] - self._X_train_sc       # (n_train, n_desc)
+        dist2 = (Δx ** 2).sum(axis=1)
+        K     = np.exp(-self._gamma_krr * dist2)     # (n_train,)
+        g     = (self._alpha_vec * K) @ Δx           # (n_desc,)
+
+        J_raw    = self._coulomb_jacobian(coords)         # (n_desc, 3N)
+        J_scaled = J_raw / self._sx_std[:, None]          # (n_desc, 3N)
+
+        F_flat = 2.0 * self._gamma_krr * self._sy_std * (J_scaled.T @ g)
+        return F_flat.reshape(self.n_atoms, 3)
+
+    def analytic_hessian(self, coords: np.ndarray) -> np.ndarray:
+        """
+        Analytic Hessian of ML-PES (Hartree/Angstrom²).
+
+        Full derivation (see CLAUDE.md §Planned Features item 3):
+
+            H[q,r] = σ_y (-2γ) [
+                Σ_k g_k J2_scaled[k,q,r]                    ← 2nd Coulomb deriv
+              + J_scaled.T @ (-2γ H_desc + E_scaled I) @ J_scaled [q,r]
+            ]
+
+        where
+            H_desc[k,l] = Σ_i α_i K_i Δx_{i,k} Δx_{i,l}   (n_desc × n_desc)
+            E_scaled     = Σ_i α_i K_i                       (scalar)
+
+        Raises RuntimeError if analytic internals are unavailable.
+
+        Returns:
+            H : (3N, 3N)  Hartree/Angstrom²
+        """
+        if not self._has_analytic:
+            raise RuntimeError(
+                "Analytic Hessian unavailable: KRR internals not cached. "
+                "Ensure the model was saved with sklearn KernelRidge "
+                "(dual_coef_, X_fit_ attributes present)."
+            )
+
+        desc  = self.trainer.descriptor.compute(self.symbols, coords)
+        x     = (desc - self._sx_mean) / self._sx_std
+
+        Δx    = x[None, :] - self._X_train_sc         # (n_train, n_desc)
+        dist2 = (Δx ** 2).sum(axis=1)
+        K     = np.exp(-self._gamma_krr * dist2)       # (n_train,)
+        aK    = self._alpha_vec * K                    # (n_train,)
+
+        E_scaled = float(aK.sum())
+        g        = aK @ Δx                            # (n_desc,)
+        # H_desc[k,l] = Σ_i α_i K_i Δx_{i,k} Δx_{i,l}
+        H_desc   = (aK[:, None, None]
+                    * Δx[:, :, None]
+                    * Δx[:, None, :]).sum(axis=0)     # (n_desc, n_desc)
+
+        J_raw    = self._coulomb_jacobian(coords)         # (n_desc, 3N)
+        J_scaled = J_raw / self._sx_std[:, None]          # (n_desc, 3N)
+        J2_raw   = self._coulomb_hessian2(coords)         # (n_desc, 3N, 3N)
+        J2_sc    = J2_raw / self._sx_std[:, None, None]   # (n_desc, 3N, 3N)
+
+        γ  = self._gamma_krr
+        σy = self._sy_std
+
+        # Term 1: second-derivative of Coulomb descriptor
+        term1 = (-2.0 * γ * σy) * np.einsum('k,kqr->qr', g, J2_sc)
+
+        # Term 2: kernel curvature
+        mid   = -2.0 * γ * H_desc + E_scaled * np.eye(len(g))
+        term2 = (-2.0 * γ * σy) * (J_scaled.T @ mid @ J_scaled)
+
+        return term1 + term2
 
 
 # =============================================================================

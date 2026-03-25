@@ -75,6 +75,7 @@ _MOLECULE_NAMES: dict = {
     'HNO3':   'nitric acid',
     'O3':     'ozone',
     'SO2':    'sulfur dioxide',
+    'C4H6O2': 'methyl vinyl ketone oxide (MVKO)',
 }
 
 # -------------------------------------------------------------------------
@@ -200,23 +201,78 @@ def save_trajectory_xyz(coords_traj: np.ndarray,
 
 
 # =============================================================================
-# ML-PES normal mode analysis (numerical Hessian via FD of forces)
+# PESFamilyDriver — wraps PESFamily with the MLPESDriver interface
+# =============================================================================
+
+class PESFamilyDriver:
+    """
+    Thin adapter that gives a PESFamily the same interface as MLPESDriver
+    so it can be dropped into run_ir_workflow as a drop-in replacement.
+
+    FD forces only (no analytic Hessian for blended surface).
+    `_has_analytic` is set to False so the Hessian path falls back to FD.
+    """
+
+    def __init__(self, family, delta_fd: float = 0.005):
+        from modules.pes_family import PESFamily
+        self.family       = family
+        self.symbols      = family.symbols
+        self.n_atoms      = len(self.symbols)
+        self.masses       = np.array([ATOMIC_MASSES[s] for s in self.symbols])
+        self._has_analytic = False
+        self._delta_fd    = delta_fd
+
+    def energy(self, coords: np.ndarray) -> float:
+        return float(self.family.blend_energy(coords))
+
+    def forces(self, coords: np.ndarray, delta: float = None) -> np.ndarray:
+        dx = delta if delta is not None else self._delta_fd
+        forces = np.zeros_like(coords)
+        for a in range(self.n_atoms):
+            for j in range(3):
+                cp = coords.copy(); cp[a, j] += dx
+                cm = coords.copy(); cm[a, j] -= dx
+                forces[a, j] = -(self.family.blend_energy(cp) -
+                                  self.family.blend_energy(cm)) / (2 * dx)
+        return forces
+
+    def predict(self, symbols, coords) -> float:
+        return self.energy(coords)
+
+
+# =============================================================================
+# ML-PES normal mode analysis (numerical or analytic Hessian)
 # =============================================================================
 
 def compute_mlpes_normal_modes(driver: MLPESDriver,
                                 coords_eq: np.ndarray,
-                                delta: float = 0.01) -> tuple:
+                                delta: float = 0.01,
+                                analytic: bool = False) -> tuple:
     """
     Compute vibrational normal modes of the ML-PES at the equilibrium geometry.
 
-    The Hessian is built by central finite-differences of ML forces
-    (Hartree/Angstrom → Hartree/Angstrom²), then converted to Hartree/Bohr²
-    before calling the canonical compute_normal_modes() from normal_modes.py.
+    Two Hessian routes are available:
+
+    Numerical (default, analytic=False):
+        Central FD of ML forces with step δ (Hartree/Å²).
+        Costs 6N energy+force evaluations; susceptible to KRR extrapolation
+        artefacts that inflate high-frequency modes.
+
+    Analytic (analytic=True):
+        Exact chain rule through StandardScaler → RBF kernel → Coulomb matrix:
+            H[q,r] = σ_y(-2γ)[Σ_k g_k J2_sc[k,q,r]
+                               + J_sc.T (-2γ H_desc + E_sc I) J_sc [q,r]]
+        Single forward pass; gives the true curvature of the KRR surface.
+        Requires driver._has_analytic = True (sklearn KernelRidge attributes
+        dual_coef_ and X_fit_ available).
+
+    Both routes convert Hartree/Å² → Hartree/Bohr² before diagonalisation.
 
     Args:
         driver    : loaded MLPESDriver
         coords_eq : equilibrium geometry (n_atoms, 3) Angstrom
-        delta     : displacement step in Angstrom (default 0.01 Å)
+        delta     : FD displacement step in Angstrom (numerical route only)
+        analytic  : use analytic Hessian instead of finite differences
 
     Returns:
         (frequencies, eigvecs_mw, eigenvalues, mass_vec)
@@ -228,17 +284,23 @@ def compute_mlpes_normal_modes(driver: MLPESDriver,
     n_atoms = len(driver.symbols)
     n_dof   = 3 * n_atoms
 
-    print(f"\n  Computing ML-PES Hessian ({n_dof}×{n_dof}, δ={delta} Å) ...")
-    H_ang2 = np.zeros((n_dof, n_dof))   # Hartree / Angstrom²
-
-    for i in range(n_dof):
-        cp = coords_eq.flatten().copy(); cp[i] += delta
-        cm = coords_eq.flatten().copy(); cm[i] -= delta
-        F_p = driver.forces(cp.reshape(n_atoms, 3)).flatten()   # Hartree/Ang
-        F_m = driver.forces(cm.reshape(n_atoms, 3)).flatten()   # Hartree/Ang
-        H_ang2[:, i] = -(F_p - F_m) / (2.0 * delta)            # Hartree/Ang²
-
-    H_ang2 = 0.5 * (H_ang2 + H_ang2.T)             # symmetrize numerical noise
+    if analytic and driver._has_analytic:
+        print(f"\n  Computing ML-PES Hessian ({n_dof}×{n_dof}, analytic KRR) ...")
+        # analytic_hessian returns Hartree/Ang²
+        H_ang2 = driver.analytic_hessian(coords_eq)
+        H_ang2 = 0.5 * (H_ang2 + H_ang2.T)   # enforce symmetry numerically
+    else:
+        if analytic:
+            print("  [analytic Hessian unavailable; falling back to FD]")
+        print(f"\n  Computing ML-PES Hessian ({n_dof}×{n_dof}, δ={delta} Å) ...")
+        H_ang2 = np.zeros((n_dof, n_dof))   # Hartree / Angstrom²
+        for i in range(n_dof):
+            cp = coords_eq.flatten().copy(); cp[i] += delta
+            cm = coords_eq.flatten().copy(); cm[i] -= delta
+            F_p = driver.forces(cp.reshape(n_atoms, 3)).flatten()
+            F_m = driver.forces(cm.reshape(n_atoms, 3)).flatten()
+            H_ang2[:, i] = -(F_p - F_m) / (2.0 * delta)
+        H_ang2 = 0.5 * (H_ang2 + H_ang2.T)
 
     # Unit conversion:  Hartree/Ang²  →  Hartree/Bohr²
     H_bohr2 = H_ang2 * ANG_TO_BOHR ** 2
@@ -774,14 +836,18 @@ def run_ir_workflow(model_path: str,
                     max_freq_zpe: float = 4000.0,
                     preminimize: bool = False,
                     preminimize_steps: int = 300,
-                    preminimize_tol: float = 0.005) -> None:
+                    preminimize_tol: float = 0.005,
+                    analytic_hessian: bool = False,
+                    family_manifest: str | None = None,
+                    blend_width: float = 3.0,
+                    start_coords: np.ndarray | None = None) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
     Steps
     -----
     1. Train / load ML dipole surface.
-    2. Compute ML-PES normal modes at equilibrium (numerical Hessian).
+    2. Compute ML-PES normal modes at equilibrium (numerical or analytic Hessian).
     3. Run ZPE-floor initialised ML-MD (dense frames).
     4. Predict ML dipoles along trajectory.
     5. Compute IR spectrum from dipole ACF.
@@ -810,9 +876,25 @@ def run_ir_workflow(model_path: str,
     print(f"  Output dir         : {output_dir}")
 
     # ── Identify molecule ─────────────────────────────────────────────
-    driver = MLPESDriver(model_path)
-    traj   = load_trajectory(training_data_path)
-    mol    = identify_molecule(driver.symbols, traj.coordinates[0])
+    traj = load_trajectory(training_data_path)
+    if family_manifest:
+        import json as _json
+        from modules.pes_family import PESFamily
+        with open(family_manifest) as _f:
+            manifest = _json.load(_f)
+        # manifest format: {"label": "path/to/model.pkl", ...}
+        # optional keys: "_blend_width", "_reference_energies"
+        _bw  = manifest.pop('_blend_width', blend_width)
+        _ref = manifest.pop('_reference_energies', None)
+        family = PESFamily.from_model_paths(
+            traj.symbols, manifest, blend_width=_bw,
+            reference_energies=_ref)
+        driver = PESFamilyDriver(family)
+        print(f"  PES family         : {list(family.members.keys())}  "
+              f"(blend_width={family.blend_width} kcal/mol)")
+    else:
+        driver = MLPESDriver(model_path)
+    mol = identify_molecule(driver.symbols, traj.coordinates[0])
     print(f"  Molecule           : {mol['label']}  ({mol['n_atoms']} atoms)")
 
     # ── Step 1: Dipole surface ────────────────────────────────────────
@@ -826,16 +908,22 @@ def run_ir_workflow(model_path: str,
         )
 
     # ── Step 2: ML-PES normal modes ───────────────────────────────────
-    start_idx = np.argmin(traj.energies)
-    coords0   = traj.coordinates[start_idx].copy()
-    print(f"\n  Starting geometry  : frame {start_idx}  "
-          f"(E = {traj.energies[start_idx] * HARTREE_TO_KCAL:.2f} kcal/mol)")
+    if start_coords is not None:
+        coords0 = np.array(start_coords, dtype=float)
+        print(f"\n  Starting geometry  : user-supplied (e.g. PSI4 equilibrium)  "
+              f"shape={coords0.shape}")
+    else:
+        start_idx = np.argmin(traj.energies)
+        coords0   = traj.coordinates[start_idx].copy()
+        print(f"\n  Starting geometry  : frame {start_idx}  "
+              f"(E = {traj.energies[start_idx] * HARTREE_TO_KCAL:.2f} kcal/mol)")
 
     nm_data = None
     nm_frequencies = None
     if use_zpe_init:
         print("\n--- ML-PES Normal Mode Analysis (for ZPE init) ---")
-        nm_data = compute_mlpes_normal_modes(driver, coords0)
+        nm_data = compute_mlpes_normal_modes(driver, coords0,
+                                             analytic=analytic_hessian)
         nm_frequencies = nm_data[0]   # (n_vib,) cm⁻¹
 
     # ── Step 3: ML-MD (dense) ─────────────────────────────────────────
@@ -1029,6 +1117,10 @@ def main():
                         help='Max frequency (cm⁻¹) for ZPE boosting; modes above are skipped '
                              '(guards against unphysical KRR Hessian artifacts outside '
                              'the training set hull; physical C-H max ~3200 cm⁻¹)')
+    parser.add_argument('--start-coords',   default=None,
+                        help='Path to .npy file containing starting geometry (n_atoms, 3) Å. '
+                             'Overrides lowest-energy training frame. Use PSI4 equilibrium '
+                             'geometry to avoid ML-PES saddle-point pre-minimization issues.')
     parser.add_argument('--preminimize',    action='store_true',
                         help='Run bakken steepest-descent pre-minimisation on the ML-PES '
                              'before Hessian/MD so the expansion point is a true stationary '
@@ -1037,6 +1129,21 @@ def main():
                         help='Max steps for bakken pre-minimiser (default 300)')
     parser.add_argument('--preminimize-tol',   type=float, default=0.005,
                         help='Force convergence threshold for pre-minimiser Ha/Å (default 0.005)')
+    parser.add_argument('--analytic-hessian',  action='store_true',
+                        help='Use analytic KRR Hessian (chain rule through Coulomb matrix + '
+                             'RBF kernel) instead of numerical finite differences. '
+                             'Exact, fast (single forward pass), no FD step-size tuning.')
+    parser.add_argument('--multi-surface',     action='store_true',
+                        help='Use a PESFamily (multi-conformer) instead of a single ML-PES. '
+                             'Requires --conformer-manifest.')
+    parser.add_argument('--conformer-manifest', default=None,
+                        help='JSON file mapping conformer label → model .pkl path. '
+                             'Optional keys "_blend_width" (kcal/mol) and '
+                             '"_reference_energies" ({label: float Hartree}). '
+                             'Example: {"s-cis": "models/scis.pkl", "s-trans": "models/strans.pkl"}')
+    parser.add_argument('--blend-width',       type=float, default=3.0,
+                        help='Softmin blending width in kcal/mol (default 3.0). '
+                             'Overridden by _blend_width key in --conformer-manifest.')
     args = parser.parse_args()
 
     ts  = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1060,6 +1167,10 @@ def main():
         preminimize         = args.preminimize,
         preminimize_steps   = args.preminimize_steps,
         preminimize_tol     = args.preminimize_tol,
+        analytic_hessian    = args.analytic_hessian,
+        family_manifest     = args.conformer_manifest if args.multi_surface else None,
+        blend_width         = args.blend_width,
+        start_coords        = np.load(args.start_coords) if args.start_coords else None,
     )
 
 

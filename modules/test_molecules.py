@@ -245,6 +245,74 @@ MOLECULES = {
         reference_energy=-115.7145,
         reference_method='B3LYP/6-31G*'
     ),
+
+    'mvko': TestMolecule(
+        name='mvko',
+        formula='C4H6O2',
+        # Atom order (must remain fixed — Coulomb matrix is NOT permutation-invariant):
+        #   C1  Criegee carbon      (central sp²-like C of the C=O⁺O⁻ unit)
+        #   O1  proximal oxygen     (bonded to C1, C=O⁺ character, ~1.27 Å)
+        #   O2  distal oxygen       (bonded to O1, O⁻ character, O–O ~1.35 Å)
+        #   C2  inner vinyl carbon  (C1–CH=, sp²)
+        #   C3  terminal vinyl      (=CH₂, sp²)
+        #   C4  methyl carbon       (C1–CH₃, sp³)
+        #   H1  vinyl H on C2
+        #   H2  vinyl H on C3 (first)
+        #   H3  vinyl H on C3 (second)
+        #   H4  methyl H (in molecular plane)
+        #   H5  methyl H (above plane)
+        #   H6  methyl H (below plane)
+        symbols=['C', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H'],
+        # Initial geometry (Angstrom) built from sp² angles and standard bond lengths;
+        # must be PSI4-optimised before use in MD — see mvko_workflow.py.
+        #
+        # Coordinate system:
+        #   C1 at origin; C1–O1 along +x; C1 sp² plane = xy plane.
+        #   C1–O1–O2 angle ≈ 115° (Criegee, O2 above C1–O1 axis).
+        #   C1–C2–C3 vinyl extends into quadrant II (upper left).
+        #   C1–C4 methyl extends into quadrant III (lower left).
+        #
+        # Key bond lengths used:
+        #   C1–O1 = 1.270 Å  (Criegee C=O+ partial double bond)
+        #   O1–O2 = 1.350 Å  (Criegee peroxide O–O)
+        #   C1–C2 = 1.470 Å  (sp²–sp² cross-conjugated)
+        #   C2=C3 = 1.330 Å  (vinyl double bond)
+        #   C1–C4 = 1.500 Å  (sp²–sp³)
+        #   C–H   = 1.080 Å  (sp² vinyl), 1.090 Å (sp³ methyl)
+        coordinates=np.array([
+            # C1  Criegee carbon
+            [ 0.000,  0.000,  0.000],
+            # O1  proximal O (along +x, 1.270 Å)
+            [ 1.270,  0.000,  0.000],
+            # O2  distal O (C1–O1–O2 = 115°; O1 + 1.350*[cos65°, sin65°, 0])
+            [ 1.841,  1.224,  0.000],
+            # C2  inner vinyl (C1–C2 at 120°; C2=C3 continues at +60°)
+            [-0.735,  1.273,  0.000],
+            # C3  terminal vinyl =CH2 (C2=C3 at 60° from C2, 1.330 Å)
+            [-0.070,  2.425,  0.000],
+            # C4  methyl (C1–C4 at 240°, 1.500 Å)
+            [-0.750, -1.299,  0.000],
+            # H1  vinyl H on C2 (third sp² dir at 180° from C2)
+            [-1.815,  1.273,  0.000],
+            # H2  vinyl H on C3 (sp² dir at 0° from C3)
+            [ 1.010,  2.425,  0.000],
+            # H3  vinyl H on C3 (sp² dir at 120° from C3)
+            [-0.610,  3.360,  0.000],
+            # H4  methyl H (in-plane, tetrahedral from C4)
+            [-0.041, -2.129,  0.000],
+            # H5  methyl H (above plane, tetrahedral from C4)
+            [-1.377, -1.357,  0.891],
+            # H6  methyl H (below plane, tetrahedral from C4)
+            [-1.377, -1.357, -0.891],
+        ]),
+        description=(
+            'Methyl vinyl ketone oxide (MVKO) — Criegee intermediate '
+            'from MVK ozonolysis. Initial guess geometry; optimize with PSI4 '
+            'before MD. B3LYP/6-31G*, singlet ground state.'
+        ),
+        charge=0,
+        multiplicity=1,
+    ),
 }
 
 

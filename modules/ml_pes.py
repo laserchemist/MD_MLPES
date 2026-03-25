@@ -320,6 +320,32 @@ class MLPESTrainer:
         logger.info(f"  Best gamma: {best_params[0]}")
         logger.info(f"  Best alpha: {best_params[1]}")
     
+    def _train_committee_member(self, trajectory: 'TrajectoryData') -> None:
+        """
+        Train on full TrajectoryData with no train/test split or tuning.
+
+        Used exclusively by CommitteeModel for bootstrap committee training.
+        Fits new scalers on the provided data and trains a fresh KRR model.
+        """
+        self.symbols = trajectory.symbols
+        X = self.descriptor.compute_batch(trajectory.symbols, trajectory.coordinates)
+        y = trajectory.energies
+
+        X_sc = self.scaler_X.fit_transform(X)
+        y_sc = self.scaler_y.fit_transform(y.reshape(-1, 1)).flatten()
+
+        self.model = KernelRidge(
+            kernel=self.config.kernel,
+            gamma=self.config.gamma,
+            alpha=self.config.alpha,
+        )
+        self.model.fit(X_sc, y_sc)
+        self.training_history = {
+            'gamma': self.config.gamma,
+            'alpha': self.config.alpha,
+            'n_train': len(y),
+        }
+
     def predict(self, symbols: List[str], coords: np.ndarray) -> float:
         """
         Predict energy for a geometry.
@@ -379,6 +405,13 @@ class MLPESTrainer:
     @classmethod
     def load(cls, filepath: str) -> 'MLPESTrainer':
         """Load model from file."""
+        import sys as _sys
+        # Models saved when the module was on sys.path directly (not as a package)
+        # register aliases so pickle can find the classes regardless of import path.
+        import modules.ml_pes as _mlpes_pkg
+        for _alias in ('ml_pes', 'ml_pes_fixed'):
+            if _alias not in _sys.modules:
+                _sys.modules[_alias] = _mlpes_pkg
         with open(filepath, 'rb') as f:
             data = pickle.load(f)
         
