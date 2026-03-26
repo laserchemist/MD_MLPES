@@ -339,7 +339,8 @@ def run_ml_md_dense(driver: MLPESDriver,
                     max_freq_zpe: float = 4000.0,
                     preminimize: bool = False,
                     preminimize_steps: int = 300,
-                    preminimize_tol: float = 0.005) -> dict:
+                    preminimize_tol: float = 0.005,
+                    max_bond_extension: float = 0.0) -> dict:
     """
     Velocity-Verlet ML-MD via the bakken engine (modules/bakken.py).
 
@@ -347,10 +348,10 @@ def run_ml_md_dense(driver: MLPESDriver,
     velocity initialisation so the Hessian is evaluated at a true
     stationary point, preventing unphysical high-frequency artifacts.
 
-    All arguments and return keys are the same as before; adds:
-        preminimize       : run geometry pre-minimisation (default False)
-        preminimize_steps : max steepest-descent steps (default 300)
-        preminimize_tol   : force convergence Ha/Å (default 0.005)
+    max_bond_extension: if > 0, stop when any covalent bond (initial length
+        < 2.0 Å) extends beyond this multiple of its initial length.
+        2.5 is a reasonable default (allows large-amplitude vibrations without
+        permitting actual bond dissociation).  0 disables the check.
     """
     return _run_md_bakken(
         driver, coords0, n_steps, temperature,
@@ -364,6 +365,7 @@ def run_ml_md_dense(driver: MLPESDriver,
         preminimize=preminimize,
         preminimize_steps=preminimize_steps,
         preminimize_tol=preminimize_tol,
+        max_bond_extension=max_bond_extension,
     )
 
 
@@ -818,6 +820,110 @@ def plot_ir_diagnostics(md_data: dict,
 
 
 # =============================================================================
+# Multi-trajectory dipole collection
+# =============================================================================
+
+def run_multi_trajectory_dipoles(
+        driver,
+        traj,
+        dipole_surface,
+        n_trajectories: int,
+        n_steps: int,
+        temperature: float,
+        timestep: float,
+        save_every: int,
+        nm_data,
+        min_freq_zpe: float,
+        max_freq_zpe: float,
+        preminimize: bool,
+        preminimize_steps: int,
+        preminimize_tol: float,
+        max_bond_extension: float,
+        output_dir) -> np.ndarray:
+    """
+    Run N independent ML-MD trajectories from the N lowest-energy training
+    frames, each with a different RNG seed, and return the concatenated,
+    per-trajectory-centred dipole array.
+
+    Starting from diverse low-energy frames naturally samples different
+    torsional conformers and provides conformational broadening of the IR
+    spectrum.  Each trajectory's dipoles are mean-centred before
+    concatenation so that conformer-dependent DC offsets do not alias the
+    ACF.
+
+    Dissociation guard: if max_bond_extension > 0 the MD is stopped early
+    when any covalent bond extends beyond that multiple of its initial
+    length, preventing unphysical dynamics from contaminating the ACF.
+
+    Returns
+    -------
+    list of np.ndarray, each (n_frames_k, 3) Debye
+        Per-trajectory dipole arrays.  Spectra are averaged independently
+        per trajectory (not concatenated) to avoid ACF artifacts at boundaries.
+    """
+    n_atoms = len(driver.symbols)
+    sort_idx    = np.argsort(traj.energies)
+    n_starts    = min(n_trajectories, len(sort_idx))
+    start_idxs  = sort_idx[:n_starts]
+
+    print(f"\n{'=' * 70}")
+    print(f"  MULTI-TRAJECTORY MD  ({n_starts} trajectories)")
+    print(f"{'=' * 70}")
+    print(f"  Starting frames (lowest energy): {start_idxs.tolist()}")
+    print(f"  Steps per trajectory           : {n_steps}")
+    print(f"  Temperature                    : {temperature:.0f} K")
+    if max_bond_extension > 0:
+        print(f"  Dissociation limit             : {max_bond_extension:.1f}× initial bond")
+
+    all_dipoles = []   # list of (n_frames_k, 3) arrays, one per trajectory
+
+    for k, fidx in enumerate(start_idxs):
+        seed = 42 + k
+        coords0 = traj.coordinates[fidx].copy()
+        e_start  = traj.energies[fidx] * HARTREE_TO_KCAL
+        print(f"\n  --- Trajectory {k+1}/{n_starts}  "
+              f"(frame {fidx}, E={e_start:.2f} kcal/mol, seed={seed}) ---")
+
+        md_data = run_ml_md_dense(
+            driver, coords0, n_steps, temperature,
+            timestep=timestep, save_every=save_every,
+            nm_data=nm_data,
+            min_freq_zpe=min_freq_zpe, max_freq_zpe=max_freq_zpe,
+            preminimize=preminimize,
+            preminimize_steps=preminimize_steps,
+            preminimize_tol=preminimize_tol,
+            seed=seed,
+            max_bond_extension=max_bond_extension,
+        )
+
+        n_frames  = len(md_data['coords_traj'])
+        dissoc    = md_data.get('dissociation_step')
+        if dissoc:
+            print(f"    Dissociation at step {dissoc} — {n_frames} frames kept")
+        else:
+            print(f"    Completed — {n_frames} frames")
+
+        # Save per-trajectory XYZ
+        traj_xyz = output_dir / f'traj_{k+1:02d}.xyz'
+        save_trajectory_xyz(
+            md_data['coords_traj'], driver.symbols,
+            md_data['times_fs'], md_data['energies_ml'],
+            str(traj_xyz),
+        )
+
+        # Predict dipoles for this trajectory
+        dipoles = predict_trajectory_dipoles(dipole_surface,
+                                              md_data['coords_traj'])
+        all_dipoles.append(dipoles)
+        mag = np.linalg.norm(dipoles, axis=-1)
+        print(f"    Dipole |μ|: {mag.min():.3f}–{mag.max():.3f} D  "
+              f"(mean {mag.mean():.3f} D)")
+
+    print(f"\n  Trajectories collected: {len(all_dipoles)}")
+    return all_dipoles   # return list, NOT concatenated
+
+
+# =============================================================================
 # Main workflow
 # =============================================================================
 
@@ -840,7 +946,9 @@ def run_ir_workflow(model_path: str,
                     analytic_hessian: bool = False,
                     family_manifest: str | None = None,
                     blend_width: float = 3.0,
-                    start_coords: np.ndarray | None = None) -> None:
+                    start_coords: np.ndarray | None = None,
+                    n_trajectories: int = 1,
+                    max_bond_extension: float = 0.0) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -873,6 +981,9 @@ def run_ir_workflow(model_path: str,
     premin_label = (f'yes  (max_steps={preminimize_steps}, tol={preminimize_tol} Ha/Å)'
                     if preminimize else 'no')
     print(f"  bakken pre-min     : {premin_label}")
+    print(f"  Trajectories       : {n_trajectories}")
+    if max_bond_extension > 0:
+        print(f"  Bond dissoc guard  : {max_bond_extension:.1f}× initial length")
     print(f"  Output dir         : {output_dir}")
 
     # ── Identify molecule ─────────────────────────────────────────────
@@ -926,51 +1037,106 @@ def run_ir_workflow(model_path: str,
                                              analytic=analytic_hessian)
         nm_frequencies = nm_data[0]   # (n_vib,) cm⁻¹
 
-    # ── Step 3: ML-MD (dense) ─────────────────────────────────────────
-    print(f"\n--- ML-MD  ({n_steps} steps, {temperature:.0f} K, "
-          f"saving every {save_every} step) ---")
+    # ── Step 3: ML-MD (dense) — single or multi-trajectory ───────────
+    if n_trajectories > 1:
+        # Multi-trajectory: compute spectrum for each independently, then
+        # average the intensity arrays.  This avoids ACF discontinuities that
+        # arise from concatenating trajectories with different starting phases.
+        per_traj_dipoles = run_multi_trajectory_dipoles(
+            driver, traj, dipole_surface,
+            n_trajectories=n_trajectories,
+            n_steps=n_steps,
+            temperature=temperature,
+            timestep=timestep, save_every=save_every,
+            nm_data=nm_data,
+            min_freq_zpe=min_freq_zpe, max_freq_zpe=max_freq_zpe,
+            preminimize=preminimize,
+            preminimize_steps=preminimize_steps,
+            preminimize_tol=preminimize_tol,
+            max_bond_extension=max_bond_extension,
+            output_dir=output_dir,
+        )
+        print(f"\n--- Averaging IR spectra across {len(per_traj_dipoles)} trajectories ---")
+        all_intensities = []
+        for k, dip_k in enumerate(per_traj_dipoles):
+            freq_k, int_k, _, _, _ = compute_ir_spectrum(
+                dip_k, timestep_fs=timestep, save_every=save_every,
+                temperature=temperature, max_freq=max_freq, window=window,
+                verbose=(k == 0),
+            )
+            all_intensities.append(int_k)
+            print(f"  Trajectory {k+1}/{len(per_traj_dipoles)} spectrum computed  "
+                  f"({len(dip_k)} frames)")
+        frequencies  = freq_k  # all same grid
+        intensities  = np.mean(all_intensities, axis=0)
+        # Normalise averaged spectrum to 1
+        if intensities.max() > 0:
+            intensities /= intensities.max()
+        # Recompute peaks on averaged spectrum
+        from ir_spectroscopy import IRSpectrumCalculator as _IRSC
+        _calc = _IRSC(temperature=temperature)
+        _calc.frequencies  = frequencies
+        _calc.intensities  = intensities
+        peaks = _calc.find_peaks(threshold=0.05, verbose=True)
+        # Use last trajectory's ACF for diagnostic (approximation)
+        _, _, acf_times, acf_values, _ = compute_ir_spectrum(
+            per_traj_dipoles[-1], timestep_fs=timestep, save_every=save_every,
+            temperature=temperature, max_freq=max_freq, window=window, verbose=False,
+        )
+        dipoles_traj = per_traj_dipoles[-1]   # for diagnostic figure (last traj)
+        md_data = None  # no single md_data in multi-traj mode
+    else:
+        print(f"\n--- ML-MD  ({n_steps} steps, {temperature:.0f} K, "
+              f"saving every {save_every} step) ---")
 
-    md_data = run_ml_md_dense(
-        driver, coords0, n_steps, temperature,
-        timestep=timestep, save_every=save_every,
-        nm_data=nm_data,
-        min_freq_zpe=min_freq_zpe,
-        max_freq_zpe=max_freq_zpe,
-        preminimize=preminimize,
-        preminimize_steps=preminimize_steps,
-        preminimize_tol=preminimize_tol,
-    )
+        md_data = run_ml_md_dense(
+            driver, coords0, n_steps, temperature,
+            timestep=timestep, save_every=save_every,
+            nm_data=nm_data,
+            min_freq_zpe=min_freq_zpe,
+            max_freq_zpe=max_freq_zpe,
+            preminimize=preminimize,
+            preminimize_steps=preminimize_steps,
+            preminimize_tol=preminimize_tol,
+            max_bond_extension=max_bond_extension,
+        )
 
-    # Save raw trajectory (pickle)
-    md_pkl = output_dir / 'md_trajectory.pkl'
-    with open(md_pkl, 'wb') as fh:
-        pickle.dump(md_data, fh)
-    print(f"  MD trajectory saved: {md_pkl}  ({len(md_data['coords_traj'])} frames)")
+        if md_data.get('dissociation_step'):
+            print(f"  WARNING: dissociation at step {md_data['dissociation_step']}  "
+                  f"— {len(md_data['coords_traj'])} frames used")
 
-    # Save XYZ trajectory for external viewers (VMD, Avogadro, OVITO)
-    xyz_path = output_dir / f'{mol["hill"]}_md_trajectory.xyz'
-    save_trajectory_xyz(
-        md_data['coords_traj'], md_data['symbols'],
-        md_data['times_fs'], md_data['energies_ml'],
-        str(xyz_path), mol_info=mol,
-    )
+        # Save raw trajectory (pickle)
+        md_pkl = output_dir / 'md_trajectory.pkl'
+        with open(md_pkl, 'wb') as fh:
+            pickle.dump(md_data, fh)
+        print(f"  MD trajectory saved: {md_pkl}  ({len(md_data['coords_traj'])} frames)")
 
-    # ── Step 4: Predict dipoles along trajectory ──────────────────────
-    print("\n--- Predicting dipoles along MD trajectory ---")
-    dipoles_traj = predict_trajectory_dipoles(
-        dipole_surface, md_data['coords_traj']
-    )
+        # Save XYZ trajectory for external viewers (VMD, Avogadro, OVITO)
+        xyz_path = output_dir / f'{mol["hill"]}_md_trajectory.xyz'
+        save_trajectory_xyz(
+            md_data['coords_traj'], md_data['symbols'],
+            md_data['times_fs'], md_data['energies_ml'],
+            str(xyz_path), mol_info=mol,
+        )
 
-    # ── Step 5: Compute IR spectrum ───────────────────────────────────
-    print("\n--- Computing IR spectrum ---")
-    frequencies, intensities, acf_times, acf_values, peaks = compute_ir_spectrum(
-        dipoles_traj,
-        timestep_fs=timestep,
-        save_every=save_every,
-        temperature=temperature,
-        max_freq=max_freq,
-        window=window,
-    )
+        # ── Step 4: Predict dipoles along trajectory ──────────────────
+        print("\n--- Predicting dipoles along MD trajectory ---")
+        dipoles_traj = predict_trajectory_dipoles(
+            dipole_surface, md_data['coords_traj']
+        )
+
+    # ── Step 5: Compute IR spectrum (single-trajectory path only) ────
+    if n_trajectories == 1:
+        print("\n--- Computing IR spectrum ---")
+        frequencies, intensities, acf_times, acf_values, peaks = compute_ir_spectrum(
+            dipoles_traj,
+            timestep_fs=timestep,
+            save_every=save_every,
+            temperature=temperature,
+            max_freq=max_freq,
+            window=window,
+        )
+    # multi-trajectory: frequencies/intensities/peaks/acf_* already set above
 
     # ── Step 6: Save CSV ──────────────────────────────────────────────
     csv_path = output_dir / 'ir_spectrum.csv'
@@ -1003,17 +1169,21 @@ def run_ir_workflow(model_path: str,
 
     # ── Step 8: 6-panel diagnostic figure ────────────────────────────
     fig_diag_path = output_dir / 'ir_spectrum_figure.png'
-    plot_ir_diagnostics(
-        md_data, dipoles_traj,
-        frequencies, intensities,
-        acf_times, acf_values, peaks,
-        dipole_surface, training_data_path,
-        str(fig_diag_path),
-        nm_frequencies=nm_frequencies,
-    )
+    if md_data is not None:   # single-trajectory only; multi-traj skips full diagnostic
+        plot_ir_diagnostics(
+            md_data, dipoles_traj,
+            frequencies, intensities,
+            acf_times, acf_values, peaks,
+            dipole_surface, training_data_path,
+            str(fig_diag_path),
+            nm_frequencies=nm_frequencies,
+        )
+    else:
+        print(f"\n  Diagnostic figure  : skipped (multi-trajectory mode — see traj_*.xyz)")
 
     # ── Step 9: JSON summary ──────────────────────────────────────────
     top_peaks = sorted(peaks, key=lambda p: p[1], reverse=True)[:10]
+    _xyz_path = str(xyz_path) if md_data is not None else str(output_dir / 'traj_01.xyz')
     summary = {
         'date':              datetime.datetime.now().isoformat(),
         'molecule_hill':     mol['hill'],
@@ -1023,16 +1193,18 @@ def run_ir_workflow(model_path: str,
         'training_data':     str(training_data_path),
         'dipole_model':      str(dipole_pkl),
         'n_md_steps':        n_steps,
+        'n_trajectories':    n_trajectories,
         'temperature_K':     temperature,
         'timestep_fs':       timestep,
         'save_every':        save_every,
         'dt_eff_fs':         dt_eff,
+        'max_bond_extension': max_bond_extension,
         'zpe_floor_init':    use_zpe_init,
         'zpe_min_freq_cm-1': min_freq_zpe if use_zpe_init else None,
         'zpe_max_freq_cm-1': max_freq_zpe if use_zpe_init else None,
-        'preminimized':      md_data.get('preminimized', False),
+        'preminimized':      md_data.get('preminimized', False) if md_data else preminimize,
         'n_frames_ir':       len(dipoles_traj),
-        'trajectory_xyz':    str(xyz_path),
+        'trajectory_xyz':    _xyz_path,
         'spectrum_csv':      str(csv_path),
         'figure_spectrum':   str(fig_spectrum_path),
         'figure_diagnostic': str(fig_diag_path),
@@ -1121,6 +1293,17 @@ def main():
                         help='Path to .npy file containing starting geometry (n_atoms, 3) Å. '
                              'Overrides lowest-energy training frame. Use PSI4 equilibrium '
                              'geometry to avoid ML-PES saddle-point pre-minimization issues.')
+    parser.add_argument('--n-trajectories', type=int, default=1,
+                        help='Number of independent MD trajectories to run and average. '
+                             'Each starts from one of the N lowest-energy training frames '
+                             'with a different random seed (seed=42,43,...). Dipoles are '
+                             'centred per-trajectory before concatenation, providing '
+                             'conformational broadening. Default: 1 (single trajectory).')
+    parser.add_argument('--max-bond-extension', type=float, default=0.0,
+                        help='Stop trajectory when any covalent bond (initial length < 2 Å) '
+                             'extends beyond this multiple of its initial length. '
+                             '2.5 guards against dissociation while allowing large-amplitude '
+                             'vibrations. 0 (default) disables detection.')
     parser.add_argument('--preminimize',    action='store_true',
                         help='Run bakken steepest-descent pre-minimisation on the ML-PES '
                              'before Hessian/MD so the expansion point is a true stationary '
@@ -1171,6 +1354,8 @@ def main():
         family_manifest     = args.conformer_manifest if args.multi_surface else None,
         blend_width         = args.blend_width,
         start_coords        = np.load(args.start_coords) if args.start_coords else None,
+        n_trajectories      = args.n_trajectories,
+        max_bond_extension  = args.max_bond_extension,
     )
 
 

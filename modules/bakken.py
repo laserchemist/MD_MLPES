@@ -519,7 +519,8 @@ def run_md(driver: MLPESDriver,
            max_freq_zpe: float = 4000.0,
            preminimize: bool = False,
            preminimize_steps: int = 300,
-           preminimize_tol: float = 0.005) -> dict:
+           preminimize_tol: float = 0.005,
+           max_bond_extension: float = 0.0) -> dict:
     """
     Velocity-Verlet ML-MD with Berendsen thermostat (bakken engine).
 
@@ -543,9 +544,13 @@ def run_md(driver: MLPESDriver,
                             ML-PES minimum (recommended before Hessian)
         preminimize_steps : max steps for pre-minimiser
         preminimize_tol   : force convergence threshold (Ha/Å)
+        max_bond_extension: if > 0, stop the trajectory when any covalent bond
+                            (initial length < 2.0 Å) extends beyond this factor
+                            times its initial length.  E.g. 2.5 = 250% of eq.
+                            0 (default) disables dissociation detection.
 
     Returns dict:
-        coords_traj   (n_frames, n_atoms, 3) Angstrom
+        coords_traj      (n_frames, n_atoms, 3) Angstrom
         energies_ml   (n_frames,) Hartree
         times_fs      (n_frames,) femtoseconds
         symbols       List[str]
@@ -553,9 +558,10 @@ def run_md(driver: MLPESDriver,
         save_every    int
         temperature   float (K)
         n_steps       int
-        nm_frequencies (n_vib,) cm⁻¹ or None
-        coords_start  (n_atoms, 3) — geometry after pre-min (or coords0)
-        preminimized  bool
+        nm_frequencies   (n_vib,) cm⁻¹ or None
+        coords_start     (n_atoms, 3) — geometry after pre-min (or coords0)
+        preminimized     bool
+        dissociation_step int or None — step at which dissociation was detected
     """
     masses_amu = driver.masses
     masses_au  = masses_amu * AMU_TO_AU
@@ -576,6 +582,21 @@ def run_md(driver: MLPESDriver,
         coords = coords0.copy()
 
     coords_start = coords.copy()
+
+    # ── Bonded-pair table for dissociation detection ──────────────────────
+    bonded_pairs: list = []   # (i, j, eq_dist_Ang)
+    if max_bond_extension > 0.0:
+        n_at = len(driver.symbols)
+        for _i in range(n_at):
+            for _j in range(_i + 1, n_at):
+                # Skip X-H bonds: ZPE oscillations can extend C-H 2-3× at
+                # high effective temperature without actual dissociation.
+                # We only care about heavy-atom bonds (O-O, C-O, C-C, etc.)
+                if driver.symbols[_i] == 'H' or driver.symbols[_j] == 'H':
+                    continue
+                _d0 = float(np.linalg.norm(coords_start[_i] - coords_start[_j]))
+                if _d0 < 2.0:   # covalent bond threshold (Å)
+                    bonded_pairs.append((_i, _j, _d0))
 
     # ── Velocity initialisation ───────────────────────────────────────────
     if nm_data is not None:
@@ -599,6 +620,7 @@ def run_md(driver: MLPESDriver,
     coords_list   = []
     energies_list = []
     times_list    = []
+    dissociation_step: int | None = None
 
     try:
         from tqdm import tqdm
@@ -642,6 +664,20 @@ def run_md(driver: MLPESDriver,
                     'T': f'{T_curr:.0f} K',
                 })
 
+            # ── Dissociation detection ─────────────────────────────
+            if bonded_pairs:
+                for _i, _j, _d0 in bonded_pairs:
+                    _d = float(np.linalg.norm(coords[_i] - coords[_j]))
+                    if _d > max_bond_extension * _d0:
+                        dissociation_step = step
+                        print(f"\n  Dissociation detected: atoms {_i}–{_j}  "
+                              f"d={_d:.3f} Å (eq={_d0:.3f} Å, limit="
+                              f"{max_bond_extension*_d0:.3f} Å).  "
+                              f"Truncating at step {step}.")
+                        break
+                if dissociation_step is not None:
+                    break
+
     return {
         'coords_traj':    np.array(coords_list),
         'energies_ml':    np.array(energies_list),
@@ -653,5 +689,6 @@ def run_md(driver: MLPESDriver,
         'n_steps':        n_steps,
         'nm_frequencies': nm_frequencies,
         'coords_start':   coords_start,
-        'preminimized':   preminimize,
+        'preminimized':        preminimize,
+        'dissociation_step':   dissociation_step,
     }

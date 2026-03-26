@@ -55,6 +55,21 @@ python3 ir_md_spectrum.py \
     --preminimize --zpe-min-freq 50 --zpe-max-freq 4000
 ```
 
+**Run multi-trajectory averaged IR spectrum (conformational broadening):**
+```bash
+python3 ir_md_spectrum.py \
+    --model outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 15000 --temp 300 --timestep 0.5 --save-every 1 \
+    --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 \
+    --max-bond-extension 2.5
+# Runs 5 independent MD trajectories from the 5 lowest-energy training frames.
+# Dipoles are per-trajectory centred and concatenated for ACF averaging.
+# Dissociation guard: stops trajectory when any heavy-atom bond extends >2.5× eq.
+# Total effective sampling: 5 × 15000 = 75000 frames.
+```
+
 **Retrain with softer gamma (to improve Hessian frequencies):**
 ```bash
 python3 retrain_softer_gamma.py \
