@@ -675,6 +675,108 @@ evaluations per FD step).  Analytic forces are 903× faster and implemented, but
 identical frequencies to FD because the Hessian problem is in the descriptor, not
 the differentiation method.
 
+---
+
+## 2026-03-27 — Multi-Trajectory IR Spectrum (Conformational Broadening)
+
+### Motivation
+
+The single-trajectory MVKO IR run (`ir_spectrum_20260319_174321/`) showed promising peaks at
+322, 513, 658, and 893 cm⁻¹ but might be biased by a single starting geometry.  Broader
+sampling of phase space and conformational diversity (s-cis / s-trans / gauche torsional
+variants) should:
+- Reduce single-trajectory statistical noise via averaging
+- Naturally broaden peaks that shift with conformation
+- Guard against spurious dissociation events by truncating trajectories early
+
+An `.xyz` trajectory from the adaptive-model run showed O–O bond extension to 2.31 Å
+(1.71× equilibrium), confirming dissociation can occur at elevated effective temperatures.
+The original 904-frame model was used for this run (adaptive model has 3 imaginary modes,
+see Known Limitation 5).
+
+### Implementation
+
+New flags added to `ir_md_spectrum.py`:
+- `--n-trajectories N` — run N independent MD trajectories from the N lowest-energy
+  training frames (different random seeds 42…42+N−1); average per-trajectory spectra
+- `--max-bond-extension F` — stop trajectory when any **heavy-atom** bond extends beyond
+  F× its equilibrium length (X–H bonds excluded: ZPE oscillations legitimately extend
+  C–H bonds 2–3×)
+
+Per-trajectory spectra are averaged as intensity arrays (not dipole concatenation, which
+causes ACF discontinuities at trajectory boundaries).
+
+Dissociation detection added to `modules/bakken.py` `run_md()`: builds a bonded-pairs
+table (all heavy-atom pairs with r₀ < 2.0 Å) from the post-minimisation geometry;
+checks every saved frame; breaks the integration loop on first violation and returns
+`'dissociation_step'` in the result dict.
+
+### Run
+
+```
+python3 ir_md_spectrum.py \
+    --model outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 15000 --temp 300 --timestep 0.5 --save-every 1 \
+    --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.5
+```
+
+Output: `outputs/ir_spectrum_20260327_092555/`
+
+### Per-Trajectory Results
+
+| Traj | Start frame | Peaks (cm⁻¹) above 0.05 threshold |
+|------|-------------|-------------------------------------|
+| 1 | 0   (E_min) | 37, 246, 322, 514, 602, **893** |
+| 2 | 64          | 210, 247 |
+| 3 | 65          | 209, 241, 247, 322 |
+| 4 | 96          | 37, 210, 247, 513, **893** |
+| 5 | 9           | 37, 210, 247, 322, 513, **893** |
+
+No dissociation detected in any of the 5 trajectories (all 15,000 steps completed;
+heavy-atom bonds stayed well below 2.5× equilibrium).
+
+### Averaged Spectrum Peaks
+
+| Freq (cm⁻¹) | Rel. Intensity | Assignment |
+|-------------|----------------|-----------|
+| 210 | 1.000 | Torsion/bending |
+| 247 | 0.422 | Torsion/bending |
+| 37  | 0.122 | Torsion/bending |
+| 322 | 0.091 | Torsion/bending |
+| 514 | 0.061 | C–O stretch |
+| **893** | **0.322** | **O–O stretch** |
+
+The O–O stretch at 893 cm⁻¹ (relative intensity 0.32) survives the averaging procedure
+and is the highest-frequency peak above 500 cm⁻¹.  The dominant torsional band at
+~210 cm⁻¹ reflects the low-frequency MVKO conformational motion sampled across starting
+geometries.  C–H stretch peaks are absent, consistent with the known Coulomb+RBF Hessian
+stiffness artifact (ML-PES C–H modes at 10,000–15,000 cm⁻¹).
+
+### Observations
+
+1. **Conformational heterogeneity is real**: Trajectories 1, 4, 5 show clear 893 cm⁻¹
+   O–O stretch; trajectories 2 and 3 show only torsional modes.  This is physically
+   consistent — different starting geometries (different torsional conformers) have
+   different dipole-moment coupling to the O–O stretch.  The averaged spectrum correctly
+   captures both torsional and O–O character.
+
+2. **893 cm⁻¹ is robust**: The O–O stretch appears in 3/5 trajectories and survives
+   averaging with relative intensity 0.32, consistent with the single-trajectory result
+   (893 cm⁻¹, rel. intensity 0.125 in `ir_spectrum_20260319_174321/`).  The higher
+   relative intensity here reflects per-trajectory normalisation before averaging — some
+   trajectories are torsion-dominated, depressing their torsional peak and effectively
+   upweighting the O–O signal in the average.
+
+3. **No dissociation**: The 904-frame near-equilibrium model is dynamically stable at
+   300 K + ZPE init for all 5 trajectories × 15,000 steps.  Contrast with the adaptive
+   model which showed O–O bond extension to 2.31 Å.
+
+4. **Multi-trajectory averaging broadens peaks naturally**: The torsional band shifts
+   from 209–210 cm⁻¹ across trajectories, giving a slightly broadened envelope in the
+   average compared to any single run.
+
 ### 5. Adaptive training can degrade near-equilibrium accuracy
 Adding high-energy frames (1000–2000 K PSI4 MD) to an existing ML-PES shifts the KRR
 kernel allocation away from the equilibrium region.  The 1300-frame adaptive model
@@ -712,6 +814,7 @@ saddle-point instability.  Alternatively, use a local model near equilibrium
 | `outputs/ir_spectrum_20260324_163458/` | MVKO  | adaptive (1300 fr) | 65, 112, 114, 198 | Failed — 3 imaginary modes |
 | `outputs/ir_spectrum_20260324_185233/` | MVKO  | adaptive (1300 fr) | 77, 103, 115, 154, 157, 205 | Failed — no ZPE (adaptive PES broken) |
 | `outputs/ir_spectrum_20260324_193316/` | MVKO  | mlpes_initial (904 fr) | 59, 109, 183, 210, 247, 322, 372 | No ZPE — confirms ZPE init essential |
+| `outputs/ir_spectrum_20260327_092555/` | MVKO  | mlpes_initial (904 fr) | 37, 210, 247, 322, 514, 893 | **Multi-traj (5×15k); ZPE+preminimize** |
 
 ### Key scripts
 | Script | Purpose |

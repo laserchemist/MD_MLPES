@@ -1062,7 +1062,6 @@ def run_ir_workflow(model_path: str,
             freq_k, int_k, _, _, _ = compute_ir_spectrum(
                 dip_k, timestep_fs=timestep, save_every=save_every,
                 temperature=temperature, max_freq=max_freq, window=window,
-                verbose=(k == 0),
             )
             all_intensities.append(int_k)
             print(f"  Trajectory {k+1}/{len(per_traj_dipoles)} spectrum computed  "
@@ -1075,13 +1074,14 @@ def run_ir_workflow(model_path: str,
         # Recompute peaks on averaged spectrum
         from ir_spectroscopy import IRSpectrumCalculator as _IRSC
         _calc = _IRSC(temperature=temperature)
+        _calc.spectrum     = (frequencies, intensities)
         _calc.frequencies  = frequencies
         _calc.intensities  = intensities
         peaks = _calc.find_peaks(threshold=0.05, verbose=True)
         # Use last trajectory's ACF for diagnostic (approximation)
         _, _, acf_times, acf_values, _ = compute_ir_spectrum(
             per_traj_dipoles[-1], timestep_fs=timestep, save_every=save_every,
-            temperature=temperature, max_freq=max_freq, window=window, verbose=False,
+            temperature=temperature, max_freq=max_freq, window=window,
         )
         dipoles_traj = per_traj_dipoles[-1]   # for diagnostic figure (last traj)
         md_data = None  # no single md_data in multi-traj mode
@@ -1230,7 +1230,7 @@ def run_ir_workflow(model_path: str,
     print("  IR WORKFLOW COMPLETE")
     print(f"{'=' * 70}")
     print(f"  Molecule           : {mol['label']}")
-    print(f"  Trajectory XYZ     : {xyz_path}")
+    print(f"  Trajectory XYZ     : {_xyz_path}")
     print(f"  Spectrum CSV       : {csv_path}")
     print(f"  Spectrum figure    : {fig_spectrum_path}")
     print(f"  Diagnostic figure  : {fig_diag_path}")
