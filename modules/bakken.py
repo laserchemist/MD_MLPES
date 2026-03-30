@@ -520,7 +520,9 @@ def run_md(driver: MLPESDriver,
            preminimize: bool = False,
            preminimize_steps: int = 300,
            preminimize_tol: float = 0.005,
-           max_bond_extension: float = 0.0) -> dict:
+           max_bond_extension: float = 0.0,
+           monitor_bonds: list = None,
+           print_every: int = 0) -> dict:
     """
     Velocity-Verlet ML-MD with Berendsen thermostat (bakken engine).
 
@@ -548,6 +550,12 @@ def run_md(driver: MLPESDriver,
                             (initial length < 2.0 Å) extends beyond this factor
                             times its initial length.  E.g. 2.5 = 250% of eq.
                             0 (default) disables dissociation detection.
+        monitor_bonds:    list of (i, j) or (i, j, label) tuples specifying
+                            atom pairs whose distances are saved at every frame
+                            and printed periodically.  Indices are 0-based.
+                            Default None (no monitoring).
+        print_every:      print a one-line diagnostic (E, T, monitored distances)
+                            every N steps.  0 (default) disables periodic prints.
 
     Returns dict:
         coords_traj      (n_frames, n_atoms, 3) Angstrom
@@ -562,6 +570,8 @@ def run_md(driver: MLPESDriver,
         coords_start     (n_atoms, 3) — geometry after pre-min (or coords0)
         preminimized     bool
         dissociation_step int or None — step at which dissociation was detected
+        bond_distances_traj  (n_frames, n_bonds) Å or None
+        bond_labels          list of str  e.g. ['O1-O2', 'C4-H4'] or None
     """
     masses_amu = driver.masses
     masses_au  = masses_amu * AMU_TO_AU
@@ -617,10 +627,32 @@ def run_md(driver: MLPESDriver,
 
     forces = driver.forces(coords)
 
-    coords_list   = []
-    energies_list = []
-    times_list    = []
+    # ── Bond-monitoring setup ─────────────────────────────────────────────────
+    _mon_pairs: list = []   # (i, j, label)
+    if monitor_bonds:
+        for entry in monitor_bonds:
+            i, j = int(entry[0]), int(entry[1])
+            if len(entry) >= 3:
+                lbl = str(entry[2])
+            else:
+                lbl = f'{driver.symbols[i]}{i}–{driver.symbols[j]}{j}'
+            _mon_pairs.append((i, j, lbl))
+        print(f"  Monitoring {len(_mon_pairs)} bond(s): "
+              + ', '.join(l for _, _, l in _mon_pairs))
+        # Print column header for periodic diagnostics
+        if print_every > 0:
+            _hdr = (f"  {'Step':>7}  {'t(fs)':>7}  {'E(kcal/mol)':>13}  "
+                    f"{'ΔE(kcal/mol)':>13}  {'T(K)':>6}"
+                    + ''.join(f"  {l:>10}" for _, _, l in _mon_pairs))
+            print(_hdr)
+            print('  ' + '─' * (len(_hdr) - 2))
+
+    coords_list       = []
+    energies_list     = []
+    times_list        = []
+    bond_dist_list    = []   # (n_frames, n_bonds)
     dissociation_step: int | None = None
+    _E_ref: float | None = None   # energy of first saved frame (for ΔE)
 
     try:
         from tqdm import tqdm
@@ -658,11 +690,35 @@ def run_md(driver: MLPESDriver,
             energies_list.append(e)
             times_list.append(step * timestep)
 
+            # Bond-distance tracking
+            if _mon_pairs:
+                _dists = [float(np.linalg.norm(coords[i] - coords[j]))
+                          for i, j, _ in _mon_pairs]
+                bond_dist_list.append(_dists)
+
+            if _E_ref is None:
+                _E_ref = e
+
             if hasattr(pbar, 'set_postfix') and step % max(1, n_steps // 20) == 0:
-                pbar.set_postfix({
+                _postfix: dict = {
                     'E': f'{e * HARTREE_TO_KCAL:.1f} kcal/mol',
                     'T': f'{T_curr:.0f} K',
-                })
+                }
+                if _mon_pairs:
+                    for (_, _, lbl), d in zip(_mon_pairs, bond_dist_list[-1]):
+                        _postfix[lbl] = f'{d:.2f}Å'
+                pbar.set_postfix(_postfix)
+
+            # Periodic diagnostic print
+            if print_every > 0 and step % print_every == 0:
+                _dE = (e - _E_ref) * HARTREE_TO_KCAL
+                _line = (f"  {step:>7}  {step*timestep:>7.1f}  "
+                         f"{e*HARTREE_TO_KCAL:>13.3f}  {_dE:>+13.3f}  "
+                         f"{T_curr:>6.0f}")
+                if _mon_pairs:
+                    for d in bond_dist_list[-1]:
+                        _line += f"  {d:>10.4f}"
+                print(_line, flush=True)
 
             # ── Dissociation detection ─────────────────────────────
             if bonded_pairs:
@@ -678,6 +734,9 @@ def run_md(driver: MLPESDriver,
                 if dissociation_step is not None:
                     break
 
+    _bond_arr   = np.array(bond_dist_list) if bond_dist_list else None
+    _bond_labels = [l for _, _, l in _mon_pairs] if _mon_pairs else None
+
     return {
         'coords_traj':    np.array(coords_list),
         'energies_ml':    np.array(energies_list),
@@ -691,4 +750,6 @@ def run_md(driver: MLPESDriver,
         'coords_start':   coords_start,
         'preminimized':        preminimize,
         'dissociation_step':   dissociation_step,
+        'bond_distances_traj': _bond_arr,
+        'bond_labels':         _bond_labels,
     }

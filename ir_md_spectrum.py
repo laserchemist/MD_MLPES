@@ -340,7 +340,9 @@ def run_ml_md_dense(driver: MLPESDriver,
                     preminimize: bool = False,
                     preminimize_steps: int = 300,
                     preminimize_tol: float = 0.005,
-                    max_bond_extension: float = 0.0) -> dict:
+                    max_bond_extension: float = 0.0,
+                    monitor_bonds: list = None,
+                    print_every: int = 0) -> dict:
     """
     Velocity-Verlet ML-MD via the bakken engine (modules/bakken.py).
 
@@ -352,6 +354,9 @@ def run_ml_md_dense(driver: MLPESDriver,
         < 2.0 Å) extends beyond this multiple of its initial length.
         2.5 is a reasonable default (allows large-amplitude vibrations without
         permitting actual bond dissociation).  0 disables the check.
+    monitor_bonds: list of (i, j) or (i, j, label) tuples — atom pairs whose
+        distances are saved at every frame and printed periodically.
+    print_every: print one-line diagnostic every N steps (0 = disabled).
     """
     return _run_md_bakken(
         driver, coords0, n_steps, temperature,
@@ -366,6 +371,8 @@ def run_ml_md_dense(driver: MLPESDriver,
         preminimize_steps=preminimize_steps,
         preminimize_tol=preminimize_tol,
         max_bond_extension=max_bond_extension,
+        monitor_bonds=monitor_bonds,
+        print_every=print_every,
     )
 
 
@@ -894,6 +901,8 @@ def run_multi_trajectory_dipoles(
             preminimize_tol=preminimize_tol,
             seed=seed,
             max_bond_extension=max_bond_extension,
+            monitor_bonds=monitor_bonds,
+            print_every=print_every,
         )
 
         n_frames  = len(md_data['coords_traj'])
@@ -948,7 +957,9 @@ def run_ir_workflow(model_path: str,
                     blend_width: float = 3.0,
                     start_coords: np.ndarray | None = None,
                     n_trajectories: int = 1,
-                    max_bond_extension: float = 0.0) -> None:
+                    max_bond_extension: float = 0.0,
+                    monitor_bonds: list = None,
+                    print_every: int = 0) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -1099,6 +1110,8 @@ def run_ir_workflow(model_path: str,
             preminimize_steps=preminimize_steps,
             preminimize_tol=preminimize_tol,
             max_bond_extension=max_bond_extension,
+            monitor_bonds=monitor_bonds,
+            print_every=print_every,
         )
 
         if md_data.get('dissociation_step'):
@@ -1250,6 +1263,34 @@ def run_ir_workflow(model_path: str,
 
 
 # =============================================================================
+# CLI helpers
+# =============================================================================
+
+def _parse_monitor_bonds(s: str | None) -> list | None:
+    """
+    Parse --monitor-bonds string "i-j,i-j:label,..." into list of tuples.
+    Formats supported:
+      "0-1"          → (0, 1)
+      "0-1:O1-O2"    → (0, 1, 'O1-O2')
+      "0-1,2-9"      → [(0,1), (2,9)]
+    """
+    if not s:
+        return None
+    pairs = []
+    for token in s.split(','):
+        token = token.strip()
+        if not token:
+            continue
+        if ':' in token:
+            idx_part, label = token.split(':', 1)
+        else:
+            idx_part, label = token, None
+        i, j = (int(x) for x in idx_part.split('-'))
+        pairs.append((i, j, label) if label else (i, j))
+    return pairs if pairs else None
+
+
+# =============================================================================
 # CLI
 # =============================================================================
 
@@ -1304,6 +1345,13 @@ def main():
                              'extends beyond this multiple of its initial length. '
                              '2.5 guards against dissociation while allowing large-amplitude '
                              'vibrations. 0 (default) disables detection.')
+    parser.add_argument('--monitor-bonds', default=None,
+                        help='Comma-separated atom-pair indices to monitor during MD, e.g. '
+                             '"0-1,2-9,1-2". Distances saved at every frame and printed '
+                             'periodically. Useful for tracking reaction coordinates.')
+    parser.add_argument('--print-every', type=int, default=0,
+                        help='Print one-line diagnostic (E, T, monitored distances) every N '
+                             'steps during MD. 0 (default) disables periodic prints.')
     parser.add_argument('--preminimize',    action='store_true',
                         help='Run bakken steepest-descent pre-minimisation on the ML-PES '
                              'before Hessian/MD so the expansion point is a true stationary '
@@ -1356,6 +1404,8 @@ def main():
         start_coords        = np.load(args.start_coords) if args.start_coords else None,
         n_trajectories      = args.n_trajectories,
         max_bond_extension  = args.max_bond_extension,
+        monitor_bonds       = _parse_monitor_bonds(args.monitor_bonds),
+        print_every         = args.print_every,
     )
 
 
