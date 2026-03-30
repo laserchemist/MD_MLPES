@@ -68,16 +68,31 @@ Atom ordering (MVKO, from modules/test_molecules.py / bakken MEMORY):
   4  C3  terminal vinyl carbon (=CH2)
   5  C4  methyl carbon
   6  H1  on C2
-  7  H2  on C3
+  7  H2  on C3  ← transfers to O2 in syn-vinyl 1,4-H shift (6-membered ring TS)
   8  H3  on C3
-  9  H4  on C4  ← transfers to O2 in syn-1,4-H shift
+  9  H4  on C4
   10 H5  on C4
   11 H6  on C4
 
-Reaction coordinate atoms:
-  Forming bond : O2(2) – H4(9)
-  Breaking bond: C4(5) – H4(9)
-  Spectator    : O1(1) – O2(2)  (the Criegee O-O bond)
+PSI4 B3LYP/6-31G* equilibrium geometry analysis:
+  The stored psi4_eq_coords.npy is the syn-VINYL conformer:
+    C3(4)–H2(7) to O2(2): H2–O2 = 2.09 Å (close to TS)
+    C4(5)–O2(2): 3.62 Å (methyl is ANTI to O2 in this conformer)
+  The relevant OH-producing pathway from this geometry is the 6-membered ring
+  vinyl-H transfer: H2(7) migrates from C3(4) to O2(2).
+  Ring: O2(2)–O1(1)–C1(0)–C2(3)=C3(4)–H2(7) → H2 back to O2
+
+Reaction coordinate atoms (syn-vinyl path, 6-membered ring TS):
+  Forming bond : O2(2) – H2(7)   [H2 approaching O2]
+  Breaking bond: C3(4) – H2(7)   [H2 leaving C3]
+  Spectator 1  : O1(1) – O2(2)   [Criegee O-O bond, ~1.36 Å eq]
+  Spectator 2  : C1(0) – O1(1)   [C-O backbone, ~1.29 Å eq]
+
+Note on methyl-H syn path:
+  The anti-methyl conformer stored in psi4_eq_coords.npy cannot directly
+  undergo the 5-membered methyl-H transfer. To study that channel, first
+  rotate the C1-C4 dihedral to place a methyl H syn to O2, re-optimize
+  with PSI4, then run --steps ts,irc on that geometry.
 """
 
 from __future__ import annotations
@@ -111,12 +126,12 @@ HARTREE_TO_KCAL = 627.509474
 AU_TO_DEBYE     = 2.541746
 ANGSTROM_TO_BOHR = 1.88972612456
 
-# Reaction coordinate atom indices (0-based)
-IDX_C4  = 5    # methyl carbon
-IDX_H4  = 9    # transferring hydrogen
-IDX_O2  = 2    # distal oxygen (H acceptor)
-IDX_O1  = 1    # proximal oxygen
-IDX_C1  = 0    # Criegee carbon
+# Reaction coordinate atom indices (0-based) — syn-vinyl 6-membered ring TS
+IDX_C3  = 4    # terminal vinyl carbon  (H donor)
+IDX_H7  = 7    # transferring hydrogen  (H2 on C3=CH2, the syn-vinyl H)
+IDX_O2  = 2    # distal oxygen          (H acceptor)
+IDX_O1  = 1    # proximal oxygen        (Criegee O-O spectator)
+IDX_C1  = 0    # Criegee carbon         (backbone)
 
 
 # ── PSI4 helpers ──────────────────────────────────────────────────────────────
@@ -139,27 +154,39 @@ def _mol_str(symbols, coords, charge=0, mult=1):
 
 
 def _psi4_energy_forces_dipole(symbols, coords, charge=0, mult=1):
-    """Single-point energy, forces (Ha/Å), dipole (D), and spin diagnostics."""
+    """
+    Single-point energy, forces (Ha/Å), dipole (D), and spin diagnostics.
+    Uses gradient() directly (single SCF), then reads dipole from variables.
+    """
     _psi4_setup()
     mol = psi4.geometry(_mol_str(symbols, coords, charge, mult))
-    e, wfn = psi4.energy(
-        f'{PSI4_METHOD}/{PSI4_BASIS}', molecule=mol,
-        return_wfn=True, properties=['dipole'],
+    # gradient() runs one SCF and returns the gradient; use return_wfn for dipole
+    G, wfn = psi4.gradient(
+        f'{PSI4_METHOD}/{PSI4_BASIS}', molecule=mol, return_wfn=True,
     )
-    # Gradient (forces = -grad)
-    G = psi4.gradient(f'{PSI4_METHOD}/{PSI4_BASIS}', molecule=mol)
+    e = wfn.energy()
     grad_au = np.array(G)  # Ha/Bohr
     forces  = -grad_au / ANGSTROM_TO_BOHR  # Ha/Å
 
-    # Dipole
+    # Dipole — try SCF DIPOLE variable first, then oeprop
+    dipole = np.zeros(3)
     try:
         dip_au = np.array(psi4.variable('SCF DIPOLE'))
         dipole = dip_au * AU_TO_DEBYE
     except Exception:
-        dipole = np.zeros(3)
+        try:
+            psi4.oeprop(wfn, 'DIPOLE')
+            dipole = np.array([wfn.variable('DIPOLE X'),
+                               wfn.variable('DIPOLE Y'),
+                               wfn.variable('DIPOLE Z')])
+        except Exception:
+            pass
 
-    # Spin diagnostics (multi-reference proxy)
-    s2  = float(psi4.variable('SCF S^2 EIGENVALUE')) if psi4.has_variable('SCF S^2 EIGENVALUE') else 0.0
+    # Spin contamination — RHF always gives 0, but check for UHF case
+    try:
+        s2 = float(psi4.variable('SCF S^2 EIGENVALUE'))
+    except Exception:
+        s2 = 0.0
     s2_expected = 0.0 if mult == 1 else (mult - 1) * mult / 4.0
     spin_contam = s2 - s2_expected
 
@@ -173,7 +200,6 @@ def _psi4_optimize(symbols, coords, charge=0, mult=1, ts=False):
         psi4.set_options({
             'optking__opt_type': 'ts',
             'optking__geom_maxiter': 100,
-            'optking__consecutive_backsteps_allowed': 5,
         })
     else:
         psi4.set_options({'optking__geom_maxiter': 100})
@@ -186,17 +212,17 @@ def _psi4_optimize(symbols, coords, charge=0, mult=1, ts=False):
 # ── Reaction-coordinate diagnostics ──────────────────────────────────────────
 
 def rxn_coord_distances(coords):
-    """Return key distances for the 1,4-H shift reaction coordinate."""
-    d_CH  = float(np.linalg.norm(coords[IDX_C4] - coords[IDX_H4]))   # breaking
-    d_OH  = float(np.linalg.norm(coords[IDX_O2] - coords[IDX_H4]))   # forming
-    d_OO  = float(np.linalg.norm(coords[IDX_O1] - coords[IDX_O2]))   # spectator O-O
-    d_CO  = float(np.linalg.norm(coords[IDX_C1] - coords[IDX_O1]))   # C1-O1
+    """Return key distances for the vinyl-H 6-membered ring TS reaction coordinate."""
+    d_CH  = float(np.linalg.norm(coords[IDX_C3] - coords[IDX_H7]))   # C3-H7 breaking
+    d_OH  = float(np.linalg.norm(coords[IDX_O2] - coords[IDX_H7]))   # O2-H7 forming
+    d_OO  = float(np.linalg.norm(coords[IDX_O1] - coords[IDX_O2]))   # O1-O2 spectator
+    d_CO  = float(np.linalg.norm(coords[IDX_C1] - coords[IDX_O1]))   # C1-O1 backbone
     return d_CH, d_OH, d_OO, d_CO
 
 
 def print_rxn_coord_header():
     print(f"  {'Frame':>6}  {'E(Ha)':>14}  {'ΔE(kcal)':>10}  "
-          f"{'C4-H4(Å)':>9}  {'O2-H4(Å)':>9}  {'O1-O2(Å)':>9}  "
+          f"{'C3-H7(Å)':>9}  {'O2-H7(Å)':>9}  {'O1-O2(Å)':>9}  "
           f"{'C1-O1(Å)':>9}  {'SpinCont':>9}")
     print('  ' + '─' * 90)
 
@@ -223,25 +249,39 @@ def run_ts_search(symbols, reactant_coords, out_dir: Path):
     4. Return TS coords and frequency.
     """
     print("\n" + "=" * 70)
-    print("  TS SEARCH: syn-MVKO → vinyl hydroperoxide")
+    print("  TS SEARCH: syn-MVKO → vinyl hydroperoxide  (6-membered ring)")
     print("=" * 70)
     print(f"\n  PSI4 {PSI4_METHOD}/{PSI4_BASIS}")
+    print(f"  Pathway: H7 (=CH₂ vinyl H) transfers to O2 via 6-membered ring TS")
+    print(f"  Ring:    O2–O1–C1–C2=C3–H7")
     print(f"  Multi-reference note: B3LYP is single-reference.")
     print(f"  TS barrier height is approximate (±5 kcal/mol).")
     print(f"  ⟨S²⟩ deviation from 0.0 flags open-shell character.\n")
 
-    # Build TS guess: stretch C4-H4, compress O2-H4
-    coords_ts_guess = reactant_coords.copy()
-    h_pos = reactant_coords[IDX_H4]
-    c4_pos = reactant_coords[IDX_C4]
-    o2_pos = reactant_coords[IDX_O2]
+    # Print initial reactant distances
+    d_CH0, d_OH0, d_OO0, d_CO0 = rxn_coord_distances(reactant_coords)
+    print(f"  Reactant: C3-H7={d_CH0:.3f} Å, O2-H7={d_OH0:.3f} Å, "
+          f"O1-O2={d_OO0:.3f} Å")
 
-    # Move H4 35% of the way from C4 toward O2 (rough TS geometry)
-    midpoint = h_pos + 0.35 * (o2_pos - h_pos)
-    coords_ts_guess[IDX_H4] = midpoint
+    # Build TS guess: place H7 along C3→O2 at target distances
+    # Target: C3-H7 ≈ 1.30 Å (breaking), O2-H7 ≈ 1.25 Å (forming)
+    # Strategy: parameterise position along C3→O2 vector.
+    # At fraction λ from C3: r_CH = λ|C3-O2|, r_OH = (1-λ)|C3-O2|
+    # Set r_CH = 1.30, r_OH = 1.25 → λ = 1.30/(1.30+1.25) = 0.510
+    coords_ts_guess = reactant_coords.copy()
+    c3_pos = reactant_coords[IDX_C3]
+    o2_pos = reactant_coords[IDX_O2]
+    vec_c3_o2  = o2_pos - c3_pos
+    dist_c3_o2 = float(np.linalg.norm(vec_c3_o2))
+    unit_c3_o2 = vec_c3_o2 / dist_c3_o2
+
+    # Place H7 at 1.30 Å from C3 along the C3→O2 direction
+    target_CH = 1.40   # Å — breaking bond at TS (asymmetric: C-H weakens more than O-H forms)
+    coords_ts_guess[IDX_H7] = c3_pos + target_CH * unit_c3_o2
 
     d_CH_guess, d_OH_guess, _, _ = rxn_coord_distances(coords_ts_guess)
-    print(f"  TS guess: C4-H4 = {d_CH_guess:.3f} Å, O2-H4 = {d_OH_guess:.3f} Å")
+    print(f"  TS guess: C3-H7 = {d_CH_guess:.3f} Å, O2-H7 = {d_OH_guess:.3f} Å  "
+          f"(C3–O2 distance = {dist_c3_o2:.3f} Å)")
 
     # PSI4 TS optimization
     print(f"\n  Running PSI4 TS optimization ...")
@@ -335,10 +375,10 @@ def run_irc_sampling(symbols, coords_ts, e_ts, reactant_coords, out_dir: Path,
     except Exception as exc:
         print(f"  Hessian failed ({exc}); using C4→O2 H-transfer vector as IRC direction")
         # Fall back: H-transfer vector
-        direction = coords_ts[IDX_O2] - coords_ts[IDX_C4]
+        direction = coords_ts[IDX_O2] - coords_ts[IDX_C3]
         direction /= np.linalg.norm(direction)
         imag_vec_cart = np.zeros_like(coords_ts)
-        imag_vec_cart[IDX_H4] = direction
+        imag_vec_cart[IDX_H7] = direction
 
     # Walk IRC
     all_symbols = symbols
@@ -432,22 +472,26 @@ def run_irc_sampling(symbols, coords_ts, e_ts, reactant_coords, out_dir: Path,
                  'method': f'{PSI4_METHOD}/{PSI4_BASIS}',
                  'multi_ref_note': 'B3LYP single-ref; ⟨S²⟩ dev > 0.1 flags open-shell',
                  'rxn_atoms': {
-                     'C4': IDX_C4, 'H4': IDX_H4, 'O2': IDX_O2,
+                     'C3': IDX_C3, 'H7': IDX_H7, 'O2': IDX_O2,
                      'O1': IDX_O1, 'C1': IDX_C1,
                  },
+                 'pathway': 'syn-vinyl 6-membered ring TS: H7(C3=CH2) -> O2',
              })))
 
     print(f"\n  IRC training data: {len(all_coords)} points → {irc_path}")
 
-    # Energy profile summary
-    e_min_idx = int(np.argmin(energies_arr))
-    e_ts_idx  = np.argmin(np.abs(irc_s_arr))
-    e_min     = energies_arr[e_min_idx]
-    dE_barrier = (energies_arr[e_ts_idx] - e_min) * HARTREE_TO_KCAL
-    print(f"  Approximate barrier : {dE_barrier:.1f} kcal/mol  (B3LYP, approximate)")
-    print(f"  ⟨S²⟩ range         : {spin_arr.min():.4f} – {spin_arr.max():.4f}")
-    n_open = int((np.abs(spin_arr) > 0.1).sum())
-    print(f"  Open-shell frames   : {n_open}/{len(spin_arr)}  (|ΔS²| > 0.1)")
+    # Energy profile summary (guard against empty arrays)
+    if len(energies_arr) > 0:
+        e_min_idx = int(np.argmin(energies_arr))
+        e_ts_idx  = int(np.argmin(np.abs(irc_s_arr)))
+        e_min     = energies_arr[e_min_idx]
+        dE_barrier = (energies_arr[e_ts_idx] - e_min) * HARTREE_TO_KCAL
+        print(f"  Approximate barrier : {dE_barrier:.1f} kcal/mol  (B3LYP, approximate)")
+        print(f"  ⟨S²⟩ range         : {spin_arr.min():.4f} – {spin_arr.max():.4f}")
+        n_open = int((np.abs(spin_arr) > 0.1).sum())
+        print(f"  Open-shell frames   : {n_open}/{len(spin_arr)}  (|ΔS²| > 0.1)")
+    else:
+        print("  WARNING: no IRC points collected — check PSI4 output above")
 
     return irc_path, coords_arr, energies_arr, spin_arr
 
@@ -463,7 +507,7 @@ def train_rxn_path_pes(irc_data_path: str, reactant_model_path: str,
     """
     import sys
     sys.path.insert(0, str(Path(__file__).parent))
-    from modules.ml_pes import MLPESTrainer, CoulombMatrixDescriptor
+    from modules.ml_pes import MLPESTrainer, MLPESConfig, CoulombMatrixDescriptor
     from modules.pes_family import PESFamily
     from modules.data_formats import TrajectoryData
 
@@ -487,9 +531,23 @@ def train_rxn_path_pes(irc_data_path: str, reactant_model_path: str,
         sc = data['spin_contamination']
         n_open = int((np.abs(sc) > 0.1).sum())
         print(f"  Open-shell frames (|ΔS²|>0.1): {n_open}/{n_frames}")
-        print(f"  ⚠️  These frames have multi-reference character; B3LYP energies")
-        print(f"     are approximate. Forces from these frames are included but")
-        print(f"     treat the resulting ML-PES as qualitative in that region.")
+        if n_open > 0:
+            print(f"  ⚠️  These frames have multi-reference character; B3LYP energies")
+            print(f"     are approximate. Forces from these frames are included but")
+            print(f"     treat the resulting ML-PES as qualitative in that region.")
+
+    # Energy filter: keep only points within 100 kcal/mol of minimum
+    E_FILTER_KCAL = 100.0
+    mask = (energies - e_min) * HARTREE_TO_KCAL < E_FILTER_KCAL
+    if not mask.all():
+        print(f"  Energy filter (<{E_FILTER_KCAL:.0f} kcal/mol): "
+              f"{mask.sum()}/{n_frames} frames kept")
+        coords   = coords[mask]
+        energies = energies[mask]
+        forces   = forces[mask]
+        n_frames = int(mask.sum())
+    else:
+        print(f"  All {n_frames} frames within {E_FILTER_KCAL:.0f} kcal/mol — no filtering needed")
 
     # Train
     traj = TrajectoryData(
@@ -500,8 +558,12 @@ def train_rxn_path_pes(irc_data_path: str, reactant_model_path: str,
         dipoles=None,
         metadata={'source': 'irc_rxn_path'},
     )
-    trainer = MLPESTrainer()
-    trainer.train(traj, gamma=gamma, alpha=alpha)
+    config = MLPESConfig()
+    config.gamma = gamma
+    config.alpha = alpha
+    config.tune_hyperparameters = False
+    trainer = MLPESTrainer(config)
+    trainer.train(traj)
     print(f"\n  Reaction-path ML-PES: γ={gamma}, α={alpha}")
 
     rxn_pkl = out_dir / 'mlpes_rxn_path.pkl'
@@ -579,12 +641,12 @@ def run_reaction_md(family, symbols, reactant_coords, out_dir: Path,
     print("\n" + "=" * 70)
     print(f"  HIGH-ENERGY ML-MD  (T={temperature:.0f} K, {n_steps} steps)")
     print("=" * 70)
-    print(f"\n  Monitoring reaction coordinate:")
-    print(f"    C4(5)–H4(9)  : breaking bond")
-    print(f"    O2(2)–H4(9)  : forming bond (OH product)")
-    print(f"    O1(1)–O2(2)  : Criegee O-O (spectator)")
-    print(f"    C1(0)–O1(1)  : C-O (Criegee backbone)")
-    print(f"\n  Multi-reference note: geometries with O2-H4 < 1.2 Å are in")
+    print(f"\n  Monitoring reaction coordinate (syn-vinyl 6-membered ring TS):")
+    print(f"    C3(4)–H7(7)  : breaking bond  (vinyl =CH₂ H)")
+    print(f"    O2(2)–H7(7)  : forming bond   (→ OH product)")
+    print(f"    O1(1)–O2(2)  : Criegee O-O    (spectator)")
+    print(f"    C1(0)–O1(1)  : C-O backbone")
+    print(f"\n  Multi-reference note: geometries with O2-H7 < 1.2 Å are in")
     print(f"  the VHP/OH product region where B3LYP ML-PES is qualitative.\n")
 
     # Use a PESFamilyDriver wrapper
@@ -612,10 +674,10 @@ def run_reaction_md(family, symbols, reactant_coords, out_dir: Path,
     driver = PESFamilyDriver(family)
 
     monitor_bonds = [
-        (IDX_C4, IDX_H4, 'C4-H4'),
-        (IDX_O2, IDX_H4, 'O2-H4'),
-        (IDX_O1, IDX_O2, 'O1-O2'),
-        (IDX_C1, IDX_O1, 'C1-O1'),
+        (IDX_C3, IDX_H7, 'C3-H7'),   # breaking bond
+        (IDX_O2, IDX_H7, 'O2-H7'),   # forming bond (→ OH product)
+        (IDX_O1, IDX_O2, 'O1-O2'),   # Criegee O-O spectator
+        (IDX_C1, IDX_O1, 'C1-O1'),   # backbone
     ]
 
     md_result = run_md(
@@ -674,15 +736,15 @@ def _post_trajectory_analysis(md_result: dict, driver, out_dir: Path,
             print(f"  {lbl:>12}  {d.min():>7.4f}  {d.mean():>7.4f}  "
                   f"{d.max():>7.4f}  {d.std():>7.4f}")
 
-        # Count reactive events: O2-H4 < 1.2 Å (near OH formed)
-        # Bond label index 1 = O2-H4 (second monitor_bonds entry)
+        # Count reactive events: O2-H7 < 1.2 Å (near OH formed)
+        # Bond label index 1 = O2-H7 (second monitor_bonds entry)
         if len(bond_labels) >= 2:
-            oh_idx = next((k for k, l in enumerate(bond_labels) if 'O2-H4' in l or 'H4' in l and 'O2' in l), None)
+            oh_idx = next((k for k, l in enumerate(bond_labels) if 'O2-H7' in l), None)
             if oh_idx is not None:
                 oh_dist = bond_dist[:, oh_idx]
                 n_near_product = int((oh_dist < 1.2).sum())
                 frac = n_near_product / n_frames * 100
-                print(f"\n  Frames with O2-H4 < 1.2 Å (near product): "
+                print(f"\n  Frames with O2-H7 < 1.2 Å (near OH product): "
                       f"{n_near_product}/{n_frames}  ({frac:.1f}%)")
                 if n_near_product > 0:
                     print(f"  ⚠️  These frames are in the VHP/OH product region")
@@ -893,10 +955,17 @@ def main():
     family     = None
     family_pkl = args.family_pkl
     if 'train' in steps:
+        # Check IRC data is non-empty before training
         if irc_data_path is None:
             print("  No IRC data available — skipping training step")
             print("  Provide --irc-data or run --steps ts,irc first")
         else:
+            _irc_check = np.load(irc_data_path, allow_pickle=True)
+            if len(_irc_check['coordinates']) == 0:
+                print("  IRC data is empty — skipping training step")
+                print("  Check PSI4 output: IRC step failure above")
+                irc_data_path = None
+        if irc_data_path is not None:
             family, family_pkl, _ = train_rxn_path_pes(
                 irc_data_path, args.reactant_model, out_dir,
                 blend_width=args.blend_width,
