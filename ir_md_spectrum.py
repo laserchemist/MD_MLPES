@@ -280,7 +280,7 @@ class DeltaMLPESDriver:
     def forces(self, coords: np.ndarray, delta: float = None) -> np.ndarray:
         dx = delta if delta is not None else self._delta_fd
         # Base forces (may be analytic if base driver supports it)
-        f_base = self._base.forces(coords, delta)
+        f_base = self._base.forces(coords) if delta is None else self._base.forces(coords, delta)
         # Delta forces via FD on delta model only (fast — small KRR)
         f_delta = np.zeros_like(coords)
         for a in range(self.n_atoms):
