@@ -957,11 +957,21 @@ def _add_mol_inset(ax, symbols, coords, bbox, charge=0, label=""):
 # ── IRC energy profile plot ───────────────────────────────────────────────────
 
 def plot_irc_profile(irc_data_path: str, ts_e: float, out_dir: Path):
-    """Plot IRC energy profile with multi-reference flagging."""
+    """
+    Plot IRC energy profile with molecular structure insets and multi-reference flagging.
+
+    Layout
+    ------
+    Top    : zoomed IRC (≤ 100 kcal/mol) with molecular insets + leader arrows.
+             A small full-range overview inset is placed in the upper-right corner.
+    Bottom : |ΔS²| spin-contamination profile.
+    """
     try:
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
+        from matplotlib.patches import FancyArrowPatch
+        from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
         data     = np.load(irc_data_path, allow_pickle=True)
         irc_s    = data['irc_s']
@@ -979,49 +989,149 @@ def plot_irc_profile(irc_data_path: str, ts_e: float, out_dir: Path):
         sc_s     = sc[sort_idx]
         coords_s = coords[sort_idx] if coords is not None else None
 
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 9),
-                                        gridspec_kw={'hspace': 0.35})
+        # ── Key IRC point selection ───────────────────────────────────────────
+        # MVKO minimum: global energy minimum
+        i_mvko = int(np.argmin(e_s))
+        # TS: highest energy among points with |s| < 1.5 Å·√amu
+        ts_mask = np.abs(irc_s_s) < 1.5
+        if ts_mask.any():
+            _local = np.where(ts_mask)[0]
+            i_ts = _local[int(np.argmax(e_s[ts_mask]))]
+        else:
+            i_ts = int(np.argmin(np.abs(irc_s_s)))
+        # VHP: lowest energy on the positive-s side (product well)
+        prod_mask = irc_s_s > 0
+        if prod_mask.any():
+            _prod = np.where(prod_mask)[0]
+            i_vhp = _prod[int(np.argmin(e_s[prod_mask]))]
+        else:
+            i_vhp = int(np.argmax(irc_s_s))
 
-        # Energy profile, colour by spin contamination
-        sc_plot = ax1.scatter(irc_s_s, e_s, c=np.abs(sc_s), cmap='RdYlGn_r',
-                              s=50, zorder=3, vmin=0, vmax=0.3)
-        ax1.plot(irc_s_s, e_s, lw=0.8, color='gray', zorder=2)
-        ax1.set_xlabel('IRC coordinate (Å·√amu)')
-        ax1.set_ylabel('ΔE (kcal/mol)')
-        ax1.set_title('IRC energy profile  (colour = |ΔS²|; red = multi-ref)')
-        ax1.axvline(0, color='red', lw=0.8, ls='--', label='TS (s=0)')
-        fig.colorbar(sc_plot, ax=ax1, label='|ΔS²|', fraction=0.03, pad=0.02)
+        # ── Low-energy zoom mask (≤ 100 kcal/mol) ────────────────────────────
+        zoom_mask = e_s <= 100.0
+        s_zoom = irc_s_s[zoom_mask]
+        e_zoom = e_s[zoom_mask]
+        sc_zoom = sc_s[zoom_mask]
 
-        # Mark key IRC points with vertical lines
-        i_min  = int(np.argmin(e_s))      # reactant minimum
-        i_ts   = int(np.argmin(np.abs(irc_s_s)))   # closest to s=0 (TS)
-        i_prod = int(np.argmax(irc_s_s))  # most positive s (VHP/product side)
-        for idx, lbl, col in [(i_min, 'MVKO', 'steelblue'),
-                               (i_ts,  'TS',  'red'),
-                               (i_prod,'VHP', 'seagreen')]:
-            ax1.axvline(irc_s_s[idx], color=col, lw=1.2, ls=':', alpha=0.7, label=lbl)
-        ax1.legend(fontsize=8)
+        # ── Figure layout ─────────────────────────────────────────────────────
+        fig, (ax1, ax2) = plt.subplots(
+            2, 1, figsize=(13, 10),
+            gridspec_kw={'height_ratios': [2.2, 1], 'hspace': 0.38})
 
-        # Add molecular structure insets if RDKit available
+        # ── Top panel: zoomed IRC (≤ 100 kcal/mol) ───────────────────────────
+        sc_plot = ax1.scatter(s_zoom, e_zoom, c=np.abs(sc_zoom), cmap='RdYlGn_r',
+                              s=70, zorder=4, vmin=0, vmax=0.3,
+                              edgecolors='k', linewidths=0.4)
+        ax1.plot(s_zoom, e_zoom, lw=1.2, color='gray', zorder=3)
+        ax1.axvline(0, color='red', lw=1.0, ls='--', alpha=0.5, zorder=2)
+
+        # Coloured markers at the three key points
+        for idx, col in [(i_mvko, 'steelblue'),
+                          (i_ts,   'crimson'),
+                          (i_vhp,  'seagreen')]:
+            if zoom_mask[idx]:
+                ax1.scatter(irc_s_s[idx], e_s[idx], color=col, s=160,
+                            zorder=5, edgecolors='k', linewidths=0.8)
+
+        ax1.set_xlabel('IRC coordinate (Å·√amu)', fontsize=12)
+        ax1.set_ylabel('ΔE (kcal/mol)', fontsize=12)
+        ax1.set_title(
+            'syn-MVKO → VHP  (B3LYP/6-31G*; ≤ 100 kcal/mol region)',
+            fontsize=12)
+        cb = fig.colorbar(sc_plot, ax=ax1, label='|ΔS²|',
+                          fraction=0.025, pad=0.02)
+        cb.ax.tick_params(labelsize=9)
+        ax1.margins(x=0.06)
+
+        # ── Molecular structure insets with leader arrows ─────────────────────
+        # Three insets spread across the upper half of ax1; no overlap with each other.
+        # bbox = (x0, y0, width, height) in ax1 axes-fraction coordinates.
+        inset_defs = [
+            (i_mvko, 'MVKO', (0.01, 0.50, 0.24, 0.45), 'steelblue'),
+            (i_ts,   'TS',   (0.37, 0.50, 0.24, 0.45), 'crimson'),
+            (i_vhp,  'VHP',  (0.73, 0.50, 0.24, 0.45), 'seagreen'),
+        ]
+
         if coords_s is not None and symbols is not None:
-            s_range = irc_s_s.max() - irc_s_s.min() if len(irc_s_s) > 1 else 1.0
-            e_range_plot = e_s.max() - e_s.min() if e_s.max() > e_s.min() else 1.0
-            # positions in axis coordinates: (x0, y0, width, height)
-            inset_specs = [
-                (i_min,  'MVKO', (0.02, 0.55, 0.20, 0.40)),
-                (i_ts,   'TS',   (0.40, 0.55, 0.20, 0.40)),
-                (i_prod, 'VHP',  (0.75, 0.55, 0.20, 0.40)),
-            ]
-            for idx, lbl, bbox in inset_specs:
-                _add_mol_inset(ax1, symbols, coords_s[idx], bbox, charge=0, label=lbl)
+            import io
+            from PIL import Image
+            for idx, lbl, bbox, col in inset_defs:
+                mol = _xyz_to_rdkit_mol(symbols, coords_s[idx], charge=0)
+                if mol is None:
+                    continue
+                png_bytes = _mol_to_png_bytes(mol, size=(400, 320))
+                if png_bytes is None:
+                    continue
+                try:
+                    img = Image.open(io.BytesIO(png_bytes))
+                except Exception:
+                    continue
 
-        # Spin contamination along IRC
-        ax2.plot(irc_s_s, np.abs(sc_s), color='firebrick', lw=1.5)
-        ax2.axhline(0.1, color='orange', lw=0.8, ls='--', label='|ΔS²| = 0.1 threshold')
-        ax2.set_xlabel('IRC coordinate (Å·√amu)')
-        ax2.set_ylabel('|ΔS²| (spin contamination)')
-        ax2.set_title('Multi-reference character along IRC')
-        ax2.legend()
+                # Draw a light rounded box behind the inset
+                from matplotlib.patches import FancyBboxPatch
+                box = FancyBboxPatch(
+                    (bbox[0] - 0.005, bbox[1] - 0.005),
+                    bbox[2] + 0.01, bbox[3] + 0.02,
+                    boxstyle='round,pad=0.01',
+                    transform=ax1.transAxes,
+                    facecolor='white', edgecolor=col,
+                    linewidth=1.5, zorder=6, clip_on=False,
+                )
+                ax1.add_patch(box)
+
+                # Molecule image
+                axins = inset_axes(ax1, width='100%', height='100%',
+                                   bbox_to_anchor=bbox,
+                                   bbox_transform=ax1.transAxes,
+                                   loc='lower left', borderpad=0)
+                axins.imshow(img, aspect='equal')
+                axins.axis('off')
+                axins.set_zorder(7)
+
+                # Label above the box
+                ax1.text(bbox[0] + bbox[2] / 2, bbox[1] + bbox[3] + 0.025,
+                         lbl, transform=ax1.transAxes,
+                         ha='center', va='bottom',
+                         fontsize=10, fontweight='bold', color=col, zorder=8)
+
+                # Leader arrow: bottom-centre of box → data point (if in zoom)
+                if zoom_mask[idx]:
+                    ax1.annotate(
+                        "",
+                        xy=(irc_s_s[idx], e_s[idx]),
+                        xycoords='data',
+                        xytext=(bbox[0] + bbox[2] / 2, bbox[1]),
+                        textcoords='axes fraction',
+                        arrowprops=dict(
+                            arrowstyle='-|>',
+                            color=col,
+                            lw=1.5,
+                            mutation_scale=15,
+                            connectionstyle='arc3,rad=0.0',
+                        ),
+                        zorder=9,
+                    )
+
+        # ── Bottom panel: full-range IRC overview ─────────────────────────────
+        # (The spin-contamination panel is uninformative for B3LYP RHF —
+        #  ⟨S²⟩ is always 0 for closed-shell RHF.  Use this panel to show
+        #  the complete IRC energy range including off-path high-energy points,
+        #  with the zoomed region shaded.)
+        ax2.scatter(irc_s_s, e_s, c=np.abs(sc_s), cmap='RdYlGn_r',
+                    s=30, zorder=4, vmin=0, vmax=0.3, edgecolors='k', linewidths=0.3)
+        ax2.plot(irc_s_s, e_s, lw=0.9, color='gray', zorder=3)
+        ax2.axvline(0, color='red', lw=0.8, ls='--', alpha=0.5, label='s = 0 (TS)')
+        ax2.axhspan(0, 100, alpha=0.12, color='steelblue', zorder=1,
+                    label='≤ 100 kcal/mol (zoomed above)')
+        for idx, col in [(i_mvko, 'steelblue'), (i_ts, 'crimson'), (i_vhp, 'seagreen')]:
+            ax2.scatter(irc_s_s[idx], e_s[idx], color=col, s=80,
+                        zorder=5, edgecolors='k', linewidths=0.6)
+        ax2.set_xlabel('IRC coordinate (Å·√amu)', fontsize=11)
+        ax2.set_ylabel('ΔE (kcal/mol)', fontsize=11)
+        ax2.set_title('Full IRC energy range  '
+                      '(note: B3LYP RHF ⟨S²⟩ = 0 everywhere — multi-ref not detectable)',
+                      fontsize=10)
+        ax2.legend(fontsize=9)
 
         fig_path = out_dir / 'irc_energy_profile.png'
         fig.savefig(str(fig_path), dpi=200, bbox_inches='tight')
@@ -1029,7 +1139,9 @@ def plot_irc_profile(irc_data_path: str, ts_e: float, out_dir: Path):
         print(f"  IRC profile figure  : {fig_path}")
 
     except Exception as exc:
-        print(f"  (IRC plot skipped: {exc})")
+        import traceback
+        print(f"  (IRC plot failed: {exc})")
+        traceback.print_exc()
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
