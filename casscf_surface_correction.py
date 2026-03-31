@@ -644,28 +644,20 @@ def main():
         print(f"\n  Merging IRC CASSCF results: {args.irc_results}")
         with open(args.irc_results) as f:
             irc_res = json.load(f)
-        # Load IRC coordinates from the original IRC data
-        irc_data_path = None
-        # Try to find irc training data beside the results json
-        irc_dir = Path(args.irc_results).parent.parent
-        candidates = list(irc_dir.rglob('irc_training_data.npz'))
+        # Load IRC coordinates from delta_ml_training.npz (casscf_irc_correction output)
+        irc_dir = Path(args.irc_results).parent
+        candidates = (list(irc_dir.glob('delta_ml_training.npz')) +
+                      list(irc_dir.rglob('irc_training_data.npz')))
         if candidates:
-            irc_data_path = str(candidates[0])
-            irc_d = np.load(irc_data_path, allow_pickle=True)
-            irc_coords   = irc_d['coordinates']
-            irc_energies = irc_d['energies']
-            irc_mask = (irc_energies - irc_energies.min()) * HARTREE_TO_KCAL < 100.0
-            irc_s    = irc_d.get('irc_s', np.zeros(len(irc_energies)))
-            irc_order = np.argsort(irc_s[irc_mask])
-            irc_coords_f = irc_coords[irc_mask][irc_order]
-
-            # Map IRC frame_idx to coordinate row
+            irc_d = np.load(str(candidates[0]), allow_pickle=True)
+            irc_coords = irc_d['coordinates']   # (N, n_atoms, 3)
+            # IRC results have frame_idx 0..N-1, matching coordinate order directly
             irc_good = [r for r in irc_res if r.get('e_casscf_ss') is not None]
             for r in irc_good:
                 fi = r['frame_idx']
-                if fi < len(irc_coords_f):
+                if fi < len(irc_coords):
                     merged_results.append(r)
-                    merged_coords.append(irc_coords_f[fi])
+                    merged_coords.append(irc_coords[fi])
             print(f"  Added {len(irc_good)} IRC frames → total {len(merged_results)}")
         else:
             print("  Could not locate IRC training data — IRC frames not merged")
