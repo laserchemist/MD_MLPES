@@ -132,6 +132,143 @@ Comparison figure: `outputs/casscf_surface_20260331_162217/ir_comparison_b3lyp_v
 
 ---
 
+## 2026-03-31 — Analysis: Why Delta-ML Failed and How to Fix It
+
+### Problem 1 — CASSCF minimum offset corrupts the anchor
+
+Our delta correction is anchored at δ(frame 0) = 0 by construction, using the B3LYP minimum as
+the CASSCF zero-point. But the true CASSCF(4,4)/6-31G\* minimum lies at a slightly displaced
+geometry R\_CASSCF\_min. The correct anchor is:
+
+```
+δ(R_B3LYP_min) = E_CASSCF(R_B3LYP_min) − E_CASSCF(R_CASSCF_min) > 0
+```
+
+Forcing this to zero is physically wrong. The gradient of δ at R\_B3LYP\_min points toward
+R\_CASSCF\_min, creating a systematic force in MD that is currently unaccounted for.
+For nearly closed-shell MVKO the displacement is small (< 0.01 Å, error < 0.3 kcal/mol),
+but the anchoring error contributes to the near-equilibrium scatter.
+
+**Fix**: run `optimize('casscf')` in PSI4 to locate R\_CASSCF\_min, compute E\_CASSCF there,
+and use that as the CASSCF reference energy throughout.
+
+### Problem 2 — Coulomb descriptor clustering (fundamental)
+
+For a 12-atom molecule, the Coulomb descriptor norm ||d|| ≈ 158 while geometry differences give
+||d\_i − d\_j|| ≈ 4–5 even between equilibrium and 60 kcal/mol distortions.
+All pairwise RBF kernel values K ≈ 0.999: the KRR computes a global weighted average of all
+training deltas regardless of geometry. Large negative corrections at high energy bleed
+into the equilibrium region → imaginary NM modes.
+
+This is a fundamental limitation of Coulomb matrices for delta-ML on medium-to-large molecules.
+Smaller molecules (< 5 atoms) do not suffer from this because ||d|| grows as N² while
+geometry displacements grow as N, so the relative separation improves.
+
+### Problem 3 — 1D energy spline is underdetermined and sensitive to outliers
+
+The B3LYP relative energy ΔE is a scalar proxy for distortion, but geometries at similar ΔE
+can have very different δ depending on which modes are excited. Frame 29 (δ = −19 kcal/mol
+at ΔE = 27 kcal/mol) is likely a geometry with unusual multi-reference character not shared
+by neighbouring frames. A cubic spline with only 10 near-equilibrium points cannot handle
+a single large outlier.
+
+### Proposed fixes — in order of effort
+
+#### Fix A — More near-equilibrium CASSCF points (low effort, immediate)
+
+Add 15–20 NM-displaced geometries at ΔE\_B3LYP < 5 kcal/mol (same procedure as
+`generate_nm_training.py` but at T = 300 K amplitudes). Compute SS-CASSCF for each.
+This would:
+- Anchor the spline reliably over the thermally sampled region
+- Reduce σ(δ) near equilibrium from ±1.0 to ±0.3 kcal/mol (expected)
+- Reveal whether the mean near-equilibrium correction is truly ~+0.6 or noise-dominated
+
+#### Fix B — Normal mode coordinate descriptors (medium effort, correct fix)
+
+Express each geometry as displacements along **CASSCF normal modes** {q₁, ..., q₃₀}
+from the CASSCF minimum, rather than Coulomb matrix elements:
+
+1. Optimize CASSCF(4,4)/6-31G\* geometry (`optimize('casscf/6-31g*')` in PSI4)
+2. Compute CASSCF Hessian → mass-weighted NM eigenvectors U (shape 3N×3N)
+3. Project training geometry i: **q**\_i = U^T · M^{1/2} · (R\_i − R\_CASSCF\_min)
+4. Use {q\_i} as features in KRR: now equilibrium is at origin and all amplitudes are
+   orthogonal — the descriptor space is well-separated
+
+The kernel K(**q**\_i, **q**\_j) = exp(−γ ||**q**\_i − **q**\_j||²) now localises correctly:
+geometries with large NM amplitude have large ||**q**|| and are far from equilibrium in feature space.
+This has solid precedent in VPT2, VSCF, and vibrational CI literature.
+
+#### Fix C — Change the reference method (medium effort, theoretically cleaner)
+
+Use HF/6-31G\* as the reference instead of B3LYP/6-31G\*:
+
+```
+CASSCF = HF + (active-space static correlation)
+δ(CASSCF − HF) = pure static correlation only
+```
+
+This δ is zero for a perfect closed-shell ground state and grows smoothly with multi-reference
+character. Near the MVKO minimum (NO occs 1.998, 1.924), δ(CASSCF−HF) < 1 kcal/mol and
+the near-equilibrium scatter would be much smaller than the current B3LYP-referenced δ.
+
+MP2 is a poorer reference than HF: MP2 captures dynamic correlation perturbatively while
+CASSCF captures static correlation variationally; their difference is non-trivial and
+can have the wrong sign in multi-reference regions.
+
+#### Fix D — Full theoretical hierarchy / triple correction (high effort, publishable accuracy)
+
+The most rigorous approach decomposes the correction into physically motivated layers:
+
+```
+E_best ≈ E_B3LYP/6-31G*
+       + δ₁ = E_HF/6-31G*     − E_B3LYP/6-31G*     (remove DFT XC error)
+       + δ₂ = E_CASSCF(4,4)   − E_HF               (add static correlation)
+       + δ₃ = E_NEVPT2        − E_CASSCF            (add dynamic correlation)
+       + δ₄ = E_CBS            − E_6-31G*            (basis set correction)
+```
+
+Each δ is individually small near equilibrium and can be fit with fewer training points
+because each has well-defined physical behaviour. This is the **focal-point** composite
+method approach (analogous to W1, W4, CBS-QB3 thermochemistry protocols).
+
+NEVPT2/6-31G\* on top of CASSCF(4,4) is already available in PSI4 (`energy('nevpt2')`).
+For 300K IR spectra δ₃ ≈ 0–2 kcal/mol (expected) and δ₄ ≈ 1–3 kcal/mol for frequencies.
+
+**Note on MC-PDFT**: OpenMolcas implements multi-configuration pair-density functional theory
+(MC-PDFT), which uses the CASSCF wave function with a translated on-top pair-density
+functional. It gives NEVPT2-quality energies at CASSCF cost and connects naturally to
+B3LYP-family DFT — potentially the most efficient route to δ₂+δ₃ in a single calculation.
+PSI4 does not currently implement MC-PDFT.
+
+### Recommended next step for MVKO delta-ML
+
+Fix A (more near-equilibrium CASSCF points) + Fix B (NM coordinate descriptors), using
+the CASSCF minimum as the anchor. This combination solves all three identified problems
+with modest computational effort (~1 CASSCF frequency job + 20 single-point CASSCF jobs).
+
+Command sketch:
+```bash
+# Step 1: CASSCF minimum + Hessian
+python3 casscf_surface_correction.py --optimize-casscf \
+    --model outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/mvko_20260319_081314/combined_training_data.npz
+
+# Step 2: NM-displaced CASSCF points at 300K amplitude (Fix A)
+python3 casscf_surface_correction.py \
+    --nm-sample --n-frames 20 --T-nm 300 \
+    --casscf-min outputs/casscf_min_<ts>/casscf_min.npy \
+    --training-data outputs/mvko_20260319_081314/combined_training_data.npz
+
+# Step 3: Fit delta-ML in NM coordinates (Fix B)
+python3 casscf_surface_correction.py --nm-descriptors \
+    --casscf-hessian outputs/casscf_min_<ts>/casscf_hessian.npy \
+    --load-results outputs/casscf_surface_<ts>/surface_results.json
+```
+
+(These flags do not yet exist — would need implementation in `casscf_surface_correction.py`.)
+
+---
+
 **Project:** Machine-learning potential energy surfaces for Criegee intermediates
 **Molecule:** CH₂OO (formaldehyde oxide) → MVKO (methyl vinyl ketone oxide, C₄H₆O₂)
 **Method:** Kernel Ridge Regression (KRR) on Coulomb matrix descriptors, PSI4 B3LYP/6-31G*
