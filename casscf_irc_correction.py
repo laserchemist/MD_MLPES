@@ -97,21 +97,34 @@ def _parse_no_occupations(output_text: str) -> list[float] | None:
     """
     Extract active-space natural orbital occupations from PSI4 CASSCF output.
     Returns a list of floats in descending order, or None if not found.
+
+    PSI4 1.10 DETCI format:
+       Active Space Natural occupation numbers:
+
+            A   1.994464         A   1.932938         A   0.067444
+            A   0.005155
     """
-    # Pattern: "Occupation Numbers:" block (PSI4 DETCI CASSCF format)
+    # PSI4 1.10 DETCI format:
+    #   Active Space Natural occupation numbers:
+    #
+    #        A   1.994464         A   1.932938         A   0.067444
+    #        A   0.005155
+    # Multiple entries per line; block ends at the next blank line.
+    matches = list(re.finditer(
+        r'Active Space Natural occupation numbers:\s*\n\s*\n([^\n]+(?:\n[^\n]+)*?)(?:\n\s*\n|\Z)',
+        output_text))
+    if matches:
+        # First occurrence = SS-CASSCF ground state
+        block = matches[0].group(1)
+        nums = re.findall(r'[A-Za-z]+\s+([\d.]+)', block)
+        if nums:
+            return sorted([float(x) for x in nums], reverse=True)
+    # Legacy fallback: "Occupation Numbers:" block
     m = re.search(
         r'Occupation Numbers:\s*\n((?:\s+\d+\s+[\d.]+\s*\n)+)',
         output_text)
     if m:
         nums = re.findall(r'\d+\s+([\d.]+)', m.group(1))
-        if nums:
-            return sorted([float(x) for x in nums], reverse=True)
-    # Fallback: look for "Natural Orbital Occupations" table
-    m2 = re.search(
-        r'Natural Orbital Occup[^\n]*\n[-\s]+\n((?:\s+\S+\s+\d+\s+[\d.]+\s*\n)+)',
-        output_text)
-    if m2:
-        nums = re.findall(r'([\d.]+)\s*\n', m2.group(1))
         if nums:
             return sorted([float(x) for x in nums], reverse=True)
     return None
@@ -149,6 +162,11 @@ def run_frame(symbols, coords, irc_s, e_b3lyp, frame_idx,
         return {'frame_idx': frame_idx, 'irc_s': float(irc_s), 'error': 'no_psi4'}
 
     psi4.core.clean()
+    # Also clear any options that persist across frames (e.g. avg_states from SA-CASSCF)
+    try:
+        psi4.core.clean_options()
+    except AttributeError:
+        pass  # Not all PSI4 versions expose clean_options; explicit resets below suffice
     frame_outfile = str(out_dir / f'psi4_frame{frame_idx:02d}_s{irc_s:+.2f}.dat')
     psi4.core.set_output_file(frame_outfile, False)
 
@@ -196,17 +214,21 @@ def run_frame(symbols, coords, irc_s, e_b3lyp, frame_idx,
         return result
 
     # ── Step 2: SS-CASSCF(4,4) ───────────────────────────────────────────────
+    # Explicitly clear SA-CASSCF settings (avg_states/avg_weights may persist
+    # from a previous frame's SA-CASSCF call despite psi4.core.clean())
     casscf_opts = {
         **base_opts,
         'frozen_docc':     [N_FROZEN_CORE],
         'restricted_docc': [N_RESTRICTED_DOCC],
         'active':          [N_ORBS_ACTIVE],
         'num_roots':       1,
+        'avg_states':      [0],        # reset: must match num_roots=1
+        'avg_weights':     [1.0],      # reset: must match num_roots=1
         'mcscf_algorithm': 'ah',       # augmented Hessian — more robust
         'mcscf_maxiter':   200,
         'mcscf_diis_start': 3,
-        'mcscf_r_convergence': 1e-6,
-        'mcscf_e_convergence': 1e-9,
+        'mcscf_r_convergence': 1e-5,   # looser: closed-shell frames have stubborn AH
+        'mcscf_e_convergence': 1e-8,
     }
     psi4.set_options(casscf_opts)
     try:
@@ -238,6 +260,16 @@ def run_frame(symbols, coords, irc_s, e_b3lyp, frame_idx,
         return result
 
     # ── Step 3: SA-2-CASSCF(4,4) for diabatic coupling ───────────────────────
+    # Skip SA-CASSCF for frames far from the TS (|s| > 2.0):
+    # - At MVKO minimum the two states differ by >100 kcal/mol → SA-CASSCF fails
+    #   to converge (averaging two very different electronic states)
+    # - The diabatic coupling H₁₂ is only physically meaningful near the avoided
+    #   crossing (|s| < 1.5); far from it H₁₂ → 0 by construction
+    if abs(float(irc_s)) > 2.0:
+        print(f"    Skipping SA-CASSCF (|s|={abs(float(irc_s)):.2f} > 2.0; "
+              f"H12 ≈ 0 far from TS)")
+        return result
+
     sa_opts = {
         **casscf_opts,
         'num_roots':       2,
