@@ -777,6 +777,117 @@ stiffness artifact (ML-PES C–H modes at 10,000–15,000 cm⁻¹).
    from 209–210 cm⁻¹ across trajectories, giving a slightly broadened envelope in the
    average compared to any single run.
 
+---
+
+## 2026-03-30 — Reaction-Path PES Family for syn-MVKO → OH
+
+### Motivation
+
+Fresh (nascent) MVKO Criegee intermediates from ozonolysis carry 40–80 kcal/mol of excess
+vibrational energy and can react before collisional stabilisation.  The dominant OH-producing
+channel is a 1,4-H shift from the vinyl =CH₂ group to the distal oxygen O2, proceeding via
+a 6-membered ring TS (C3–H7···O2–O1–C1–C2=C3).
+
+Goal: use a `PESFamily` of two surfaces — the near-equilibrium MVKO model (904 frames)
+blended with a new reaction-path ML-PES trained on PSI4 IRC data — to allow ML-MD to
+explore the TS and VHP product region.
+
+### Script
+
+`mvko_syn_oh_path.py` — 4-step workflow: `ts → irc → train → md`
+
+**Reaction coordinate** (corrected during development):
+- PSI4 optimised geometry is the **syn-vinyl** conformer (H7 on C3=CH₂ sits 2.09 Å from O2;
+  methyl C4 is 3.62 Å from O2 — ANTI face)
+- 6-membered ring TS: O2–O1–C1–C2=C3–H7 (vinyl H transfer, not methyl H)
+- Atom indices: `IDX_C3=4, IDX_H7=7, IDX_O2=2, IDX_O1=1, IDX_C1=0`
+
+### IRC Data Collection (2026-03-30)
+
+PSI4 B3LYP/6-31G\* steepest-descent IRC collected 42 points, stored in
+`outputs/mvko_rxn_path_20260330_181025/irc_training_data.npz`.
+
+| Property | Value |
+|----------|-------|
+| Total IRC frames | 42 |
+| Raw energy range | 449 kcal/mol (many off-path high-E points from steepest-descent walk) |
+| Frames ≤ 100 kcal/mol above minimum | **9** |
+| Open-shell frames (|ΔS²| > 0.1) | 0/42 (B3LYP RHF always returns ⟨S²⟩ = 0) |
+| IRC s range | –3.5 to +3.5 Å·√amu |
+
+Energy distribution of the 9 kept frames:
+- 1 frame at 0 kcal/mol (MVKO minimum, most negative s)
+- 3 frames at 36–44 kcal/mol (near TS barrier)
+- 5 frames at 52–80 kcal/mol (VHP product region)
+
+### Training Issues Fixed
+
+1. `MLPESTrainer()` missing required `config` arg → fixed with `MLPESConfig()`-based construction
+2. Energy filter added: keep only IRC points ≤ 100 kcal/mol above minimum before training
+3. Open-shell warning: only printed when `n_open > 0` (was always printing)
+
+### Stability Problem and Fix
+
+Training on 9 IRC frames alone gives a surface with no perpendicular-mode coverage.
+At 2000 K, the MD dissociated (C1–C2 backbone bond → 4.44 Å) at step 110.
+
+**Fix**: prepend the 904-frame reactant training data before the IRC frames.
+Combined dataset: 913 frames.  The rxn_path model now has near-equilibrium coverage
+for all vibrational modes AND the IRC frames guide it toward the TS at high energy.
+
+Result: 2000-step MD at 2000 K **completes without dissociation** (600 fs stable trajectory).
+Key reaction-coordinate statistics at 600 fs:
+- C3–H7: 0.99–1.08 Å (intact vinyl C–H bond)
+- O2–H7: 2.0–2.6 Å (approaching but not forming bond — not reactive in 600 fs)
+- O1–O2: 1.34–1.46 Å (Criegee O–O intact)
+- C1–O1: 1.30–1.42 Å (backbone intact)
+
+### PESFamily Design
+
+```
+Surface "reactant" : mlpes_initial.pkl (904 frames, γ=0.001)
+Surface "rxn_path" : mlpes_rxn_path.pkl (913 frames combined, γ=0.001)
+Blend width        : 10 kcal/mol (wider than conformer blending to span TS region)
+```
+
+At near-equilibrium energies the reactant surface dominates; as the molecule climbs
+toward the TS (ΔE > ~15 kcal/mol), the rxn_path surface progressively takes over.
+
+### IRC Profile Plot (with RDKit Molecular Insets)
+
+`plot_irc_profile()` in `mvko_syn_oh_path.py` now renders 2D molecular structure insets
+at three key IRC points (MVKO, TS, VHP) using RDKit's `MolDraw2DCairo`.  The insets are
+silently skipped if `rdkit` is not installed.  Install with: `pip install rdkit`.
+
+### Multi-Reference Warning
+
+B3LYP is single-reference.  Near the TS and in the VHP/OH product region, the true
+wavefunction has significant biradical character.  The B3LYP barrier height is approximate
+(±5 kcal/mol).  Future work: CASSCF(4,4)/6-31G\* or NEVPT2 single-points on the B3LYP
+IRC geometries would give a quantitatively accurate surface.
+
+### Outputs
+
+| File | Contents |
+|------|----------|
+| `outputs/mvko_rxn_path_20260330_181025/irc_training_data.npz` | 42 IRC frames (raw) |
+| `outputs/mvko_rxn_path_20260330_202029/mlpes_rxn_path.pkl` | rxn_path ML-PES (913 frames) |
+| `outputs/mvko_rxn_path_20260330_202029/pes_family.pkl` | PESFamily (reactant + rxn_path) |
+| `outputs/mvko_rxn_path_20260330_202029/rxn_family_manifest.json` | Manifest for `ir_md_spectrum.py --multi-surface` |
+| `outputs/mvko_rxn_path_20260330_202029/irc_energy_profile.png` | IRC energy profile with RDKit insets |
+| `outputs/mvko_rxn_path_20260330_202029/rxn_trajectory_bonds.csv` | Bond-distance CSV (4 bonds × 400 frames) |
+
+### Production Command (train + md, skipping PSI4 TS/IRC)
+
+```bash
+python3 mvko_syn_oh_path.py --steps train,md \
+    --irc-data outputs/mvko_rxn_path_20260330_181025/irc_training_data.npz \
+    --temp 2000 --md-steps 50000
+# --reactant-data defaults to outputs/mvko_20260319_081314/combined_training_data.npz
+```
+
+---
+
 ### 5. Adaptive training can degrade near-equilibrium accuracy
 Adding high-energy frames (1000–2000 K PSI4 MD) to an existing ML-PES shifts the KRR
 kernel allocation away from the equilibrium region.  The 1300-frame adaptive model
@@ -798,6 +909,7 @@ saddle-point instability.  Alternatively, use a local model near equilibrium
 | `outputs/nm_training_20260308_203606/mlpes_model_nm.pkl` | CH₂OO | 0.01 | 0.001 | 0.64 kcal/mol | 344 |
 | `outputs/mvko_20260319_081314/mlpes_initial.pkl` | MVKO | 0.001 | 1e-5 | 0.2734 kcal/mol | 904 |
 | `outputs/adaptive_production_20260324b/mlpes_adaptive_final.pkl` | MVKO | 0.001 | 1e-5 | **0.203 kcal/mol** | **1300** |
+| `outputs/mvko_rxn_path_20260330_202029/mlpes_rxn_path.pkl` | MVKO (IRC) | 0.001 | 1e-5 | 3.1 kcal/mol | 913 (904 eq + 9 IRC) |
 
 ### Training data
 | File | Contents |
