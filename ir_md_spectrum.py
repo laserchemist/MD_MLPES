@@ -296,6 +296,93 @@ class DeltaMLPESDriver:
 
 
 # =============================================================================
+# EnergyDeltaDriver — 1D spline CASSCF correction as function of ΔE_B3LYP
+# =============================================================================
+
+class EnergyDeltaDriver:
+    """
+    Applies a CASSCF delta correction parameterised as a 1D function of the
+    B3LYP relative energy:  δ(R) = f( E_base(R) − E_base_min )
+
+    This sidesteps the Coulomb-descriptor clustering problem (all geometries
+    look nearly identical in Coulomb space) by using the B3LYP relative energy
+    as the sole input to the correction.  The spline is constrained to δ(0)=0
+    so the equilibrium geometry is unperturbed.
+
+    The correction file is a JSON produced by casscf_surface_correction.py:
+        {"dE_b3lyp_kcal": [...], "delta_kcal": [...], "E_base_min_Ha": float}
+    """
+
+    HARTREE_TO_KCAL = 627.509
+
+    def __init__(self, base_driver, delta_json_path: str,
+                 delta_fd: float = 0.005,
+                 max_dE_kcal: float = 40.0):
+        from scipy.interpolate import CubicSpline
+        import json
+
+        self._base         = base_driver
+        self.symbols       = base_driver.symbols
+        self.n_atoms       = base_driver.n_atoms
+        self.masses        = base_driver.masses
+        self._has_analytic = False
+        self._delta_fd     = delta_fd
+
+        with open(delta_json_path) as f:
+            dat = json.load(f)
+
+        dE   = np.array(dat['dE_b3lyp_kcal'])
+        delt = np.array(dat['delta_kcal'])
+
+        # Only use points in the thermally relevant range and add the
+        # exact anchor δ(0)=0.
+        mask = dE <= max_dE_kcal
+        dE_fit   = np.concatenate([[0.0], dE[mask]])
+        delt_fit = np.concatenate([[0.0], delt[mask]])
+        order = np.argsort(dE_fit)
+        dE_fit, delt_fit = dE_fit[order], delt_fit[order]
+
+        # Remove duplicate x-values
+        _, u = np.unique(dE_fit, return_index=True)
+        dE_fit, delt_fit = dE_fit[u], delt_fit[u]
+
+        self._spline     = CubicSpline(dE_fit, delt_fit,
+                                       bc_type=((1, 0.0), 'not-a-knot'))
+        self._E_min      = dat.get('E_base_min_Ha', None)
+        self._max_dE     = max_dE_kcal
+        print(f"  Energy-delta correction loaded: {delta_json_path}")
+        print(f"  Spline over {len(dE_fit)} points, ΔE_B3LYP ≤ {max_dE_kcal:.0f} kcal/mol")
+
+    def _delta_energy(self, coords: np.ndarray) -> float:
+        """Return delta correction in Hartree for given coordinates."""
+        E_base = self._base.energy(coords)
+        if self._E_min is None:
+            return 0.0
+        dE_kcal = (E_base - self._E_min) * self.HARTREE_TO_KCAL
+        dE_kcal = min(dE_kcal, self._max_dE)  # clamp beyond training range
+        dE_kcal = max(dE_kcal, 0.0)
+        return float(self._spline(dE_kcal)) / self.HARTREE_TO_KCAL
+
+    def energy(self, coords: np.ndarray) -> float:
+        return self._base.energy(coords) + self._delta_energy(coords)
+
+    def forces(self, coords: np.ndarray, delta: float = None) -> np.ndarray:
+        dx = delta if delta is not None else self._delta_fd
+        f_base = self._base.forces(coords) if delta is None else self._base.forces(coords, delta)
+        f_delta = np.zeros_like(coords)
+        for a in range(self.n_atoms):
+            for j in range(3):
+                cp = coords.copy(); cp[a, j] += dx
+                cm = coords.copy(); cm[a, j] -= dx
+                f_delta[a, j] = -(self._delta_energy(cp) -
+                                   self._delta_energy(cm)) / (2 * dx)
+        return f_base + f_delta
+
+    def predict(self, symbols, coords) -> float:
+        return self.energy(coords)
+
+
+# =============================================================================
 # ML-PES normal mode analysis (numerical or analytic Hessian)
 # =============================================================================
 
@@ -1015,7 +1102,8 @@ def run_ir_workflow(model_path: str,
                     max_bond_extension: float = 0.0,
                     monitor_bonds: list = None,
                     print_every: int = 0,
-                    delta_model_path: str | None = None) -> None:
+                    delta_model_path: str | None = None,
+                    energy_delta_path: str | None = None) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -1077,6 +1165,9 @@ def run_ir_workflow(model_path: str,
     if delta_model_path:
         print(f"  Delta-ML model     : {delta_model_path}")
         driver = DeltaMLPESDriver(driver, delta_model_path)
+    elif energy_delta_path:
+        print(f"  Energy-delta JSON  : {energy_delta_path}")
+        driver = EnergyDeltaDriver(driver, energy_delta_path)
 
     mol = identify_molecule(driver.symbols, traj.coordinates[0])
     print(f"  Molecule           : {mol['label']}  ({mol['n_atoms']} atoms)")
@@ -1430,6 +1521,12 @@ def main():
                         help='Path to delta-ML correction model .pkl '
                              '(from casscf_surface_correction.py). '
                              'Adds CASSCF(4,4)−B3LYP correction to energy and forces.')
+    parser.add_argument('--energy-delta',      default=None,
+                        help='Path to 1D energy-delta JSON '
+                             '(from casscf_surface_correction.py energy_delta.json). '
+                             'Applies a spline CASSCF correction as a function of '
+                             'ΔE_B3LYP — more stable than --delta-model when Coulomb '
+                             'descriptors cluster all geometries together.')
     parser.add_argument('--multi-surface',     action='store_true',
                         help='Use a PESFamily (multi-conformer) instead of a single ML-PES. '
                              'Requires --conformer-manifest.')
@@ -1473,6 +1570,7 @@ def main():
         monitor_bonds       = _parse_monitor_bonds(args.monitor_bonds),
         print_every         = args.print_every,
         delta_model_path    = args.delta_model,
+        energy_delta_path   = args.energy_delta,
     )
 
 
