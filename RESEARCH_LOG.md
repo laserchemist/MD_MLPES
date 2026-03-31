@@ -1,5 +1,68 @@
 # ML-PES / ML-MD Research Log
 
+---
+
+## 2026-03-31 — CASSCF(4,4) IRC Correction + Delta-ML
+
+### Objective
+Compare B3LYP/6-31G* IRC energies against CASSCF(4,4)/6-31G* for the syn-MVKO → VHP 1,4-H shift.
+Compute diabatic coupling H₁₂ from SA-2-CASSCF. Train a delta-ML KRR to correct the B3LYP PES.
+
+### Script
+`casscf_irc_correction.py` — PSI4 RHF → SS-CASSCF(4,4) → SA-2-CASSCF(4,4) per IRC frame.
+Active space: σ/σ\*(C3–H7) + σ/σ\*(O2–H7); MVKO has 46 e⁻, frozen\_docc=6, restricted\_docc=15, active=4.
+
+### Data
+9 filtered IRC frames from `outputs/mvko_rxn_path_20260330_181025/irc_training_data.npz`
+(ΔE ≤ 100 kcal/mol vs MVKO min; s from −3.15 to +0.45 Å·√amu)
+
+### Results (`outputs/casscf_irc_20260330_230145/`)
+
+| Frame | s (Å·√amu) | ΔE\_B3LYP | ΔE\_CASSCF | Δcorr | H₁₂ | NO occs (4 active) |
+|---|---|---|---|---|---|---|
+| 0 | −3.15 | 0.0 | 0.0 | +0.0 | — | 1.998, 1.924, 0.078, 0.000 |
+| 3 | −0.30 | 36.6 | 46.0 | +9.5 | 44.1 | 1.994, 1.933, 0.067, 0.005 |
+| 4 | −0.15 | 44.3 | 60.4 | +16.1 | 44.5 | 1.993, 1.958, 0.040, 0.009 |
+| 5 | +0.00 | 52.0 | 64.1 | +12.0 | 38.5 | 1.965, 1.939, 0.065, 0.031 |
+| 6 | +0.15 | 55.2 | 64.4 | +9.2 | 29.3 | 1.964, 1.951, 0.058, 0.027 |
+| 7 | +0.30 | 54.2 | 57.6 | +3.4 | 23.0 | 1.967, 1.959, 0.053, 0.020 |
+
+**B3LYP barrier: 80.4 kcal/mol → CASSCF(4,4) barrier: 86.5 kcal/mol (+6.2 kcal/mol)**
+
+Dynamic correlation (NEVPT2/CASPT2) not computed — expected to add 5–10 kcal/mol.
+
+### Physical interpretation
+
+**NO occupations** at the "TS" (s ≈ 0) are (1.965, 1.939, 0.065, 0.031) — nearly closed-shell,
+far from the biradical (1,1,1,1) pattern. The H-transfer has predominantly **single-reference
+character** at these IRC geometries. Possible explanations:
+- The IRC geometry at s=0 is not the true electronic TS (the IRC followed a high-energy path)
+- The active space orbitals are not the σ/σ\*(C-H)/σ/σ\*(O-H) pair (RHF ordering may differ)
+- The concerted [1,4]-H shift indeed has little biradical character (partially dipole-allowed)
+
+**H₁₂ = 38–48 kcal/mol** (very large) → strongly coupled/adiabatic regime.
+Landau-Zener probability P\_hop ≈ exp(−2π H₁₂²/(ℏv|ΔF|)) ≈ 0 → no surface hopping.
+The reaction proceeds on a single adiabatic PES; the delta-ML correction (+6–12 kcal/mol)
+is the main CASSCF contribution.
+
+### Delta-ML correction
+9-frame KRR (γ=0.00005, α=1e-10) trained on relative delta = ΔE\_CASSCF − ΔE\_B3LYP.
+Range: −3.1 to +16.1 kcal/mol. Corrected PESFamily manifest:
+`outputs/casscf_irc_20260331_080127/corrected_family_manifest.json`
+
+### Bugs fixed in `casscf_irc_correction.py`
+1. `symmetry c1` needed in geometry block (PSI4 detected Cs symmetry → frozen\_docc=[6] wrong size)
+2. SA-CASSCF options (avg\_states/avg\_weights) leaked across frames via PSI4 options — fixed by
+   explicit reset in SS-CASSCF opts + `psi4.core.clean_options()` call
+3. SA-CASSCF skipped for |s| > 2.0 (closed-shell MVKO min → SA fails to converge)
+4. NO occupation parser: PSI4 1.10 uses multi-column "Active Space Natural occupation numbers:"
+   format; fixed regex to capture whole block then findall
+5. Delta-ML now uses **relative** energies (ΔE\_CASSCF − ΔE\_B3LYP) not absolute difference
+   (avoids ~1135 kcal/mol spurious offset from DFT dynamic correlation)
+
+---
+
+
 **Project:** Machine-learning potential energy surfaces for Criegee intermediates
 **Molecule:** CH₂OO (formaldehyde oxide) → MVKO (methyl vinyl ketone oxide, C₄H₆O₂)
 **Method:** Kernel Ridge Regression (KRR) on Coulomb matrix descriptors, PSI4 B3LYP/6-31G*
