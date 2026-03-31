@@ -1067,24 +1067,26 @@ def plot_irc_profile(irc_data_path: str, ts_e: float, out_dir: Path):
                 except Exception:
                     continue
 
-                # Draw a light rounded box behind the inset
+                # Coloured border only — no opaque background fill
                 from matplotlib.patches import FancyBboxPatch
                 box = FancyBboxPatch(
                     (bbox[0] - 0.005, bbox[1] - 0.005),
                     bbox[2] + 0.01, bbox[3] + 0.02,
                     boxstyle='round,pad=0.01',
                     transform=ax1.transAxes,
-                    facecolor='white', edgecolor=col,
-                    linewidth=1.5, zorder=6, clip_on=False,
+                    facecolor='none', edgecolor=col,
+                    linewidth=1.8, zorder=6, clip_on=False,
                 )
                 ax1.add_patch(box)
 
-                # Molecule image
+                # Molecule image — preserve RGBA so background stays transparent
+                img = img.convert('RGBA')
                 axins = inset_axes(ax1, width='100%', height='100%',
                                    bbox_to_anchor=bbox,
                                    bbox_transform=ax1.transAxes,
                                    loc='lower left', borderpad=0)
                 axins.imshow(img, aspect='equal')
+                axins.patch.set_alpha(0)   # inset axes background transparent
                 axins.axis('off')
                 axins.set_zorder(7)
 
