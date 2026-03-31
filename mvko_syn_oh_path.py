@@ -500,10 +500,16 @@ def run_irc_sampling(symbols, coords_ts, e_ts, reactant_coords, out_dir: Path,
 
 def train_rxn_path_pes(irc_data_path: str, reactant_model_path: str,
                        out_dir: Path, blend_width: float = 10.0,
-                       gamma: float = 0.001, alpha: float = 1e-5):
+                       gamma: float = 0.001, alpha: float = 1e-5,
+                       reactant_data_path: str = None):
     """
     Train a KRR ML-PES on IRC data and assemble PESFamily with the
     existing near-equilibrium MVKO model.
+
+    reactant_data_path: if provided, prepend reactant training frames to the
+        IRC frames before training.  This gives the rxn_path surface good
+        perpendicular-mode coverage near equilibrium (preventing unphysical
+        dissociation at high T) while the IRC frames steer it toward the TS.
     """
     import sys
     sys.path.insert(0, str(Path(__file__).parent))
@@ -536,7 +542,7 @@ def train_rxn_path_pes(irc_data_path: str, reactant_model_path: str,
             print(f"     are approximate. Forces from these frames are included but")
             print(f"     treat the resulting ML-PES as qualitative in that region.")
 
-    # Energy filter: keep only points within 100 kcal/mol of minimum
+    # Energy filter: keep only IRC points within 100 kcal/mol of minimum
     E_FILTER_KCAL = 100.0
     mask = (energies - e_min) * HARTREE_TO_KCAL < E_FILTER_KCAL
     if not mask.all():
@@ -548,6 +554,21 @@ def train_rxn_path_pes(irc_data_path: str, reactant_model_path: str,
         n_frames = int(mask.sum())
     else:
         print(f"  All {n_frames} frames within {E_FILTER_KCAL:.0f} kcal/mol — no filtering needed")
+
+    # Optionally prepend reactant training data for perpendicular-mode coverage
+    if reactant_data_path:
+        rdata = np.load(reactant_data_path, allow_pickle=True)
+        rcoords   = rdata['coordinates']
+        renergies = rdata['energies']
+        rforces   = rdata.get('forces', np.zeros_like(rcoords))
+        if rforces is None or rforces.shape != rcoords.shape:
+            rforces = np.zeros_like(rcoords)
+        print(f"  Reactant training data: {len(rcoords)} frames from {reactant_data_path}")
+        coords   = np.concatenate([rcoords,   coords],   axis=0)
+        energies = np.concatenate([renergies, energies], axis=0)
+        forces   = np.concatenate([rforces,   forces],   axis=0)
+        n_frames = len(coords)
+        print(f"  Combined training set: {n_frames} frames")
 
     # Train
     traj = TrajectoryData(
@@ -828,6 +849,111 @@ def _post_trajectory_analysis(md_result: dict, driver, out_dir: Path,
               f" (heavy-atom bond extension limit)")
 
 
+# ── RDKit molecular image helpers ────────────────────────────────────────────
+
+def _xyz_to_rdkit_mol(symbols, coords, charge=0):
+    """
+    Convert symbols + coords arrays to an RDKit Mol with inferred connectivity
+    and bond orders.  Returns None if RDKit or DetermineBonds is unavailable.
+    """
+    try:
+        from rdkit import Chem
+        from rdkit.Chem import rdDetermineBonds
+    except ImportError:
+        return None
+
+    # Build XYZ block string
+    n = len(symbols)
+    xyz_lines = [str(n), ""]
+    for sym, (x, y, z) in zip(symbols, coords):
+        xyz_lines.append(f"{sym}  {x:.6f}  {y:.6f}  {z:.6f}")
+    xyz_block = "\n".join(xyz_lines) + "\n"
+
+    mol = Chem.MolFromXYZBlock(xyz_block)
+    if mol is None:
+        return None
+    mol = Chem.RWMol(mol)
+    try:
+        rdDetermineBonds.DetermineConnectivity(mol)
+    except Exception:
+        pass
+    try:
+        rdDetermineBonds.DetermineBondOrders(mol, charge=charge)
+    except Exception:
+        pass
+    try:
+        Chem.SanitizeMol(mol)
+    except Exception:
+        pass
+    return mol.GetMol()
+
+
+def _mol_to_png_bytes(mol, size=(300, 250), transparent=True):
+    """Render an RDKit Mol to PNG bytes (suitable for matplotlib inset)."""
+    try:
+        from rdkit.Chem import AllChem, rdDepictor
+        from rdkit.Chem.Draw import rdMolDraw2D
+    except ImportError:
+        return None
+
+    mol = type(mol)(mol)  # copy
+    try:
+        rdDepictor.Compute2DCoords(mol)
+    except Exception:
+        return None
+
+    w, h = size
+    drawer = rdMolDraw2D.MolDraw2DCairo(w, h)
+    opts = drawer.drawOptions()
+    if transparent:
+        opts.setBackgroundColour((1, 1, 1, 0))
+    opts.bondLineWidth = 2
+    opts.fixedBondLength = 30
+    opts.minFontSize = 12
+    opts.maxFontSize = 28
+    opts.padding = 0.05
+    opts.circleAtoms = True
+    try:
+        rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol, kekulize=True)
+    except Exception:
+        try:
+            rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol, kekulize=False)
+        except Exception:
+            return None
+    drawer.FinishDrawing()
+    return drawer.GetDrawingText()
+
+
+def _add_mol_inset(ax, symbols, coords, bbox, charge=0, label=""):
+    """
+    Add an RDKit 2D molecular structure inset at *bbox* = (x0, y0, w, h)
+    in axis coordinates.  Silently skips if RDKit not available.
+    """
+    mol = _xyz_to_rdkit_mol(symbols, coords, charge=charge)
+    if mol is None:
+        return
+    png_bytes = _mol_to_png_bytes(mol)
+    if png_bytes is None:
+        return
+    import io
+    from PIL import Image
+    try:
+        img = Image.open(io.BytesIO(png_bytes))
+    except Exception:
+        return
+    # AxesImage inset via inset_axes
+    import matplotlib
+    from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+    axins = inset_axes(ax, width="100%", height="100%",
+                       bbox_to_anchor=bbox,
+                       bbox_transform=ax.transAxes,
+                       loc='lower left', borderpad=0)
+    axins.imshow(img, aspect='equal')
+    axins.axis('off')
+    if label:
+        axins.set_title(label, fontsize=7, pad=2)
+
+
 # ── IRC energy profile plot ───────────────────────────────────────────────────
 
 def plot_irc_profile(irc_data_path: str, ts_e: float, out_dir: Path):
@@ -842,23 +968,52 @@ def plot_irc_profile(irc_data_path: str, ts_e: float, out_dir: Path):
         energies = data['energies'] * HARTREE_TO_KCAL
         e_ref    = energies.min()
         sc       = data.get('spin_contamination', np.zeros_like(irc_s))
+        coords   = data.get('coordinates', None)
+        symbols  = data.get('symbols', None)
+        if symbols is not None:
+            symbols = symbols.tolist()
 
         sort_idx = np.argsort(irc_s)
         irc_s_s  = irc_s[sort_idx]
         e_s      = energies[sort_idx] - e_ref
         sc_s     = sc[sort_idx]
+        coords_s = coords[sort_idx] if coords is not None else None
 
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 9),
+                                        gridspec_kw={'hspace': 0.35})
 
         # Energy profile, colour by spin contamination
-        ax1.scatter(irc_s_s, e_s, c=np.abs(sc_s), cmap='RdYlGn_r',
-                    s=40, zorder=3, vmin=0, vmax=0.3)
+        sc_plot = ax1.scatter(irc_s_s, e_s, c=np.abs(sc_s), cmap='RdYlGn_r',
+                              s=50, zorder=3, vmin=0, vmax=0.3)
         ax1.plot(irc_s_s, e_s, lw=0.8, color='gray', zorder=2)
         ax1.set_xlabel('IRC coordinate (Å·√amu)')
         ax1.set_ylabel('ΔE (kcal/mol)')
         ax1.set_title('IRC energy profile  (colour = |ΔS²|; red = multi-ref)')
-        ax1.axvline(0, color='red', lw=0.8, ls='--', label='TS')
-        ax1.legend()
+        ax1.axvline(0, color='red', lw=0.8, ls='--', label='TS (s=0)')
+        fig.colorbar(sc_plot, ax=ax1, label='|ΔS²|', fraction=0.03, pad=0.02)
+
+        # Mark key IRC points with vertical lines
+        i_min  = int(np.argmin(e_s))      # reactant minimum
+        i_ts   = int(np.argmin(np.abs(irc_s_s)))   # closest to s=0 (TS)
+        i_prod = int(np.argmax(irc_s_s))  # most positive s (VHP/product side)
+        for idx, lbl, col in [(i_min, 'MVKO', 'steelblue'),
+                               (i_ts,  'TS',  'red'),
+                               (i_prod,'VHP', 'seagreen')]:
+            ax1.axvline(irc_s_s[idx], color=col, lw=1.2, ls=':', alpha=0.7, label=lbl)
+        ax1.legend(fontsize=8)
+
+        # Add molecular structure insets if RDKit available
+        if coords_s is not None and symbols is not None:
+            s_range = irc_s_s.max() - irc_s_s.min() if len(irc_s_s) > 1 else 1.0
+            e_range_plot = e_s.max() - e_s.min() if e_s.max() > e_s.min() else 1.0
+            # positions in axis coordinates: (x0, y0, width, height)
+            inset_specs = [
+                (i_min,  'MVKO', (0.02, 0.55, 0.20, 0.40)),
+                (i_ts,   'TS',   (0.40, 0.55, 0.20, 0.40)),
+                (i_prod, 'VHP',  (0.75, 0.55, 0.20, 0.40)),
+            ]
+            for idx, lbl, bbox in inset_specs:
+                _add_mol_inset(ax1, symbols, coords_s[idx], bbox, charge=0, label=lbl)
 
         # Spin contamination along IRC
         ax2.plot(irc_s_s, np.abs(sc_s), color='firebrick', lw=1.5)
@@ -868,7 +1023,6 @@ def plot_irc_profile(irc_data_path: str, ts_e: float, out_dir: Path):
         ax2.set_title('Multi-reference character along IRC')
         ax2.legend()
 
-        plt.tight_layout()
         fig_path = out_dir / 'irc_energy_profile.png'
         fig.savefig(str(fig_path), dpi=200, bbox_inches='tight')
         plt.close(fig)
@@ -892,6 +1046,10 @@ def main():
                         help='Path to PSI4 eq coords (.npy) for MVKO')
     parser.add_argument('--irc-data', default=None,
                         help='Existing IRC training data (.npz) — skips ts/irc steps')
+    parser.add_argument('--reactant-data',
+                        default='outputs/mvko_20260319_081314/combined_training_data.npz',
+                        help='Reactant training data (.npz) to prepend to IRC frames '
+                             'for perpendicular-mode coverage [default: 904-frame MVKO set]')
     parser.add_argument('--family-pkl', default=None,
                         help='Existing PESFamily .pkl — skips ts/irc/train steps')
     parser.add_argument('--blend-width', type=float, default=10.0,
@@ -966,10 +1124,15 @@ def main():
                 print("  Check PSI4 output: IRC step failure above")
                 irc_data_path = None
         if irc_data_path is not None:
+            _rdata = args.reactant_data if Path(args.reactant_data).exists() else None
+            if _rdata is None and args.reactant_data:
+                print(f"  WARNING: --reactant-data not found: {args.reactant_data}")
+                print(f"  Training on IRC frames only (may be unstable at high T)")
             family, family_pkl, _ = train_rxn_path_pes(
                 irc_data_path, args.reactant_model, out_dir,
                 blend_width=args.blend_width,
                 gamma=args.gamma, alpha=args.alpha,
+                reactant_data_path=_rdata,
             )
             if irc_data_path:
                 plot_irc_profile(irc_data_path, e_ts or 0.0, out_dir)
