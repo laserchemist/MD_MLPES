@@ -87,7 +87,7 @@ def geometry_string(symbols, coords, charge=0, mult=1):
     lines = [f"{charge} {mult}"]
     for sym, (x, y, z) in zip(symbols, coords):
         lines.append(f"  {sym}  {x:.10f}  {y:.10f}  {z:.10f}")
-    lines += ["units angstrom", "no_reorient", "no_com"]
+    lines += ["units angstrom", "no_reorient", "no_com", "symmetry c1"]
     return "\n".join(lines)
 
 
@@ -136,7 +136,8 @@ def _parse_ci_root_energies(output_text: str, n_roots: int = 2) -> list[float]:
 # ── Per-frame PSI4 calculations ───────────────────────────────────────────────
 
 def run_frame(symbols, coords, irc_s, e_b3lyp, frame_idx,
-              out_dir: Path, run_caspt2: bool = False) -> dict:
+              out_dir: Path, run_caspt2: bool = False,
+              n_threads: int = 4, memory: str = '6 GB') -> dict:
     """
     Run RHF → SS-CASSCF(4,4) → SA-2-CASSCF(4,4) [→ DMRG-CASPT2] for one geometry.
     Returns a result dict.
@@ -152,8 +153,8 @@ def run_frame(symbols, coords, irc_s, e_b3lyp, frame_idx,
     psi4.core.set_output_file(frame_outfile, False)
 
     geom = psi4.geometry(geometry_string(symbols, coords))
-    psi4.set_memory('6 GB')
-    psi4.set_num_threads(4)
+    psi4.set_memory(memory)
+    psi4.set_num_threads(n_threads)
 
     result = {
         'frame_idx':    int(frame_idx),
@@ -300,7 +301,12 @@ def train_delta_ml(results: list[dict], symbols: list[str],
                    coords_sorted: np.ndarray, out_dir: Path,
                    use_caspt2: bool = False):
     """
-    Train a KRR delta-ML model on ΔE = E_CASSCF_root0 − E_B3LYP.
+    Train a KRR delta-ML model on the RELATIVE correction:
+        delta(i) = ΔE_CASSCF(i) - ΔE_B3LYP(i)
+    where both ΔE are referenced to the minimum-energy frame.
+
+    This correctly captures how the CASSCF barrier SHAPE differs from B3LYP,
+    avoiding the ~1.8 Ha absolute offset due to dynamic correlation in DFT.
 
     Uses the SA-CASSCF root-0 energy (ground adiabatic state) as the
     high-level reference; falls back to SS-CASSCF if SA failed.
@@ -311,26 +317,41 @@ def train_delta_ml(results: list[dict], symbols: list[str],
     from modules.ml_pes import MLPESTrainer, MLPESConfig
     from modules.data_formats import TrajectoryData
 
-    good = []
+    # Collect frames with both CASSCF and B3LYP energies
+    raw = []
     for r, c in zip(results, coords_sorted):
         e_hi = r.get('e_caspt2') or r.get('e_sa_root0') or r.get('e_casscf_ss')
         e_lo = r.get('e_b3lyp')
         if e_hi is not None and e_lo is not None:
-            delta = (e_hi - e_lo)   # Ha
-            good.append({'coords': c, 'delta_ha': delta,
-                         'delta_kcal': delta * HARTREE_TO_KCAL,
-                         'irc_s': r['irc_s']})
+            raw.append({'coords': c, 'e_cas': e_hi, 'e_b3lyp': e_lo,
+                        'irc_s': r['irc_s']})
 
-    if len(good) < 3:
-        print(f"  Only {len(good)} usable frames for delta-ML — skipping")
+    if len(raw) < 3:
+        print(f"  Only {len(raw)} usable frames for delta-ML — skipping")
         return None, None
+
+    # Compute RELATIVE correction: delta_rel(i) = ΔE_CASSCF(i) - ΔE_B3LYP(i)
+    # Both ΔE are referenced to the minimum-energy frame of each method
+    e_cas_ref   = min(g['e_cas']    for g in raw)   # CASSCF min frame (Ha)
+    e_b3lyp_ref = min(g['e_b3lyp'] for g in raw)    # B3LYP min frame (Ha)
+    good = []
+    for g in raw:
+        dE_cas   = g['e_cas']    - e_cas_ref     # Ha
+        dE_b3lyp = g['e_b3lyp'] - e_b3lyp_ref   # Ha
+        delta_rel = dE_cas - dE_b3lyp            # Ha  (correction to relative energy)
+        good.append({**g, 'delta_ha': delta_rel,
+                     'delta_kcal': delta_rel * HARTREE_TO_KCAL})
 
     coords_arr   = np.array([g['coords']   for g in good])
     energies_arr = np.array([g['delta_ha'] for g in good])
     forces_arr   = np.zeros_like(coords_arr)
 
     print(f"\n  Delta-ML training: {len(good)} frames")
-    print(f"  ΔE range: {energies_arr.min()*HARTREE_TO_KCAL:.2f} to "
+    print(f"  CASSCF barrier (relative): "
+          f"{(max(g['e_cas'] for g in raw) - e_cas_ref)*HARTREE_TO_KCAL:.1f} kcal/mol")
+    print(f"  B3LYP  barrier (relative): "
+          f"{(max(g['e_b3lyp'] for g in raw) - e_b3lyp_ref)*HARTREE_TO_KCAL:.1f} kcal/mol")
+    print(f"  delta_rel range: {energies_arr.min()*HARTREE_TO_KCAL:.2f} to "
           f"{energies_arr.max()*HARTREE_TO_KCAL:.2f} kcal/mol")
 
     traj = TrajectoryData(
@@ -421,14 +442,25 @@ def plot_results(results: list[dict], e_b3lyp_min: float, out_dir: Path):
         H12       = np.array([r.get('H12_kcal')    or np.nan for r in results])
         e_caspt2  = np.array([r.get('e_caspt2')    or np.nan for r in results])
 
-        # Align all energies to MVKO minimum (lowest B3LYP energy)
-        e_ref     = e_b3lyp_min
-        dE_b3lyp  = (e_b3lyp  - e_ref) * HARTREE_TO_KCAL
-        dE_cas    = (e_cas_ss - e_ref) * HARTREE_TO_KCAL
-        dE_sa_r0  = (e_sa_r0  - e_ref) * HARTREE_TO_KCAL
-        dE_sa_r1  = (e_sa_r1  - e_ref) * HARTREE_TO_KCAL
-        dE_caspt2 = (e_caspt2 - e_ref) * HARTREE_TO_KCAL
-        delta_kcal = (e_sa_r0 - e_b3lyp) * HARTREE_TO_KCAL   # correction
+        # Align B3LYP to its own minimum
+        e_ref      = e_b3lyp_min
+        dE_b3lyp   = (e_b3lyp  - e_ref) * HARTREE_TO_KCAL
+
+        # Align CASSCF energies to CASSCF minimum (may differ from B3LYP min frame)
+        cas_valid = e_cas_ss[~np.isnan(e_cas_ss)]
+        e_cas_ref  = np.nanmin(e_cas_ss) if len(cas_valid) else e_ref
+        e_sa_ref   = np.nanmin(e_sa_r0)  if not np.all(np.isnan(e_sa_r0)) else e_ref
+        e_pt2_ref  = np.nanmin(e_caspt2) if not np.all(np.isnan(e_caspt2)) else e_ref
+
+        dE_cas    = (e_cas_ss - e_cas_ref) * HARTREE_TO_KCAL
+        dE_sa_r0  = (e_sa_r0  - e_sa_ref)  * HARTREE_TO_KCAL
+        dE_sa_r1  = (e_sa_r1  - e_sa_ref)  * HARTREE_TO_KCAL
+        dE_caspt2 = (e_caspt2 - e_pt2_ref) * HARTREE_TO_KCAL
+
+        # Relative delta correction: ΔE_CASSCF(i) - ΔE_B3LYP(i) (both relative to min)
+        dE_sa_r0_b3lyp_ref = (e_sa_r0 - e_sa_ref) * HARTREE_TO_KCAL
+        dE_b3lyp_for_delta = (e_b3lyp  - e_ref)    * HARTREE_TO_KCAL
+        delta_kcal = dE_sa_r0_b3lyp_ref - dE_b3lyp_for_delta   # relative correction
 
         fig, axes = plt.subplots(2, 2, figsize=(14, 10),
                                  gridspec_kw={'hspace': 0.38, 'wspace': 0.32})
@@ -623,7 +655,8 @@ def main():
             res = run_frame(
                 symbols, coords[fi], irc_s[fi], energies[fi],
                 frame_idx=fi, out_dir=out_dir,
-                run_caspt2=args.run_caspt2)
+                run_caspt2=args.run_caspt2,
+                n_threads=args.n_threads, memory=args.memory)
             res['e_b3lyp_rel'] = (energies[fi] - e_b3lyp_min) * HARTREE_TO_KCAL
             results.append(res)
 
@@ -658,12 +691,15 @@ def main():
     print(f"  {'':>5}  {'Å√amu':>6}  {'kcal/mol':>10}  {'kcal/mol':>10}  "
           f"{'kcal/mol':>8}  {'kcal/mol':>8}")
     print(f"  {'-'*75}")
-    e_ref = e_b3lyp_min
+    # Use CASSCF minimum for relative CASSCF energies
+    e_cas_vals = [r.get('e_sa_root0') or r.get('e_casscf_ss')
+                  for r in results if (r.get('e_sa_root0') or r.get('e_casscf_ss'))]
+    e_cas_min = min(e_cas_vals) if e_cas_vals else e_b3lyp_min
     for r in results:
         s_     = r.get('irc_s', float('nan'))
         dE_b3  = r.get('e_b3lyp_rel', float('nan'))
         e_hi   = r.get('e_sa_root0') or r.get('e_casscf_ss')
-        dE_cas = (e_hi - e_ref) * HARTREE_TO_KCAL if e_hi else float('nan')
+        dE_cas = (e_hi - e_cas_min) * HARTREE_TO_KCAL if e_hi else float('nan')
         delta  = (dE_cas - dE_b3) if not (np.isnan(dE_cas) or np.isnan(dE_b3)) else float('nan')
         H12    = r.get('H12_kcal', float('nan')) or float('nan')
         occs   = r.get('no_occs')
@@ -700,9 +736,14 @@ def main():
     good_sa    = [r for r in results if r.get('e_sa_root0')  is not None]
     dE_b3lyp_barrier  = max(
         (r.get('e_b3lyp_rel', 0) for r in results), default=0)
-    dE_cas_barrier    = max(
-        ((r.get('e_sa_root0') or r.get('e_casscf_ss') or e_b3lyp_min) - e_b3lyp_min)
-        * HARTREE_TO_KCAL for r in results if r.get('e_casscf_ss'))
+    cas_vals_all = [r.get('e_sa_root0') or r.get('e_casscf_ss')
+                    for r in results if (r.get('e_sa_root0') or r.get('e_casscf_ss'))]
+    if cas_vals_all:
+        e_cas_min_all = min(cas_vals_all)
+        cas_rel = [(v - e_cas_min_all) * HARTREE_TO_KCAL for v in cas_vals_all]
+        dE_cas_barrier = max(cas_rel)
+    else:
+        dE_cas_barrier = float('nan')
     max_H12 = max(
         (r.get('H12_kcal') or 0 for r in results), default=0)
 
@@ -710,8 +751,9 @@ def main():
     print(f"  Frames computed:    {len(good_cas)}/{len(results)}")
     print(f"  SA-CASSCF success:  {len(good_sa)}/{len(results)}")
     print(f"  B3LYP barrier:      {dE_b3lyp_barrier:.1f} kcal/mol")
-    print(f"  CASSCF barrier:     {dE_cas_barrier:.1f} kcal/mol")
-    print(f"  Barrier shift:      {dE_cas_barrier - dE_b3lyp_barrier:+.1f} kcal/mol")
+    print(f"  CASSCF barrier:     {dE_cas_barrier:.1f} kcal/mol" if not (dE_cas_barrier != dE_cas_barrier) else "  CASSCF barrier:     n/a (no converged frames)")
+    shift = dE_cas_barrier - dE_b3lyp_barrier
+    print(f"  Barrier shift:      {shift:+.1f} kcal/mol" if not (shift != shift) else "  Barrier shift:      n/a")
     print(f"  Max H₁₂:            {max_H12:.1f} kcal/mol")
     print(f"\n  Note: dynamic correlation (NEVPT2/CASPT2) not included.")
     print(f"  Install 'forte' (conda install forte -c conda-forge/label/forte)")
@@ -727,7 +769,7 @@ def main():
         'n_sa_converged':     len(good_sa),
         'barrier_b3lyp_kcal': dE_b3lyp_barrier,
         'barrier_casscf_kcal': dE_cas_barrier,
-        'barrier_shift_kcal': dE_cas_barrier - dE_b3lyp_barrier,
+        'barrier_shift_kcal': (dE_cas_barrier - dE_b3lyp_barrier) if dE_cas_barrier == dE_cas_barrier else None,
         'max_H12_kcal':       max_H12,
         'irc_data':           args.irc_data,
         'active_space':       f'CASSCF({N_ELEC_ACTIVE},{N_ORBS_ACTIVE})',
