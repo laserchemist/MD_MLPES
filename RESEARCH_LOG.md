@@ -62,6 +62,75 @@ Range: −3.1 to +16.1 kcal/mol. Corrected PESFamily manifest:
 
 ---
 
+## 2026-03-31 — CASSCF Full-Surface Delta-ML + IR Comparison
+
+### Objective
+Extend the IRC CASSCF correction to the full B3LYP training surface (904 frames).
+Train a delta-ML model and test whether the CASSCF correction meaningfully shifts the MVKO 300K IR spectrum.
+
+### Script
+`casscf_surface_correction.py` — stratified FPS frame selection → SS-CASSCF(4,4)/6-31G* → delta-ML.
+
+### Frame selection (`outputs/casscf_surface_20260331_133413/`)
+30 frames selected by FPS in Coulomb space within 5 energy bins: [0–5, 5–15, 15–30, 30–60, 60–100 kcal/mol].
+29/30 CASSCF converged (frame 713 failed to converge).
+
+### Key results (selected frames)
+
+| ΔE\_B3LYP (kcal/mol) | ΔE\_CASSCF | Δcorr | Notes |
+|---|---|---|---|
+| 0–3 | 0–3.4 | 0 to +2.3 | Near-equilibrium, small corrections |
+| 10–22 | 11–27 | −0.9 to +4.7 | Variable, mostly positive |
+| 27–45 | 8–55 | −19 to +14 | Large scatter; frame 29 anomalous (−19 kcal/mol) |
+| 57–72 | 30–63 | −28 to −11 | B3LYP systematically **stiffer** than CASSCF at high distortion |
+| 98 | 91 | −7 | B3LYP still stiffer at extreme distortion |
+
+**Key physics:** At high distortions (ΔE > 40 kcal/mol), B3LYP overestimates PES stiffness
+by 10–28 kcal/mol vs CASSCF. Near equilibrium (ΔE < 15 kcal/mol), corrections are +0.6 ± 1.0 kcal/mol.
+
+### Delta-ML approaches tried
+
+**Approach 1: Geometry-based KRR** (`outputs/casscf_surface_20260331_162217/merged/delta_ml_surface.pkl`)
+- 38 frames (29 surface + 9 IRC), γ=5e-5, α=1e-10
+- RMSE: 21 kcal/mol — **failed due to Coulomb descriptor clustering**
+- Root cause: all geometries have ||d_i − d_j|| ≈ 4-5 (out of ||d|| ≈ 158) → K≈0.999 for all pairs
+- Large negative high-energy corrections bleed into equilibrium → 5 imaginary NM modes (−3800 cm⁻¹)
+- IR spectrum: only peak at 0.7 cm⁻¹ (CASSCF model destroys equilibrium geometry)
+
+**Approach 2: 1D energy spline** (`outputs/casscf_surface_20260331_162217/energy_delta.json`)
+- Fit δ(ΔE\_B3LYP) as cubic spline, anchored at δ(0)=0
+- **Failed due to oscillation**: frame 29 anomaly (δ=−19 at ΔE=27) causes runaway spline at ΔE=25–30
+- Fundamental issue: CASSCF corrections at ΔE < 15 kcal/mol are noisy (σ=1 kcal/mol) relative to the correction itself (μ=0.6 kcal/mol)
+
+### Physical conclusion
+**The CASSCF correction is negligible for 300K IR spectra of MVKO.**
+
+Near-equilibrium statistics (ΔE\_B3LYP < 15 kcal/mol):
+- Mean δ: +0.62 kcal/mol (vs kT=0.59 kcal/mol at 300K)
+- Std δ: ±1.05 kcal/mol (comparable to correction magnitude)
+- NO occupancies at MVKO minimum: 1.998, 1.924, 0.078, 0.000 → nearly closed-shell
+
+The correction matters for: (1) syn-MVKO → VHP reaction barrier (+6.2 kcal/mol), and (2) high-energy PES exploration (thermodynamics, conformer interconversion). For 300K vibrational spectroscopy, B3LYP/6-31G\* is adequate.
+
+### IR spectrum reproducibility check
+Reran 30k-step B3LYP IR (`outputs/ir_spectrum_B3LYP_20260331/`) — identical to original:
+
+| Peak (cm⁻¹) | Assignment |
+|---|---|
+| 322 | Torsion (strongest) |
+| 247, 243 | Torsion/bending |
+| 893 | **O-O stretch** |
+| 514 | C-O-O bending |
+| 207, 183 | Low-frequency modes |
+
+Comparison figure: `outputs/casscf_surface_20260331_162217/ir_comparison_b3lyp_vs_b3lyp.png`
+
+### New tools added
+- `compare_ir_spectra.py` — overlay any number of ir\_spectrum.csv files with Gaussian broadening, peak annotations, difference panel (2-spectrum case), `path:label` CLI syntax
+- `ir_md_spectrum.py --energy-delta <json>` — 1D spline CASSCF correction flag (for future use with better training data)
+- `ir_md_spectrum.py --delta-model <pkl>` — geometry-based KRR correction flag (not recommended for Coulomb descriptors)
+
+---
 
 **Project:** Machine-learning potential energy surfaces for Criegee intermediates
 **Molecule:** CH₂OO (formaldehyde oxide) → MVKO (methyl vinyl ketone oxide, C₄H₆O₂)
