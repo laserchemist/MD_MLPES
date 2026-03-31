@@ -241,6 +241,61 @@ class PESFamilyDriver:
 
 
 # =============================================================================
+# DeltaMLPESDriver — adds a CASSCF delta-ML correction to any base driver
+# =============================================================================
+
+class DeltaMLPESDriver:
+    """
+    Wraps a base ML-PES driver (MLPESDriver or PESFamilyDriver) and adds a
+    delta-ML correction trained on CASSCF(4,4) − B3LYP relative energies.
+
+    Corrected energy:
+        E_corr(R) = E_base(R) + E_delta(R)
+
+    Forces are computed as the sum of base forces and FD-differentiated delta
+    forces (delta model is cheap — 39-point KRR — so FD adds negligible cost):
+        F_corr(R) = F_base(R) + F_delta(R)
+
+    The delta model predicts relative corrections in Hartree. The absolute
+    CASSCF−B3LYP offset cancels in force differences and does not affect MD.
+    """
+
+    def __init__(self, base_driver, delta_model_path: str,
+                 delta_fd: float = 0.005):
+        self._base        = base_driver
+        self._delta_model = MLPESTrainer.load(delta_model_path)
+        self.symbols      = base_driver.symbols
+        self.n_atoms      = base_driver.n_atoms
+        self.masses       = base_driver.masses
+        self._has_analytic = False   # delta forces via FD only
+        self._delta_fd    = delta_fd
+        print(f"  Delta-ML correction loaded: {delta_model_path}")
+
+    def _delta_energy(self, coords: np.ndarray) -> float:
+        return float(self._delta_model.predict(self.symbols, coords))
+
+    def energy(self, coords: np.ndarray) -> float:
+        return self._base.energy(coords) + self._delta_energy(coords)
+
+    def forces(self, coords: np.ndarray, delta: float = None) -> np.ndarray:
+        dx = delta if delta is not None else self._delta_fd
+        # Base forces (may be analytic if base driver supports it)
+        f_base = self._base.forces(coords, delta)
+        # Delta forces via FD on delta model only (fast — small KRR)
+        f_delta = np.zeros_like(coords)
+        for a in range(self.n_atoms):
+            for j in range(3):
+                cp = coords.copy(); cp[a, j] += dx
+                cm = coords.copy(); cm[a, j] -= dx
+                f_delta[a, j] = -(self._delta_energy(cp) -
+                                   self._delta_energy(cm)) / (2 * dx)
+        return f_base + f_delta
+
+    def predict(self, symbols, coords) -> float:
+        return self.energy(coords)
+
+
+# =============================================================================
 # ML-PES normal mode analysis (numerical or analytic Hessian)
 # =============================================================================
 
@@ -959,7 +1014,8 @@ def run_ir_workflow(model_path: str,
                     n_trajectories: int = 1,
                     max_bond_extension: float = 0.0,
                     monitor_bonds: list = None,
-                    print_every: int = 0) -> None:
+                    print_every: int = 0,
+                    delta_model_path: str | None = None) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -1016,6 +1072,12 @@ def run_ir_workflow(model_path: str,
               f"(blend_width={family.blend_width} kcal/mol)")
     else:
         driver = MLPESDriver(model_path)
+
+    # Wrap with delta-ML correction if provided
+    if delta_model_path:
+        print(f"  Delta-ML model     : {delta_model_path}")
+        driver = DeltaMLPESDriver(driver, delta_model_path)
+
     mol = identify_molecule(driver.symbols, traj.coordinates[0])
     print(f"  Molecule           : {mol['label']}  ({mol['n_atoms']} atoms)")
 
@@ -1364,6 +1426,10 @@ def main():
                         help='Use analytic KRR Hessian (chain rule through Coulomb matrix + '
                              'RBF kernel) instead of numerical finite differences. '
                              'Exact, fast (single forward pass), no FD step-size tuning.')
+    parser.add_argument('--delta-model',       default=None,
+                        help='Path to delta-ML correction model .pkl '
+                             '(from casscf_surface_correction.py). '
+                             'Adds CASSCF(4,4)−B3LYP correction to energy and forces.')
     parser.add_argument('--multi-surface',     action='store_true',
                         help='Use a PESFamily (multi-conformer) instead of a single ML-PES. '
                              'Requires --conformer-manifest.')
@@ -1406,6 +1472,7 @@ def main():
         max_bond_extension  = args.max_bond_extension,
         monitor_bonds       = _parse_monitor_bonds(args.monitor_bonds),
         print_every         = args.print_every,
+        delta_model_path    = args.delta_model,
     )
 
 
