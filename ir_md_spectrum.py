@@ -296,6 +296,63 @@ class DeltaMLPESDriver:
 
 
 # =============================================================================
+# NMDeltaDriver — CASSCF correction using normal-mode coordinate KRR
+# =============================================================================
+
+class NMDeltaDriver:
+    """
+    Applies a CASSCF delta correction from a NMKRRDeltaModel (casscf_nm_delta.py).
+
+    The NMKRRDeltaModel maps each geometry to mass-weighted NM displacements
+    q = U_vib^T · M^{1/2} · (R − R_ref) and evaluates a KRR model in that
+    space.  Because q = 0 at the reference geometry and ||q||² grows with
+    distortion, the RBF kernel localises correctly — no Coulomb clustering.
+
+    Forces are computed via FD on the combined (base + delta) surface.
+    The FD cost is small: one extra KRR forward pass per atom per direction
+    (18 × 6 = 108 KRR evaluations vs 36 for the base FD alone).
+    """
+
+    def __init__(self, base_driver, nm_delta_model_path: str,
+                 delta_fd: float = 0.005):
+        from casscf_nm_delta import NMKRRDeltaModel
+        self._base         = base_driver
+        self._nm_model     = NMKRRDeltaModel.load(nm_delta_model_path)
+        self.symbols       = base_driver.symbols
+        self.n_atoms       = base_driver.n_atoms
+        self.masses        = base_driver.masses
+        self._has_analytic = False
+        self._delta_fd     = delta_fd
+        print(f"  NM delta-ML model loaded: {nm_delta_model_path}")
+        print(f"    KRR gamma={self._nm_model.gamma:.4g}  "
+              f"alpha={self._nm_model.alpha_reg:.2g}  "
+              f"n_train={len(self._nm_model.X_train_q)}  "
+              f"n_vib={self._nm_model.U_vib.shape[1]}  "
+              f"LOO-CV RMSE={self._nm_model.cv_rmse_kcal:.3f} kcal/mol"
+              if self._nm_model.cv_rmse_kcal else "")
+
+    def _delta_energy(self, coords: np.ndarray) -> float:
+        return self._nm_model.predict(self.symbols, coords)
+
+    def energy(self, coords: np.ndarray) -> float:
+        return self._base.energy(coords) + self._delta_energy(coords)
+
+    def forces(self, coords: np.ndarray, delta: float = None) -> np.ndarray:
+        dx = delta if delta is not None else self._delta_fd
+        f_base  = self._base.forces(coords) if delta is None else self._base.forces(coords, delta)
+        f_delta = np.zeros_like(coords)
+        for a in range(self.n_atoms):
+            for j in range(3):
+                cp = coords.copy(); cp[a, j] += dx
+                cm = coords.copy(); cm[a, j] -= dx
+                f_delta[a, j] = -(self._delta_energy(cp) - self._delta_energy(cm)) / (2 * dx)
+        return f_base + f_delta
+
+    def predict(self, symbols, coords) -> float:
+        return self.energy(coords)
+
+
+# =============================================================================
 # EnergyDeltaDriver — 1D spline CASSCF correction as function of ΔE_B3LYP
 # =============================================================================
 
@@ -1103,7 +1160,8 @@ def run_ir_workflow(model_path: str,
                     monitor_bonds: list = None,
                     print_every: int = 0,
                     delta_model_path: str | None = None,
-                    energy_delta_path: str | None = None) -> None:
+                    energy_delta_path: str | None = None,
+                    nm_delta_model_path: str | None = None) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -1162,7 +1220,10 @@ def run_ir_workflow(model_path: str,
         driver = MLPESDriver(model_path)
 
     # Wrap with delta-ML correction if provided
-    if delta_model_path:
+    if nm_delta_model_path:
+        print(f"  NM delta-ML model  : {nm_delta_model_path}")
+        driver = NMDeltaDriver(driver, nm_delta_model_path)
+    elif delta_model_path:
         print(f"  Delta-ML model     : {delta_model_path}")
         driver = DeltaMLPESDriver(driver, delta_model_path)
     elif energy_delta_path:
@@ -1527,6 +1588,11 @@ def main():
                              'Applies a spline CASSCF correction as a function of '
                              'ΔE_B3LYP — more stable than --delta-model when Coulomb '
                              'descriptors cluster all geometries together.')
+    parser.add_argument('--nm-delta-model',    default=None,
+                        help='Path to NMKRRDeltaModel .pkl from casscf_nm_delta.py. '
+                             'Applies CASSCF(4,4)−B3LYP correction in normal-mode '
+                             'coordinate space — correct localisation near equilibrium '
+                             '(preferred over --delta-model and --energy-delta).')
     parser.add_argument('--multi-surface',     action='store_true',
                         help='Use a PESFamily (multi-conformer) instead of a single ML-PES. '
                              'Requires --conformer-manifest.')
@@ -1571,6 +1637,7 @@ def main():
         print_every         = args.print_every,
         delta_model_path    = args.delta_model,
         energy_delta_path   = args.energy_delta,
+        nm_delta_model_path = args.nm_delta_model,
     )
 
 

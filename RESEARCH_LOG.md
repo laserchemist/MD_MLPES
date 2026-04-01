@@ -1258,3 +1258,213 @@ a Dec 2025 install and PSI4 1.10) that causes validation RMSE of 15–40 kcal/mo
 | NM freq conv | cm⁻¹/√(Ha/(Bohr²·amu)) | FREQ_CONV = 5140.48 |
 
 All conversion constants live in `modules/direct_md.py:40-60` — do not redefine elsewhere.
+
+## 2026-04-01: NM-Coordinate Delta-ML Implementation
+
+### Why Coulomb matrix fails for delta-ML
+
+The existing `casscf_surface_correction.py` uses Coulomb matrix descriptors for the
+CASSCF−B3LYP delta-ML model. This has a fundamental flaw for delta-ML near equilibrium:
+
+- **All MVKO geometries at 300 K have K ≈ 0.999** — the Coulomb matrix is dominated by
+  heavy-atom nuclear charges (Z_C=6, Z_O=8) which are invariant. Small thermal distortions
+  (0.1–0.5 Å) barely change the off-diagonal Coulomb terms.
+- **High-energy outliers bleed into equilibrium**: frames 702 (δ=−21.5), 748 (δ=−18.1),
+  866 (δ=−28.1) are NOT far from equilibrium in Coulomb space, so their large corrections
+  pollute q=0 predictions.
+- **Result**: KRR cannot localise corrections — 5 imaginary NM modes at equilibrium,
+  IR crashes.
+
+### Normal-mode coordinate fix (Fix B)
+
+New script `casscf_nm_delta.py` implements Fix B from the proposed roadmap:
+
+1. Load 29 existing CASSCF(4,4) single-point results
+2. Use B3LYP Hessian → mass-weighted NM eigenvectors U (shape 3N×n_vib)
+3. Project each geometry: **q**_i = U^T · M^{1/2} · (R_i − R_ref) [sqrt(amu)·Bohr]
+4. Train KRR δ(q) with LOO-CV gamma/alpha grid search
+5. Save `NMKRRDeltaModel` pickle
+
+**Key properties of NM descriptors**:
+- q = 0 exactly at the reference geometry → kernel K(q_i, q_j) = exp(−γ||q_i−q_j||²)
+  gives K = 1 at equilibrium, decaying to 0 for distorted frames
+- High-energy outliers (||q||² >> 1) do not contaminate equilibrium predictions
+- Physically orthogonal modes — no clustering artifact
+
+### NMKRRDeltaModel class (casscf_nm_delta.py)
+- `.project(coords_ang)` → (n_vib,) q vector
+- `.predict(symbols, coords_ang)` → delta in Hartree (matches MLPESTrainer API)
+- `.save()` / `.load()` pickle I/O
+- Pre-computes KRR dual coefficients at init (solves (K+αI)α_vec = y)
+
+### KRR hyperparameters
+- gamma units: 1/(amu·Bohr²); typical range 0.01–5.0 for MVKO NM coordinates
+- At 300 K, typical thermal ||q||² ~ 1–10 amu·Bohr² for low-freq modes
+- LOO-CV via hat-matrix shortcut (exact, fast)
+- Grid search output summarised in `summary.json`
+
+### ir_md_spectrum.py integration
+Added `NMDeltaDriver` class and `--nm-delta-model` flag:
+```bash
+python3 ir_md_spectrum.py \
+    --model outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --nm-delta-model outputs/casscf_nm_delta_<ts>/nm_delta_model.pkl \
+    --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000
+```
+`--nm-delta-model` takes precedence over `--delta-model` and `--energy-delta`.
+
+### Fix A option (--add-nm-points)
+Generates N additional SS-CASSCF points at ±1 thermal amplitude NM displacements
+from equilibrium (T=300 K). Provides near-equilibrium anchoring to reduce σ(δ) from
+±1.0 to expected ±0.3 kcal/mol. Requires PSI4. Recommend 10–15 points.
+
+### Usage command
+```bash
+# Step 1: build NM delta model (compute B3LYP Hessian once, reuse with --b3lyp-hessian)
+python3 casscf_nm_delta.py \
+    --load-results outputs/casscf_surface_20260331_133413/surface_results.json \
+    --training-data outputs/mvko_20260319_081314/combined_training_data.npz \
+    --eq-coords outputs/mvko_20260319_081314/psi4_eq_coords.npy \
+    --max-energy 50 --gamma-values 0.01,0.05,0.1,0.5,1.0,5.0
+
+# Step 2: rerun with saved hessian + Fix A
+python3 casscf_nm_delta.py \
+    --load-results outputs/casscf_nm_delta_<ts>/all_casscf_results.json \
+    --training-data outputs/mvko_20260319_081314/combined_training_data.npz \
+    --eq-coords outputs/mvko_20260319_081314/psi4_eq_coords.npy \
+    --b3lyp-hessian outputs/casscf_nm_delta_<ts>/hessian_used.npy \
+    --add-nm-points 15 --T-nm 300
+
+# Step 3: IR spectrum with NM delta correction
+python3 ir_md_spectrum.py \
+    --model outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --nm-delta-model outputs/casscf_nm_delta_<ts>/nm_delta_model.pkl \
+    --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000
+```
+
+## 2026-04-01: NM-Coordinate Delta-ML — Diagnosis and Conclusion
+
+### Background
+Following the failure of Coulomb-descriptor KRR and 1D energy-spline delta-ML
+(documented 2026-03-31), we implemented Fix B: replacing Coulomb matrix descriptors
+with mass-weighted normal-mode (NM) coordinates for the CASSCF−B3LYP delta-ML model.
+Script: `casscf_nm_delta.py`.  IR driver integration: `NMDeltaDriver` + `--nm-delta-model`
+flag in `ir_md_spectrum.py`.
+
+### NM coordinate projection
+```
+q_i = U_vib^T · M^{1/2} · (R_i − R_ref)    [sqrt(amu)·Bohr]
+```
+- `q = 0` at the reference geometry; `||q||²` grows with distortion
+- RBF kernel K(q_i, q_j) = exp(−γ||q_i − q_j||²) localises correctly:
+  large-distortion CASSCF outliers are far from equilibrium in q-space
+- B3LYP Hessian at the equilibrium used for NM modes (125–3323 cm⁻¹, all physical)
+- Saved: `outputs/casscf_nm_delta_20260401_103139/hessian_used.npy`
+
+### Bug fixed: LOO-CV hat-matrix shortcut is degenerate at small α
+The original LOO-CV formula  e_i = (ŷ_i − y_i)/(1 − h_{ii})  gives 0/0 when
+α → 0 (near-exact interpolant, h_{ii} → 1).  NumPy returned 0.000 instead of NaN,
+falsely reporting perfect cross-validation.  Fixed: replaced with explicit retraining
+of M leave-one-out models (feasible since M ≤ 50).
+
+### Bug fixed: Fix A coordinates not stored in result dicts
+`add_nm_casscf_points()` never saved `_coords` in the result dict, so
+`build_training_arrays()` fell back to `np.zeros((12,3))` for every synthetic frame.
+The projection of the zero origin gave a constant ||q||² = 870 amu·Bohr² for all 30
+Fix A frames regardless of which NM mode was displaced.  Fix: added
+`result['_coords'] = new_coords.tolist()` in the result dict; added a `RuntimeError`
+fallback to prevent silent corruption.  Fallback reconstruction from saved
+`nm_mode`/`nm_sign`/`nm_amplitude_bohr_sqamu` metadata was used to refit without
+re-running PSI4.
+
+### Fix A results — mode-by-mode delta at 300 K thermal amplitude
+
+All 30 Fix A frames have dE_B3LYP = kT = 0.596 kcal/mol by construction (classical
+thermal amplitude Q = sqrt(2kT/λ)).  dE_CASSCF varies from 0 to 31 kcal/mol:
+
+| Mode | Freq (cm⁻¹) | dE_CASSCF (kcal/mol) | delta (kcal/mol) |
+|------|------------|----------------------|-----------------|
+| 0    | 125        | 31.1                 | **+31.1** |
+| 1    | 168        | 1.6                  | +1.6 |
+| 2    | 281        | 13.8                 | **+13.8** |
+| 3−   | 306        | 17.1                 | **+17.1** |
+| 4−   | 339        | 11.6                 | **+11.6** |
+| 5    | 381        | 1.5                  | +1.5 |
+| 7    | 636        | 17.6                 | **+17.6** |
+| 8    | 711        | 0.9                  | +0.9 |
+| 9−   | 821        | 17.8                 | **+17.8** |
+| 14+  | 1061       | 0.0                  | 0.0 ← CASSCF minimum |
+
+About half the modes give delta ≈ 1 kcal/mol (normal); the other half give
+delta = 11–31 kcal/mol (pathological).  The CASSCF(4,4) minimum is found at the
+mode-14+ displaced geometry — 17 kcal/mol below the B3LYP equilibrium on the
+CASSCF energy scale.
+
+### Root cause: wrong active space for equilibrium correction
+
+The CASSCF(4,4) active space {σ/σ*(C-H), σ/σ*(O-H)} was chosen for the IRC
+**transition state** (H-transfer from C3 to O2).  At the equilibrium geometry,
+these orbitals are nearly doubly occupied (NO occs: 1.998, 1.924, 0.077, 0.000)
+and do not describe the dominant near-equilibrium correlation.  CASSCF(4,4) then
+finds a lower minimum at a geometry where the active orbitals can reorganise
+(mode-14+ shows NO4 = 0.059 vs 0.000 at B3LYP eq).  The B3LYP equilibrium lies
+on a hillside of the CASSCF(4,4) surface — not at a minimum.
+
+Evidence:
+- CASSCF energy at B3LYP eq is 17 kcal/mol above the CASSCF minimum
+- NO occupations at mode-14+ (CASSCF min): (1.933, 1.896, 0.112, 0.059) — more biradical
+  than B3LYP eq — consistent with CASSCF finding a different electronic character
+- LOO-CV RMSE = 12.3 kcal/mol overall, 8.3 kcal/mol near-equilibrium (both >> kT = 0.59)
+- No hyperparameter combination achieves RMSE < 8 kcal/mol on the 48-frame dataset
+
+### Conclusion: CASSCF(4,4) delta-ML not viable for equilibrium IR spectra
+
+The delta-ML approach requires that the correction δ(R) = E_CASSCF(R) − E_B3LYP(R)
+is smooth and small near the B3LYP equilibrium.  This fails here because:
+1. The CASSCF(4,4)/6-31G* surface has a different minimum than B3LYP/6-31G*
+2. The correction is bimodal: ~1 kcal/mol along bond-stretching modes, but
+   11–31 kcal/mol along conformational/torsional modes where the active space
+   reorganises
+3. Any KRR model trained on these data produces LOO-CV RMSE >> kT, making it
+   useless for a 300 K IR spectrum
+
+**The B3LYP ML-PES IR spectrum remains the best available result** for MVKO.
+
+### What still works
+- CASSCF(4,4) IRC correction for the syn-MVKO → VHP barrier is valid
+  (active space was designed for that reaction coordinate; barrier +6.2 kcal/mol)
+- `casscf_nm_delta.py` code and `NMDeltaDriver` are correct — the NM framework
+  successfully diagnosed the root cause; failures are physical, not numerical
+- LOO-CV is now correctly computed by explicit retraining (no hat-matrix shortcut)
+- `_coords` bug is fixed; future Fix A runs will work correctly
+
+### Paths forward if equilibrium CASSCF correction is needed
+1. **CASSCF geometry optimisation** (`--casscf-opt` flag): find the true CASSCF(4,4)
+   minimum and check whether it is physically reasonable; if the CASSCF surface has
+   a genuine minimum near the B3LYP eq, this resolves the reference point mismatch
+2. **Different active space for equilibrium**: CASSCF(2,2) on HOMO/LUMO of the
+   Criegee π-system (C=O-O zwitterion character) is more appropriate near equilibrium;
+   the (4,4) IRC active space is wrong here
+3. **NEVPT2/CASPT2 single points**: compute dynamic correlation corrections on a
+   Boltzmann-weighted sample of B3LYP trajectory frames (no MD, thermal averaging);
+   more expensive per point but avoids the KRR generalisation problem
+4. **Range-separated DFT**: ωB97X-D or M06-2X instead of B3LYP for the ML-PES;
+   these functionals handle the zwitterionic/biradical character of Criegee
+   intermediates more reliably, eliminating the need for a multireference correction
+
+### Files produced
+```
+outputs/casscf_nm_delta_20260401_103139/
+  b3lyp_hessian.npy          ← B3LYP/6-31G* Hessian (36×36, reusable)
+  hessian_used.npy            ← same
+  nm_delta_model.pkl          ← 18-frame model (no Fix A, LOO bug present)
+  nm_descriptors.npy, delta_ha.npy
+  diagnostics.png, summary.json
+
+outputs/casscf_nm_delta_20260401_110049/
+  all_casscf_results.json     ← 59 frames (29 original + 30 Fix A)
+  nm_delta_model_fixed.pkl    ← 48-frame model with correct geometry injection
+  diagnostics.png             ← shows bimodal delta distribution
+```
