@@ -316,6 +316,12 @@ class NMDeltaDriver:
     def __init__(self, base_driver, nm_delta_model_path: str,
                  delta_fd: float = 0.005):
         from casscf_nm_delta import NMKRRDeltaModel
+        # NEVPTKRRModel is a subclass saved by casscf_nevpt2_correction.py;
+        # importing it here registers it so pickle can reconstruct it.
+        try:
+            from casscf_nevpt2_correction import NEVPTKRRModel  # noqa: F401
+        except ImportError:
+            pass
         self._base         = base_driver
         self._nm_model     = NMKRRDeltaModel.load(nm_delta_model_path)
         self.symbols       = base_driver.symbols
@@ -1045,7 +1051,9 @@ def run_multi_trajectory_dipoles(
         preminimize_steps: int,
         preminimize_tol: float,
         max_bond_extension: float,
-        output_dir) -> np.ndarray:
+        monitor_bonds: list,
+        print_every: int = 1000,
+        output_dir = None) -> np.ndarray:
     """
     Run N independent ML-MD trajectories from the N lowest-energy training
     frames, each with a different RNG seed, and return the concatenated,
@@ -1279,6 +1287,8 @@ def run_ir_workflow(model_path: str,
             preminimize_steps=preminimize_steps,
             preminimize_tol=preminimize_tol,
             max_bond_extension=max_bond_extension,
+            monitor_bonds=monitor_bonds,
+            print_every=print_every,
             output_dir=output_dir,
         )
         print(f"\n--- Averaging IR spectra across {len(per_traj_dipoles)} trajectories ---")

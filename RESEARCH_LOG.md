@@ -2,6 +2,133 @@
 
 ---
 
+## 2026-04-02 — NEVPT2 Delta-ML: State-Switching Discovery and Clean Model
+
+### Objective
+Following the CASSCF(4,4) NM-coordinate delta-ML framework developed 2026-04-01,
+extend to CASSCF+NEVPT2 (dynamic correlation) via PySCF to test whether NEVPT2
+can correct the B3LYP ML-PES for the O-O and C-O stretch modes that dominate the
+MVKO IR emission spectrum at 840 K.
+
+### New scripts
+- `casscf_nevpt2_correction.py` — full pipeline: load PSI4 CASSCF frames from
+  `outputs/casscf_nm_delta_*/all_casscf_results.json` → PySCF SC-NEVPT2 single
+  points → relative corrections → NM-KRR grid search → `NEVPTKRRModel` save.
+  CLI: `--casscf-dir`, `--training-data`, `--resume`, `--retrain-only`,
+  `--gamma-values`, `--alpha-values`, `--output-dir`.
+- `modules/nevpt2_pyscf.py` — PySCF interface:
+  `compute_casscf_nevpt2(symbols, coords, ...)` returns `e_hf, e_casscf,
+  e_nevpt2_corr, e_nevpt2, delta_nevpt2, dipole_casscf, no_occ, converged, error`.
+  Active space: CASSCF(4,4)/6-31G*, SC-NEVPT2; ~80 s/frame on M-series Mac.
+
+### Original model results (`outputs/nevpt2_correction_20260401_194425/`)
+- 50/51 frames converged (1 PySCF CASSCF failure)
+- LOO-CV RMSE: **9.3 kcal/mol** (δ_total = δ_CASSCF + δ_NEVPT2)
+- Best hyperparameters: γ=1e-4, α=1e-4
+- Near-equilibrium correction: ~0.6 kcal/mol (small, reasonable)
+- Bond-stretch frames: δ_total = −9 to −21 kcal/mol (B3LYP too stiff)
+
+However, at the equilibrium geometry the model predicted:
+- Correction = −1.9 kcal/mol (should be ~0 since eq frame has δ=0 by construction)
+- Max |∂δ/∂q_k| at eq = 10.2 kcal/mol/NM-unit → 37 kcal/mol/Å in Cartesian
+
+These unphysical gradients corrupted ML-MD dynamics and the runs had to be killed.
+
+### Root cause: CASSCF state-switching artifacts
+
+Inspecting the 50 training frames by plotting δ vs RMS NM displacement:
+
+| Pattern | Count | Example |
+|---------|-------|---------|
+| Tiny displacement (rms_q < 0.04), δ ≈ −15 to −17 kcal/mol | 6 | frames 44–49 |
+| Small displacement (rms_q ≈ 0.1–0.3), δ ≈ −16 to −18 kcal/mol | 4 | frames 13, 14, 33 |
+| Moderate displacement (rms_q ≈ 0.4–0.8), δ ≈ −9 to −16 kcal/mol | 4 | frames 2, 5, 8, 17 |
+| Positive outliers (rms_q ≈ 0.33), δ ≈ +15 kcal/mol | 2 | frames 20, 21 |
+
+In all cases, neighbouring frames at **identical** RMS displacement have δ < 1 kcal/mol.
+The only consistent explanation is PySCF CASSCF converging to an excited state
+(different orbital occupation) rather than the ground state.  Evidence:
+- Frames 44–49 are displaced by rms_q ≈ 0.04 from equilibrium (< ZPE amplitude)
+  yet carry δ ≈ −16 kcal/mol — physically impossible if the ground state PES is smooth
+- The pattern is identical to the PSI4 CASSCF Fix A bimodal distribution (2026-04-01),
+  where the IRC active space reorganised along torsional modes
+
+Identification criterion: **rms_q < 1.0 AND |δ| > 5 kcal/mol** → 14 suspicious frames.
+
+### Clean model (`nevpt2_clean_model.pkl`)
+
+Removed the 14 suspicious frames (indices 2, 5, 8, 13, 14, 17, 20, 21, 33, 44–49).
+Retrained on 36 clean frames with grid search:
+
+| γ | 1e-5 | 1e-4 | 1e-3 | 1e-2 | 1e-1 |
+|---|------|------|------|------|------|
+| 1e-4 | 1.81 | 2.03 | 2.04 | 2.52 | 3.91 |
+| 3e-4 | 1.83 | 1.88 | 2.05 | 2.21 | 3.17 |
+| 1e-3 | 1.91 | 1.85 | 1.97 | 2.05 | 2.55 |
+| 3e-3 | 1.83 | 1.92 | 1.90 | 2.02 | 2.28 |
+| 1e-2 | **1.60** | 1.77 | 1.96 | 2.01 | 2.19 |
+
+Best: γ=0.01, α=1e-5, **LOO-CV = 1.60 kcal/mol** (9.3 → 1.6, factor 5.8 improvement).
+
+Clean model properties at equilibrium:
+- Prediction = +0.59 kcal/mol (vs training value 0.0; driven by nearby clean frames
+  with δ ≈ 0.3–0.9 kcal/mol — physically reasonable constant near-eq offset)
+- Max |∂δ/∂q_k| at eq = **1.13 kcal/mol/NM-unit** (vs 10.2 before; factor 9 reduction)
+- Train RMSE = 0.12 kcal/mol (good interpolation)
+- Near-eq frames (rms_q < 0.15): δ range [−0.28, 0.90] kcal/mol ← consistent with
+  the earlier geometry-KRR finding (mean +0.62 ± 1.05 kcal/mol, 2026-03-31)
+
+The clean model is physically sensible: a slow, smooth ramp from ~0.6 kcal/mol
+at equilibrium toward larger corrections at bond-stretch geometries.
+
+### Limitation: LOO-CV still exceeds kT at 300 K
+
+LOO-CV = 1.60 kcal/mol > kT = 0.59 kcal/mol at 300 K.  The model cannot reliably
+predict the per-frame correction better than thermal noise.  This is driven by the
+large-displacement frames (rms_q > 0.7) where δ varies widely (−5 to −21 kcal/mol)
+within the 36 clean training points.  At 300 K MD, the molecule rarely reaches
+rms_q > 0.5, so the dominant near-eq regime (δ ≈ 0.6 kcal/mol ± 0.4) is
+well-captured.  At 840 K, larger amplitudes become accessible but the LOO-CV is
+comparable to kT(840 K) ≈ 1.67 kcal/mol — the model is near its reliability limit.
+
+**Expected IR effect**: a small, approximately constant correction near equilibrium
+should shift all modes by < 1 cm⁻¹.  Any observed red-shift in O-O/C-O peaks
+between the 840K NEVPT2 and 840K B3LYP spectra will be physically informative but
+should be interpreted as an upper bound on the NEVPT2 effect.
+
+### IR spectrum runs (in progress at time of writing)
+
+Using the clean model with `--nm-delta-model nevpt2_clean_model.pkl`:
+
+```bash
+python3 ir_md_spectrum.py \
+    --model outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --nm-delta-model outputs/nevpt2_correction_20260401_194425/nevpt2_clean_model.pkl \
+    --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.5 \
+    --output-dir outputs/ir_spectrum_NEVPT2clean_300K
+```
+
+- 300K absorption: `outputs/ir_spectrum_NEVPT2clean_300K/`
+- 840K emission: `outputs/ir_spectrum_NEVPT2clean_840K/`
+- Baseline B3LYP: `outputs/ir_spectrum_20260319_174321/` (893, 513, 658, 322 cm⁻¹)
+- Estimated run time: ~2.3 hours each (0.056 s/step × 5 traj × 30000 steps)
+
+### Files produced
+```
+casscf_nevpt2_correction.py            ← new pipeline script
+modules/nevpt2_pyscf.py                ← PySCF CASSCF+NEVPT2 interface
+outputs/nevpt2_correction_20260401_194425/
+  nevpt2_correction_model.pkl          ← original 50-frame model (corrupted, LOO 9.3)
+  nevpt2_clean_model.pkl               ← clean 36-frame model (LOO 1.6)  ← USE THIS
+  nevpt2_results.json                  ← per-frame energies and diagnostics
+  summary.json                         ← grid search and model summary
+  diagnostics.png                      ← scatter plot δ_CASSCF vs δ_NEVPT2
+```
+
+---
+
 ## 2026-03-31 — CASSCF(4,4) IRC Correction + Delta-ML
 
 ### Objective

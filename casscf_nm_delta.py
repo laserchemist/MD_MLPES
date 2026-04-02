@@ -1020,5 +1020,66 @@ def main():
           f"for 300 K IR spectra where kT ≈ 0.59 kcal/mol)")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# NEVPTKRRModel — two-layer delta-ML (CASSCF + SC-NEVPT2) in NM-coord space
+# Defined here so it is always importable as casscf_nm_delta.NEVPTKRRModel,
+# regardless of whether casscf_nevpt2_correction.py was run as __main__.
+# ─────────────────────────────────────────────────────────────────────────────
+
+class NEVPTKRRModel(NMKRRDeltaModel):
+    """
+    Two-layer NM-coordinate KRR delta model predicting δ_total(q) in Hartree.
+
+    δ_total = E_NEVPT2(PySCF) − E_B3LYP(PSI4)  [referenced to equilibrium]
+            = δ_CASSCF_rel + δ_NEVPT2_rel
+
+    Inherits NMKRRDeltaModel interface (.predict / .project / .save / .load)
+    so it is drop-in compatible with --nm-delta-model in ir_md_spectrum.py.
+
+    Additional diagnostic attributes:
+        y_train_casscf_ha   : (M,) relative δ_CASSCF per training frame
+        y_train_nevpt2_ha   : (M,) relative δ_NEVPT2 per training frame
+        e_nevpt2_ref_ha     : NEVPT2 total energy at reference geometry (Ha)
+        casscf_cv_rmse_kcal : LOO-CV on δ_CASSCF alone
+        nevpt2_cv_rmse_kcal : LOO-CV on δ_NEVPT2 alone
+    """
+
+    def __init__(
+        self, *,
+        eq_coords_ang, U_vib, sqrt_mass, freqs_vib, symbols,
+        gamma, alpha_reg,
+        X_train_q, y_train_ha,
+        y_train_casscf_ha=None,
+        y_train_nevpt2_ha=None,
+        e_b3lyp_ref_ha=0.0,
+        e_cas_ref_ha=0.0,
+        e_nevpt2_ref_ha=0.0,
+        cv_rmse_kcal=None,
+        casscf_cv_rmse_kcal=None,
+        nevpt2_cv_rmse_kcal=None,
+    ):
+        super().__init__(
+            eq_coords_ang=eq_coords_ang,
+            U_vib=U_vib,
+            sqrt_mass=sqrt_mass,
+            freqs_vib=freqs_vib,
+            symbols=symbols,
+            gamma=gamma,
+            alpha_reg=alpha_reg,
+            X_train_q=X_train_q,
+            y_train_ha=y_train_ha,
+            e_b3lyp_ref_ha=e_b3lyp_ref_ha,
+            e_cas_ref_ha=e_cas_ref_ha,
+            cv_rmse_kcal=cv_rmse_kcal,
+        )
+        self.y_train_casscf_ha   = (np.asarray(y_train_casscf_ha, dtype=float)
+                                    if y_train_casscf_ha is not None else None)
+        self.y_train_nevpt2_ha   = (np.asarray(y_train_nevpt2_ha, dtype=float)
+                                    if y_train_nevpt2_ha is not None else None)
+        self.e_nevpt2_ref_ha     = float(e_nevpt2_ref_ha)
+        self.casscf_cv_rmse_kcal = casscf_cv_rmse_kcal
+        self.nevpt2_cv_rmse_kcal = nevpt2_cv_rmse_kcal
+
+
 if __name__ == '__main__':
     main()
