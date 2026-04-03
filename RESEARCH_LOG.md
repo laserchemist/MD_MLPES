@@ -2,6 +2,112 @@
 
 ---
 
+## 2026-04-03 — C-H Stretch Training Data and ML-PES Retraining
+
+### Objective
+MVKO ML-MD trajectories show H atoms drifting 2.5+ Å from their bonded carbon atoms
+(visible as -CH biradical + H₂ fragments in rendered trajectories).  The root cause is
+that the Coulomb-matrix ML-PES has no repulsive wall for C-H dissociation beyond the
+NM training data (~1.2 Å), so H atoms freely drift once ZPE-initialized velocities
+push them toward 1.5–2 Å.
+
+The `--max-bond-extension` guard in `bakken.py` deliberately skips X-H bonds (by design,
+to avoid false positives from quantum ZPE oscillations), so no safety net catches the drift.
+
+### Root cause: ML-PES flat beyond C-H training boundary
+
+At the equilibrium Hessian level, the Coulomb+RBF kernel predicts C-H modes at
+9825–15005 cm⁻¹ (old model) vs the true PSI4 B3LYP values of 3049–3324 cm⁻¹.
+This stiffness artifact (factor ~3× too high) is intrinsic to the Coulomb matrix
+second derivatives under the RBF kernel and cannot be cured by kernel width tuning.
+
+The MD H-wandering is a distinct consequence: beyond the training boundary (~1.3 Å),
+the RBF kernel decays to zero and the ML-PES flattens to a constant (the mean training
+energy), creating an artificial "zero-force plateau" where H atoms can roam freely.
+
+### Solution: targeted C-H stretch NM displacement training data
+
+Rather than running high-T PSI4 MD (8000 K), which hangs on soft bending modes with
+a_thermal >> 1 Å, only the 6 C-H stretch modes (≥ 2500 cm⁻¹) are displaced at large
+amplitudes.
+
+**Script**: `generate_ch_stretch_training.py`
+- Loads pre-computed Hessian (`outputs/casscf_nm_delta_20260401_110049/hessian_used.npy`)
+- Selects 6 modes with ω ≥ 2500 cm⁻¹ (modes 24–29: 3049–3324 cm⁻¹)
+- Generates ±1 to ±8 × a_thermal(T=8000K) displacements for each mode
+- a_thermal for C-H modes at 8000K: 0.14–0.20 Å (×10 factor = 1.4–2.0 Å max stretch)
+- Runs PSI4 B3LYP/6-31G* single-points; 10/96 failed (extreme compressions, atoms too close)
+
+**Results**: `outputs/nm_ch_stretch_20260402_225350/nm_displacements.npz`
+- 86 successful frames (96 attempted − 10 PSI4 failures)
+- Energy range: 8–13,390 kcal/mol above minimum
+- 48 frames survive dE < 500 kcal/mol filter (used for training)
+- C-H bond coverage (kept frames): 222 normal (<1.3 Å), 51 stretch (1.3–2.0 Å),
+  15 dissociated (>2.0 Å), max C-H = 2.60 Å
+
+### Retraining
+
+**Script**: `retrain_with_ch_stretch.py`
+
+Combined 904 base frames + 48 filtered CH-stretch frames = **952 total frames**.
+Retrained with same hyperparameters: γ=0.001, α=1e-5.
+
+**Accuracy**:
+| Energy range | OLD RMSE | NEW RMSE |
+|---|---|---|
+| Near-eq (dE < 5 kcal/mol), training data | 0.072 kcal/mol | 0.080 kcal/mol |
+| Mid-energy (5–30 kcal/mol), training data | 0.161 kcal/mol | **0.105 kcal/mol** |
+| Overall test set (10% split, 0–484 kcal/mol) | 0.27 kcal/mol | 1.43 kcal/mol |
+
+Near-eq accuracy essentially unchanged. Mid-energy accuracy improved 37%.  The
+overall test RMSE increase is expected: the test set now includes extreme CH-stretch
+frames (100–484 kcal/mol) which are hard to interpolate accurately with γ=0.001.
+
+**Normal mode Hessian check** (analytic KRR Hessian at PSI4 eq):
+
+| Mode range | OLD | NEW |
+|---|---|---|
+| Imaginary modes | 5 | 3 |
+| Lowest real mode | 195 cm⁻¹ | 215 cm⁻¹ |
+| Bottom C-H cluster (modes 19–23) | 2572–3648 cm⁻¹ | 2694–3779 cm⁻¹ |
+| Upper C-H cluster (modes 24–29) | 5200–7940 cm⁻¹ | 5734–6583 cm⁻¹ |
+| PSI4 B3LYP reference | 3049–3324 cm⁻¹ | (same) |
+
+The bottom 5 C-H modes improved toward the physical range.  The upper 6 modes remain
+2–3× too high — this is the Coulomb+RBF curvature artifact, not cured by training data
+(requires analytic descriptor redesign, e.g. ACSF or ANI-2x).
+
+The repulsive wall is now present in the training data up to 2.60 Å.  H-wandering
+should be suppressed dynamically even without a perfect Hessian.
+
+### New model and IR run
+
+- **New model**: `outputs/mvko_ch_retrain_20260403_101429/mlpes_ch_retrained.pkl`
+- **Combined dataset**: `outputs/mvko_ch_retrain_20260403_101429/combined_training_data.npz`
+- **IR run (in progress)**: `outputs/ir_spectrum_CH_retrain_300K/` (PID 30559, started 2026-04-03)
+
+```bash
+python3 ir_md_spectrum.py \
+    --model outputs/mvko_ch_retrain_20260403_101429/mlpes_ch_retrained.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.5 \
+    --output-dir outputs/ir_spectrum_CH_retrain_300K
+```
+
+### Files produced
+```
+generate_ch_stretch_training.py            ← new script (targeted C-H NM displacements)
+retrain_with_ch_stretch.py                 ← new script (combine + retrain)
+outputs/nm_ch_stretch_20260402_225350/
+  nm_displacements.npz                     ← 86 C-H stretch frames (use with dE<500 filter)
+outputs/mvko_ch_retrain_20260403_101429/
+  combined_training_data.npz               ← 952 frames (904 base + 48 CH-stretch)
+  mlpes_ch_retrained.pkl                   ← retrained model (γ=0.001, α=1e-5)
+```
+
+---
+
 ## 2026-04-02 — NEVPT2 Delta-ML: State-Switching Discovery and Clean Model
 
 ### Objective
