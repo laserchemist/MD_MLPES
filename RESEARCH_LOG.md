@@ -2,6 +2,223 @@
 
 ---
 
+## 2026-04-03 — ML Descriptor Landscape: ACSF, ANI-2x, and sGDML vs Coulomb Matrix
+
+### Motivation
+
+The persistent C-H Hessian stiffness artifact (modes at 5700–8000 cm⁻¹ vs true ~3100 cm⁻¹)
+and the H-wandering artifact in ML-MD trajectories both originate from the Coulomb matrix
+descriptor, not from insufficient training data or hyperparameter choices.  This note
+documents three alternative approaches — ACSF, ANI-2x, and sGDML — and their relative
+strengths and weaknesses for the MVKO IR spectroscopy problem.
+
+### Root Cause of Coulomb Matrix Stiffness
+
+The Coulomb matrix off-diagonal element is `C_ij = Z_i Z_j / r_ij`.  Its second derivative
+with respect to atomic positions is `∂²C_ij/∂R² ∝ Z_i Z_j / r³`, which is largest for the
+lightest, closest atom pairs — exactly C-H bonds.  When the RBF KRR energy surface is
+differentiated twice for the Hessian, this amplification makes all C-H modes appear 2–3×
+too stiff, regardless of training data volume, kernel width, or regularisation.  It is a
+descriptor design flaw, not a data or hyperparameter problem.
+
+The flat-PES H-wandering artifact is a separate consequence: the RBF kernel decays to zero
+beyond the training boundary, making the ML-PES asymptote to a constant (the mean energy)
+rather than a repulsive wall.  Adding targeted C-H stretch frames (2026-04-03) addresses
+this dynamical artifact but does not fix the Hessian stiffness.
+
+---
+
+### ACSF — Atom-Centered Symmetry Functions (Behler-Parrinello)
+
+**Principles**
+
+Energy is decomposed as a sum of atomic contributions:
+
+```
+E = Σ_i ε_i(G_i)
+```
+
+Each atomic energy `ε_i` depends only on the local chemical environment within a cutoff
+radius `R_c` (~4–6 Å), encoded via two families of symmetry functions:
+
+Radial (G²) — pair interactions:
+```
+G²_i = Σ_{j≠i} exp(-η(R_ij - R_s)²) · f_c(R_ij)
+```
+
+Angular (G⁴) — three-body interactions:
+```
+G⁴_i = 2^{1-ζ} Σ_{j,k≠i} (1 + λ cos θ_ijk)^ζ · exp(-η(R²_ij + R²_ik + R²_jk)) · f_c·f_c·f_c
+```
+
+The cutoff function `f_c(R) = 0.5[cos(πR/R_c) + 1]` is smooth and goes to zero at `R_c`,
+so the descriptor and all its derivatives are continuous — no 1/r singularity and no
+stiffness artifact.  The Gaussian basis in G² is centred on interatomic *distances* rather
+than inverse distances, so the second derivative of the descriptor w.r.t. atomic positions
+is well-behaved at typical C-H bond lengths.
+
+ACSF functions are invariant to translation, rotation, and permutation of equivalent atoms
+by construction.
+
+**Key citations**
+
+1. Behler, J.; Parrinello, M. *Phys. Rev. Lett.* **2007**, *98*, 146401 — original method
+2. Behler, J. *J. Chem. Phys.* **2011**, *134*, 074106 — full G1–G5 catalog, parameter guidelines
+3. Behler, J. *Int. J. Quantum Chem.* **2015**, *115*, 1032 — tutorial review
+4. Himanen et al. *Comput. Phys. Commun.* **2020**, *247*, 106949 — DScribe library (`pip install dscribe`)
+
+**Feasibility for this project**
+
+High.  DScribe provides `dscribe.descriptors.ACSF` as a drop-in numpy-compatible
+implementation.  The plan is to write an `ACSFDescriptor` wrapper matching the existing
+`compute(symbols, coords)` / `compute_batch()` API, then retrain with the same 952 frames
+and a γ grid search (descriptor size grows from 78 to ~12 × 50 = 600 features, so γ
+will need re-tuning, likely 0.0001–0.001).  No additional PSI4 calculations needed.
+
+Expected gain: C-H Hessian modes at ~3050–3300 cm⁻¹ (currently 5700–8000 cm⁻¹), correct
+ZPE initialization of C-H modes, and a physically meaningful IR C-H stretch region.
+
+---
+
+### ANI-2x
+
+**Principles**
+
+ANI (Smith et al.) builds on Behler-Parrinello with three key additions:
+
+1. **Tuned AEV descriptor** (Atomic Environment Vector): species-pair-specific radial terms
+   and species-triple-specific angular terms, so C-H and H-H environments are described by
+   different basis functions.
+
+2. **Element-specific sub-networks**: separate neural network weight sets for each element
+   (H, C, N, O, S, F, Cl), allowing the model to learn element-specific bonding physics
+   rather than relying on atomic-number scaling.
+
+3. **Active learning on chemical space**: ANI-1x used uncertainty-guided sampling across
+   conformers derived from SMILES strings; ANI-2x extended coverage to S and halogens.
+   Reference level: **ωB97X/6-31G*** — handles non-covalent interactions and partial
+   charge-transfer states better than B3LYP.
+
+For MVKO (C₄H₆O₂): all elements (C, H, O) are in the original ANI-1 training set — no
+extrapolation for element coverage.
+
+**Key citations**
+
+1. Smith et al. *Chem. Sci.* **2017**, *8*, 3192 — ANI-1
+2. Smith et al. *Nat. Commun.* **2019**, *10*, 2903 — ANI-1ccx (transfer learning to CCSD(T))
+3. Devereux et al. *J. Chem. Theory Comput.* **2020**, *16*, 4192 — ANI-2x (adds S, F, Cl)
+4. Gao et al. *J. Chem. Inf. Model.* **2020**, *60*, 3408 — TorchANI implementation
+
+**Feasibility for this project**
+
+Two sub-options:
+
+*Zero-shot evaluation (half day)*: evaluate pre-trained ANI-2x on the 952 MVKO training
+geometries.  If RMSE vs B3LYP < ~3 kcal/mol and Hessian frequencies are correct, ANI-2x
+can be used directly for MD without any retraining.
+
+*Delta-ML correction (2–3 days)*: train a KRR model on the residual
+`δ = E_B3LYP - E_ANI2x`.  Because ANI-2x already captures most of the C-H physics, the
+delta is small (< 5 kcal/mol range vs the current 0–484 kcal/mol span), making KRR
+interpolation much more accurate for the same training set size.
+
+---
+
+### sGDML — Symmetric Gradient Domain Machine Learning
+
+**Principles**
+
+sGDML (Chmiela, Tkatchenko, Müller) inverts the standard energy-first paradigm.  All other
+approaches learn energy then differentiate for forces.  sGDML learns the **force field
+directly**, recovering energy by integration.  This is a fundamental architectural choice:
+
+The kernel for forces is derived from the energy kernel by double differentiation:
+```
+K_F(x, x') = ∇_x ⊗ ∇_{x'} K_E(x, x')
+```
+
+Because the model *is* the derivative of a scalar potential, the learned force field is
+always curl-free — energy conservation is guaranteed by construction, not enforced
+approximately.  Energy drift in long MD runs is eliminated at the mathematical level.
+
+**Descriptor**: pairwise distances {r_ij} — global like the Coulomb matrix, but without
+the 1/r weighting.  Permutation symmetry of equivalent atoms is handled analytically by
+projecting the kernel onto the symmetric subspace of the permutation group of the molecule.
+
+**Why the Hessian is better**: In Coulomb+KRR, the Hessian is the second derivative of
+the learned energy surface — amplifying descriptor curvature.  In sGDML, the Hessian is
+the *first* derivative of the learned force field.  With Matérn-class kernels on pairwise
+distances, this first derivative tracks true molecular curvature rather than amplifying
+1/r³ behaviour.  In practice, sGDML gives Hessian frequencies that match DFT reference
+values accurately with 200–500 training geometries for 7–20 atom molecules.
+
+**Data efficiency**: Because each force label constrains the PES in `3N` independent
+directions (vs 1 for an energy label), sGDML is extremely data-efficient.  The 2017/2018
+papers demonstrate near-chemical-accuracy (~0.1–0.3 kcal/mol) for 7–10 atom molecules
+with only 200–500 force evaluations.  For MVKO (12 atoms), the 904 base force-labelled
+frames would be comfortably over-determined.
+
+**Key citations**
+
+1. Chmiela et al. *Sci. Adv.* **2017**, *3*, e1603015 — original GDML
+2. Chmiela et al. *Nat. Commun.* **2018**, *9*, 3887 — sGDML (symmetry adaptation)
+3. Sauceda et al. *J. Chem. Phys.* **2019**, *150*, 114102 — coupled-cluster application, MD
+4. Chmiela et al. *Comput. Phys. Commun.* **2023**, *290*, 108711 — sGDML software (sgdml.org)
+
+**Key weakness for this project**
+
+sGDML was designed for near-equilibrium MD of single-conformer small molecules (ethanol,
+malonaldehyde, aspirin; 7–21 atoms; sampling within ~10–15 kcal/mol of minimum).
+
+The MVKO training set has a fundamentally different character: 48 C-H stretch frames at up
+to 484 kcal/mol above minimum, with C-H bonds extended to 2.60 Å.  The pairwise-distance
+descriptor + RBF/Matérn kernel extrapolates poorly to this dissociative regime — the same
+flat-PES problem as the Coulomb model, just at a different length scale.  The energy
+conservation guarantee holds only within the interpolation regime.
+
+Additionally, sGDML's O(N²) scaling in training set size makes prediction slow for
+> ~2000 training frames, limiting the total data that can be incorporated.
+
+---
+
+### Full Comparison
+
+| Feature | Coulomb + KRR | ACSF + KRR | ANI-2x | sGDML |
+|---|---|---|---|---|
+| Descriptor type | Global Coulomb | Local atom-centered | Local AEV | Global pairwise distances |
+| Primary training target | Energy | Energy | Energy | **Forces** |
+| Permutation invariant | No (fixed atom order) | Yes | Yes | Yes (symmetry adapt) |
+| C-H Hessian stiffness | Severe | Fixed | Fixed | Likely fixed |
+| Data efficiency | Moderate | Moderate | Pre-trained | **Very high** |
+| Force labels required | No | No | No | **Yes (all frames)** |
+| Energy conservation in MD | No | Approximate | Yes | **Yes by construction** |
+| Reactive / dissociative PES | Partial (wall data) | Better | Partial | **Problematic** |
+| Scales beyond ~30 atoms | Yes (degrades) | Yes | Yes | No (O(N²) kernel) |
+| Implementation effort | Done | ~1–2 days | ~half day | ~1–2 days |
+
+---
+
+### Recommended Strategy for MVKO
+
+**Immediate** (this week): let the CH-retrained Coulomb+KRR model (952 frames) complete
+the IR run.  This addresses H-wandering dynamically.
+
+**Next experiment**: zero-shot ANI-2x evaluation on the 952 training geometries.  Near-zero
+implementation cost; immediately reveals whether the stiffness artifact is eliminated and
+whether the PES shape is accurate for MVKO.
+
+**Targeted methods comparison** (publishable): ACSF+KRR vs sGDML vs Coulomb+KRR, using
+the 904 near-equilibrium frames only (dE < 50 kcal/mol).  The comparison narrative:
+- Coulomb+KRR: simple baseline, wrong C-H frequencies, H-wandering artifact
+- sGDML: correct frequencies, energy-conserving MD, but restricted to near-eq regime
+- ACSF+KRR: correct frequencies, handles large-amplitude C-H stretch, physically
+  motivated local descriptor, no dissociation issues
+
+This three-way comparison is a coherent methods contribution in the context of MVKO
+IR emission spectroscopy.
+
+---
+
 ## 2026-04-03 — C-H Stretch Training Data and ML-PES Retraining
 
 ### Objective
