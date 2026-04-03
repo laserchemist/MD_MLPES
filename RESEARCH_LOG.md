@@ -120,6 +120,53 @@ outputs/acsf_model_20260403_153824/  ← ACSF concatenate run (γ=3e-5, RMSE 2.3
 outputs/acsf_model_20260403_154057/  ← ACSF sum_by_species run (γ=1e-3, RMSE 3.18)
 ```
 
+### IR Spectrum of CH-retrained Model — Near-Equilibrium Degradation
+
+The IR run completed (5 × 30000 steps, 300 K, PID 30559).
+
+**CH-retrained model peaks** (`outputs/ir_spectrum_CH_retrain_300K/`):
+
+| Peak (cm⁻¹) | Rel. intensity | Notes |
+|---|---|---|
+| 275 | 1.000 | Torsion/bending (spurious dominant) |
+| 86 | 0.953 | Spurious low-frequency |
+| 232 | 0.907 | Torsion/bending |
+| 363 | 0.369 | |
+| 520 | 0.175 | C-O-O bending (shifted from 513) |
+
+**Baseline B3LYP model** (`outputs/ir_spectrum_20260319_174321/`):
+322 (1.000), 893 (O-O stretch), 513 (C-O-O bend), 658 (C-O stretch)
+
+**Finding**: The O-O stretch peak (893 cm⁻¹) has disappeared and the spectrum is
+dominated by spurious sub-400 cm⁻¹ activity.  This is the same near-equilibrium PES
+corruption as the adaptive model (March 2026): adding high-energy C-H stretch frames
+(up to 484 kcal/mol) shifts the KRR kernel weight away from the equilibrium region.
+
+Evidence: the analytic Hessian showed 3 imaginary NM modes (vs 5 in the original model
+but 0 in the target PSI4 B3LYP Hessian).  The pre-minimiser converged in 1 step with
+|F|_max = 0.004 Ha/Å (barely below the 0.005 threshold), indicating the ML-PES minimum
+has shifted away from the correct equilibrium.
+
+**Root cause (recurrent pattern):**
+
+| Model | Imaginary NM modes | O-O peak | C-O-O bend |
+|---|---|---|---|
+| Base B3LYP 904 frames | 5 | 893 cm⁻¹ ✓ | 513 cm⁻¹ ✓ |
+| Adaptive 1300 frames | 3 | absent ✗ | absent ✗ |
+| CH-retrained 952 frames | 3 | absent ✗ | 520 cm⁻¹ (shifted) |
+
+Whenever high-energy frames (> ~100 kcal/mol above minimum) are added to the training
+set, the RBF kernel is re-partitioned to cover the new energy range, reducing the
+effective density of kernel support near the equilibrium.  The ML-PES minimum shifts.
+
+**Fix (documented in CLAUDE.md)**: Always include an explicit anchor frame at the
+PSI4-optimised geometry (forces ≈ 0) when adding high-energy frames.  Without this
+anchor, the equilibrium can become a saddle point.
+
+**Conclusion**: The baseline B3LYP model (904 frames, `mlpes_initial.pkl`) remains the
+best model for 300 K IR spectra.  H-wandering can be guarded at the MD level
+(bond extension guard) rather than by corrupting the near-equilibrium PES.
+
 ---
 
 ## 2026-04-03 — ML Descriptor Landscape: ACSF, ANI-2x, and sGDML vs Coulomb Matrix
