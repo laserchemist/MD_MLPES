@@ -2,6 +2,126 @@
 
 ---
 
+## 2026-04-03 — Descriptor Benchmark: ACSF, Pairwise Distances, and Coulomb Matrix with Global KRR
+
+### Objective
+
+Test whether replacing the Coulomb matrix with ACSF (Atom-Centered Symmetry Functions)
+in the existing KRR framework improves the C-H Hessian stiffness artifact while
+maintaining energy prediction accuracy.  Run in parallel with the ongoing
+CH-retrained Coulomb+KRR model (952 frames) to preserve benchmarking continuity.
+
+### Setup
+
+Training data: 783 near-equilibrium frames (dE < 50 kcal/mol) from the
+952-frame combined dataset.  5-fold cross-validation RMSE as the metric.
+
+DScribe ACSF parameters (default Behler 2011 organic):
+- R_cut = 6.0 Å
+- G2: 8 (η, Rs) pairs, η = [0.5, 1.0, 2.0, 3.5, 6.0, 10.0, 18.0, 36.0] Å⁻², Rs=0
+- G4: 12 (η, λ, ζ) triples, η=[0.01, 0.1], λ=[1,-1], ζ=[1,2,4]
+- Per-atom features: 99 (24 G2 + 72 G4 + 3 G1 cutoff-sum terms)
+
+Aggregation strategies tested:
+1. **concatenate**: stack all 12 × 99 = 1188-dim global descriptor
+2. **sum_by_species**: sum per element, concatenate → 3 × 99 = 297-dim
+3. **pairwise distances**: sGDML-style, r_ij for i<j → 66-dim (no ACSF)
+4. **Coulomb matrix**: Z_iZ_j/r_ij → 78-dim (existing baseline)
+
+### Results
+
+| Descriptor | Dim | Best γ | Best α | 5-fold CV RMSE |
+|---|---|---|---|---|
+| ACSF concatenate | 1188 | 3e-5 | 1e-6 | 2.49 kcal/mol |
+| ACSF sum_by_species | 297 | 1e-3 | 1e-3 | 3.26 kcal/mol |
+| Pairwise distances | 66 | 1e-2 | 1e-5 | **0.235 kcal/mol** |
+| Coulomb matrix | 78 | 3e-3 | 1e-5 | **0.152 kcal/mol** |
+
+The ACSF descriptors perform 10–20× worse than Coulomb matrix with global KRR.
+The pairwise distance descriptor is close to Coulomb (0.24 vs 0.15 kcal/mol) but
+still worse.  The Coulomb matrix remains the best descriptor for global KRR on
+this dataset.
+
+### Interpretation
+
+**ACSF is incompatible with global KRR for a fixed single molecule.**
+
+ACSF was designed for neural networks where each atom has its own network and
+the total energy is a sum of atomic contributions:
+```
+E = Σ_i NN_i(G_i)
+```
+The local per-atom descriptor G_i captures the chemical environment of each atom
+independently.  When aggregated to a global descriptor for a single KRR model:
+- **Concatenation** (12 × 99 = 1188 features) creates a descriptor space too large
+  for KRR with ~800 training points.  The RBF kernel cannot meaningfully interpolate
+  in 1188D with only 800 examples — the kernel matrix is nearly singular and
+  regularisation dominates.
+- **Summing** (99 or 297 features) destroys the atomic identity information that
+  ACSF was designed to preserve.  Two very different geometries can have similar sum
+  ACSF vectors if the per-atom environment contributions happen to cancel, making
+  the descriptor non-injective.
+
+The Coulomb matrix works well because it is directly the full pairwise interaction
+information in a compact 78D form.  Every off-diagonal element Z_iZ_j/r_ij encodes
+a specific pairwise distance weighted by chemical identity.  For a fixed-atom-ordering
+single molecule with ~1000 training frames, this is a near-optimal global descriptor
+for energy-label KRR.
+
+**The Hessian stiffness is not a descriptor problem alone.**
+
+Even the pairwise distance descriptor (which eliminates Z_iZ_j/r³ stiffness) requires
+a larger γ to achieve comparable RMSE.  The second derivative of the KRR energy:
+```
+∂²E_KRR/∂R² = Σ_i α_i K_i [4γ²(...)² - 2γ Σ_k ∂²d_k/∂R² - ...]
+```
+has a 2γ × ∂²r_ij/∂R² ~ 2γ/r term (1/r from the distance chain rule).  With
+γ_dist ≈ 0.01 vs γ_Coulomb ≈ 0.001, and r_CH ≈ 1.1 Å:
+- Coulomb: 2 × 0.001 × Z_CZ_H / r³ ≈ 0.009 per C-H pair
+- Distance: 2 × 0.01 × 1 / r ≈ 0.018 per C-H pair
+
+The pairwise distance descriptor actually has MORE Hessian stiffness contribution
+per C-H pair because γ must be 10× larger to achieve comparable energy RMSE.
+The Z_iZ_j weighting in Coulomb is partially offset by the smaller optimal γ.
+
+**Fixing the Hessian requires force learning, not descriptor substitution.**
+
+The core issue is that KRR learns an energy surface and computes forces by
+differentiating it.  Any global energy descriptor + RBF kernel will have Hessian
+curvature that reflects descriptor second derivatives, not molecular physics.
+
+The principled solutions are:
+1. **sGDML**: learns the force field directly; energy is the integral; Hessian is
+   the first derivative of the learned forces (well-conditioned).
+2. **ANI-2x / per-atom NN**: per-atom networks with local descriptors; energy is
+   a sum of properly learned atomic energies; Hessian follows physical curvature.
+
+### Conclusion
+
+The ACSF+KRR parallel model experiment fails to improve on Coulomb+KRR for this
+use case.  The key finding for the methods comparison story:
+
+- Coulomb+KRR: best energy accuracy (0.15 kcal/mol), stiff C-H Hessian artifact
+- Pairwise dist+KRR: slightly worse accuracy (0.24 kcal/mol), same stiffness issue
+- ACSF+KRR: much worse accuracy (2.5 kcal/mol), even worse Hessian
+
+The natural next step in building a physically sound parallel model is **sGDML**,
+which uses the same pairwise distance descriptor but learns forces rather than
+energies.  The existing PSI4 training data includes forces for all 904 base frames,
+satisfying sGDML's training requirement.
+
+### Scripts produced
+
+```
+modules/acsf_descriptor.py     ← ACSFDescriptor (3 aggregation modes)
+modules/pairwise_descriptor.py ← PairwiseDistanceDescriptor (sGDML-style)
+train_acsf_model.py            ← grid search + CV + Hessian check
+outputs/acsf_model_20260403_153824/  ← ACSF concatenate run (γ=3e-5, RMSE 2.38)
+outputs/acsf_model_20260403_154057/  ← ACSF sum_by_species run (γ=1e-3, RMSE 3.18)
+```
+
+---
+
 ## 2026-04-03 — ML Descriptor Landscape: ACSF, ANI-2x, and sGDML vs Coulomb Matrix
 
 ### Motivation
