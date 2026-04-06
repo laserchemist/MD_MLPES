@@ -296,7 +296,7 @@ def main():
     traj_wb97x = TrajectoryData(
         symbols     = symbols,
         coordinates = new_coords,
-        energies    = list(wb97x_e),
+        energies    = wb97x_e,
         forces      = new_forces,
         dipoles     = new_dipoles,
         metadata    = json.dumps({
@@ -344,8 +344,7 @@ def main():
             }
 
             if args.b3lyp_model and Path(args.b3lyp_model).exists():
-                with open(args.b3lyp_model, 'rb') as f:
-                    trainer_b3lyp = pickle.load(f)
+                trainer_b3lyp = MLPESTrainer.load(args.b3lyp_model)
                 driver_b3lyp = MLPESDriver(trainer_b3lyp, symbols)
                 hess_b3lyp   = driver_b3lyp.analytic_hessian(eq_coords)
                 freqs_b3lyp, *_ = compute_normal_modes(symbols, hess_b3lyp)
