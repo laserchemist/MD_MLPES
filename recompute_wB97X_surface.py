@@ -58,6 +58,7 @@ results.json               — per-frame status (energy, converged, error)
 import argparse
 import json
 import pickle
+import signal
 import sys
 import time
 from datetime import datetime
@@ -87,7 +88,15 @@ MVKOO_SYMBOLS = ['C', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H']
 
 # ── PSI4 single-point ──────────────────────────────────────────────────────────
 
-def psi4_single_point(symbols, coords_ang, method='wb97x-d', basis='6-31G*'):
+class _TimeoutError(Exception):
+    pass
+
+def _timeout_handler(signum, frame):
+    raise _TimeoutError("PSI4 timeout")
+
+
+def psi4_single_point(symbols, coords_ang, method='wb97x-d', basis='6-31G*',
+                      timeout_s=600):
     """
     Run PSI4 gradient at the given geometry.  Returns (energy_Ha, forces_Ha_per_ang,
     dipole_debye, error_str_or_None).
@@ -120,9 +129,12 @@ def psi4_single_point(symbols, coords_ang, method='wb97x-d', basis='6-31G*'):
     })
 
     try:
+        signal.signal(signal.SIGALRM, _timeout_handler)
+        signal.alarm(timeout_s)
         mol = psi4.geometry(mol_str)
         grad_mat, wfn = psi4.gradient(f'{method}/{basis}', molecule=mol,
                                        return_wfn=True)
+        signal.alarm(0)  # cancel alarm on success
         energy = float(wfn.energy())
         n = len(symbols)
         grad = np.array([[grad_mat.get(i, j) for j in range(3)] for i in range(n)])
@@ -143,7 +155,11 @@ def psi4_single_point(symbols, coords_ang, method='wb97x-d', basis='6-31G*'):
 
         return energy, forces, dipole, None
 
+    except _TimeoutError:
+        signal.alarm(0)
+        return None, None, np.zeros(3), f'timeout (>{timeout_s}s)'
     except Exception as exc:
+        signal.alarm(0)
         return None, None, np.zeros(3), str(exc)
 
 
@@ -170,6 +186,8 @@ def main():
                         help='KRR regularisation alpha')
     parser.add_argument('--resume', default=None,
                         help='Output directory from a partial run to resume')
+    parser.add_argument('--timeout', type=int, default=600,
+                        help='Per-frame PSI4 timeout in seconds (default: 600)')
     parser.add_argument('--no-retrain', action='store_true',
                         help='Skip ML-PES retraining (just compute energies)')
     args = parser.parse_args()
@@ -232,7 +250,8 @@ def main():
         coords_ang = traj.coordinates[idx]
         t0 = time.time()
         energy, forces, dipole, err = psi4_single_point(
-            symbols, coords_ang, method=args.method, basis=args.basis)
+            symbols, coords_ang, method=args.method, basis=args.basis,
+            timeout_s=args.timeout)
         elapsed = time.time() - t0
 
         if energy is None:

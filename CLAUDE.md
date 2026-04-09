@@ -217,7 +217,58 @@ The following extensions were scoped by the user and should be built consistentl
 
 4. **IR spectra via dipole ACF**: ✅ **Implemented** in `ir_md_spectrum.py`. Best result to date: γ=0.01 model with bakken pre-min + ZPE filter (50–4000 cm⁻¹) → 7 peaks at 297, 307, 458, 461, 803, 1110, 2085 cm⁻¹. The 803 and 1110 cm⁻¹ peaks correspond to O-O and C-O stretch region of CH₂OO. ACF-based peaks are more physically meaningful than Hessian frequencies.
 
-5. **Multi-state PES family**: Future design — maintain a family of `MLPESTrainer` models (one per electronic state or molecular species). Mix energies/forces with scalar coefficients or transition between states with a hopping probability. Design: `PESFamily` container holding `{label: MLPESTrainer}` with a `mix(coefficients)` or `hop(probability_matrix)` interface. Units and descriptor conventions must be identical across all family members.
+5. **Multi-state CASSCF(4,4) delta-ML PES family** (✅ grid complete, IR run in progress, April 2026): Three-surface delta-ML architecture on top of the wB97X-D/6-31G* base ML-PES.
+
+   **Energy architecture**:
+   ```
+   E_S0(R) = E_wB97X_ML(R)  + δ_S0_ML(R)          ← ground state, always used
+   E_S1(R) = E_S0(R)         + Δgap_S1_ML(R)        ← first excited singlet
+   E_T1(R) = E_S0(R)         + Δgap_T1_ML(R)        ← lowest triplet (ISC)
+   ```
+
+   **Active space**: CASSCF(4,4) with {n⁺(O_terminal), n⁻(O_terminal), π(COO), π*(COO)} — the COO biradical frontier orbitals. Actual NO occupations at equilibrium: (1.948, 1.724, 0.275, 0.052) — 14% biradical character. `NO_OCC_SWITCH_THRESHOLD = 0.20`.
+
+   **Why no NEVPT2**: wB97X-D already captures dynamic correlation. Adding NEVPT2 would double-count it. δ_S0 captures only the static (multi-reference/biradical) correction.
+
+   **Completed training data**: 232/240 frames clean (8 failures, all isolated mid-chain). Output: `outputs/casscf_wB97X_nm_grid_20260407_184904/`.
+
+   **KRR models** (γ=0.1, α=1e-6, LOO-CV): δ_S0=0.654, Δgap_S1=0.588, Δgap_T1=0.566 kcal/mol.
+   - `nm_delta_s0_model.pkl`, `nm_gap_s1_model.pkl`, `nm_gap_t1_model.pkl`
+
+   **wB97X base ML-PES** (`outputs/wB97X_surface_20260406_223155/`):
+   - 894 training frames (all dE_B3LYP < 100 kcal/mol), γ=0.001, α=1e-5, RMSE=0.31 kcal/mol (augmented)
+   - **CRITICAL**: Use `train_wB97X_model.py` with `tune_hyperparameters=False` — the MLPESTrainer grid search only sweeps α ∈ {0.01, 0.1, 1.0}, missing the optimal 1e-5, and picks γ=0.01 which gives only 2 IR peaks.
+   - **CRITICAL**: Use `mlpes_wB97X_aug.pkl` (1126 frames = 894 base + 232 NM-grid), NOT `mlpes_wB97X.pkl` (894 only). The augmented model includes C-H stretch geometries from the CASSCF grid that provide the repulsive wall. Without it, C-H bonds elongate to > 2.0 Å during 300K MD (imaginary modes −2300, −953 cm⁻¹).
+   - Script `augment_wB97X_with_nm_grid.py` rebuilds augmented model from `results.json`.
+
+   **IR run command** (v3, in progress):
+   ```bash
+   python3 ir_md_spectrum.py \
+       --model outputs/wB97X_surface_20260406_223155/mlpes_wB97X_aug.pkl \
+       --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+       --nm-delta-model outputs/casscf_wB97X_nm_grid_20260407_184904/nm_delta_s0_model.pkl \
+       --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+       --n-trajectories 5 --max-bond-extension 2.0 \
+       --output-dir outputs/ir_spectrum_wB97X_delta_v3_300K
+   ```
+   Note: dipoles from B3LYP training data (wB97X dipoles all zero due to PSI4 oeprop bug in `recompute_wB97X_surface.py`).
+
+   **Scripts**:
+   - `test_casscf_equilibrium.py` — SA-2-CASSCF + triplet at eq; validates active space, reports gaps
+   - `casscf_wB97X_nm_grid.py` — 240-frame NM grid; resume with `--resume <outdir> --hessian <path>`; retrain with `--retrain-only --resume <outdir> --hessian <path>`
+   - `train_wB97X_model.py` — assemble `training_data_wB97X.npz` + train `mlpes_wB97X.pkl` from existing `results.json` (no PSI4); use `--gamma 0.001 --alpha 1e-5`
+   - `augment_wB97X_with_nm_grid.py` — merge base + CASSCF-grid wB97X frames; saves `mlpes_wB97X_aug.pkl`
+   - `plot_delta_surfaces.py` — 3D plot of δ_S0, Δgap_S1, Δgap_T1 surfaces
+   - `plot_wB97X_surface.py` — 3D plot of ΔE_wB97X with harmonic reference overlay
+
+   **Bug fixed** (April 2026): `casscf_nm_delta.py` `NMKRRDeltaModel.save()` failed with `PicklingError` when called from a `__main__` script. Fixed by saving a plain state dict and reconstructing on load (backward-compatible with old pickles).
+
+   **Surface hopping for MD** (planned): `MultiStateMDDriver` in `modules/bakken.py` will wrap the three-surface model. Gap-based hopping probability per step; tracks `current_state`; dipole ACF on occupied surface.
+
+   **Three target applications**:
+   1. **IR absorption (300 K)**: S0 surface only; δ_S0 correction improves equilibrium description
+   2. **IR emission from hot ozonolysis MVKOO**: high-T init (2000–5000 K); surface hopping S0↔T1
+   3. **Unimolecular dissociation**: long trajectories; branching to dioxirane, VHP+OH, or CH₃CHO+O
 
 ## Output Conventions
 

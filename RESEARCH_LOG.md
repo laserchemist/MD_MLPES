@@ -2,6 +2,176 @@
 
 ---
 
+## 2026-04-09 — CASSCF NM Grid Complete + wB97X+δ_S0 IR Run in Progress
+
+### CASSCF(4,4) NM grid: completed
+
+`casscf_wB97X_nm_grid.py` finished (PID 5719, started 2026-04-07):
+- **232/240 frames computed, 8 failed** (isolated mid-chain frames in modes 7, 14, 22, 23)
+- All 30 modes covered; failures do not break KRR (surrounding factors present)
+- Runtime: ~36 h total; MO chaining suppressed state-switching throughout
+- Output: `outputs/casscf_wB97X_nm_grid_20260407_184904/results.json`
+
+**KRR training results** (`--retrain-only`):
+
+| Model | Best γ | Best α | LOO-CV | Target |
+|-------|--------|--------|--------|--------|
+| δ_S0  | 0.1    | 1e-6   | 0.654 kcal/mol | < 0.5 ✗ |
+| Δgap_S1 | 0.1  | 1e-6   | 0.588 kcal/mol | — |
+| Δgap_T1 | 0.1  | 1e-6   | 0.566 kcal/mol | — |
+
+All three models converge to γ=0.1, α=1e-6 — the smallest gamma in the grid, indicating
+the correction surface is broad and smooth in NM space. The δ_S0 LOO-CV (0.654) just misses
+the 0.5 target but is driven by high-amplitude frames (δ_S0 up to +13.9 kcal/mol); near
+equilibrium (f ≤ 1.0, 300 K sampling region) corrections are ≤ 1 kcal/mol.
+
+δ_S0 range: −1.23 to +13.94 kcal/mol; Δgap_S1: 19.21–34.53 kcal/mol; Δgap_T1: 17.24–31.37 kcal/mol.
+
+**Bug fix**: `casscf_nm_delta.py` `NMKRRDeltaModel.save()` originally used `pickle.dump(self)`
+which failed with `PicklingError: not the same object` when called from a script running as
+`__main__`. Fixed by saving a plain state dict and reconstructing on load:
+```python
+def save(self, path):
+    state = {field: getattr(self, field) for field in [...]}
+    pickle.dump(state, f)
+
+@classmethod
+def load(cls, path):
+    obj = pickle.load(f)
+    return obj if isinstance(obj, cls) else cls(**obj)  # backward compat
+```
+
+### wB97X-D training set: expanded to 894 frames
+
+`recompute_wB97X_surface.py` completed the remaining 400 frames (495–894) overnight.
+Final: **894 frames, 0 failures**. Energy range 0–101 kcal/mol.
+
+`train_wB97X_model.py` (new helper script, bypasses PSI4) assembles `training_data_wB97X.npz`
+and trains `mlpes_wB97X.pkl` with fixed γ/α (no grid search). Key flag:
+`MLPESConfig(tune_hyperparameters=False)` required to bypass MLPESTrainer's built-in
+grid search (which only sweeps α ∈ {0.01, 0.1, 1.0}, missing the optimal 1e-5).
+
+### wB97X ML-PES: C-H elongation problem and fix
+
+**v1** (γ=0.01, 894 frames): Only 2 IR peaks (171, 322 cm⁻¹). Root cause: MLPESTrainer
+grid search picked γ=0.01 which gives stiffer, less accurate near-equilibrium forces.
+
+**v2** (γ=0.001, 894 frames): C-H bonds elongated to > 2.0 Å during MD. Root cause:
+wB97X ML-PES has **two imaginary modes** (−2300, −953 cm⁻¹) from Coulomb+RBF artifact —
+worse than B3LYP (−1888 cm⁻¹). No training data at stretched C-H geometries → no
+repulsive wall → molecule slides along imaginary directions.
+
+**v3 (augmented, current)**: Fixed by merging 894 base frames with 232 CASSCF NM-grid frames.
+The NM-grid includes C-H stretch modes (24–29) up to 2.98 Å — providing the repulsive wall.
+Augmented model (γ=0.001, α=1e-5, 1126 frames): **train RMSE = 0.31 kcal/mol**. IR run
+launched as `outputs/ir_spectrum_wB97X_delta_v3_300K/` (PID 46412, in progress).
+
+Script: `augment_wB97X_with_nm_grid.py` — reconstructs NM-displaced coords from grid
+`q_nm` vectors + Hessian eigenvectors, merges with base training set, retrains.
+
+### Visualisation scripts
+
+Two new 3D surface plots for the NM-grid results (X=amplitude, Y=mode freq, Z=correction):
+- `plot_delta_surfaces.py` — 3-panel: δ_S0, Δgap_S1, Δgap_T1 (saved to `surfaces_3d.png`)
+- `plot_wB97X_surface.py` — single panel: ΔE_wB97X with harmonic reference overlay; color capped at 20 kcal/mol by default (saved to `wB97X_surface_3d.png`)
+
+Both work with partial results (mid-run) and update on each call.
+
+---
+
+## 2026-04-07 — Multi-State CASSCF(4,4) Delta-ML Design + wB97X Surface Complete
+
+### wB97X-D/6-31G* surface: completed
+
+`recompute_wB97X_surface.py` finished overnight:
+- **494 frames computed, 0 failed** (all frames with dE_B3LYP < 100 kcal/mol)
+- Energy range: 0–101 kcal/mol (wB97X relative)
+- δ(wB97X − B3LYP) near equilibrium (dE < 5 kcal/mol): 0.06 ± 0.28 kcal/mol — confirming wB97X and B3LYP give nearly identical relative energies for this molecule at near-eq geometries
+- Equilibrium frame: index 502 in `combined_training_data.npz` (same frame as B3LYP minimum), E = −306.209985 Ha
+- Output: `outputs/wB97X_surface_20260406_223155/results.json` (738 KB)
+- `training_data_wB97X.npz` and `mlpes_wB97X.pkl` to be assembled after retrain step
+
+### Multi-state CASSCF delta-ML: design finalised
+
+**Three target applications** drive the architecture requirements:
+1. **IR absorption (300 K thermal)**: 300 K ML-MD on corrected S0 surface; dipole ACF → spectrum. δ_S0 correction expected to be small (< 3 kcal/mol near eq).
+2. **IR emission from hot ozonolysis-born MVKOO**: Criegee intermediates form with ~50–80 kcal/mol internal energy from MVK + O₃. Need high-T ML-MD (2000–5000 K effective) with surface hopping S0↔T1 (ISC relevant). Dipole ACF on occupied surface gives emission spectrum.
+3. **Unimolecular dissociation dynamics**: Long trajectories crossing barriers to dioxirane, vinyl hydroperoxide + OH, CH₃CHO + O channels. Requires surface hopping near conical intersections.
+
+**Energy architecture** (three-surface family):
+```
+E_S0(R) = E_wB97X_ML(R)  + δ_S0_ML(R)       ← always used; primary dynamics surface
+E_S1(R) = E_S0(R)         + Δgap_S1_ML(R)    ← first excited singlet; gap ~2–3 eV at eq
+E_T1(R) = E_S0(R)         + Δgap_T1_ML(R)    ← lowest triplet; gap ~1.5–2 eV at eq; ISC
+```
+
+Learning gaps (Δgap) rather than absolute deltas from wB97X is numerically preferred: gaps are smaller quantities (~35–70 kcal/mol, smooth) vs absolute offsets (~300 kcal/mol). The KRR fits smoother targets.
+
+**Active space**: CASSCF(4,4) with COO biradical orbitals {n⁺(O_terminal), n⁻(O_terminal), π(COO), π*(COO)}. This replaces the original TS active space {σ/σ*(C-H), σ/σ*(O-H)} which was wrong for the equilibrium region. The COO active space morphs continuously: near-closed-shell at equilibrium (NO ~ 1.98, 1.90, 0.10, 0.02) → full biradical at the TS (NO ~ 1.5, 1.5, 0.5, 0.5).
+
+**Why NEVPT2 is skipped with wB97X base**: wB97X-D captures dynamic correlation through the range-separated exchange-correlation functional. CASSCF(4,4) adds only the static (multi-reference/biradical) correction. Adding NEVPT2 on top of CASSCF would double-count the dynamic correlation already in wB97X — the δ_S0 would be non-physical. With B3LYP as base, NEVPT2 helped because B3LYP underestimates dynamic correlation more severely. Conclusion: CASSCF only, no NEVPT2, when base = wB97X.
+
+**Training data (Option B — NM grid)**:
+- 30 modes × [0.5, 1.0, 1.5, 2.0] × ±1 = **240 frames**
+- Generated around wB97X equilibrium geometry using B3LYP Hessian (NM directions nearly identical between functionals)
+- Amplitudes capped at 2.0× thermal (300 K) to stay within wB97X ML-PES reliable region
+- Per-frame: PSI4 wB97X-D single-point (~90 s) + PySCF SA-2-CASSCF(4,4)/6-31G* singlets (~120 s) + SS-CASSCF triplet (~60 s). MO chaining along each mode direction.
+- Estimated runtime: ~18 h total; checkpoint/resume after every frame
+- Three KRR outputs: `nm_delta_s0_model.pkl`, `nm_gap_s1_model.pkl`, `nm_gap_t1_model.pkl`
+
+**Surface hopping design** (planned, for `modules/bakken.py`):
+- `MultiStateMDDriver` wraps the three-surface model
+- Gap-based hopping probability per step: P_hop(S0→S1) ∝ exp(−B × Δgap_S1) × dt
+- ISC (S0→T1): same form with smaller spin-orbit coupling prefactor
+- Tracks `current_state` in trajectory; dipole ACF recorded on occupied surface
+- For dissociation: bond-extension detection for C-O, O-O bonds → terminate + record products
+
+### Equilibrium test results (test_casscf_equilibrium.py)
+
+Both SA-2-CASSCF singlet and SS-CASSCF triplet converged at the wB97X equilibrium geometry:
+
+| Quantity | Value | Note |
+|---|---|---|
+| CASSCF S0 | −304.5422196022 Ha | reference for grid |
+| wB97X (eq) | −306.2099845838 Ha | reference for grid |
+| δ_S0 at eq | 0.000 kcal/mol | 0 by construction |
+| NO occ S0 | [1.948, 1.724, 0.275, 0.052] | **new COO reference** |
+| NO occ S1 | [1.948, 1.000, 1.000, 0.052] | pure open-shell singlet |
+| NO occ T1 | [1.949, 1.000, 1.000, 0.051] | triplet counterpart |
+| Δgap_S1 | 29.0 kcal/mol (1.26 eV) | CASSCF level; true gap higher with NEVPT2 |
+| Δgap_T1 | 26.5 kcal/mol (1.15 eV) | T1 < S1 by 2.5 kcal/mol — Hund's rule confirmed |
+
+Key observation: S0 NO occ [1.948, **1.724**, **0.275**, 0.052] shows ~14% biradical character
+at equilibrium — real physical COO biradical character, not a state-switching artifact.
+The old EQ_NO_OCC_REF [1.998, 1.924, 0.077, 0.000] was for the C-H bond active space and
+does not apply here.  New threshold: 0.20 for the COO active space.
+
+S1 and T1 both have two singly-occupied orbitals [1.0, 1.0] — the biradical open-shell
+states.  T1 lies 2.5 kcal/mol below S1 (Hund's rule).  Both are thermally inaccessible
+at 300 K (29/26.5 >> kT = 0.59 kcal/mol) but relevant for hot ozonolysis MVKOO
+(~50–80 kcal/mol internal energy).
+
+### Scripts produced this session
+
+```
+test_casscf_equilibrium.py     ← equilibrium validation (completed, results above)
+casscf_wB97X_nm_grid.py        ← 240-frame NM grid; ready to run
+```
+
+### Immediate next steps
+
+1. Run NM grid overnight (~18 h):
+   ```bash
+   python3 casscf_wB97X_nm_grid.py \
+       --eq-coords outputs/mvko_20260319_081314/psi4_eq_coords.npy \
+       --hessian   outputs/casscf_nm_delta_20260401_110049/hessian_used.npy
+   ```
+2. If interrupted: `--resume outputs/casscf_wB97X_nm_grid_<ts>`
+3. After completion: inspect `diagnostics.png`, check LOO-CV for δ_S0 < 0.5 kcal/mol
+4. Run IR spectrum with corrected wB97X model using `--nm-delta-model nm_delta_s0_model.pkl`
+
+---
+
 ## 2026-04-06 — ωB97X-D3 Surface Recompute + Systematic CASSCF/NEVPT2 NM Grid
 
 ### Motivation

@@ -209,14 +209,34 @@ class NMKRRDeltaModel:
     # ── persistence ───────────────────────────────────────────────────────────
 
     def save(self, path: str):
+        # Save as a plain state dict to avoid pickle module-identity errors
+        # when casscf_nm_delta is imported from a script running as __main__.
+        state = {
+            'eq_coords_ang':  self.eq_coords_ang,
+            'U_vib':          self.U_vib,
+            'sqrt_mass':      self.sqrt_mass,
+            'freqs_vib':      self.freqs_vib,
+            'symbols':        self.symbols,
+            'gamma':          self.gamma,
+            'alpha_reg':      self.alpha_reg,
+            'X_train_q':      self.X_train_q,
+            'y_train_ha':     self.y_train_ha,
+            'e_b3lyp_ref_ha': self.e_b3lyp_ref_ha,
+            'e_cas_ref_ha':   self.e_cas_ref_ha,
+            'cv_rmse_kcal':   self.cv_rmse_kcal,
+        }
         with open(path, 'wb') as f:
-            pickle.dump(self, f, protocol=4)
+            pickle.dump(state, f, protocol=4)
         print(f"  NMKRRDeltaModel saved: {path}")
 
     @classmethod
     def load(cls, path: str) -> 'NMKRRDeltaModel':
         with open(path, 'rb') as f:
-            return pickle.load(f)
+            obj = pickle.load(f)
+        # Support both old full-object pickles and new state-dict pickles
+        if isinstance(obj, cls):
+            return obj
+        return cls(**obj)
 
 
 # ── KRR training helpers ──────────────────────────────────────────────────────
