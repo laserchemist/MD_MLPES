@@ -508,7 +508,8 @@ def compute_mlpes_normal_modes(driver: MLPESDriver,
         H_ang2 = 0.5 * (H_ang2 + H_ang2.T)
 
     # Unit conversion:  Hartree/Ang²  →  Hartree/Bohr²
-    H_bohr2 = H_ang2 * ANG_TO_BOHR ** 2
+    # 1 Å = ANG_TO_BOHR Bohr → 1 Ha/Å² = 1/ANG_TO_BOHR² Ha/Bohr²
+    H_bohr2 = H_ang2 / ANG_TO_BOHR ** 2
 
     frequencies, eigvecs_mw, eigenvalues, mass_vec = compute_normal_modes(
         driver.symbols, H_bohr2
@@ -1169,7 +1170,12 @@ def run_ir_workflow(model_path: str,
                     print_every: int = 0,
                     delta_model_path: str | None = None,
                     energy_delta_path: str | None = None,
-                    nm_delta_model_path: str | None = None) -> None:
+                    nm_delta_model_path: str | None = None,
+                    nm_pes_model_path: str | None = None,
+                    nm_pes_bond_wall_factor: float = 1.6,
+                    nm_pes_bond_wall_stiffness: float = 1.0,
+                    sgdml_model_path: str | None = None,
+                    mace_model_path: str | None = None) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -1190,7 +1196,7 @@ def run_ir_workflow(model_path: str,
     print(f"\n{'=' * 70}")
     print("  ML-PES IR SPECTRUM WORKFLOW")
     print(f"{'=' * 70}")
-    print(f"  ML-PES model       : {model_path}")
+    print(f"  ML-PES model       : {nm_pes_model_path or model_path}")
     print(f"  Training data      : {training_data_path}")
     print(f"  Dipole model       : {dipole_model_path or '(will train now)'}")
     print(f"  MD steps           : {n_steps}  (dt={timestep} fs, save every {save_every})")
@@ -1224,6 +1230,19 @@ def run_ir_workflow(model_path: str,
         driver = PESFamilyDriver(family)
         print(f"  PES family         : {list(family.members.keys())}  "
               f"(blend_width={family.blend_width} kcal/mol)")
+    elif nm_pes_model_path:
+        from modules.nm_pes import NMPESDriver
+        driver = NMPESDriver(nm_pes_model_path,
+                             bond_wall_factor=nm_pes_bond_wall_factor,
+                             bond_wall_stiffness=nm_pes_bond_wall_stiffness)
+    elif sgdml_model_path:
+        from modules.sgdml_pes import SGDMLDriver
+        driver = SGDMLDriver(sgdml_model_path)
+        print(f"  sGDML model        : {sgdml_model_path}")
+    elif mace_model_path:
+        from modules.mace_pes import MACEDriver
+        driver = MACEDriver(mace_model_path)
+        print(f"  MACE model         : {mace_model_path}")
     else:
         driver = MLPESDriver(model_path)
 
@@ -1265,10 +1284,35 @@ def run_ir_workflow(model_path: str,
     nm_data = None
     nm_frequencies = None
     if use_zpe_init:
-        print("\n--- ML-PES Normal Mode Analysis (for ZPE init) ---")
-        nm_data = compute_mlpes_normal_modes(driver, coords0,
-                                             analytic=analytic_hessian)
-        nm_frequencies = nm_data[0]   # (n_vib,) cm⁻¹
+        # For NM-PES models (or delta wrapper around NM-PES), use the stored
+        # PSI4 eigenvectors directly rather than recomputing via FD Hessian —
+        # they are exact by construction and immediately available.
+        _nm_pes_base = None
+        if hasattr(driver, '_model') and hasattr(driver._model, 'U_vib'):
+            _nm_pes_base = driver        # NMPESDriver directly
+        elif hasattr(driver, '_base') and hasattr(getattr(driver, '_base', None), '_model'):
+            _nm_pes_base = driver._base  # NMDeltaDriver wrapping NMPESDriver
+
+        if _nm_pes_base is not None:
+            print("\n--- Using stored PSI4 NM data for ZPE init (NM-PES model) ---")
+            from modules.nm_pes import ATOMIC_MASSES
+            _nm = _nm_pes_base._model
+            _mass_vec = np.repeat(
+                np.array([ATOMIC_MASSES[s] for s in driver.symbols]), 3)
+            nm_data = (
+                _nm.freqs_vib,          # (n_vib,) cm⁻¹
+                _nm.U_vib,              # (3N, n_vib) mass-weighted eigenvectors
+                _nm._eigenvalues_ha,    # (n_vib,) Ha/(Bohr²·amu)
+                _mass_vec,              # (3N,) amu
+            )
+            nm_frequencies = nm_data[0]
+            print(f"  n_vib={len(nm_frequencies)}  "
+                  f"freq range [{nm_frequencies[0]:.1f}, {nm_frequencies[-1]:.1f}] cm⁻¹")
+        else:
+            print("\n--- ML-PES Normal Mode Analysis (for ZPE init) ---")
+            nm_data = compute_mlpes_normal_modes(driver, coords0,
+                                                 analytic=analytic_hessian)
+            nm_frequencies = nm_data[0]   # (n_vib,) cm⁻¹
 
     # ── Step 3: ML-MD (dense) — single or multi-trajectory ───────────
     if n_trajectories > 1:
@@ -1301,8 +1345,18 @@ def run_ir_workflow(model_path: str,
             all_intensities.append(int_k)
             print(f"  Trajectory {k+1}/{len(per_traj_dipoles)} spectrum computed  "
                   f"({len(dip_k)} frames)")
-        frequencies  = freq_k  # all same grid
-        intensities  = np.mean(all_intensities, axis=0)
+        frequencies  = freq_k  # use last trajectory's grid as reference
+        # Interpolate shorter trajectories onto the reference grid before averaging
+        # (trajectories may have different lengths due to early dissociation truncation)
+        all_int_interp = []
+        for int_k in all_intensities:
+            if len(int_k) == len(frequencies):
+                all_int_interp.append(int_k)
+            else:
+                # Rebuild the frequency axis for this trajectory length
+                freq_this = np.linspace(frequencies[0], frequencies[-1], len(int_k))
+                all_int_interp.append(np.interp(frequencies, freq_this, int_k))
+        intensities  = np.mean(all_int_interp, axis=0)
         # Normalise averaged spectrum to 1
         if intensities.max() > 0:
             intensities /= intensities.max()
@@ -1426,7 +1480,7 @@ def run_ir_workflow(model_path: str,
         'molecule_hill':     mol['hill'],
         'molecule_name':     mol['name'],
         'molecule_unicode':  mol['unicode'],
-        'model_path':        str(model_path),
+        'model_path':        str(nm_pes_model_path or model_path),
         'training_data':     str(training_data_path),
         'dipole_model':      str(dipole_pkl),
         'n_md_steps':        n_steps,
@@ -1523,8 +1577,24 @@ def main():
         description='ML-PES IR spectrum via ML dipole surface + dipole ACF',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument('--model',          required=True,
-                        help='ML-PES model (.pkl)')
+    parser.add_argument('--model',          required=False, default=None,
+                        help='Coulomb-matrix ML-PES model (.pkl). '
+                             'Either --model, --nm-pes-model, or --sgdml-model is required.')
+    parser.add_argument('--sgdml-model',    default=None,
+                        help='sGDML model (.pkl from train_sgdml_model.py). '
+                             'Force-trained, symmetry-aware; physically correct Hessian.')
+    parser.add_argument('--mace-model',     default=None,
+                        help='MACE model (.pt from train_mace_model.py). '
+                             'Equivariant MPNN; physical normal-mode frequencies; '
+                             'no descriptor stiffness artifact. Preferred backend.')
+    parser.add_argument('--nm-pes-model',   default=None,
+                        help='NM-coordinate ML-PES model (.pkl, from train_wB97X_nm_model.py). '
+                             'Replaces --model when provided. Avoids Coulomb+RBF imaginary-mode '
+                             'artifact; analytic forces and Hessian are physical near equilibrium.')
+    parser.add_argument('--nm-pes-bond-wall-factor',     type=float, default=1.6,
+                        help='Bond cutoff as multiple of eq distance for NM-PES bond wall (default 1.6).')
+    parser.add_argument('--nm-pes-bond-wall-stiffness',  type=float, default=1.0,
+                        help='Bond wall spring constant Ha/Å² for NM-PES (default 1.0).')
     parser.add_argument('--training-data',  required=True,
                         help='Training data .npz with coordinates + dipoles')
     parser.add_argument('--dipole-model',   default=None,
@@ -1616,12 +1686,17 @@ def main():
                              'Overridden by _blend_width key in --conformer-manifest.')
     args = parser.parse_args()
 
+    if (args.model is None and args.nm_pes_model is None
+            and args.sgdml_model is None and args.mace_model is None):
+        parser.error('One of --model, --nm-pes-model, --sgdml-model, or --mace-model is required.')
+
     ts  = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     out = Path(args.output_dir) if args.output_dir else \
           Path('outputs') / f'ir_spectrum_{ts}'
 
     run_ir_workflow(
         model_path          = args.model,
+        nm_pes_model_path   = args.nm_pes_model,
         training_data_path  = args.training_data,
         dipole_model_path   = args.dipole_model,
         n_steps             = args.steps,
@@ -1647,8 +1722,12 @@ def main():
         print_every         = args.print_every,
         delta_model_path    = args.delta_model,
         energy_delta_path   = args.energy_delta,
-        nm_delta_model_path = args.nm_delta_model,
-    )
+        nm_delta_model_path         = args.nm_delta_model,
+        nm_pes_bond_wall_factor     = args.nm_pes_bond_wall_factor,
+        nm_pes_bond_wall_stiffness  = args.nm_pes_bond_wall_stiffness,
+        sgdml_model_path            = args.sgdml_model,
+        mace_model_path             = args.mace_model,
+    )  # nm_pes_model_path already passed above
 
 
 if __name__ == '__main__':

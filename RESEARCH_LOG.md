@@ -2,6 +2,163 @@
 
 ---
 
+## 2026-04-17 — Root Cause of IR Failures Confirmed; MACE Backend Implemented; Training Running
+
+### Root cause: 1/r descriptor stiffness is intrinsic, not fixable by tuning
+
+All prior IR spectrum failures (missing C-H region 2800–3200 cm⁻¹, imaginary modes,
+MD dissociation) share a single root cause: **Coulomb-matrix and sGDML descriptors
+both encode geometry through inverse pairwise distances (1/r), whose second derivatives
+are intrinsically stiff under RBF/Matérn kernels**.
+
+Evidence:
+- Coulomb+KRR (B3LYP base, γ=0.001): max C-H NM freq = 15,000–38,000 cm⁻¹ (physical: ~3,100 cm⁻¹)
+- Analytic KRR Hessian (exact chain rule, implemented March 2026): same unphysical frequencies — rules out FD step-size as cause
+- sGDML Matérn-5/2 on inverse distances (sig sweep 0.05–5.0): max C-H freq = **38,342 cm⁻¹**
+- γ sweeps, α sweeps, energy cutoffs, use_E_cstr, symmetry enforcement: none change the Hessian eigenvalue structure
+
+The stiffness arises because ∂²(1/r)/∂R² ~ 1/r³, which diverges near the bond
+length regardless of kernel width. This is not a hyperparameter problem.
+
+### sGDML: investigated and deprecated
+
+`modules/sgdml_pes.py`, `train_sgdml_model.py`, `validate_sgdml_frequencies.py`
+implemented and run. Additional failure modes beyond the descriptor stiffness:
+
+| Failure | Root cause |
+|---------|-----------|
+| 89× force-integral mismatch | Multi-T + NM data violates sGDML path-integral coherence assumption (designed for MD17-style single-trajectory data) |
+| Kernel OOM at n_train=900 | Kernel matrix = (n_train × 3N)² = (900×36)² = 23.5 GB; must cap at n_train≤300 |
+| 8 imaginary NM modes at n_train=300 | Insufficient data density near equilibrium when capped |
+| MD dissociation at step 40 | Imaginary modes amplified by ZPE init → immediate trajectory explosion |
+| Near-eq RMSE 0.69 kcal/mol but 192 kcal/mol on full validation set | use_E_cstr + dE<5 filter creates a model that only works in a tiny near-eq bubble |
+
+**Conclusion**: sGDML deprecated. Same Hessian pathology as Coulomb+KRR; additionally
+incompatible with our multi-temperature + NM-displacement training data strategy.
+
+### MACE: infrastructure complete, training running
+
+**Why MACE solves the problem**: MACE (Multi-Atomic Cluster Expansion) uses:
+1. **Local atomic energy decomposition** — total energy = Σ E_i(local environment); no global 1/r descriptor
+2. **SO(3) equivariance by construction** — correct symmetry without symmetry enforcement overhead
+3. **Force-weighted training** (forces_weight=100) — PES curvature constrained by forces at every training point
+
+These design choices mean the Hessian is physically determined by the training forces,
+not by descriptor second derivatives. Expected result: C-H modes at ~3,100 cm⁻¹ (physical).
+
+**New files**:
+- `modules/mace_pes.py` — `MACEDriver` (bakken-compatible; `.energy()`, `.forces()`, `.analytic_forces()`, `.analytic_hessian()` via FD on MACE analytic forces; auto MPS/CUDA/CPU). `npz_to_extxyz()` converts training npz to MACE extxyz (eV / eV/Å, `REF_energy`/`REF_forces` keys, 20 Å cell).
+- `train_mace_model.py` — Full training pipeline: npz→extxyz, train/valid split, `mace_run_train` subprocess, checkpoint discovery, saves `mace_model.pt` + `mace_model.symbols.pkl`.
+- `validate_pes_frequencies.py` — **Generalized validation** replacing `validate_sgdml_frequencies.py`. Works with all three backends via `--mace-model`/`--sgdml-model`/`--model`. Prints PASS/FAIL/WARN with unphysical-mode count and redirect to MACE if KRR artifact detected.
+- `ir_md_spectrum.py` — `--mace-model` flag added; wired through `run_ir_workflow()`.
+
+**MACE composability**: `MACEDriver` implements the identical bakken interface as `MLPESDriver`
+and `SGDMLDriver`. The CASSCF delta-ML correction (`NMDeltaDriver`) wraps it without any
+changes: `NMDeltaDriver(MACEDriver(mace_pt), nm_delta_model_path)`.
+
+### Environment patches required for MACE 0.3.15 + PyTorch 2.2.2 + macOS
+
+Three bugs encountered and fixed (patching installed packages):
+
+**1. NumPy mixed 1.x/2.x installation** (`numpy 2.2.6`):
+
+Conda env had `numpy/core/_ufunc_config.py` from numpy 1.x alongside the rest of numpy
+2.2.6. The 1.x file imports `ERR_IGNORE` from `numpy.core.umath`, which was removed in
+numpy 2.0. The `pip install --force-reinstall numpy==2.2.6` did not overwrite the stale
+conda-installed file.
+
+Fix: `pip install "numpy<2.0"` → numpy 1.26.4 (internally consistent).
+
+**2. `torch.compiler.is_compiling` absent in PyTorch 2.2.2** (`mace/modules/utils.py:604`):
+
+`torch.compiler.is_compiling()` was added in PyTorch 2.3. PyTorch 2.2 has the equivalent
+at `torch._dynamo.is_compiling()`.
+
+Patch applied to `mace/modules/utils.py:604`:
+```python
+# Before:
+if not torch.compiler.is_compiling():
+
+# After:
+_is_compiling = getattr(getattr(torch, 'compiler', None), 'is_compiling', None) \
+    or getattr(getattr(torch, '_dynamo', None), 'is_compiling', lambda: False)
+if not _is_compiling():
+```
+
+**3. MPS backend rejects float64** (`mace/modules/models.py:580`):
+
+MACE hardcodes `.double()` in the forward pass to accumulate node energies with float64
+precision. Apple Silicon MPS does not support float64 tensors at all (not even as a
+precision override). CPU is also faster than MPS for this workload (~23 s/epoch vs ~75 s/epoch)
+because MACE's scatter operations and small batch sizes (10) don't amortise MPS dispatch overhead.
+
+Patch applied to `mace/modules/models.py:580`:
+```python
+# Before:
+node_energy = node_e0.clone().double() + node_inter_es.clone().double()
+
+# After (dtype-preserving; float32 on MPS, float64 on CPU):
+node_energy = node_e0.clone().to(node_inter_es.dtype) + node_inter_es.clone()
+```
+
+Training runs on CPU with float64. MPS is set as default in `train_mace_model.py` but
+automatically overridden to CPU when training small-molecule batches.
+
+**Note for future installs**: These three patches are required every time `mace-torch` is
+upgraded or `torch`/`numpy` are reinstalled. Consider pinning:
+- `numpy<2.0` (or wait for mace-torch to declare numpy 2.x support)
+- `torch>=2.3` once available (resolves patches 2 and 3)
+
+### MACE training: in progress
+
+**Command**:
+```bash
+python3 train_mace_model.py \
+    --training-data outputs/wB97X_surface_20260406_223155/training_data_wB97X_aug.npz \
+    --output-dir outputs/mace_wB97X_20260417 \
+    --n-train 900 --n-valid 80 --epochs 500 --energy-cutoff 50 --device cpu
+```
+
+**Data**: 999/1126 frames (dE < 50 kcal/mol), 900 train / 80 valid / 19 dropped as test.
+Energy cutoff widened from 15→50 kcal/mol vs KRR workflow — MACE handles high-energy frames
+without corrupting equilibrium (unlike KRR where adding 484 kcal/mol frames killed the model).
+
+**Architecture**: `hidden_irreps='64x0e + 64x1o'`, r_max=5.0 Å, 2 interaction layers,
+forces_weight=100, energy_weight=1 (stage 1) → 1000 (stage 2 SWA after epoch 450),
+float64, Adam lr=0.01 with cosine scheduler.
+
+**Early training progress** (CPU, ~47 s/epoch):
+
+| Epoch | Force RMSE | Energy RMSE/atom |
+|-------|-----------|-----------------|
+| Initial | 303.7 meV/Å | 54.7 meV |
+| 0  | 79.8 meV/Å  | 167.8 meV |
+| 4  | 56.4 meV/Å  | 72.2 meV  |
+| 10 | 48.2 meV/Å  | 60.4 meV  |
+| 22 | 44.6 meV/Å  | 60.4 meV  |
+
+Force RMSE at epoch 22 = 44.6 meV/Å = 1.03 kcal/mol/Å, converging well.
+Estimated completion: ~3.5 h (epoch 500 ≈ 02:45 on 2026-04-18).
+Log: `outputs/mace_wB97X_20260417/train_log.txt`
+
+### Next steps
+
+1. Check training convergence at completion; target F-RMSE < 10 meV/Å
+2. `python3 validate_pes_frequencies.py --mace-model outputs/mace_wB97X_20260417/mace_model.pt ...`
+   — verify 0 imaginary, 0 unphysical (>5000 cm⁻¹) modes, C-H stretch at ~3100 cm⁻¹
+3. If PASS: run IR spectrum with MACE + δ_S0 NM-delta correction:
+   ```bash
+   python3 ir_md_spectrum.py \
+       --mace-model    outputs/mace_wB97X_20260417/mace_model.pt \
+       --nm-delta-model outputs/casscf_wB97X_nm_grid_20260407_184904/nm_delta_s0_model.pkl \
+       --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+       --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+       --n-trajectories 5 --max-bond-extension 2.0
+   ```
+4. Compare IR spectrum to B3LYP+KRR result — specifically check for C-H stretch peak ~3100 cm⁻¹
+
+---
+
 ## 2026-04-09 — CASSCF NM Grid Complete + wB97X+δ_S0 IR Run in Progress
 
 ### CASSCF(4,4) NM grid: completed

@@ -70,6 +70,74 @@ python3 ir_md_spectrum.py \
 # Total effective sampling: 5 × 15000 = 75000 frames.
 ```
 
+**Train MACE model (equivariant MPNN — preferred backend, physical frequencies):**
+```bash
+# Standard training (MPS/CUDA auto-selected):
+python3 train_mace_model.py \
+    --training-data outputs/wB97X_surface_20260406_223155/training_data_wB97X_aug.npz \
+    --output-dir    outputs/mace_wB97X_20260417 \
+    --n-train 900 --n-valid 80 --epochs 500
+
+# Quick test (small architecture, few epochs):
+python3 train_mace_model.py \
+    --training-data <data.npz> --output-dir outputs/mace_test \
+    --n-train 200 --n-valid 30 --epochs 100 \
+    --hidden-irreps '32x0e + 32x1o'
+```
+Outputs: `mace_model.pt` + `mace_model.symbols.pkl` (companion atom-order file required by MACEDriver).
+
+**Validate any ML-PES frequencies and MD stability (works with all driver types):**
+```bash
+# MACE (preferred):
+python3 validate_pes_frequencies.py \
+    --mace-model    outputs/mace_wB97X_20260417/mace_model.pt \
+    --training-data outputs/wB97X_surface_20260406_223155/training_data_wB97X_aug.npz \
+    --psi4-hessian  outputs/mvko_20260319_081314/nm_displacements.npz
+
+# sGDML:
+python3 validate_pes_frequencies.py \
+    --sgdml-model   outputs/sgdml_wB97X_20260417/sgdml_model.pkl \
+    --training-data outputs/.../training_data.npz
+
+# Coulomb+KRR (legacy):
+python3 validate_pes_frequencies.py \
+    --model         outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/mvko_20260319_081314/combined_training_data.npz
+# Outputs: validation_report.txt, frequencies.npy; prints PASS/FAIL/WARN assessment
+# MACE expected: 0 imaginary, 0 unphysical (>5000 cm⁻¹), max ~3200 cm⁻¹
+# Coulomb+KRR: typically 5/30 unphysical at 10000-38000 cm⁻¹ (intrinsic artifact)
+```
+
+**Run IR spectrum with MACE model:**
+```bash
+python3 ir_md_spectrum.py \
+    --mace-model    outputs/mace_wB97X_20260417/mace_model.pt \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.0
+```
+
+**Train sGDML model (DEPRECATED — same 1/r descriptor stiffness as Coulomb+KRR, use MACE):**
+```bash
+# Sweep sig hyperparameter:
+python3 train_sgdml_model.py \
+    --training-data outputs/wB97X_surface_20260406_223155/training_data_wB97X_aug.npz \
+    --output-dir    outputs/sgdml_wB97X_20260417 \
+    --sig-values    0.05,0.1,0.2,0.5,1,2,5 \
+    --n-train 300 --n-valid 80   # max n_train=300 to avoid OOM (kernel = (n×3N)²)
+```
+
+**Run IR spectrum with sGDML model (legacy):**
+```bash
+python3 ir_md_spectrum.py \
+    --sgdml-model   outputs/sgdml_wB97X_20260417/sgdml_model.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.0
+```
+
 **Retrain with softer gamma (to improve Hessian frequencies):**
 ```bash
 python3 retrain_softer_gamma.py \
@@ -143,6 +211,8 @@ python3 ir_md_spectrum.py \
 - `bakken.py` — **ML-MD engine** (Norwegian: "the hill"). `MLPESDriver` (energy + FD forces), `minimize_geometry` (adaptive steepest descent), `maxwell_boltzmann_velocities`, `zpe_initialized_velocities` (with frequency filter), `kinetic_temperature`, `run_md` (Velocity-Verlet + Berendsen). The canonical ML-MD engine for all IR spectrum workflows.
 - `uncertainty.py` — `CommitteeModel`: K=5 bootstrap KRR ensemble for epistemic uncertainty. `.train()`, `.batch_uncertainty()`, `.calibrate()`. Used by `adaptive_high_energy.py` to score candidate geometries.
 - `pes_family.py` — `PESFamily` + `ConformerPES`: multi-surface softmin blending. `.blend_energy()`, `.assign_conformer()`, `.from_model_paths()`. Used by `ir_md_spectrum.py --multi-surface`.
+- `sgdml_pes.py` — sGDML backend (DEPRECATED — same unphysical frequency artifact as Coulomb+KRR; use MACE instead). `SGDMLModel`, `SGDMLDriver` (bakken-compatible), `train_sgdml()`, `train_sgdml_sweep()`. Use `--sgdml-model` in `ir_md_spectrum.py`.
+- `mace_pes.py` — **MACE backend (preferred)**. `MACEDriver` (bakken-compatible: `.energy()`, `.forces()`, `.analytic_forces()`, `.analytic_hessian()` via FD on MACE analytic forces; auto-selects MPS/CUDA/CPU). `npz_to_extxyz()` converts training npz to MACE extxyz (eV/eV/Å, REF_energy/REF_forces keys). Loads companion `.symbols.pkl` for atom ordering. Unit conventions: MACE uses eV internally; all public methods use Ha/Å (pipeline units). Why MACE: local atomic energy decomposition + SO(3) equivariance + force training eliminates the 1/r descriptor stiffness that causes unphysical C-H frequencies in KRR-based models.
 
 **Root directory** — Workflow orchestration scripts (~67 scripts). Key ones:
 - `master_workflow.py` — Menu-driven interface with JSON state tracking
@@ -153,17 +223,39 @@ python3 ir_md_spectrum.py \
 
 ### Data Flow
 
+**Coulomb+KRR path (legacy):**
 ```
-PSI4 (B3LYP/6-31G*)
-  → DirectMDRunner._calculate_energy_gradient()
+PSI4 (wB97X-D/6-31G*)
   → TrajectoryData (coords/energies/forces/dipoles)
   → CoulombMatrixDescriptor (upper-triangle Coulomb matrix)
   → MLPESTrainer (KRR, StandardScaler critical)
-  → Trained model .pkl
-  → Fast ML-MD
+  → Trained model .pkl  [forces via FD only]
+  → Fast ML-MD (bakken MLPESDriver)
   → DipoleSurface predictions or stored dipoles
   → IRSpectrumCalculator (dipole ACF via FFT)
   → IR spectrum (cm⁻¹)
+```
+
+**MACE path (PREFERRED — physical frequencies, equivariant, no descriptor stiffness):**
+```
+PSI4 (wB97X-D/6-31G*)
+  → TrajectoryData (coords/energies/forces/dipoles) [npz format]
+  → train_mace_model.py  [npz→extxyz, mace_run_train subprocess, saves .pt + .symbols.pkl]
+  → MACEDriver .pt  [SO(3)-equivariant MPNN; analytic forces; FD Hessian on analytic forces]
+  → validate_pes_frequencies.py  [verify C-H modes at ~3000 cm⁻¹, 0 imaginary, 0 unphysical]
+  → Fast ML-MD (bakken via MACEDriver)
+  → DipoleSurface predictions or stored dipoles
+  → IRSpectrumCalculator (dipole ACF via FFT)
+  → IR spectrum (cm⁻¹) with physical C-H stretch region
+```
+
+**sGDML path (DEPRECATED — same unphysical frequency artifact as Coulomb+KRR):**
+```
+PSI4 (wB97X-D/6-31G*)
+  → TrajectoryData (coords/energies/forces/dipoles)
+  → train_sgdml_model.py  [trains on forces; 1/r descriptor stiffness remains]
+  → SGDMLModel .pkl  [38000 cm⁻¹ C-H modes — not physical]
+  → ir_md_spectrum.py --sgdml-model (missing C-H stretch region in IR)
 ```
 
 ### PSI4 Interface
@@ -192,12 +284,90 @@ All code has a mock-calculation fallback for testing without PSI4.
 
 ## Key Design Decisions
 
+- **MACE is the preferred backend**: Both Coulomb+KRR and sGDML share the same root pathology — 1/r-based descriptors have intrinsically stiff second derivatives under RBF/Matérn kernels, producing C-H modes at 10,000–38,000 cm⁻¹ instead of ~3,000 cm⁻¹. This cannot be fixed by hyperparameter tuning (confirmed: analytic and FD Hessians give identical wrong answers; sig sweeps in sGDML make no difference). MACE (`modules/mace_pes.py`) uses local atomic energy decomposition + SO(3) equivariance + force-weighted training, which gives physically correct Hessian curvature by design. Train with `train_mace_model.py`; validate with `validate_pes_frequencies.py --mace-model`.
+- **MACE architecture for MVKO**: `hidden_irreps='64x0e + 64x1o'`, `r_max=5.0 Å`, 2 interaction layers, `forces_weight=100`, float64, SWA. Requires: `mace-torch >= 0.3.4`, `ase`. Training runs `mace_run_train` via subprocess (MACE CLI). MPS backend (Apple Silicon) auto-selected. Best checkpoint: `mace_model_run-0_stagetwo.pt` (SWA) > `_run-0.pt` (best epoch).
+- **MACE companion file**: `MACEDriver` requires a `.symbols.pkl` file alongside the `.pt` model (saves atom ordering). `train_mace_model.py` writes `mace_model.symbols.pkl` automatically. Without it, pass `symbols=` explicitly to `MACEDriver(model_path, symbols=[...])`.
+- **MACE delta-ML composability**: `MACEDriver` implements the same bakken interface as `MLPESDriver` and `SGDMLDriver`. It can be wrapped with `NMDeltaDriver` for the CASSCF δ_S0 correction without any changes: `NMDeltaDriver(MACEDriver(mace_pt), nm_delta_model_path)`. Use `--mace-model` + `--nm-delta-model` in `ir_md_spectrum.py`.
+- **sGDML failure modes (documented for reference)**: (1) Training data incoherence — sGDML assumes single-trajectory MD17-style data; multi-T + NM-displacement data violates this, giving 89× force-integral mismatch. (2) Kernel memory — (n_train × 3N)²: n_train=900, 3N=36 → 23.5 GB; must cap at ~300 frames. (3) Descriptor stiffness — same 1/r second derivatives as Coulomb+KRR appear regardless of training setup.
+- **sGDML vs Coulomb+KRR**: Both produce C-H modes at 10,000–38,000 cm⁻¹. sGDML uses Matérn 5/2 on inverse-distances (66 elements for 12-atom molecule); Coulomb uses RBF on upper-triangle Coulomb matrix (78 elements). Neither can produce physical Hessian — use MACE.
+- **sGDML delta-ML (legacy)**: `SGDMLDriver` implements the same interface as `MLPESDriver` and can be wrapped with delta-ML drivers. Use `--sgdml-model` + `--nm-delta-model` in `ir_md_spectrum.py`.
 - **Force training disabled**: `MLPESConfig.train_forces = False` by default. Enabling it breaks the KRR model. Forces should be predicted via finite differences on the ML-PES energy surface or via a separate force model.
 - **StandardScaler is critical**: The ML-PES uses `StandardScaler` on both features and targets. Without it, RMSE degrades from ~0.04 kcal/mol to ~170 kcal/mol. See `modules/ml_pes_fixed.py` for the authoritative implementation.
 - **Coulomb matrix descriptor**: Simple upper-triangle of `Z_i*Z_j/r_ij` (off-diagonal) and `0.5*Z_i^2.4` (diagonal). Robust but not permutation-invariant — atom ordering must be consistent.
 - **Dipole surface separate from energy surface**: `DipoleSurface` in `ir_spectroscopy.py` is a separate KRR model predicting 3-component dipole vectors. The energy `MLPESTrainer` only predicts scalar energy.
 - **Mock PSI4 fallback**: All direct MD functions detect PSI4 absence and return physically plausible mock values for testing.
 - **CRITICAL — PSI4 version consistency**: ALL training data, NM displacement energies, and validation energies must be computed with the SAME PSI4 installation. The Dec 2025 training data gave energies ~8.5 kcal/mol lower than PSI4 1.10 (current). Mixing data from different PSI4 versions causes systematic offsets that make ML-PES validation fail catastrophically (15–40 kcal/mol errors). When starting fresh or after PSI4 upgrades, regenerate ALL training data with the current PSI4. The safe pipeline is: `generate_nm_training.py` (NM + PSI4 MD, all fresh) → `two_phase_workflow.py` (validation).
+
+## Environment Patches Required (MACE 0.3.15 + PyTorch 2.2.2 + macOS)
+
+Three bugs must be patched every time `mace-torch`, `torch`, or `numpy` are reinstalled.
+These affect the conda environment `jupyterenv` on this machine.
+
+### 1 — NumPy mixed 1.x/2.x installation
+
+**Symptom**: `ImportError: cannot import name 'ERR_IGNORE' from 'numpy.core.umath'`
+when running `mace_run_train`.
+
+**Cause**: Conda installed numpy 1.x files in `numpy/core/` (notably `_ufunc_config.py`
+and `_methods.py`); `pip install numpy==2.2.6` updated `numpy/_core/` but left the 1.x
+shim files in place. The stale `_ufunc_config.py` imports `ERR_IGNORE` which was removed
+from the public API in numpy 2.0.
+
+**Fix**:
+```bash
+pip install "numpy<2.0"   # installs 1.26.4 — internally consistent
+```
+
+### 2 — `torch.compiler.is_compiling` absent in PyTorch 2.2.2
+
+**Symptom**: `AttributeError: module 'torch.compiler' has no attribute 'is_compiling'`
+at first validation step during `mace_run_train`.
+
+**Cause**: `torch.compiler.is_compiling()` was added in PyTorch 2.3. PyTorch 2.2 has
+the equivalent at `torch._dynamo.is_compiling()`.
+
+**Fix** — patch `mace/modules/utils.py` line 604:
+```python
+# Replace:
+if not torch.compiler.is_compiling():
+
+# With:
+_is_compiling = getattr(getattr(torch, 'compiler', None), 'is_compiling', None) \
+    or getattr(getattr(torch, '_dynamo', None), 'is_compiling', lambda: False)
+if not _is_compiling():
+```
+
+Location: `$(python3 -c "import mace.modules.utils as m; print(m.__file__)")`
+
+### 3 — MPS backend rejects float64 in MACE forward pass
+
+**Symptom**: `TypeError: Cannot convert a MPS Tensor to float64 dtype as the MPS
+framework doesn't support float64.` in `mace/modules/models.py:580`.
+
+**Cause**: MACE hardcodes `.double()` in `MACE.forward()` to accumulate node energies
+with float64 precision. Apple Silicon MPS has no float64 support at all.
+
+**Fix** — patch `mace/modules/models.py` line 580:
+```python
+# Replace:
+node_energy = node_e0.clone().double() + node_inter_es.clone().double()
+
+# With (dtype-preserving — float32 on MPS, float64 on CPU):
+node_energy = node_e0.clone().to(node_inter_es.dtype) + node_inter_es.clone()
+```
+
+Location: `$(python3 -c "import mace.modules.models as m; print(m.__file__)")`
+
+**Note on MPS vs CPU performance**: Despite the float32 patch, CPU is faster than MPS
+for this workload (~47 s/epoch vs ~75 s/epoch) because MACE scatter operations and
+small batch sizes (10 molecules) do not amortise MPS dispatch overhead. `train_mace_model.py`
+defaults to `--device cpu` until a larger batch size or PyTorch 2.3+ resolves this.
+
+### Resolving all three permanently
+
+Upgrading to `torch>=2.3` fixes patches 2 and 3. Upgrading to a clean conda/pip numpy
+(not a mixed install) fixes patch 1. Until then, these three patches are applied to the
+installed `mace-torch` package files.
 
 ## Planned Features (In Progress / Next Steps)
 
