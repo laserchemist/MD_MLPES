@@ -117,18 +117,91 @@ Using B3LYP dipole surface (150 frames, R²=0.981 test). Expected: C-H stretch p
 near 3100 cm⁻¹ for the first time in this project. Previous short runs (2000–3000 steps)
 only showed torsional modes < 550 cm⁻¹ because trajectory was too short.
 
+### NM-PES v2 IR: Tight Bond Wall Run Completed
+
+A second run with tighter bond confinement (wall at 1.15×, k=15 Ha/Å²) was completed:
+
+```bash
+python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.0 \
+    --nm-pes-bond-wall-factor 1.15 --nm-pes-bond-wall-stiffness 15.0 \
+    --output-dir outputs/ir_spectrum_NM_PES_delta_300K_v2
+```
+
+**Bond confinement confirmed** (all 5 trajectories):
+
+| Bond | Max extension | Factor |
+|------|--------------|--------|
+| C1-O1 (Criegee) | 1.49 Å | 1.15× |
+| O1-O2 | 1.57 Å | 1.16× |
+
+**ACF spectrum — C-H region:**
+
+| Peak (cm⁻¹) | Rel. intensity | Note |
+|-------------|---------------|------|
+| 2515, 2531  | 0.49, 1.00    | Red-shifted from Hessian 3049 cm⁻¹ |
+| 2751        | 0.91          | Red-shifted from Hessian ~3100 cm⁻¹ |
+| 3316, 3328  | 0.31, 0.11    | ✓ matches NM Hessian 3323 cm⁻¹ |
+
+**C-H / mid-range power ratio: 2.7%** — C-H signal is present but weak vs torsional modes.
+
+**Low-frequency ACF**: dominant peaks at 35–65 cm⁻¹ (Hessian lowest mode: 124.8 cm⁻¹).
+This is anharmonic torsional/conformational sampling, not dipole drift (bonds are confined).
+The MD effective torsional frequency is ~35 cm⁻¹ vs harmonic 125 cm⁻¹ — a large anharmonic
+softening consistent with the MVKO methyl/vinyl torsional potential.
+
+### Root Cause: Dipole Surface Has No C-H Sensitivity
+
+The dipole surface was trained on 150 frames from `outputs/mvko_dipoles_20260319_171335/`
+which were sampled from old Coulomb+KRR MD trajectories. Those trajectories never sampled
+C-H vibrations (C-H modes at 15,000 cm⁻¹ in Coulomb+KRR → no C-H displacement in frames).
+
+Result: the dipole surface has essentially zero ∂μ/∂q_CH sensitivity. The C-H peaks we do
+see (2515–2751 cm⁻¹) arise from cross-correlation with backbone modes. The correct peak
+positions should appear once the dipole surface is retrained on C-H-displaced geometries.
+
+Additionally, the ~300–550 cm⁻¹ red-shift of the C-H peaks likely reflects the NM-PES v2
+LOO-CV RMSE of 1.21 kcal/mol — at ZPE amplitude (~4.3 kcal/mol for a 3050 cm⁻¹ mode) a
+1.2 kcal/mol RMSE implies ~30% curvature error → ~500 cm⁻¹ frequency underestimate.
+The highest C-H mode (3323 cm⁻¹) appears at the correct frequency, suggesting the v2 model
+is accurate in the most harmonic C-H direction but softer along others.
+
+### Fix: Retrain Dipole Surface with C-H-Displaced Frames
+
+`collect_ch_displaced_dipoles.py` (new script) selects frames biased toward large |ΔrCH|
+from the NM-PES v2 MD trajectories, runs PSI4 B3LYP/6-31G* dipoles, and merges with the
+existing 150-frame dataset.
+
+**Frame selection** (5000-frame pool, stride=30 from 150k-frame v2 trajectories):
+- C-H bonds in pool: 1.04–1.35 Å (vs 1.09 Å equilibrium)
+- 120 new frames: 72 large-|ΔrCH| (≥75th pctile) + 24 middle + 24 near-eq
+- All deduplicated against existing 150 frames (RMSD > 0.025 Å)
+
+**Collection command** (PID 18316, launched 2026-04-20):
+```bash
+python3 collect_ch_displaced_dipoles.py \
+    --n-new 120 --stride 30 \
+    --output outputs/mvko_dipoles_ch_v2_20260420/training_with_dipoles.npz
+```
+
+Expected output: `outputs/mvko_dipoles_ch_v2_20260420/training_with_dipoles.npz`
+(270 total frames = 150 existing + 120 new)
+
 ### Next Steps
 
-1. **IR result** (check `outputs/ir_spectrum_NM_PES_delta_300K/`): look for C-H peak at ~3100 cm⁻¹
-   and O-O stretch near 893 cm⁻¹ (consistent with the base MVKO result)
-2. **MACE large model**: let Stage 2 complete at epoch 450+; validate frequencies; if C-H is
-   still unphysical, use NM-KRR as the production near-equilibrium model
-3. **CASSCF delta-ML**: add `--nm-delta-model` to the IR command once the base IR is validated
-   (both `NMPESDriver` and `MACEDriver` implement the same bakken interface → composable)
-4. **Multi-state family**: `NMPESDriver` can serve as the S0 surface; CASSCF δ-S0 correction
-   goes on top; S1/T1 gap models added for surface hopping
-5. **Fix validate_pes_frequencies.py**: update FAIL message to distinguish MACE data-coverage
-   failure from Coulomb descriptor stiffness
+1. **Dipole collection** (running): once complete (~60 min), run new IR spectrum with
+   the 270-frame combined dipole dataset
+2. **Expected improvement**: C-H peaks should appear at 3060–3343 cm⁻¹ (matching Hessian)
+   once the dipole surface has ∂μ/∂q_CH sensitivity from the stretched-geometry frames
+3. **NM-PES LOO-CV improvement**: if C-H peaks are still red-shifted after dipole retraining,
+   the NM-PES v2 curvature along low-C-H modes needs more training data; use
+   `generate_ch_adaptive_training.py` to add near-wall PSI4 frames specifically for C-H modes
+4. **CASSCF delta-ML**: add `--nm-delta-model` to the IR command once the base IR is validated
+5. **Multi-state family**: `NMPESDriver` on S0; CASSCF δ-S0 + S1/T1 gaps for surface hopping
 
 ---
 
