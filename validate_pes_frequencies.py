@@ -353,10 +353,16 @@ def main():
     if n_imaginary == 0 and n_unphysical == 0:
         print(f"  PASS: No imaginary or unphysical modes — PES curvature is physical.")
     elif n_unphysical > 0:
-        print(f"  FAIL: {n_unphysical} unphysical modes (>5000 cm⁻¹) — "
-              f"descriptor stiffness artifact (Coulomb+KRR or sGDML).")
-        print(f"        Switch to MACE: python3 train_mace_model.py \\")
-        print(f"            --training-data {args.training_data} --output-dir outputs/mace_{ts}")
+        if driver_type == 'MACE':
+            print(f"  FAIL: {n_unphysical} unphysical modes (>5000 cm⁻¹) — "
+                  f"training data coverage issue (MACE C-H curvature requires large-amplitude")
+            print(f"        C-H frames; 15 kcal/mol energy cutoff may remove them).")
+            print(f"        Try: wider energy cutoff, more C-H stretch data, or NM-KRR backend.")
+        else:
+            print(f"  FAIL: {n_unphysical} unphysical modes (>5000 cm⁻¹) — "
+                  f"descriptor stiffness artifact (Coulomb+KRR or sGDML).")
+            print(f"        Switch to MACE: python3 train_mace_model.py \\")
+            print(f"            --training-data {args.training_data} --output-dir outputs/mace_{ts}")
     elif n_imaginary > 0:
         print(f"  WARN: {n_imaginary} imaginary modes — ML-PES minimum is a saddle point.")
         print(f"        Check training data coverage near equilibrium.")

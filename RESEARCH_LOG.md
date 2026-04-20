@@ -2,6 +2,136 @@
 
 ---
 
+## 2026-04-20 — NM-Coordinate KRR Breakthrough; MACE CH-Retraining Concluded; IR Run Launched
+
+### Summary
+
+Two parallel C-H frequency fix strategies were evaluated and concluded:
+
+| Approach | C-H frequencies | Status |
+|----------|----------------|--------|
+| MACE CH-retrained (4 variants) | 4351–5125 cm⁻¹ (1.4× too high) | **All FAIL** |
+| NM-coordinate KRR v2 (`nm_pes.py`) | **3060–3343 cm⁻¹** ✓ | **Physical** |
+| MACE large (128x0e+128x1o, running) | TBD — Stage 2 at epoch 450 | Pending |
+
+The NM-KRR approach is producing physical C-H frequencies for the first time. A 30k-step
+ZPE-initialized IR spectrum run is now in progress using the NM-PES v2 model.
+
+### MACE CH-Retraining: Why All Four Variants Failed
+
+Four CH-retraining strategies were tested, all producing unphysical C-H modes:
+
+| Run | Frames | Energy cutoff | C-H modes (cm⁻¹) | Verdict |
+|-----|--------|---------------|-------------------|---------|
+| `mace_wB97X_20260417` (base) | 900 | 50 kcal/mol | 2740–4598 (1 imag) | FAIL |
+| `mace_wB97X_ch_fine_20260418` | 1016 | 50 kcal/mol | 5546 max (2 imag) | FAIL |
+| `mace_wB97X_ch_adaptive_20260418` | 1109 | 50 kcal/mol | 5853 max | FAIL |
+| `mace_wB97X_ch_medium_20260418` | 580 | 15 kcal/mol | not validated | — |
+| `mace_wB97X_ch_1p5_20260419` | 529 | 15 kcal/mol | 4351–5125 (0 imag) | FAIL |
+
+**Root cause of MACE C-H failure**: The 15 kcal/mol energy cutoff removes the large-amplitude
+C-H geometries from the CASSCF NM grid that define the correct repulsive wall curvature.
+Without them, MACE fits a too-steep harmonic approximation from near-equilibrium data only,
+giving C-H frequencies ~45% too high (4500 vs 3100 cm⁻¹). The broader 50 kcal/mol cutoff
+partly mitigates this but the base model still has 1 imaginary mode and one C-H above the
+5000 cm⁻¹ threshold.
+
+**Note on the FAIL assessment message**: `validate_pes_frequencies.py` prints a message about
+"descriptor stiffness (Coulomb+KRR or sGDML)" for any FAIL — this message is wrong for MACE
+models (the cause is data coverage, not descriptor stiffness). The assessment logic in
+`validate_pes_frequencies.py` should be updated to distinguish MACE failures.
+
+### MACE Large Model: Plateau Observed
+
+`mace_wB97X_large_20260419` uses doubled architecture (128x0e+128x1o vs 64x0e+64x1o):
+
+- **Stage 1 plateau** (epoch 120–240): RMSE_E ≈ 22 meV/atom, RMSE_F ≈ 61 meV/Å — no improvement
+- Stage 2 fires at epoch 450 (lr: 0.01→0.001, energy_weight: 1→1000)
+- Training on 529 frames with 15 kcal/mol cutoff — same data limitation as ch_1p5
+- May improve in Stage 2 but unlikely to fix C-H frequencies without better training coverage
+
+### NM-KRR (`modules/nm_pes.py`): Physical C-H Frequencies Achieved
+
+The `NMKRRPESModel` uses normal-mode coordinates `q = U_vib^T · M^{1/2} · (R − R_eq)` as
+the KRR descriptor, replacing the Coulomb matrix entirely.
+
+**Model comparison:**
+
+| Model | Frames | γ | α | coord_scale | LOO-CV | n_imag | C-H (cm⁻¹) |
+|-------|--------|---|---|-------------|--------|--------|------------|
+| `wB97X_nm_model_v2` | 999 | 0.2 | 1e-5 | ✓ thermal | 1.21 | 0 (noise) | **3060–3343** |
+| `wB97X_nm_model_v3` | 290 | 0.3 | 1e-6 | ✗ | 0.79 | 1 (−203) | 3056–3280 |
+| `wB97X_nm_model_v4` | 436 | 0.2 | 1e-7 | ✗ | 0.62 | 1 (−160) | 3002–3326 |
+
+**v2 selected** for IR run: zero real imaginary modes, physically correct C-H frequencies,
+and 999 frames provides the most complete near-equilibrium coverage.
+
+### Root Cause: `coord_scale` Is Critical for Positive-Definite Hessian
+
+The NM-KRR Hessian at the reference equilibrium (q=0) is:
+
+```
+H_q(0) = Σ_i β_i K(0, q_i) [4γ² q_i q_i^T − 2γ I]
+```
+
+Without `coord_scale`, the raw NM amplitudes span 0.06–1.88 √(amu)·Bohr across modes.
+Low-frequency torsional modes have large amplitudes (up to ~4 √(amu)·Bohr in training data),
+making their 4γ²qᵢqᵢᵀ outer-product contribution dominate the −2γI diagonal term for the
+corresponding mode → one Hessian eigenvalue goes negative → imaginary mode at −160 to −203 cm⁻¹.
+
+**Fix** (`coord_scale = thermal amplitudes`): divide each mode's coordinate by
+`a_therm(T) = √(2k_BT/λ_k)` before computing the RBF kernel. This equalizes all modes in
+kernel space (scaled std: 0.28–7.27) and the equilibrium Hessian becomes strictly positive-
+definite (min eigenvalue = +0.0012 for v2 vs −0.006 to −0.008 for v3/v4).
+
+**Rule**: Always set `coord_scale = thermal_amplitudes` in `NMKRRPESModel`. The v3/v4 models
+are not suitable for ZPE-floor IR spectra because the pre-minimizer will find the saddle point.
+
+### Why NM-KRR Succeeds Where Coulomb+KRR Failed
+
+| Property | Coulomb+KRR | NM-KRR (v2) |
+|----------|-------------|-------------|
+| Descriptor | Upper-triangle of Z_i Z_j/r_ij | q = U_vib^T M^{1/2} (R−R_eq) |
+| ∂²descriptor/∂R² | ~1/r³ (stiff near bond lengths) | Linear in R (Jacobian J is constant) |
+| Hessian at eq | 5–30 unphysical modes, C-H > 10,000 cm⁻¹ | 0 unphysical, C-H = 3060–3343 cm⁻¹ |
+| Extrapolation | Flat (descriptor saturates at r→∞) | Harmonic wall added (prevents escape) |
+| LOO-CV RMSE | 0.27–0.31 kcal/mol | 1.21 kcal/mol (more data needed) |
+
+The constant Jacobian J = U_vib · diag(√m) · Å→Bohr means that ∂²E/∂R² = J^T · H_q · J,
+and H_q is well-conditioned near equilibrium by design (symmetric ± training data + coord_scale).
+
+### IR Spectrum Run: In Progress
+
+**Command** (PID 9297, started 2026-04-20):
+```bash
+python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.0 \
+    --output-dir outputs/ir_spectrum_NM_PES_delta_300K
+```
+
+Using B3LYP dipole surface (150 frames, R²=0.981 test). Expected: C-H stretch peak
+near 3100 cm⁻¹ for the first time in this project. Previous short runs (2000–3000 steps)
+only showed torsional modes < 550 cm⁻¹ because trajectory was too short.
+
+### Next Steps
+
+1. **IR result** (check `outputs/ir_spectrum_NM_PES_delta_300K/`): look for C-H peak at ~3100 cm⁻¹
+   and O-O stretch near 893 cm⁻¹ (consistent with the base MVKO result)
+2. **MACE large model**: let Stage 2 complete at epoch 450+; validate frequencies; if C-H is
+   still unphysical, use NM-KRR as the production near-equilibrium model
+3. **CASSCF delta-ML**: add `--nm-delta-model` to the IR command once the base IR is validated
+   (both `NMPESDriver` and `MACEDriver` implement the same bakken interface → composable)
+4. **Multi-state family**: `NMPESDriver` can serve as the S0 surface; CASSCF δ-S0 correction
+   goes on top; S1/T1 gap models added for surface hopping
+5. **Fix validate_pes_frequencies.py**: update FAIL message to distinguish MACE data-coverage
+   failure from Coulomb descriptor stiffness
+
+---
+
 ## 2026-04-17 — Root Cause of IR Failures Confirmed; MACE Backend Implemented; Training Running
 
 ### Root cause: 1/r descriptor stiffness is intrinsic, not fixable by tuning

@@ -82,12 +82,14 @@ class MACEDriver:
     symbols : list of str
         Atomic symbols in consistent order (same as training data).
     device : str
-        'auto' (default) uses MPS on Apple Silicon, CUDA if available, else CPU.
+        'cpu' (default — float64 models cannot load on MPS; CPU also faster for
+        small-molecule batches). Pass 'cuda' for GPU inference on CUDA hardware.
+        'auto' selects MPS/CUDA/CPU but will fail for float64 models on Apple Silicon.
     """
 
     def __init__(self, model_path: str,
                  symbols: Optional[List[str]] = None,
-                 device: str = 'auto'):
+                 device: str = 'cpu'):
         from mace.calculators import MACECalculator
 
         self.model_path = str(model_path)

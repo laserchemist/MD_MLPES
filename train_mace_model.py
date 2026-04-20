@@ -101,20 +101,29 @@ def find_best_checkpoint(results_dir: Path, model_name: str) -> Path | None:
     """
     Locate the best MACE checkpoint in results_dir.
 
-    mace_run_train writes:
-      <results_dir>/<model_name>_run-0_epoch-<N>.pt  (intermediate)
-      <results_dir>/<model_name>_run-0_stagetwo.pt   (SWA final, preferred)
-      <results_dir>/<model_name>_run-0.pt             (best epoch without SWA)
+    mace_run_train naming conventions (vary by version):
+      Old (<= 0.3.10):  <model>_run-0_stagetwo.pt / _run-0.pt / _run-0_epoch-N.pt
+      New (>= 0.3.11):  <model>_run-{seed}_stagetwo.model / _run-{seed}.model
+    Try both .pt and .model extensions; any run number (glob).
+    Priority: SWA stagetwo > best-epoch > latest swa epoch checkpoint.
     """
-    candidates = [
-        results_dir / f'{model_name}_run-0_stagetwo.pt',
-        results_dir / f'{model_name}_run-0.pt',
-    ]
-    for c in candidates:
-        if c.exists():
-            return c
-    # Fall back: latest epoch checkpoint
-    epoch_ckpts = sorted(results_dir.glob(f'{model_name}_run-0_epoch-*.pt'))
+    for ext in ('pt', 'model'):
+        # SWA final (highest priority)
+        swa = sorted(results_dir.glob(f'{model_name}_run-*_stagetwo.{ext}'))
+        if swa:
+            return swa[-1]
+        # Best epoch checkpoint
+        best = sorted(results_dir.glob(f'{model_name}_run-*.{ext}'))
+        # Exclude epoch and swa checkpoints
+        best = [p for p in best if 'epoch' not in p.name and 'stagetwo' not in p.name]
+        if best:
+            return best[-1]
+    # Fall back: latest SWA epoch checkpoint (any extension)
+    epoch_ckpts = sorted(results_dir.glob(f'{model_name}_run-*_epoch-*_swa.*'))
+    if epoch_ckpts:
+        return epoch_ckpts[-1]
+    # Last resort: any epoch checkpoint
+    epoch_ckpts = sorted(results_dir.glob(f'{model_name}_run-*_epoch-*.*'))
     if epoch_ckpts:
         return epoch_ckpts[-1]
     return None
