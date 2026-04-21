@@ -1,14 +1,26 @@
 """
-Collect PSI4 B3LYP/6-31G* dipoles for frames with large C-H displacement,
-sampled from NM-PES MD trajectories.  Merges with an existing dipole dataset
-and saves a combined training file for the dipole surface.
+Collect PSI4 B3LYP/6-31G* dipoles for frames with large displacement along
+specified bonds, sampled from NM-PES MD trajectories.  Merges with an existing
+dipole dataset and saves a combined training file for the dipole surface.
+
+MVKO atom ordering (0-indexed): C0 O1 O2 C3 C4 C5 H6 H7 H8 H9 H10 H11
+  C-H pairs:       3,6  4,7  4,8  5,9  5,10  5,11
+  O-O / C-O / C=C: 1,2  0,1  3,4
 
 Usage:
+    # C-H displaced frames (default):
     python3 collect_ch_displaced_dipoles.py \
-        --traj-dir      outputs/ir_spectrum_NM_PES_delta_300K_v2 \
-        --existing      outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
-        --n-new  120 \
-        --output outputs/mvko_dipoles_ch_v2_YYYYMMDD/training_with_dipoles.npz
+        --traj-dir outputs/ir_spectrum_NM_PES_delta_300K_v2 \
+        --existing outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+        --n-new 120
+
+    # O-O + C-O + C=C backbone frames:
+    python3 collect_ch_displaced_dipoles.py \
+        --traj-dir outputs/ir_spectrum_NM_PES_delta_300K_v2 \
+        --existing outputs/mvko_dipoles_ch_v2_20260420/training_with_dipoles.npz \
+        --bond-targets "1,2 0,1 3,4" \
+        --n-new 90 --output outputs/mvko_dipoles_backbone_YYYYMMDD/training_with_dipoles.npz
+
     # Dry-run (no PSI4):
         python3 collect_ch_displaced_dipoles.py --dry-run ...
 """
@@ -39,15 +51,15 @@ AU_TO_DEBYE  = 2.541746
 
 # MVKO atom ordering: C O O C C C H H H H H H  (indices 0-11)
 # C-H bond pairs (0-indexed): vinyl-C2-H, vinyl=CH2 x2, methyl x3
-CH_PAIRS = [(3, 6), (4, 7), (4, 8), (5, 9), (5, 10), (5, 11)]
-CH_EQ_MEAN = 1.090  # Å — mean equilibrium C-H from PSI4 min
+CH_PAIRS       = [(3, 6), (4, 7), (4, 8), (5, 9), (5, 10), (5, 11)]
+BACKBONE_PAIRS = [(1, 2), (0, 1), (3, 4)]   # O-O, C1-O1, C2=C3
 
-# Sampling fractions by |ΔrCH| tier
-FRAC_LARGE  = 0.60   # top quartile of |ΔrCH|
+# Sampling fractions by |Δr| tier
+FRAC_LARGE  = 0.60   # top quartile
 FRAC_MIDDLE = 0.20   # 25–75th percentile
 FRAC_NEAR   = 0.20   # bottom quartile (near-eq coverage)
 
-DEDUP_RMSD  = 0.025  # Å — reject new frame if within this RMSD of any existing frame
+DEDUP_RMSD  = 0.025  # Å — reject if within this RMSD of any existing frame
 
 
 def _psi4_setup():
@@ -113,12 +125,20 @@ def read_xyz_trajectory(path, stride=1):
     return symbols, np.array(frames_coords, dtype=np.float64)
 
 
-def max_ch_displacement(coords_array, ch_eq=CH_EQ_MEAN):
-    """Return max |ΔrCH| across all C-H pairs for each frame."""
+def equilibrium_lengths(coords_array, pairs):
+    """Estimate equilibrium bond lengths as median across all pool frames."""
+    return {(i, j): np.median(np.linalg.norm(coords_array[:, i] - coords_array[:, j], axis=-1))
+            for i, j in pairs}
+
+
+def max_bond_displacement(coords_array, pairs, eq_lens=None):
+    """Return max |Δr| across all specified pairs for each frame."""
+    if eq_lens is None:
+        eq_lens = equilibrium_lengths(coords_array, pairs)
     disps = np.zeros(len(coords_array))
-    for i, j in CH_PAIRS:
+    for i, j in pairs:
         r = np.linalg.norm(coords_array[:, i] - coords_array[:, j], axis=-1)
-        disps = np.maximum(disps, np.abs(r - ch_eq))
+        disps = np.maximum(disps, np.abs(r - eq_lens[(i, j)]))
     return disps
 
 
@@ -130,12 +150,13 @@ def rmsd_to_set(coords, ref_set):
     return np.sqrt((diffs ** 2).sum(axis=(1, 2)) / diffs.shape[1]).min()
 
 
-def select_frames(coords_pool, n_new, rng, existing_coords=None):
+def select_frames(coords_pool, n_new, rng, pairs, existing_coords=None):
     """
-    Stratified selection biased toward large |ΔrCH|.
+    Stratified selection biased toward large |Δr| along target bond pairs.
     Returns indices into coords_pool.
     """
-    disps = max_ch_displacement(coords_pool)
+    eq_lens = equilibrium_lengths(coords_pool, pairs)
+    disps = max_bond_displacement(coords_pool, pairs, eq_lens)
     N = len(coords_pool)
 
     q75 = np.percentile(disps, 75)
@@ -181,7 +202,8 @@ def select_frames(coords_pool, n_new, rng, existing_coords=None):
                 keep.append(idx)
         sel = np.array(keep, dtype=int)
 
-    print(f"  |ΔrCH| range in pool: {disps.min():.4f}–{disps.max():.4f} Å  "
+    pair_labels = '+'.join(f'({i},{j})' for i, j in pairs)
+    print(f"  |Δr| range [{pair_labels}]: {disps.min():.4f}–{disps.max():.4f} Å  "
           f"q25={q25:.4f} q75={q75:.4f}")
     print(f"  Tier counts after dedup — large: {(large_mask[sel]).sum()}  "
           f"middle: {(middle_mask[sel]).sum()}  near: {(near_mask[sel]).sum()}")
@@ -200,12 +222,25 @@ def main():
     parser.add_argument('--stride',    type=int, default=30,
                         help='Read every Nth frame from each trajectory (default 30)')
     parser.add_argument('--output',    default=None)
+    parser.add_argument('--bond-targets', default=None,
+                        help='Space-separated bond pairs as "i,j" (0-indexed). '
+                             'Default: C-H pairs. Backbone example: "1,2 0,1 3,4"')
     parser.add_argument('--dry-run',   action='store_true',
                         help='Select frames and print stats without running PSI4')
     args = parser.parse_args()
 
     if not args.dry_run and not PSI4_AVAILABLE:
         sys.exit("PSI4 required (or use --dry-run)")
+
+    # Parse bond targets
+    if args.bond_targets is None:
+        target_pairs = CH_PAIRS
+        target_label = 'C-H'
+    else:
+        target_pairs = [tuple(int(x) for x in tok.split(','))
+                        for tok in args.bond_targets.split()]
+        target_label = '+'.join(f'({i},{j})' for i, j in target_pairs)
+    print(f"Bond targets: {target_label}  ({len(target_pairs)} pairs)")
 
     rng = np.random.default_rng(42)
 
@@ -238,15 +273,18 @@ def main():
     pool_coords = np.concatenate(pool_coords, axis=0)
     print(f"  Pool total: {len(pool_coords)} frames")
 
-    # ── Select C-H-displacement-biased frames ─────────────────────────────────
-    print(f"\nSelecting {args.n_new} new frames (C-H-displacement-biased)…")
-    sel_idx = select_frames(pool_coords, args.n_new, rng, existing_coords=ex_coords)
+    # ── Select displacement-biased frames ─────────────────────────────────────
+    print(f"\nSelecting {args.n_new} new frames (biased toward large |Δr| for {target_label})…")
+    sel_idx = select_frames(pool_coords, args.n_new, rng,
+                            pairs=target_pairs, existing_coords=ex_coords)
     new_coords = pool_coords[sel_idx]
 
-    # Print C-H bond stats for selected frames
-    for i, j in CH_PAIRS:
+    # Print bond stats for selected frames
+    eq_lens = equilibrium_lengths(pool_coords, target_pairs)
+    for i, j in target_pairs:
         r = np.linalg.norm(new_coords[:, i] - new_coords[:, j], axis=-1)
-        print(f"  C{i}-H{j} bond: {r.min():.4f}–{r.max():.4f} Å  mean={r.mean():.4f}")
+        print(f"  atom{i}-atom{j} bond: {r.min():.4f}–{r.max():.4f} Å  "
+              f"mean={r.mean():.4f}  eq≈{eq_lens[(i,j)]:.4f}")
 
     if args.dry_run:
         print("\n[dry-run] Skipping PSI4. Would compute dipoles for the frames above.")
@@ -305,7 +343,7 @@ def main():
                  'method': f'{PSI4_METHOD}/{PSI4_OPTIONS["basis"]}',
                  'traj_dir': str(args.traj_dir),
                  'stride': args.stride,
-                 'ch_eq_mean_ang': CH_EQ_MEAN,
+                 'bond_targets': target_label,
              })))
     print(f"\nSaved {len(merged_coords)} frames → {out_path}")
     mags = np.linalg.norm(merged_dipoles, axis=-1)
