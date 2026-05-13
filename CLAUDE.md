@@ -254,7 +254,8 @@ python3 recompute_dipoles_wB97X.py \
 - `data_formats.py` — `TrajectoryData` dataclass + multi-format I/O (xyz, extxyz, npz, hdf5)
 - `test_molecules.py` — Pre-optimized test molecule library (B3LYP/6-31G*)
 - `visualization.py` — Matplotlib-based trajectory and training plots
-- `ir_spectroscopy.py` — `DipoleSurface` and `IRSpectrumCalculator` (dipole ACF → IR spectrum)
+- `ir_spectroscopy.py` — `DipoleSurface` and `IRSpectrumCalculator` (dipole ACF → IR spectrum; Coulomb+KRR; R²≈0.91 ceiling due to Z(H)=1)
+- `nm_pes.py` — `NMKRRPESModel`, `NMPESDriver`, `NMDipoleSurface` (NM-coordinate KRR dipole surface with analytic ∂μ/∂q_k and auto coord_scale; C-H IR active by design; `load_dipole_surface()` for unified pkl loading)
 - `normal_modes.py` — Hessian via PSI4, normal mode diagonalization, NM-displaced geometry generation
 - `bakken.py` — **ML-MD engine** (Norwegian: "the hill"). `MLPESDriver` (energy + FD forces), `minimize_geometry` (adaptive steepest descent), `maxwell_boltzmann_velocities`, `zpe_initialized_velocities` (with frequency filter), `kinetic_temperature`, `run_md` (Velocity-Verlet + Berendsen). The canonical ML-MD engine for all IR spectrum workflows.
 - `uncertainty.py` — `CommitteeModel`: K=5 bootstrap KRR ensemble for epistemic uncertainty. `.train()`, `.batch_uncertainty()`, `.calibrate()`. Used by `adaptive_high_energy.py` to score candidate geometries.
@@ -548,8 +549,18 @@ Key finding: softer gamma reduces unphysical Hessian modes but causes worse IR s
 - GP active learning (`gp_dipole_coverage.py`): 2 rounds with diversity radius 3.0 reduced σ_mean from 0.524 D → 0.030 D
 - Use `recompute_dipoles_wB97X.py --resume` to regenerate/continue the base-150 recomputation
 
-**Dipole surface (best, wB97X-D 250 frames)**: γ=0.001, α=1e-4, R²=0.914 test
-- **NOTE**: R²=0.914 is a Coulomb+KRR γ ceiling, not a data quality issue. γ=0.001 was tuned for 150 near-eq frames; 250 diverse frames spanning |μ|=2.93–7.02 D need γ~0.0001. Re-tune γ after active learning for each new conformer.
+**Dipole surface (Coulomb+KRR, best, wB97X-D 250 frames)**: adaptive γ (median heuristic), R²=0.914 test
+- **NOTE**: R²=0.914 is a Coulomb descriptor ceiling — Z(H)=1 gives near-zero C-H stretch sensitivity. C-H modes have ∂μ/∂q_CH ≈ 0 in Coulomb space, so C-H stretch peaks are absent from the IR spectrum regardless of training data quality.
+
+**Dipole surface (NM-coordinate, new)**: `NMDipoleSurface` in `modules/nm_pes.py`
+- Uses NM coordinates q = U_vib^T M^{1/2}(R−R_eq) as descriptors — directly encodes each vibrational DOF
+- C-H stretch modes (25-30) have **non-zero ∂μ/∂q_CH** → C-H peaks CAN appear in the IR spectrum
+- Analytic derivatives via `dipole_derivatives()` → (3, n_vib) show which modes are IR active
+- With 250-frame wB97X-D training: R²=0.14 — limited by multi-conformer training data (training spans q₁ ∈ [-8,+10] but MD stays at q₁ ∈ [-2.4,-0.3])
+- **Auto coord_scale**: if PES model has unset coord_scale (all-ones), NMDipoleSurface auto-computes per-mode std from training data to equalize all modes in the kernel
+- **Key analytic result**: modes 25 (3049 cm⁻¹), 26 (3100 cm⁻¹), 28 (3165 cm⁻¹) are top IR-active modes by ∂μ/∂q_k at equilibrium — confirms C-H stretch IS IR active
+- **To improve R²**: train on conformer-matched data (restrict to same torsional well as target MD trajectory) or collect MD-trajectory dipoles directly
+- **Integration**: `ir_md_spectrum.py` automatically uses `NMDipoleSurface` when `--nm-pes-model` is specified (no flag needed)
 
 **IR spectrum**: `outputs/ir_spectrum_20260319_174321/` — 30,000 steps at 300 K
 | Peak (cm⁻¹) | Rel. Intensity | Assignment |

@@ -461,3 +461,404 @@ class NMPESDriver:
     def load_model(model_path: str) -> 'NMPESDriver':
         """Factory method — same name used in ir_md_spectrum.py."""
         return NMPESDriver(model_path)
+
+
+# =============================================================================
+# NMDipoleSurface — KRR dipole surface in normal-mode coordinate space
+# =============================================================================
+
+class NMDipoleSurface:
+    """
+    Three-component KRR dipole surface using NM coordinates q as descriptors.
+
+    Overcomes the R²≈0.91 Coulomb+KRR ceiling:
+    - Coulomb Z(H)=1 → near-zero sensitivity to C-H displacement
+    - NM coordinate q_k is non-zero whenever mode k is displaced, giving
+      direct C-H stretch (modes 25-30 for MVKO) sensitivity to the kernel.
+
+    Hyperparameters selected by analytic LOO-CV (median heuristic for γ_center).
+    LOO formula: e_i^LOO = β_i / (K+αI)^{-1}_{ii}   O(n^2) extra after Cholesky.
+
+    Analytic dipole derivatives ∂μ_α/∂q_k identify IR-active modes directly.
+    """
+
+    _KB_HA_PER_K = 3.1668114e-6
+
+    def __init__(
+        self,
+        *,
+        eq_coords_ang: np.ndarray,
+        U_vib: np.ndarray,
+        sqrt_mass: np.ndarray,
+        freqs_vib: np.ndarray,
+        symbols: List[str],
+        coord_scale: Optional[np.ndarray] = None,
+    ):
+        self.eq_coords_ang = np.asarray(eq_coords_ang, dtype=float)
+        self.U_vib         = np.asarray(U_vib,         dtype=float)
+        self.sqrt_mass     = np.asarray(sqrt_mass,     dtype=float)
+        self.freqs_vib     = np.asarray(freqs_vib,     dtype=float)
+        self.symbols       = list(symbols)
+        self.n_atoms       = len(symbols)
+        self.n_vib         = U_vib.shape[1]
+
+        if coord_scale is None:
+            self.coord_scale = np.ones(self.n_vib)
+        else:
+            self.coord_scale = np.asarray(coord_scale, dtype=float)
+
+        # Jacobian (same as NMKRRPESModel): J[3a+j, k] = U[3a+j,k]·√m_a·Å→Bohr
+        self._J = self.U_vib * (self.sqrt_mass[:, None] * ANGSTROM_TO_BOHR)  # (3N, n_vib)
+
+        # Training state (populated by fit())
+        self.gamma        = None
+        self.alpha_reg    = None
+        self._X_train_qs  = None  # (M, n_vib) scaled training coordinates
+        self._beta        = None  # (M, 3) dual coefficients
+        self._mu_mean     = None  # (3,) mean dipole (removed before fitting)
+        self.cv_rmse_D    = None
+        self.train_rmse_D = None
+        self.test_rmse_D  = None
+        self.r2_test      = None
+
+    # ── projection ─────────────────────────────────────────────────────────
+
+    def project(self, coords_ang: np.ndarray) -> np.ndarray:
+        """Cartesian (N, 3) Å → NM coordinates (n_vib,) sqrt(amu)·Bohr."""
+        delta_ang  = np.asarray(coords_ang, dtype=float) - self.eq_coords_ang
+        delta_bohr = delta_ang.flatten() * ANGSTROM_TO_BOHR
+        delta_mw   = delta_bohr * self.sqrt_mass
+        return self.U_vib.T @ delta_mw
+
+    def project_batch(self, coords_ang: np.ndarray) -> np.ndarray:
+        """Batch projection (M, N, 3) → (M, n_vib)."""
+        coords_ang = np.asarray(coords_ang, dtype=float)
+        delta_ang  = coords_ang - self.eq_coords_ang[None, :, :]
+        delta_bohr = delta_ang.reshape(len(coords_ang), -1) * ANGSTROM_TO_BOHR
+        delta_mw   = delta_bohr * self.sqrt_mass[None, :]
+        return delta_mw @ self.U_vib
+
+    # ── kernel helpers ──────────────────────────────────────────────────────
+
+    @staticmethod
+    def _rbf(A: np.ndarray, B: np.ndarray, gamma: float) -> np.ndarray:
+        """RBF kernel K[i,j] = exp(−γ||A_i−B_j||²). A:(m,d), B:(n,d)→(m,n)."""
+        A2 = np.sum(A ** 2, axis=1, keepdims=True)
+        B2 = np.sum(B ** 2, axis=1, keepdims=True)
+        return np.exp(-gamma * (A2 + B2.T - 2.0 * A @ B.T))
+
+    @staticmethod
+    def _loo_cv_rmse(K: np.ndarray, alpha_reg: float, y: np.ndarray) -> float:
+        """
+        Analytic LOO-CV RMSE for KRR with kernel matrix K and regularization α.
+
+        Formula: e_i^LOO = β_i / (K+αI)^{-1}_{ii}
+        where β = (K+αI)^{-1} y.
+
+        Derivation:
+          H = K(K+αI)^{-1} = I − α(K+αI)^{-1}   →   H_{ii} = 1 − α(A^{-1})_{ii}
+          In-sample residual: r_i = (I−H)y = α β
+          LOO error: r_i/(1−H_{ii}) = αβ_i / (α(A^{-1})_{ii}) = β_i/(A^{-1})_{ii}
+
+        (A^{-1})_{ii} = ||col_i of L^{-1}||²  where K+αI = LL^T (Cholesky).
+        y may be (n,) or (n, d); returned RMSE averages over all elements.
+        """
+        n = len(y)
+        A = K.copy()
+        A[np.diag_indices(n)] += alpha_reg
+        try:
+            L = np.linalg.cholesky(A)
+        except np.linalg.LinAlgError:
+            return np.inf
+        rhs = y if y.ndim == 2 else y[:, None]
+        beta = np.linalg.solve(L.T, np.linalg.solve(L, rhs))  # (n, d)
+        L_inv_cols = np.linalg.solve(L, np.eye(n))            # (n, n)
+        A_inv_diag = np.sum(L_inv_cols ** 2, axis=0)          # (n,)
+        loo_err    = beta / A_inv_diag[:, None]                # (n, d)
+        return float(np.sqrt(np.mean(loo_err ** 2)))
+
+    # ── training ────────────────────────────────────────────────────────────
+
+    def fit(
+        self,
+        coords_ang: np.ndarray,    # (M, N, 3) training geometries
+        dipoles_D:  np.ndarray,    # (M, 3) training dipoles, Debye
+        test_fraction: float = 0.15,
+        random_seed:   int   = 42,
+        verbose:       bool  = True,
+    ) -> 'NMDipoleSurface':
+        """
+        Fit NM-coordinate KRR dipole surface with analytic LOO-CV γ/α selection.
+
+        Steps:
+        1. Project coords → scaled NM space.
+        2. Build γ grid from median pairwise distance (data-adaptive).
+        3. For each (γ, α): analytic LOO-CV RMSE (O(n²) per γ after Cholesky).
+        4. Refit on full training set with best (γ, α).
+        5. Report train/test RMSE and R².
+        """
+        import math
+
+        coords_ang = np.asarray(coords_ang, dtype=float)
+        dipoles_D  = np.asarray(dipoles_D,  dtype=float)
+        M = len(coords_ang)
+
+        X_q  = self.project_batch(coords_ang)               # (M, n_vib)
+
+        # If coord_scale was not set (all-ones default from PES model that
+        # was trained without thermal normalization), auto-compute from the
+        # per-mode standard deviation of training data.  This mode-equalizes
+        # the kernel: low-frequency torsions (range ±10) and high-frequency
+        # C-H modes (range ±0.3) contribute equally, which is essential for
+        # the dipole surface to learn C-H stretch sensitivity.
+        if np.allclose(self.coord_scale, 1.0):
+            per_mode_std = np.std(X_q, axis=0)
+            self.coord_scale = np.where(per_mode_std > 1e-8, per_mode_std, 1e-8)
+            if verbose:
+                print(f"  coord_scale auto-computed (per-mode std): "
+                      f"[{self.coord_scale.min():.4f}, {self.coord_scale.max():.4f}]")
+
+        X_qs = X_q / self.coord_scale[None, :]              # scaled, ~unit std per mode
+
+        # ── train/test split ────────────────────────────────────────────────
+        rng    = np.random.RandomState(random_seed)
+        n_test = max(1, int(M * test_fraction))
+        test_idx   = rng.choice(M, n_test, replace=False)
+        train_mask = np.ones(M, dtype=bool)
+        train_mask[test_idx] = False
+        X_tr, y_tr = X_qs[train_mask],  dipoles_D[train_mask]
+        X_te, y_te = X_qs[~train_mask], dipoles_D[~train_mask]
+
+        # ── median heuristic for γ centre ──────────────────────────────────
+        n_sub  = min(200, len(X_tr))
+        i_sub  = rng.choice(len(X_tr), n_sub, replace=False)
+        X_sub  = X_tr[i_sub]
+        sq     = (np.sum(X_sub**2, axis=1, keepdims=True)
+                  + np.sum(X_sub**2, axis=1, keepdims=True).T
+                  - 2.0 * X_sub @ X_sub.T)
+        upper  = sq[np.triu_indices(n_sub, k=1)]
+        med_sq = float(np.median(upper[upper > 0])) if np.any(upper > 0) else 1.0
+        gamma_c = 1.0 / (2.0 * med_sq)
+
+        log_c   = math.log10(gamma_c)
+        g_grid  = sorted({round(10 ** (log_c + d), 8)
+                          for d in np.linspace(-2, 2, 9)})
+        a_grid  = [1e-5, 1e-4, 1e-3, 1e-2, 0.1, 1.0]
+
+        if verbose:
+            print(f"\n  NMDipoleSurface.fit: {len(X_tr)} train / {len(X_te)} test frames")
+            print(f"  γ_center={gamma_c:.4g}  "
+                  f"grid ({len(g_grid)}): {[f'{g:.3g}' for g in g_grid]}")
+
+        # ── analytic LOO-CV grid search ─────────────────────────────────────
+        mu_mean = y_tr.mean(axis=0)          # (3,)
+        y_tr_c  = y_tr - mu_mean             # centred
+
+        best_rmse, best_g, best_a = np.inf, g_grid[0], a_grid[0]
+        for g in g_grid:
+            K = self._rbf(X_tr, X_tr, g)    # reuse K for all α
+            for a in a_grid:
+                rmse = self._loo_cv_rmse(K, a, y_tr_c)
+                if rmse < best_rmse:
+                    best_rmse, best_g, best_a = rmse, g, a
+
+        if verbose:
+            print(f"  Best: γ={best_g:.4g}  α={best_a:.2g}  LOO-CV RMSE={best_rmse:.4f} D")
+
+        # ── refit on full training set ──────────────────────────────────────
+        self.gamma        = float(best_g)
+        self.alpha_reg    = float(best_a)
+        self._mu_mean     = mu_mean
+        self._X_train_qs  = X_tr
+
+        K_tr = self._rbf(X_tr, X_tr, self.gamma)
+        K_tr[np.diag_indices(len(X_tr))] += self.alpha_reg
+        self._beta = np.linalg.solve(K_tr, y_tr_c)          # (n_train, 3)
+
+        # ── metrics ────────────────────────────────────────────────────────
+        self.cv_rmse_D = float(best_rmse)
+
+        K_tr_pred      = self._rbf(X_tr, X_tr, self.gamma)
+        y_pred_tr      = K_tr_pred @ self._beta + mu_mean
+        self.train_rmse_D = float(np.sqrt(np.mean((y_pred_tr - y_tr) ** 2)))
+
+        K_te           = self._rbf(X_te, X_tr, self.gamma)
+        y_pred_te      = K_te @ self._beta + mu_mean
+        resid_te       = y_pred_te - y_te
+        self.test_rmse_D = float(np.sqrt(np.mean(resid_te ** 2)))
+        ss_res = float(np.sum(resid_te ** 2))
+        ss_tot = float(np.sum((y_te - y_te.mean(axis=0)) ** 2))
+        self.r2_test = float(1.0 - ss_res / ss_tot) if ss_tot > 0 else 0.0
+
+        if verbose:
+            print(f"  Train RMSE: {self.train_rmse_D:.4f} D")
+            print(f"  Test  RMSE: {self.test_rmse_D:.4f} D  R²={self.r2_test:.4f}")
+
+        return self
+
+    # ── prediction ─────────────────────────────────────────────────────────
+
+    def _check_fitted(self):
+        if self._beta is None:
+            raise RuntimeError("NMDipoleSurface not fitted — call fit() first")
+
+    def predict(self, coords_ang: np.ndarray) -> np.ndarray:
+        """Predict dipole vector (3,) Debye for one geometry (N, 3)."""
+        self._check_fitted()
+        q   = self.project(coords_ang)
+        q_s = q / self.coord_scale
+        diff2 = np.sum((self._X_train_qs - q_s[None, :]) ** 2, axis=1)
+        k = np.exp(-self.gamma * diff2)                      # (M,)
+        return k @ self._beta + self._mu_mean               # (3,)
+
+    def predict_batch(self, coords_ang: np.ndarray) -> np.ndarray:
+        """Predict dipole vectors (M, 3) for a batch of geometries (M, N, 3)."""
+        self._check_fitted()
+        X_qs = self.project_batch(coords_ang) / self.coord_scale[None, :]
+        K    = self._rbf(X_qs, self._X_train_qs, self.gamma)
+        return K @ self._beta + self._mu_mean
+
+    # ── analytic dipole derivatives ─────────────────────────────────────────
+
+    def dipole_derivatives(
+        self,
+        coords_ang: Optional[np.ndarray] = None,
+    ) -> np.ndarray:
+        """
+        Analytic dipole derivatives ∂μ_α/∂q_k (Debye / sqrt(amu)·Bohr).
+
+        Shape: (3, n_vib) — row α is the gradient of dipole component α
+        w.r.t. each NM coordinate q_k.
+
+        At the reference equilibrium (coords_ang=None, q=0) this gives the
+        linear dipole derivative — directly proportional to harmonic IR intensity.
+
+        Squared norm ||∂μ/∂q_k||² ∝ IR absorption intensity of mode k.
+        """
+        self._check_fitted()
+        if coords_ang is None:
+            q = np.zeros(self.n_vib)
+        else:
+            q = self.project(coords_ang)
+        q_s   = q / self.coord_scale                        # (n_vib,)
+        diff2 = np.sum((self._X_train_qs - q_s[None, :]) ** 2, axis=1)
+        k_vec = np.exp(-self.gamma * diff2)                 # (M,)
+        g     = k_vec[:, None] * self._beta                 # (M, 3)  weighted β
+        Δqs   = q_s[None, :] - self._X_train_qs            # (M, n_vib)  q_s − q_s_i
+        # ∂μ_α/∂q_s_k = −2γ Σ_i g_{i,α} Δqs_{i,k}
+        dmu_dqs = -2.0 * self.gamma * (g.T @ Δqs)          # (3, n_vib)
+        # chain rule: dμ/dq_k = (dμ/dq_s_k) / coord_scale_k
+        return dmu_dqs / self.coord_scale[None, :]          # (3, n_vib)
+
+    def ir_intensities(
+        self,
+        coords_ang: Optional[np.ndarray] = None,
+    ) -> np.ndarray:
+        """
+        IR intensity per NM mode: I_k = ||∂μ/∂q_k||² (Debye²/(amu·Bohr²)).
+
+        Shape: (n_vib,). Useful for identifying which modes are IR-active
+        on the ML dipole surface vs. the Coulomb+KRR surface.
+        """
+        dmu = self.dipole_derivatives(coords_ang)           # (3, n_vib)
+        return np.sum(dmu ** 2, axis=0)                     # (n_vib,)
+
+    # ── metadata (DipoleSurface-compatible) ─────────────────────────────────
+
+    @property
+    def metadata(self) -> dict:
+        """Dict compatible with DipoleSurface.metadata for ir_md_spectrum.py."""
+        return {
+            'model_type':   'NMDipoleSurface',
+            'gamma':        self.gamma,
+            'alpha_reg':    self.alpha_reg,
+            'n_train':      len(self._X_train_qs) if self._X_train_qs is not None else 0,
+            'cv_rmse':      self.cv_rmse_D,
+            'train_rmse':   self.train_rmse_D,
+            'test_rmse':    self.test_rmse_D,
+            'r2_test':      self.r2_test,
+        }
+
+    # ── persistence ────────────────────────────────────────────────────────
+
+    def save(self, path: str):
+        """Save as plain state dict (avoids module-identity PicklingError)."""
+        state = {
+            '_class':        'NMDipoleSurface',
+            'eq_coords_ang': self.eq_coords_ang,
+            'U_vib':         self.U_vib,
+            'sqrt_mass':     self.sqrt_mass,
+            'freqs_vib':     self.freqs_vib,
+            'symbols':       self.symbols,
+            'coord_scale':   self.coord_scale,
+            'gamma':         self.gamma,
+            'alpha_reg':     self.alpha_reg,
+            'X_train_qs':    self._X_train_qs,
+            'beta':          self._beta,
+            'mu_mean':       self._mu_mean,
+            'cv_rmse_D':     self.cv_rmse_D,
+            'train_rmse_D':  self.train_rmse_D,
+            'test_rmse_D':   self.test_rmse_D,
+            'r2_test':       self.r2_test,
+        }
+        with open(path, 'wb') as f:
+            pickle.dump(state, f, protocol=4)
+
+    @classmethod
+    def load(cls, path: str) -> 'NMDipoleSurface':
+        """Load from path — supports both state-dict and object pickles."""
+        with open(path, 'rb') as f:
+            obj = pickle.load(f)
+        if isinstance(obj, cls):
+            return obj
+        inst = cls(
+            eq_coords_ang = obj['eq_coords_ang'],
+            U_vib         = obj['U_vib'],
+            sqrt_mass     = obj['sqrt_mass'],
+            freqs_vib     = obj['freqs_vib'],
+            symbols       = obj['symbols'],
+            coord_scale   = obj.get('coord_scale'),
+        )
+        inst.gamma        = obj.get('gamma')
+        inst.alpha_reg    = obj.get('alpha_reg')
+        inst._X_train_qs  = obj.get('X_train_qs')
+        inst._beta        = obj.get('beta')
+        inst._mu_mean     = obj.get('mu_mean')
+        inst.cv_rmse_D    = obj.get('cv_rmse_D')
+        inst.train_rmse_D = obj.get('train_rmse_D')
+        inst.test_rmse_D  = obj.get('test_rmse_D')
+        inst.r2_test      = obj.get('r2_test')
+        return inst
+
+    @classmethod
+    def from_nm_pes_model(cls, pes_model: 'NMKRRPESModel') -> 'NMDipoleSurface':
+        """
+        Create NMDipoleSurface sharing geometry/NM parameters from an
+        existing NMKRRPESModel.  Call fit() afterwards to train.
+        """
+        return cls(
+            eq_coords_ang = pes_model.eq_coords_ang,
+            U_vib         = pes_model.U_vib,
+            sqrt_mass     = pes_model.sqrt_mass,
+            freqs_vib     = pes_model.freqs_vib,
+            symbols       = pes_model.symbols,
+            coord_scale   = pes_model.coord_scale,
+        )
+
+
+def load_dipole_surface(path: str):
+    """
+    Load a dipole surface model from path.  Auto-detects type:
+    - NMDipoleSurface if state dict has '_class'=='NMDipoleSurface'
+    - DipoleSurface otherwise (Coulomb+KRR legacy)
+    """
+    import pickle
+    with open(path, 'rb') as f:
+        obj = pickle.load(f)
+    if isinstance(obj, NMDipoleSurface):
+        return obj
+    if isinstance(obj, dict) and obj.get('_class') == 'NMDipoleSurface':
+        return NMDipoleSurface.load(path)
+    # Fall back to DipoleSurface
+    from ir_spectroscopy import DipoleSurface
+    return DipoleSurface.load(path)

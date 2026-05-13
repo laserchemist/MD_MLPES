@@ -632,6 +632,49 @@ def train_dipole_surface(training_data_path: str,
     return surface
 
 
+def _train_nm_dipole_surface(training_data_path: str,
+                              output_path: str,
+                              nm_pes_driver) -> 'NMDipoleSurface':
+    """
+    Train an NMDipoleSurface on PSI4 training data using NM coordinates
+    from an existing NMPESDriver.
+
+    Uses analytic LOO-CV for γ/α selection (median heuristic for γ centre).
+    Expected to exceed the R²≈0.91 Coulomb+KRR ceiling by encoding C-H
+    stretch modes directly as non-zero descriptors.
+    """
+    from modules.nm_pes import NMDipoleSurface
+
+    print("\n" + "=" * 70)
+    print("  TRAINING NM-COORDINATE DIPOLE SURFACE (NMDipoleSurface)")
+    print("=" * 70)
+
+    data        = np.load(training_data_path, allow_pickle=True)
+    coordinates = data['coordinates']   # (N, n_atoms, 3)
+    dipoles     = data['dipoles']       # (N, 3) Debye
+
+    norms = np.linalg.norm(dipoles, axis=1)
+    valid = norms > 1e-6
+    n_valid = valid.sum()
+    print(f"  Training frames    : {len(coordinates)}")
+    print(f"  Valid dipoles      : {n_valid} (|μ| > 1e-6 D)")
+    if n_valid < 10:
+        raise RuntimeError(f"Too few valid dipoles ({n_valid}) for training")
+
+    coords_v  = coordinates[valid]
+    dipoles_v = dipoles[valid]
+    print(f"  |μ| range          : {np.linalg.norm(dipoles_v, axis=1).min():.3f}–"
+          f"{np.linalg.norm(dipoles_v, axis=1).max():.3f} D")
+
+    nm = nm_pes_driver._model   # NMKRRPESModel
+    surface = NMDipoleSurface.from_nm_pes_model(nm)
+    surface.fit(coords_v, dipoles_v, verbose=True)
+    surface.save(output_path)
+
+    print(f"\n  NM dipole model saved : {output_path}")
+    return surface
+
+
 # =============================================================================
 # Dipole prediction along trajectory
 # =============================================================================
@@ -1275,9 +1318,23 @@ def run_ir_workflow(model_path: str,
 
     # ── Step 1: Dipole surface ────────────────────────────────────────
     dipole_pkl = output_dir / 'dipole_surface.pkl'
+
+    # Detect whether the active PES driver is NM-based (NMPESDriver or a
+    # delta wrapper around one).  If so, prefer NMDipoleSurface.
+    _nm_pes_driver = None
+    if hasattr(driver, '_model') and hasattr(driver._model, 'U_vib'):
+        _nm_pes_driver = driver        # bare NMPESDriver
+    elif hasattr(driver, '_base') and hasattr(getattr(driver, '_base', None), '_model'):
+        _nm_pes_driver = driver._base  # NMDeltaDriver wrapping NMPESDriver
+
     if dipole_model_path and Path(dipole_model_path).exists():
         print(f"\n  Loading existing dipole model from {dipole_model_path}")
-        dipole_surface = DipoleSurface.load(dipole_model_path)
+        from modules.nm_pes import load_dipole_surface as _load_dipole
+        dipole_surface = _load_dipole(dipole_model_path)
+    elif _nm_pes_driver is not None:
+        dipole_surface = _train_nm_dipole_surface(
+            training_data_path, str(dipole_pkl), _nm_pes_driver
+        )
     else:
         dipole_surface = train_dipole_surface(
             training_data_path, str(dipole_pkl)

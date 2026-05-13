@@ -3041,3 +3041,74 @@ a Dec 2025 install and PSI4 1.10) that causes validation RMSE of 15–40 kcal/mo
 
 All conversion constants live in `modules/direct_md.py:40-60` — do not redefine elsewhere.
 
+---
+
+## 2026-05-13 (continued) — NMDipoleSurface: NM-Coordinate Dipole Surface
+
+### Motivation
+
+The Coulomb+KRR `DipoleSurface` in `ir_spectroscopy.py` has a fundamental descriptor
+limitation: Z(H)=1 makes all H-involving Coulomb matrix elements negligible (~1/15 of
+the C-C or C-O elements). The KRR kernel therefore has near-zero sensitivity to C-H
+displacement → ∂μ/∂q_CH ≈ 0 → C-H stretch peaks absent from IR spectrum regardless
+of training data quality. The R²=0.914 "ceiling" is a C-H blindness ceiling.
+
+### Design: NMDipoleSurface
+
+Implemented `NMDipoleSurface` in `modules/nm_pes.py` as a three-component KRR dipole
+surface using NM coordinates q = U_vib^T M^{1/2}(R−R_eq) as descriptors.
+
+**Key features:**
+- Same NM projection infrastructure as `NMKRRPESModel` (shared Jacobian `_J`)
+- **Analytic LOO-CV** for γ/α selection: `e_i^LOO = β_i / (K+αI)^{-1}_{ii}` — O(n²) after Cholesky, avoids n re-trainings
+- **Auto coord_scale**: if PES model has all-ones coord_scale (default), auto-computes per-mode std from training data to equalize kernel distances across modes
+- **Analytic derivatives**: `dipole_derivatives()` → (3, n_vib) ∂μ_α/∂q_k at any geometry; `ir_intensities()` → ||∂μ/∂q_k||² per mode
+- `from_nm_pes_model(pes)` classmethod to inherit NM geometry from existing NMKRRPESModel
+- State-dict pickle (avoids PicklingError); `metadata` property for `DipoleSurface` API compatibility
+- **Auto-selected** in `ir_md_spectrum.py` when `--nm-pes-model` is specified
+
+### Key Diagnostic Result: C-H IR Activity
+
+At equilibrium geometry, `dipole_derivatives()` gives **non-zero ∂μ/∂q_CH** for modes 25-30 (3049-3323 cm⁻¹):
+
+| Rank | Mode | Freq (cm⁻¹) | ||∂μ/∂q||² (arb.) | Assignment |
+|------|------|------------|------------------|------------|
+| #9   | 25   | 3048.7     | 4.42             | C-H stretch |
+| #13  | 26   | 3100.0     | 3.24             | C-H stretch |
+| #14  | 28   | 3164.5     | 2.80             | C-H stretch |
+| (top 3 from modes 3, 23, 11) | — | 281–985 | 22–45 | COO + fingerprint |
+
+This confirms C-H modes are IR active in the NM descriptor. The Coulomb surface would give
+intensity ≈ 0 for these modes.
+
+### Training Performance: Multi-Conformer Limitation
+
+| Experiment | R² test | Notes |
+|-----------|---------|-------|
+| All 250 frames, unscaled (coord_scale=1) | 0.007 | Torsions (modes 1-2) dominate — kernel sees all points as identical |
+| All 250 frames, auto coord_scale | **0.141** | Still limited by multi-conformer coverage |
+| Same-conformer only (q₁<0.5, 168 frames) | 0.209 | Better but still limited |
+| Coulomb+KRR (same 250 frames) | **0.914** | Conformational variation encoded efficiently |
+
+**Root cause of low R²**: The 250-frame training set covers multiple torsional conformers (mode 1 spans [-8, +10] sqrt(amu)·Bohr), but the 300K MD trajectory stays in one torsional well (mode 1 ∈ [-2.4, -0.3]). The KRR cannot efficiently interpolate across conformers in 30D NM space with only 250 points. The Coulomb matrix, being pairwise distances, naturally encodes multi-conformer variation more smoothly.
+
+**C-H amplitude during 300K ZPE-initialized MD**: mode 25-30 std ≈ 0.07-0.10 sqrt(amu)·Bohr. Dipole response: ~0.024 D (tiny) vs prediction noise 1.25 D RMSE → SNR ≈ 0.02. Not detectable in ACF spectrum.
+
+### IR Spectrum Test (NMDipoleSurface, 300K)
+
+Output: `outputs/ir_spectrum_NM_dipole_300K/`
+- Dipole surface: R²=0.141, train RMSE≈0 D, test RMSE=1.25 D
+- **Result: no C-H peaks** — same low-frequency spectrum (139, 267, 367, 543 cm⁻¹) as Coulomb surface
+- Prediction noise (1.25 D) completely overwhelms C-H signal (~0.024 D)
+
+### What's Needed to See C-H Peaks
+
+1. **Same-conformer training data** — PSI4 wB97X-D dipoles for frames from the MD trajectory itself (not GP-selected conformationally diverse frames). 100-200 near-equilibrium frames per conformer.
+2. **Target R² > 0.85** — need prediction noise < 0.2 D for C-H signal (~0.024 D) to be detectable
+3. **OR: higher temperature MD** — at T > 2000K, classical C-H amplitude exceeds ZPE and C-H peaks appear classically (but molecule is at risk of dissociation)
+4. **OR: semi-classical quantum correction** — ZPE-initialized MD with NMDipoleSurface + proper R²; the C-H ZPE energy (4.4 kcal/mol) is already loaded in mode 25 at t=0, and the NM surface correctly responds to it
+
+### Conclusion
+
+`NMDipoleSurface` is the correct architecture: C-H modes ARE IR active by construction. The current limitation is entirely in the training data — 250 GP-selected frames span multiple conformers, making interpolation in 30D NM space too sparse. The path forward is to collect dipole training data from the same conformer as the target MD trajectory (near-equilibrium geometries).
+
