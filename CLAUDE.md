@@ -548,7 +548,8 @@ Key finding: softer gamma reduces unphysical Hessian modes but causes worse IR s
 - GP active learning (`gp_dipole_coverage.py`): 2 rounds with diversity radius 3.0 reduced σ_mean from 0.524 D → 0.030 D
 - Use `recompute_dipoles_wB97X.py --resume` to regenerate/continue the base-150 recomputation
 
-**Dipole surface (best, wB97X-D 250 frames)**: γ=0.001, α=1e-4, R²=0.991 test (round 1 mixed, pending clean run)
+**Dipole surface (best, wB97X-D 250 frames)**: γ=0.001, α=1e-4, R²=0.914 test
+- **NOTE**: R²=0.914 is a Coulomb+KRR γ ceiling, not a data quality issue. γ=0.001 was tuned for 150 near-eq frames; 250 diverse frames spanning |μ|=2.93–7.02 D need γ~0.0001. Re-tune γ after active learning for each new conformer.
 
 **IR spectrum**: `outputs/ir_spectrum_20260319_174321/` — 30,000 steps at 300 K
 | Peak (cm⁻¹) | Rel. Intensity | Assignment |

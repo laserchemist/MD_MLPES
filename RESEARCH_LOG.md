@@ -2923,7 +2923,7 @@ python3 gp_dipole_coverage.py \
     --output-dir outputs/mvko_dipoles_wB97X_final
 ```
 
-**IR run after clean merge**:
+**IR run after clean merge** (completed 2026-05-13):
 ```bash
 python3 ir_md_spectrum.py \
     --nm-pes-model outputs/wB97X_nm_model_v5/mlpes_wB97X_nm.pkl \
@@ -2933,6 +2933,38 @@ python3 ir_md_spectrum.py \
     --n-trajectories 5 --max-bond-extension 2.0 \
     --output-dir outputs/ir_spectrum_NM_PES_wB97X_dipoles_300K
 ```
+
+**Result** (`outputs/ir_spectrum_NM_PES_wB97X_dipoles_300K/`):
+
+Dipole surface quality:
+- Train RMSE: 0.130 D | Test RMSE: 0.261 D | R²=0.914
+
+Comparison vs mixed B3LYP+wB97X-D run: R² 0.910→0.914 (marginal). **The method
+inconsistency was not the bottleneck.** The R²~0.91 ceiling is a Coulomb+KRR γ problem:
+γ=0.001 was tuned for 150 near-equilibrium frames; the 250-frame set spans |μ|=2.93–7.02 D
+(vs 2.97–5.61 D before), a conformational range too broad for this kernel width.
+
+IR peaks:
+
+| Peak (cm⁻¹) | Rel. I | NM mode | Assignment |
+|------------|--------|---------|------------|
+| ~1 (DC) | 1.000 | — | Torsional drift artifact |
+| **190** | **0.959** | mode 2 (168 cm⁻¹) | COO torsion |
+| **763** | **0.719** | mode 9 (711 cm⁻¹) | C-O stretch / COO ring |
+| **716** | **0.507** | mode 9 | C-O stretch |
+| **765** | **0.414** | mode 9 | COO deformation |
+| 260 | 0.141 | mode 3 (281 cm⁻¹) | vinyl wag |
+| 274 | 0.126 | mode 3 | vinyl wag |
+
+The 711–767 cm⁻¹ triplet (three peaks from the same mode 9 at different ACF windows) is
+the characteristic Criegee C-O stretch / COO ring deformation — the clearest physical
+fingerprint produced so far for syn-trans MVKO. The 190 cm⁻¹ peak is the COO torsion.
+C-H stretches (3049–3323 cm⁻¹) remain absent at 300 K (classical C-H amplitude is only
+22–28% of ZPE; full C-H signal requires ~2200 K or direct PSI4 dipoles at ZPE amplitude).
+
+**Key finding**: For future conformers, re-tune DipoleSurface γ on the expanded dataset
+after active learning (likely γ~0.0001 for 250 diverse frames). The current γ=0.001 fits
+the 150-frame near-equilibrium training regime, not the broader active-learning coverage.
 
 ---
 
