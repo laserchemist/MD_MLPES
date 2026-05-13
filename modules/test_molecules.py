@@ -378,6 +378,78 @@ MOLECULES = {
         charge=0,
         multiplicity=1,
     ),
+
+    # -------------------------------------------------------------------------
+    # MVKO syn-cis conformer
+    # Built by rotating the vinyl group (C2-C3, H1-H3) 180° around the C1-C2
+    # bond from the wB97X-D/6-31G* syn-trans optimised geometry.
+    # "syn"  = terminal O2 on same side as vinyl relative to C1-O1 axis
+    # "cis"  = C3 and O1 are cis across the C1-C2 bond (≈0° dihedral)
+    # Must be PSI4 reoptimised before use — see build_conformer_nm_pes.py.
+    # Relative energy (Barber et al. 2018): +1.76 kcal/mol vs syn-trans.
+    # -------------------------------------------------------------------------
+    'mvko_syn_cis': TestMolecule(
+        name='mvko_syn_cis',
+        formula='C4H6O2',
+        symbols=['C', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H'],
+        coordinates=np.array([
+            [ 0.004752,  0.029289,  0.000000],   # C1  Criegee carbon
+            [ 1.284148, -0.127772,  0.000000],   # O1  proximal O
+            [ 2.120460,  0.945867,  0.000000],   # O2  distal O (syn)
+            [-0.689101,  1.288484,  0.000000],   # C2  inner vinyl CH
+            [-2.025717,  1.490548,  0.000000],   # C3  terminal vinyl (cis)
+            [-0.746150, -1.269627,  0.000000],   # C4  methyl carbon
+            [-0.023546,  2.150157,  0.000000],   # H1  vinyl H on C2
+            [-2.713866,  0.658901,  0.000000],   # H2  vinyl H on C3
+            [-2.410199,  2.507906,  0.000000],   # H3  vinyl H on C3
+            [-0.048156, -2.109266,  0.000000],   # H4  methyl H (in-plane)
+            [-1.392532, -1.345081,  0.883276],   # H5  methyl H (above)
+            [-1.392532, -1.345081, -0.883276],   # H6  methyl H (below)
+        ]),
+        description=(
+            'MVKO syn-cis conformer — approximate starting geometry built by '
+            'rotating vinyl 180° around C1-C2 from wB97X-D/6-31G* syn-trans. '
+            'Barber et al. 2018: +1.76 kcal/mol. Reoptimise before NM-KRR training.'
+        ),
+        charge=0,
+        multiplicity=1,
+    ),
+
+    # -------------------------------------------------------------------------
+    # MVKO anti-cis conformer
+    # Built by rotating the vinyl group 180° around C1-C2 from the
+    # wB97X-D/6-31G* anti-trans optimised geometry.
+    # "anti" = terminal O2 opposite vinyl relative to C1-O1 axis
+    # "cis"  = C3 and O1 are cis across the C1-C2 bond
+    # Must be PSI4 reoptimised before use — see build_conformer_nm_pes.py.
+    # Relative energy (Barber et al. 2018): +3.05 kcal/mol vs syn-trans.
+    # -------------------------------------------------------------------------
+    'mvko_anti_cis': TestMolecule(
+        name='mvko_anti_cis',
+        formula='C4H6O2',
+        symbols=['C', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H'],
+        coordinates=np.array([
+            [ 0.065717,  0.347868,  0.000000],   # C1  Criegee carbon
+            [ 1.339681,  0.303640,  0.000000],   # O1  proximal O
+            [ 1.976763, -0.879293,  0.000000],   # O2  distal O (anti)
+            [-0.712246, -0.872352,  0.000000],   # C2  inner vinyl CH
+            [-0.154790, -2.088540,  0.000000],   # C3  terminal vinyl (cis)
+            [-0.508309,  1.725724,  0.000000],   # C4  methyl carbon
+            [-1.785376, -0.721148,  0.000000],   # H1  vinyl H on C2
+            [ 0.921303, -2.241729,  0.000000],   # H2  vinyl H on C3
+            [-0.770159, -2.982254,  0.000000],   # H3  vinyl H on C3
+            [ 0.298040,  2.461023,  0.000000],   # H4  methyl H (in-plane)
+            [-1.134879,  1.883075,  0.884712],   # H5  methyl H (above)
+            [-1.134879,  1.883075, -0.884712],   # H6  methyl H (below)
+        ]),
+        description=(
+            'MVKO anti-cis conformer — approximate starting geometry built by '
+            'rotating vinyl 180° around C1-C2 from wB97X-D/6-31G* anti-trans. '
+            'Barber et al. 2018: +3.05 kcal/mol. Reoptimise before NM-KRR training.'
+        ),
+        charge=0,
+        multiplicity=1,
+    ),
 }
 
 
