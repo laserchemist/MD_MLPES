@@ -1054,7 +1054,9 @@ def run_multi_trajectory_dipoles(
         max_bond_extension: float,
         monitor_bonds: list,
         print_every: int = 1000,
-        output_dir = None) -> np.ndarray:
+        output_dir = None,
+        start_coords = None,
+        thermostat_tau: float = 200.0) -> np.ndarray:
     """
     Run N independent ML-MD trajectories from the N lowest-energy training
     frames, each with a different RNG seed, and return the concatenated,
@@ -1084,7 +1086,10 @@ def run_multi_trajectory_dipoles(
     print(f"\n{'=' * 70}")
     print(f"  MULTI-TRAJECTORY MD  ({n_starts} trajectories)")
     print(f"{'=' * 70}")
-    print(f"  Starting frames (lowest energy): {start_idxs.tolist()}")
+    if start_coords is not None:
+        print(f"  Starting geometry  : user-supplied --start-coords (all trajectories)")
+    else:
+        print(f"  Starting frames (lowest energy): {start_idxs.tolist()}")
     print(f"  Steps per trajectory           : {n_steps}")
     print(f"  Temperature                    : {temperature:.0f} K")
     if max_bond_extension > 0:
@@ -1094,10 +1099,16 @@ def run_multi_trajectory_dipoles(
 
     for k, fidx in enumerate(start_idxs):
         seed = 42 + k
-        coords0 = traj.coordinates[fidx].copy()
-        e_start  = traj.energies[fidx] * HARTREE_TO_KCAL
-        print(f"\n  --- Trajectory {k+1}/{n_starts}  "
-              f"(frame {fidx}, E={e_start:.2f} kcal/mol, seed={seed}) ---")
+        if start_coords is not None:
+            coords0  = np.array(start_coords, dtype=float)
+            e_start  = driver.energy(coords0) * HARTREE_TO_KCAL
+            print(f"\n  --- Trajectory {k+1}/{n_starts}  "
+                  f"(user start_coords, E={e_start:.2f} kcal/mol, seed={seed}) ---")
+        else:
+            coords0 = traj.coordinates[fidx].copy()
+            e_start  = traj.energies[fidx] * HARTREE_TO_KCAL
+            print(f"\n  --- Trajectory {k+1}/{n_starts}  "
+                  f"(frame {fidx}, E={e_start:.2f} kcal/mol, seed={seed}) ---")
 
         md_data = run_ml_md_dense(
             driver, coords0, n_steps, temperature,
@@ -1111,6 +1122,7 @@ def run_multi_trajectory_dipoles(
             max_bond_extension=max_bond_extension,
             monitor_bonds=monitor_bonds,
             print_every=print_every,
+            thermostat_tau=thermostat_tau,
         )
 
         n_frames  = len(md_data['coords_traj'])
@@ -1175,7 +1187,8 @@ def run_ir_workflow(model_path: str,
                     nm_pes_bond_wall_factor: float = 1.6,
                     nm_pes_bond_wall_stiffness: float = 1.0,
                     sgdml_model_path: str | None = None,
-                    mace_model_path: str | None = None) -> None:
+                    mace_model_path: str | None = None,
+                    thermostat_tau: float = 200.0) -> None:
     """
     Full ML-PES IR spectrum workflow.
 
@@ -1334,6 +1347,8 @@ def run_ir_workflow(model_path: str,
             monitor_bonds=monitor_bonds,
             print_every=print_every,
             output_dir=output_dir,
+            start_coords=start_coords,
+            thermostat_tau=thermostat_tau,
         )
         print(f"\n--- Averaging IR spectra across {len(per_traj_dipoles)} trajectories ---")
         all_intensities = []
@@ -1390,6 +1405,7 @@ def run_ir_workflow(model_path: str,
             max_bond_extension=max_bond_extension,
             monitor_bonds=monitor_bonds,
             print_every=print_every,
+            thermostat_tau=thermostat_tau,
         )
 
         if md_data.get('dissociation_step'):
@@ -1684,6 +1700,10 @@ def main():
     parser.add_argument('--blend-width',       type=float, default=3.0,
                         help='Softmin blending width in kcal/mol (default 3.0). '
                              'Overridden by _blend_width key in --conformer-manifest.')
+    parser.add_argument('--thermostat-tau',    type=float, default=200.0,
+                        help='Berendsen thermostat coupling time in fs (default 200). '
+                             'Increase to 2000+ to reduce ZPE leakage and retain C-H '
+                             'stretch amplitude for longer in the ACF.')
     args = parser.parse_args()
 
     if (args.model is None and args.nm_pes_model is None
@@ -1727,6 +1747,7 @@ def main():
         nm_pes_bond_wall_stiffness  = args.nm_pes_bond_wall_stiffness,
         sgdml_model_path            = args.sgdml_model,
         mace_model_path             = args.mace_model,
+        thermostat_tau              = args.thermostat_tau,
     )  # nm_pes_model_path already passed above
 
 

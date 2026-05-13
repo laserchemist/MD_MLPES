@@ -108,8 +108,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--nm-model',  required=True,
                         help='Path to NM-PES pkl (e.g. outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl)')
-    parser.add_argument('--existing',  required=True,
-                        help='Existing dipole npz to merge with')
+    parser.add_argument('--existing',  required=False, default=None,
+                        help='Existing dipole npz to merge with (omit to start fresh)')
     parser.add_argument('--mode-indices', default='10 11 12 13 14 15',
                         help='0-indexed mode numbers to displace (default: modes 11-16, 985-1108 cm-1)')
     parser.add_argument('--amplitudes', default='-3 -2 -1 1 2 3',
@@ -135,14 +135,23 @@ def main():
               f"(coord_scale = {model['coord_scale'][k]:.4f} √amu·Bohr)")
 
     # ── Load existing dipoles ─────────────────────────────────────────────────
-    print(f"\nLoading existing dipoles from {args.existing}")
-    ex = np.load(args.existing, allow_pickle=True)
-    ex_coords   = ex['coordinates']
-    ex_energies = ex['energies']
-    ex_forces   = ex['forces']
-    ex_dipoles  = ex['dipoles']
-    ex_symbols  = ex['symbols'].tolist()
-    print(f"  {len(ex_coords)} existing frames")
+    if args.existing is not None:
+        print(f"\nLoading existing dipoles from {args.existing}")
+        ex = np.load(args.existing, allow_pickle=True)
+        ex_coords   = ex['coordinates']
+        ex_energies = ex['energies']
+        ex_forces   = ex['forces']
+        ex_dipoles  = ex['dipoles']
+        ex_symbols  = ex['symbols'].tolist()
+        print(f"  {len(ex_coords)} existing frames")
+    else:
+        print("\nStarting fresh — no existing dipole dataset")
+        n_atoms     = len(model['symbols'])
+        ex_coords   = np.zeros((0, n_atoms, 3))
+        ex_energies = np.zeros(0)
+        ex_forces   = np.zeros((0, n_atoms, 3))
+        ex_dipoles  = np.zeros((0, 3))
+        ex_symbols  = model['symbols']
 
     # ── Generate displaced geometries ─────────────────────────────────────────
     new_coords = []

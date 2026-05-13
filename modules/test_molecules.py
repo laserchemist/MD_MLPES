@@ -313,6 +313,71 @@ MOLECULES = {
         charge=0,
         multiplicity=1,
     ),
+
+    # -------------------------------------------------------------------------
+    # MVKO anti-trans conformer (Chung & Lee 2021, Fig. 3)
+    # B3LYP/aug-cc-pVTZ reference geometry; must be reoptimised at
+    # wB97X-D/6-31G* before NM-KRR training — see build_conformer_nm_pes.py
+    #
+    # "anti"  = terminal O₂ on opposite side from vinyl relative to C1–O1 axis
+    # "trans" = C2=C3 vinyl trans to C1–O1 bond
+    #
+    # Responsible for B4-B7 bands in Chung & Lee Fig. 3(b):
+    #   990, 1025, 1080, ~1160 cm⁻¹ (experimental IR emission)
+    #
+    # Atom order is IDENTICAL to 'mvko' (syn-trans) — same NM-KRR interface.
+    # -------------------------------------------------------------------------
+    'mvko_anti_trans': TestMolecule(
+        name='mvko_anti_trans',
+        formula='C4H6O2',
+        # Atom ordering matches 'mvko' (syn-trans) exactly:
+        #   C1  Criegee carbon  (C₃ in Chung & Lee notation)
+        #   O1  proximal oxygen (O₁ in Chung & Lee)
+        #   O2  distal oxygen   (O₂ in Chung & Lee)
+        #   C2  inner vinyl CH  (C₂ in Chung & Lee)
+        #   C3  terminal vinyl  (C₁ in Chung & Lee)
+        #   C4  methyl carbon   (C₄ in Chung & Lee)
+        #   H1  vinyl H on C2  (H₃ in Chung & Lee)
+        #   H2  vinyl H on C3  (H₁ in Chung & Lee)
+        #   H3  vinyl H on C3  (H₂ in Chung & Lee)
+        #   H4  methyl H (in molecular plane)  (H₆ in Chung & Lee)
+        #   H5  methyl H (above plane)         (H₅ in Chung & Lee)
+        #   H6  methyl H (below plane)         (H₄ in Chung & Lee)
+        symbols=['C', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H'],
+        coordinates=np.array([
+            # C1  Criegee carbon (C₃_Chung)
+            [ 0.05380,  0.34580,  0.00000],
+            # O1  proximal O (O₁_Chung, C1–O1 = 1.292 Å)
+            [ 1.34510,  0.30306,  0.00000],
+            # O2  distal O (O₂_Chung, O1–O2 = 1.345 Å; anti = same side as vinyl)
+            [ 1.99034, -0.87682,  0.00000],
+            # C2  inner vinyl CH (C₂_Chung, C1–C2 = 1.435 Å)
+            [-0.71361, -0.86605,  0.00000],
+            # C3  terminal vinyl CH₂ (C₁_Chung, C2=C3 = 1.340 Å)
+            [-2.05395, -0.87958,  0.00000],
+            # C4  methyl (C₄_Chung, C1–C4 = 1.488 Å)
+            [-0.51097,  1.72181,  0.00000],
+            # H1  on C2 (H₃_Chung)
+            [-0.12962, -1.77360,  0.00000],
+            # H2  on C3 (H₁_Chung)
+            [-2.64000,  0.02836,  0.00000],
+            # H3  on C3 (H₂_Chung)
+            [-2.59672, -1.81245,  0.00000],
+            # H4  methyl, in-plane (H₆_Chung)
+            [ 0.29635,  2.44804,  0.00000],
+            # H5  methyl, above plane (H₅_Chung)
+            [-1.13347,  1.88406,  0.88005],
+            # H6  methyl, below plane (H₄_Chung)
+            [-1.13347,  1.88406, -0.88005],
+        ]),
+        description=(
+            'MVKO anti-trans conformer — B3LYP/aug-cc-pVTZ geometry from '
+            'Chung & Lee 2021 (Fig. 3). Reoptimise at wB97X-D/6-31G* before '
+            'NM-KRR training (build_conformer_nm_pes.py). Singlet ground state.'
+        ),
+        charge=0,
+        multiplicity=1,
+    ),
 }
 
 

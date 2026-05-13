@@ -2768,6 +2768,211 @@ saddle-point instability.  Alternatively, use a local model near equilibrium
 
 ---
 
+## 2026-05-13 — NM-PES v5; GP Active Learning for Dipole Coverage; wB97X-D Default
+
+### Summary
+
+Two interrelated improvements were made this session:
+
+1. **NM-PES v5** — improved NM-coordinate KRR PES with 456 training frames, zero imaginary
+   modes, physical C-H frequencies (3049–3323 cm⁻¹), ZPE-initialized MD stable for 15 ps.
+2. **GP active learning dipole surface** — replaced the 150-frame B3LYP dipole training set
+   with a 250-frame all-wB97X-D set assembled via two rounds of GP-uncertainty-guided PSI4
+   computations, eliminating methodological inconsistency and dramatically improving fingerprint peaks.
+
+**Key decision**: **wB97X-D/6-31G* is now the default method for all dipole computations**
+(for MVKO and all future conformers). B3LYP was used historically due to a hardcoded
+`PSI4_METHOD = 'b3lyp'` — this one-line default is now corrected to `wb97x-d`.
+The motivation: the PES is trained on wB97X-D energies; using a different method for the
+dipole introduces a ~0.26 D systematic offset between PES and dipole coordinate frames,
+which degrades the dipole surface fit and distorts IR intensities.
+
+---
+
+### NM-PES v5: Model Progression
+
+| Version | Frames | γ | α | LOO-CV (kcal/mol) | n_imag | C-H (cm⁻¹) |
+|---------|--------|---|---|-------------------|--------|------------|
+| v2 | 999 | 0.2 | 1e-5 | 1.21 | 0 | 3060–3343 |
+| v3 | 290 | 0.3 | 1e-6 | 0.79 | 1 (−203) | 3056–3280 |
+| v4 | 436 | 0.2 | 1e-7 | 0.62 | 1 (−160) | 3002–3326 |
+| **v5** | **456** | **0.2** | **1e-6** | **~0.6** | **0** | **3049–3323** |
+
+**v5 training data** (`outputs/wB97X_nm_model_v5/`):
+- 456 frames: base NM-grid + anti-trans NM displacements + ZPE stability test frames
+- `coord_scale = thermal_amplitudes` (required for positive-definite Hessian — see April 2026 entry)
+- Thermostat: Berendsen τ=200 fs, ZPE floor [50, 4000] cm⁻¹
+
+**IR spectrum with B3LYP dipoles (v5 baseline)**:
+
+Command:
+```bash
+python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v5/mlpes_wB97X_nm.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.0 \
+    --output-dir outputs/ir_spectrum_NM_PES_tau2000_300K
+```
+
+Result: DC artifact dominant (I=1.0 at 1 cm⁻¹); best physical peak I=0.19 at 140 cm⁻¹.
+Root cause: 150 B3LYP dipole frames were collected from old Coulomb+KRR trajectories that
+never sampled the conformational regions visited by the improved NM-PES v5 MD.
+
+**Thermostat τ=2000 fs test**: longer τ preserves ZPE longer but superheats torsional modes
+(modes 1–2 at 125–168 cm⁻¹), creating a DC artifact that swamps the fingerprint. No
+improvement. Conclusion: τ=200 fs is the correct choice; the dipole coverage was the problem.
+
+**Mode sampling analysis** (`plot_nm_mode_sampling.py`):
+- Modes 1–2 (125, 168 cm⁻¹): sampled at 1.22 and 0.80 × ZPE amplitude ✓
+- Mode 7 (407 cm⁻¹): 0.98× ZPE — nearly correct
+- Modes 3, 6 (281, 381 cm⁻¹): 0.14–0.16× ZPE — essentially dark (ZPE not reached classically at 300 K)
+- C-H modes 25–30 (3049–3323 cm⁻¹): 0.20–0.28× ZPE — classical thermal at 300 K gives only 22–28%
+  of ZPE amplitude; C-H peaks require ~2200 K classical equivalent → full C-H signal not expected at 300 K
+
+---
+
+### GP Active Learning: Dipole Surface Coverage
+
+**Motivation**: With 150 B3LYP training frames drawn from old Coulomb+KRR trajectories,
+the GP posterior variance σ was 0.524 D mean across the NM-PES v5 trajectories (91.5% of
+frames above σ=0.10 D). The dipole surface was heavily extrapolating in the conformational
+space actually visited by the improved MD.
+
+**Method**: The GP posterior variance for a KRR model is computed analytically:
+
+```
+σ²(x*) = k(x*,x*) - k(x*,X)(K + αI)⁻¹k(X,x*)
+        = 1 - ||L⁻¹ k(X,x*)||²    (for RBF with unit diagonal)
+```
+
+This is mathematically free once the KRR fit is done — same solve, different quantity.
+Script: `gp_dipole_coverage.py`. Hyperparameters: γ=0.001, α=0.0001 (matching `DipoleSurface`).
+
+**Coverage progression:**
+
+| Round | Frames | Method | σ mean | σ max | % > 0.10 D |
+|-------|--------|--------|--------|-------|------------|
+| 0 (baseline) | 150 | B3LYP | 0.524 D | 0.716 D | 91.5% |
+| 1 | 200 | B3LYP(150)+wB97X-D(50) | 0.095 D | 0.253 D | 42.3% |
+| 2 | 250 | B3LYP(150)+wB97X-D(100) | 0.030 D | 0.071 D | **0.0%** |
+| **target** | **250** | **all wB97X-D** | in progress | — | — |
+
+**Round 1 selection**: greedy top-50 by σ → all 48/50 from traj_02 at t=14.3–14.6 ps
+(one conformational excursion). Showed conformational clustering is a problem.
+
+**Round 2 selection**: greedy σ-maximising with **diversity radius = 3.0** in scaled
+descriptor space. Prevented clustering: 25 from traj_04, 11 from traj_05, 7 from traj_01,
+5 from traj_03, 1 from traj_02 (traj_02 already covered by round 1). All σ > 0.125 D.
+
+**Diversity selection algorithm** (in `_greedy_diverse_selection()`, `gp_dipole_coverage.py`):
+1. Sort candidates by σ descending
+2. For each: add if min-dist to already-selected points ≥ diversity_radius
+3. Stop when top_n frames selected
+Flag: `--diversity-radius 3.0` (Euclidean distance in StandardScaler-normalized descriptor space)
+
+**IR spectrum progression (v5 NM-PES, 150 → 200 → 250 dipole frames):**
+
+| Dataset | Dipole R² test | Best fingerprint | 700–800 cm⁻¹ |
+|---------|---------------|-----------------|--------------|
+| 150 B3LYP | 0.981 | I=0.19 @ 140 cm⁻¹ | absent |
+| 200 mixed | 0.991 | I=0.62 @ 351 cm⁻¹ | I=0.052 @ 759 cm⁻¹ |
+| 250 mixed | 0.910 | I=0.94 @ 190 cm⁻¹ | I=0.71 @ 763 cm⁻¹ (**triplet**) |
+| **250 all-wB97X-D** | **in progress** | — | — |
+
+The 250-mixed run shows a 14× increase in the 759–767 cm⁻¹ region (COO ring deformation /
+C-O stretch — characteristic Criegee signature). However the dipole surface quality degraded
+(R²=0.981→0.910, test RMSE=0.024→0.260 D) because B3LYP and wB97X-D dipoles are
+systematically offset (~0.26 D) for similar geometries. The IR intensity ratios are unreliable
+until the dataset is methodologically consistent.
+
+**wB97X-D dipole magnitude range across rounds:**
+- Round 0 (B3LYP): 2.97–5.61 D
+- Round 1 new frames (wB97X-D): 3.96–7.02 D (active-learning selected high-σ conformations)
+- Round 2 new frames (wB97X-D): 3.84–7.50 D
+- Mixed dataset spans geometries at the edge of the conformational basin not seen by B3LYP training
+
+---
+
+### Recomputing 150 Original Frames with wB97X-D (In Progress)
+
+**Command** (launched 2026-05-13, PID via background job `bh97fdvun`):
+```bash
+python3 recompute_dipoles_wB97X.py \
+    --input  outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --output outputs/mvko_dipoles_wB97X_base \
+    --resume
+```
+
+**Output**: `outputs/mvko_dipoles_wB97X_base/training_with_dipoles.npz`
+(150 frames, same geometries as original, wB97X-D/6-31G* dipoles, B3LYP dipoles discarded)
+
+**Next step after completion**: merge with rounds 1+2 wB97X-D new dipoles:
+```bash
+# Step 1: merge base wB97X-D into round 1 new (wB97X-D)
+python3 gp_dipole_coverage.py \
+    --training-data outputs/mvko_dipoles_wB97X_base/training_with_dipoles.npz \
+    --merge outputs/gp_dipole_round1/new_dipoles.npz \
+    --output-dir outputs/mvko_dipoles_wB97X_r1
+
+# Step 2: merge in round 2 new (wB97X-D)
+python3 gp_dipole_coverage.py \
+    --training-data outputs/mvko_dipoles_wB97X_r1/training_with_dipoles.npz \
+    --merge outputs/gp_dipole_round2/new_dipoles.npz \
+    --output-dir outputs/mvko_dipoles_wB97X_final
+```
+
+**IR run after clean merge**:
+```bash
+python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v5/mlpes_wB97X_nm.pkl \
+    --training-data outputs/mvko_dipoles_wB97X_final/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.0 \
+    --output-dir outputs/ir_spectrum_NM_PES_wB97X_dipoles_300K
+```
+
+---
+
+### New Default: wB97X-D for All Dipole Computations
+
+For all future conformers (anti-trans, syn-cis, anti-cis, and any new molecules):
+
+1. **Dipole collection** — always wB97X-D/6-31G* (`--method wb97x-d` in `gp_dipole_coverage.py`)
+2. **Active learning** — `gp_dipole_coverage.py --compute-top-n N --diversity-radius 3.0`
+   before each IR run, until σ_max < 0.10 D across all trajectories (typically 2 rounds)
+3. **`collect_mvko_dipoles.py`** — `PSI4_METHOD` constant updated from `'b3lyp'` to `'wb97x-d'`
+4. **`gp_dipole_coverage.py`** — `--method` default is already `wb97x-d`
+
+**Workflow for a new conformer:**
+```
+1. Optimize geometry + compute Hessian (PSI4 wB97X-D/6-31G*)
+2. Train NM-KRR PES (coord_scale=thermal, γ=0.2, α=1e-6)
+3. Run 5 MD trajectories (ZPE-floor, τ=200 fs, 30k steps each)
+4. GP coverage check (stride=10): if σ_mean > 0.10 D, run active learning round
+5. Active learning: --compute-top-n 50 --diversity-radius 3.0 --method wb97x-d
+6. Repeat step 4–5 until σ_max < 0.10 D (typically 2 rounds, ~100 PSI4 frames)
+7. Merge all wB97X-D dipoles; run IR spectrum
+```
+
+---
+
+### Key Files (as of 2026-05-13)
+
+| File | Contents |
+|------|----------|
+| `outputs/wB97X_nm_model_v5/mlpes_wB97X_nm.pkl` | NM-PES v5, 456 frames, 0 imag modes |
+| `outputs/mvko_dipoles_wB97X_base/training_with_dipoles.npz` | 150 frames, wB97X-D dipoles (recomputed from B3LYP geometries) |
+| `outputs/gp_dipole_round1/new_dipoles.npz` | 50 frames, wB97X-D, round 1 active learning |
+| `outputs/gp_dipole_round2/new_dipoles.npz` | 50 frames, wB97X-D, round 2 active learning |
+| `outputs/mvko_dipoles_wB97X_final/training_with_dipoles.npz` | 250 frames, all wB97X-D (target, pending merge) |
+| `gp_dipole_coverage.py` | GP coverage + active learning (`--diversity-radius` for round 2+) |
+| `recompute_dipoles_wB97X.py` | Batch recompute dipoles at new DFT level, with --resume |
+
+---
+
 ## Appendix: PSI4 Settings (enforce consistently)
 
 ```python

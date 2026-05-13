@@ -196,6 +196,54 @@ python3 ir_md_spectrum.py \
     --preminimize --zpe-min-freq 50 --zpe-max-freq 4000
 ```
 
+**Dipole collection with GP active learning (recommended for all new conformers):**
+
+wB97X-D/6-31G* is the **required default** for all dipole computations — it matches the
+PES training level and avoids the ~0.26 D systematic offset from B3LYP that degrades the
+dipole surface fit (B3LYP mixed with wB97X-D drops R² from 0.99 to 0.91).
+
+```bash
+# Step 1: Run 5 MD trajectories to generate the conformational pool
+python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_<vN>/mlpes_wB97X_nm.pkl \
+    --training-data outputs/mvko_dipoles_<initial>/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.0 \
+    --output-dir outputs/ir_spectrum_NM_PES_<vN>_300K
+
+# Step 2: GP coverage check
+python3 gp_dipole_coverage.py \
+    --training-data outputs/mvko_dipoles_<initial>/training_with_dipoles.npz \
+    --traj outputs/ir_spectrum_NM_PES_<vN>_300K/traj_0{1,2,3,4,5}.xyz \
+    --output-dir outputs/gp_dipole_round1 \
+    --stride 10 --gamma 0.001 --alpha 0.0001
+
+# Step 3: Active learning round (if σ_mean > 0.10 D)
+python3 gp_dipole_coverage.py \
+    --training-data outputs/mvko_dipoles_<initial>/training_with_dipoles.npz \
+    --traj outputs/ir_spectrum_NM_PES_<vN>_300K/traj_0{1,2,3,4,5}.xyz \
+    --output-dir outputs/gp_dipole_round1 \
+    --stride 10 --gamma 0.001 --alpha 0.0001 \
+    --compute-top-n 50 --diversity-radius 3.0 --method wb97x-d
+
+# Step 4: Merge new dipoles
+python3 gp_dipole_coverage.py \
+    --training-data outputs/mvko_dipoles_<initial>/training_with_dipoles.npz \
+    --merge outputs/gp_dipole_round1/new_dipoles.npz \
+    --output-dir outputs/mvko_dipoles_gp_round1
+
+# Repeat steps 2-4 until σ_max < 0.10 D (typically 2 rounds, ~100 new frames total)
+# Then run the final IR spectrum with the improved dipole dataset.
+```
+
+**Recomputing existing B3LYP dipoles to wB97X-D** (one-time migration):
+```bash
+python3 recompute_dipoles_wB97X.py \
+    --input  outputs/mvko_dipoles_<old_b3lyp>/training_with_dipoles.npz \
+    --output outputs/mvko_dipoles_wB97X_base \
+    --resume   # safe to interrupt and restart
+```
+
 ## Architecture
 
 ### Two-Layer Structure
@@ -421,7 +469,7 @@ The following extensions were scoped by the user and should be built consistentl
        --n-trajectories 5 --max-bond-extension 2.0 \
        --output-dir outputs/ir_spectrum_wB97X_delta_v3_300K
    ```
-   Note: dipoles from B3LYP training data (wB97X dipoles all zero due to PSI4 oeprop bug in `recompute_wB97X_surface.py`).
+   Note: dipoles originally from B3LYP training data (wB97X-D dipoles all zero due to PSI4 oeprop bug in `recompute_wB97X_surface.py`). Use `recompute_dipoles_wB97X.py` to regenerate at wB97X-D level.
 
    **Scripts**:
    - `test_casscf_equilibrium.py` — SA-2-CASSCF + triplet at eq; validates active space, reports gaps
@@ -490,12 +538,17 @@ Key finding: softer gamma reduces unphysical Hessian modes but causes worse IR s
 - Best model: γ=0.001, α=1e-5, RMSE=0.2734 kcal/mol
 - NOTE: Step 6 (adaptive refinement) was SKIPPED — 500K ML-MD causes runaway to 5000-10000K, corrupting training
 
-**Dipole collection**: `outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz`
+**Dipole collection (B3LYP, legacy)**: `outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz`
 - 150 representative frames with PSI4 B3LYP/6-31G* dipoles
 - Collected via `collect_mvko_dipoles.py` using `properties=['dipole']` API
-- Dipole range: 2.97–5.61 D, mean 4.63 D (physically reasonable for Criegee intermediate)
+- Dipole range: 2.97–5.61 D, mean 4.63 D
 
-**Dipole surface**: γ=0.001, α=1e-4, R²=0.999 train / R²=0.981 test, RMSE=0.024 D
+**Dipole collection (wB97X-D, current)**: `outputs/mvko_dipoles_wB97X_final/training_with_dipoles.npz`
+- 250 frames, all wB97X-D/6-31G*: 150 recomputed base geometries + 50 GP round 1 + 50 GP round 2
+- GP active learning (`gp_dipole_coverage.py`): 2 rounds with diversity radius 3.0 reduced σ_mean from 0.524 D → 0.030 D
+- Use `recompute_dipoles_wB97X.py --resume` to regenerate/continue the base-150 recomputation
+
+**Dipole surface (best, wB97X-D 250 frames)**: γ=0.001, α=1e-4, R²=0.991 test (round 1 mixed, pending clean run)
 
 **IR spectrum**: `outputs/ir_spectrum_20260319_174321/` — 30,000 steps at 300 K
 | Peak (cm⁻¹) | Rel. Intensity | Assignment |
