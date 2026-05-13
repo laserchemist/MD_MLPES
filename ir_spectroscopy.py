@@ -171,9 +171,34 @@ class DipoleSurface:
         if verbose:
             print(f"\n🔍 Hyperparameter optimization...")
 
+        # Median heuristic: γ_center = 1 / (2 * median(||xi-xj||²))
+        # This adapts automatically to dataset diversity — a 250-frame set spanning
+        # diverse conformations has larger typical inter-point distances than a
+        # 150-frame near-equilibrium set, so needs a softer (smaller) γ.
+        n_sub = min(200, len(X_train_scaled))
+        idx = np.random.RandomState(0).choice(len(X_train_scaled), n_sub, replace=False)
+        X_sub = X_train_scaled[idx]
+        sq_dists = (
+            np.sum(X_sub**2, axis=1, keepdims=True)
+            + np.sum(X_sub**2, axis=1, keepdims=True).T
+            - 2 * X_sub @ X_sub.T
+        )
+        median_sq = float(np.median(sq_dists[np.triu_indices(n_sub, k=1)]))
+        gamma_center = 1.0 / (2.0 * median_sq) if median_sq > 0 else 0.001
+        # Search two decades each side of the median-heuristic center
+        import math
+        log_c = math.log10(gamma_center)
+        gamma_grid = sorted(set(
+            10 ** round(log_c + delta, 4)
+            for delta in [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2]
+        ))
+        if verbose:
+            print(f"   Median-heuristic γ_center={gamma_center:.2e}  "
+                  f"grid={[f'{g:.2e}' for g in gamma_grid]}")
+
         param_grid = {
             'kernel': ['rbf'],
-            'gamma': [0.001, 0.01, 0.1, 1.0],
+            'gamma': gamma_grid,
             'alpha': [1e-5, 1e-4, 1e-3, 1e-2]
         }
 
