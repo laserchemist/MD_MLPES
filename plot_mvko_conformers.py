@@ -14,10 +14,12 @@ Status label per panel:
   (no marker) = PSI4 wB97X-D/6-31G* optimised
   *           = approximate starting geometry (optimisation in progress or pending)
 
-Relative energies: Barber et al. 2018 CCSD(T)/aug-cc-pVTZ//B3LYP
-  syn-trans 0.00, syn-cis +1.76, anti-trans +2.57, anti-cis +3.05 kcal/mol
+Each panel shows two sets of relative energies:
+  wB97X-D/6-31G* (this work) — loaded from PSI4 eq_energy in state.json files
+  CCSD(T)/aug-cc-pVTZ//B3LYP (Barber et al. 2018)
 """
 
+import json
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -25,6 +27,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import pickle
 from pathlib import Path
+
+KCAL = 627.509474
 
 
 # ---------------------------------------------------------------------------
@@ -60,6 +64,32 @@ def _load_best(opt_paths, tm_key):
     from modules.test_molecules import get_molecule
     mol = get_molecule(tm_key)
     return mol.coordinates.copy(), syms, 'starting geometry*'
+
+
+def load_our_energies():
+    """
+    Load wB97X-D/6-31G* equilibrium energies from PSI4 state.json files.
+    Returns dict {name: energy_ha} or empty dict if files not found.
+    """
+    sources = {
+        'syn-trans':  'outputs/syn_trans_nm_pes_20260513/state.json',
+        'syn-cis':    'outputs/syn_cis_nm_pes_20260513v2/state.json',
+        'anti-trans': 'outputs/anti_trans_nm_pes_20260421/state.json',
+        'anti-cis':   'outputs/anti_cis_nm_pes_20260513/state.json',
+    }
+    raw = {}
+    for name, path in sources.items():
+        p = Path(path)
+        if p.exists():
+            s = json.loads(p.read_text())
+            if 'eq_energy' in s:
+                raw[name] = s['eq_energy']
+
+    if not raw:
+        return {}
+
+    e0 = raw.get('syn-trans', min(raw.values()))
+    return {name: (e - e0) * KCAL for name, e in raw.items()}
 
 
 def load_conformer_geometries():
@@ -121,7 +151,7 @@ def _get_bonds(coords, symbols):
 # ---------------------------------------------------------------------------
 # Draw one conformer panel
 # ---------------------------------------------------------------------------
-def _draw_conformer(ax, coords, symbols, label, energy_kcal, status):
+def _draw_conformer(ax, coords, symbols, label, barber_kcal, status, our_kcal=None):
     xy = coords[:, :2]
     bonds = _get_bonds(coords, symbols)
 
@@ -165,12 +195,25 @@ def _draw_conformer(ax, coords, symbols, label, energy_kcal, status):
     opt_flag = '' if 'opt' in status else '*'
     ax.set_title(f'{label}{opt_flag}', fontsize=11, fontweight='bold', pad=4)
 
-    # energy line
-    ax.text(0.5, -0.03, f'$\\Delta E$ = {energy_kcal:.2f} kcal mol$^{{-1}}$',
-            transform=ax.transAxes, ha='center', va='top', fontsize=9.5)
+    # our wB97X-D energy (primary, larger)
+    if our_kcal is not None:
+        ax.text(0.5, -0.03,
+                f'$\\Delta E$ = {our_kcal:+.2f} kcal mol$^{{-1}}$ (wB97X-D)',
+                transform=ax.transAxes, ha='center', va='top', fontsize=8.5,
+                color='#1a1a1a')
+        # Barber reference (secondary, smaller, grey)
+        ax.text(0.5, -0.12,
+                f'$\\Delta E$ = {barber_kcal:.2f} kcal mol$^{{-1}}$ (Barber CCSD(T))',
+                transform=ax.transAxes, ha='center', va='top', fontsize=7.5,
+                color='#666666')
+        y_status = -0.21
+    else:
+        ax.text(0.5, -0.03, f'$\\Delta E$ = {barber_kcal:.2f} kcal mol$^{{-1}}$',
+                transform=ax.transAxes, ha='center', va='top', fontsize=9.5)
+        y_status = -0.11
 
     # status line (small, grey)
-    ax.text(0.5, -0.11, status,
+    ax.text(0.5, y_status, status,
             transform=ax.transAxes, ha='center', va='top',
             fontsize=6.5, color='#888888', style='italic')
 
@@ -179,9 +222,10 @@ def _draw_conformer(ax, coords, symbols, label, energy_kcal, status):
 # Main
 # ---------------------------------------------------------------------------
 def main():
-    geoms = load_conformer_geometries()
+    geoms   = load_conformer_geometries()
+    our_de  = load_our_energies()   # wB97X-D/6-31G* ΔE (kcal/mol), may be empty
 
-    # Barber et al. 2018 CCSD(T) relative energies
+    # Barber et al. 2018 CCSD(T)/aug-cc-pVTZ//B3LYP relative energies
     BARBER_DE = {'syn-trans': 0.00, 'syn-cis': 1.76,
                  'anti-trans': 2.57, 'anti-cis': 3.05}
 
@@ -192,8 +236,8 @@ def main():
         (1, 1, 'anti-cis'),
     ]
 
-    fig, axes = plt.subplots(2, 2, figsize=(7.5, 7.5),
-                              gridspec_kw={'wspace': 0.10, 'hspace': 0.28})
+    fig, axes = plt.subplots(2, 2, figsize=(7.5, 8.0),
+                              gridspec_kw={'wspace': 0.10, 'hspace': 0.36})
 
     any_approx = False
     for row, col, name in layout:
@@ -201,7 +245,8 @@ def main():
         if 'starting' in status:
             any_approx = True
         _draw_conformer(axes[row][col], coords, symbols,
-                        name, BARBER_DE[name], status)
+                        name, BARBER_DE[name], status,
+                        our_kcal=our_de.get(name))
 
     # row / column headers
     for ax, hdr in zip(axes[:, 0], ['syn', 'anti']):
