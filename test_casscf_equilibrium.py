@@ -88,7 +88,8 @@ def n_frozen(symbols):
 
 def run_singlet_casscf(symbols, coords_ang, basis='6-31g*',
                         n_active_orb=4, n_active_elec=4,
-                        n_states=2, verbose=0):
+                        n_states=2, verbose=0,
+                        mo_init=None, max_cycles=300, conv_tol=1e-8):
     """
     RHF → SA-n-CASSCF(4,4)/basis singlet calculation.
 
@@ -126,10 +127,13 @@ def run_singlet_casscf(symbols, coords_ang, basis='6-31g*',
         # SA-n-CASSCF
         weights = [1.0 / n_states] * n_states
         mc = mcscf.CASSCF(mf, n_active_orb, n_active_elec).state_average(weights)
-        mc.max_cycle_macro = 300
-        mc.conv_tol        = 1e-8
+        mc.max_cycle_macro = max_cycles
+        mc.conv_tol        = conv_tol
         mc.verbose         = verbose
-        mc.kernel()
+        if mo_init is not None:
+            mc.kernel(mo_init)
+        else:
+            mc.kernel()
 
         result['converged'] = mc.converged
         result['mo_coeff']  = mc.mo_coeff.copy()
@@ -160,9 +164,11 @@ def run_singlet_casscf(symbols, coords_ang, basis='6-31g*',
         except Exception as exc:
             print(f"    Warning: NO occupations extraction failed: {exc}")
 
-        # State-switch detection
+        # State-switch detection (truncate reference to match active space size)
         if result['no_occ_s0'] is not None:
-            dev = np.max(np.abs(result['no_occ_s0'] - EQ_NO_OCC_REF))
+            n = len(result['no_occ_s0'])
+            ref = EQ_NO_OCC_REF[:n] if n <= len(EQ_NO_OCC_REF) else EQ_NO_OCC_REF
+            dev = np.max(np.abs(result['no_occ_s0'] - ref))
             result['no_occ_max_dev'] = float(dev)
             result['state_switched'] = bool(dev > NO_OCC_SWITCH_THRESHOLD)
 
@@ -258,9 +264,22 @@ def main():
                         help='Pass verbose=4 to PySCF')
     parser.add_argument('--output', default=None,
                         help='Save JSON results to this path')
+    parser.add_argument('--mo-init', default=None,
+                        help='Path to .npy MO coefficient array to seed CASSCF '
+                             '(shape: n_mo × n_mo). Useful when RHF starting MOs '
+                             'give poor active space coverage.')
+    parser.add_argument('--max-cycles', type=int, default=300,
+                        help='Max CASSCF macro cycles (default: 300)')
+    parser.add_argument('--conv-tol', type=float, default=1e-8,
+                        help='CASSCF convergence tolerance (default: 1e-8)')
     args = parser.parse_args()
 
     verbose = 4 if args.verbose else 0
+
+    mo_init = None
+    if args.mo_init:
+        mo_init = np.load(args.mo_init)
+        print(f"Seeding CASSCF with MO coefficients from: {args.mo_init}  shape={mo_init.shape}")
 
     # ── Load equilibrium geometry ─────────────────────────────────────────────
     if args.eq_coords:
@@ -296,6 +315,9 @@ def main():
         n_active_elec=args.n_active_elec,
         n_states=args.n_states,
         verbose=verbose,
+        mo_init=mo_init,
+        max_cycles=args.max_cycles,
+        conv_tol=args.conv_tol,
     )
     t_sing = time.time() - t0
     all_results['singlet'] = {k: v.tolist() if isinstance(v, np.ndarray) else v

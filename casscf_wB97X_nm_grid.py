@@ -300,9 +300,11 @@ def run_singlet_casscf(symbols, coords_ang, basis='6-31g*',
         except Exception:
             pass
 
-        # State-switch detection on S0
+        # State-switch detection on S0 (truncate reference to active space size)
         if result['no_occ_s0'] is not None:
-            dev = float(np.max(np.abs(result['no_occ_s0'] - EQ_NO_OCC_REF)))
+            _n = len(result['no_occ_s0'])
+            _ref = EQ_NO_OCC_REF[:_n] if _n <= len(EQ_NO_OCC_REF) else EQ_NO_OCC_REF
+            dev = float(np.max(np.abs(result['no_occ_s0'] - _ref)))
             result['no_occ_max_dev'] = dev
             result['state_switched'] = dev > NO_OCC_SWITCH_THRESHOLD
 
@@ -551,7 +553,38 @@ def main():
                         help='Output directory from a partial run to resume')
     parser.add_argument('--retrain-only', action='store_true',
                         help='Skip calculations, reload results.json and retrain KRR')
+    parser.add_argument('--eq-ref-json', default=None,
+                        help='JSON from test_casscf_equilibrium.py for this conformer. '
+                             'Overrides the hardcoded E_CASSCF_S0_EQ_HA / E_WB97X_EQ_HA '
+                             'constants so δ_S0=0 at the correct conformer equilibrium. '
+                             'Keys used: e_casscf_s0_eq_ha, e_wb97x_eq_ha, '
+                             'singlet.e_s1, triplet.e_t1, singlet.no_occ_s0')
     args = parser.parse_args()
+
+    # Override module-level equilibrium constants for conformer-specific runs.
+    # Without this, δ_S0 is only guaranteed to be 0 at the anti-cis equilibrium.
+    if args.eq_ref_json:
+        global E_CASSCF_S0_EQ_HA, E_WB97X_EQ_HA, GAP_S1_EQ_HA, GAP_T1_EQ_HA, EQ_NO_OCC_REF
+        with open(args.eq_ref_json) as _fh:
+            _ref = json.load(_fh)
+        E_CASSCF_S0_EQ_HA = _ref['e_casscf_s0_eq_ha']
+        E_WB97X_EQ_HA     = _ref['e_wb97x_eq_ha']
+        _sing = _ref.get('singlet', {})
+        _trip = _ref.get('triplet', {})
+        _e_s1 = _sing.get('e_s1')
+        _e_t1 = _trip.get('e_t1')
+        if _e_s1 is not None:
+            GAP_S1_EQ_HA = _e_s1 - E_CASSCF_S0_EQ_HA
+        if _e_t1 is not None:
+            GAP_T1_EQ_HA = _e_t1 - E_CASSCF_S0_EQ_HA
+        _no_occ = _sing.get('no_occ_s0')
+        if _no_occ is not None:
+            EQ_NO_OCC_REF = np.array(_no_occ)
+        print(f"Equilibrium reference loaded from: {args.eq_ref_json}")
+        print(f"  E_CASSCF_S0(eq) = {E_CASSCF_S0_EQ_HA:.10f} Ha")
+        print(f"  E_wB97X(eq)     = {E_WB97X_EQ_HA:.10f} Ha")
+        print(f"  Gap_S1(eq)      = {GAP_S1_EQ_HA * HARTREE_TO_KCAL:.3f} kcal/mol")
+        print(f"  Gap_T1(eq)      = {GAP_T1_EQ_HA * HARTREE_TO_KCAL:.3f} kcal/mol")
 
     ts = datetime.now().strftime('%Y%m%d_%H%M%S')
     out_dir = Path(args.resume) if args.resume else \
@@ -624,7 +657,9 @@ def main():
         'gap_t1_eq_kcal':    GAP_T1_EQ_HA * HARTREE_TO_KCAL,
         'no_occ_ref':        EQ_NO_OCC_REF.tolist(),
         'no_occ_threshold':  args.no_occ_threshold,
-        'source':            'test_casscf_equilibrium.py (2026-04-07)',
+        'source':            (f'test_casscf_equilibrium.py via {args.eq_ref_json}'
+                              if args.eq_ref_json else
+                              'test_casscf_equilibrium.py (2026-04-07)'),
     }
     with open(out_dir / 'eq_reference.json', 'w') as f:
         json.dump(eq_ref, f, indent=2)
