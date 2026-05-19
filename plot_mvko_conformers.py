@@ -99,8 +99,10 @@ def load_casscf_gaps():
     or empty dict for conformers without data.
     """
     sources = {
-        'syn-trans': ('outputs/syn_trans_casscf22_eq_ref.json', '(2,2)'),
-        'anti-cis':  ('outputs/casscf_wB97X_nm_grid_20260407_184904/eq_reference.json', '(4,4)'),
+        'syn-trans':  ('outputs/syn_trans_casscf22_eq_ref.json', '(2,2)'),
+        'syn-cis':    ('outputs/casscf_wB97X_nm_grid_20260519_132602/eq_reference.json', '(2,2)'),
+        'anti-trans': ('outputs/casscf_wB97X_nm_grid_20260519_132839/eq_reference.json', '(4,4)'),
+        'anti-cis':   ('outputs/casscf_wB97X_nm_grid_20260407_184904/eq_reference.json', '(4,4)'),
     }
     out = {}
     for name, (path, cas) in sources.items():
