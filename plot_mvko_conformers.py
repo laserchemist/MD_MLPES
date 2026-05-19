@@ -92,6 +92,34 @@ def load_our_energies():
     return {name: (e - e0) * KCAL for name, e in raw.items()}
 
 
+def load_casscf_gaps():
+    """
+    Load CASSCF S1/T1 gaps at equilibrium for each conformer.
+    Returns dict {name: {'gap_s1': float, 'gap_t1': float, 'active_space': str}}
+    or empty dict for conformers without data.
+    """
+    sources = {
+        'syn-trans': ('outputs/syn_trans_casscf22_eq_ref.json', '(2,2)'),
+        'anti-cis':  ('outputs/casscf_wB97X_nm_grid_20260407_184904/eq_reference.json', '(4,4)'),
+    }
+    out = {}
+    for name, (path, cas) in sources.items():
+        p = Path(path)
+        if not p.exists():
+            continue
+        r = json.loads(p.read_text())
+        e_s0 = r.get('e_casscf_s0_eq_ha') or r.get('singlet', {}).get('e_s0')
+        gap_s1 = r.get('gap_s1_eq_kcal')
+        gap_t1 = r.get('gap_t1_eq_kcal')
+        if gap_s1 is None:
+            s = r.get('singlet', {}); t = r.get('triplet', {})
+            gap_s1 = (s['e_s1'] - e_s0) * KCAL if s.get('e_s1') else None
+            gap_t1 = (t['e_t1'] - e_s0) * KCAL if t.get('e_t1') else None
+        if e_s0 is not None:
+            out[name] = {'gap_s1': gap_s1, 'gap_t1': gap_t1, 'active_space': cas}
+    return out
+
+
 def load_conformer_geometries():
     """Return dict of {name: (coords, symbols, status)} for the four conformers."""
 
@@ -151,7 +179,8 @@ def _get_bonds(coords, symbols):
 # ---------------------------------------------------------------------------
 # Draw one conformer panel
 # ---------------------------------------------------------------------------
-def _draw_conformer(ax, coords, symbols, label, barber_kcal, status, our_kcal=None):
+def _draw_conformer(ax, coords, symbols, label, barber_kcal, status,
+                    our_kcal=None, casscf_gaps=None):
     xy = coords[:, :2]
     bonds = _get_bonds(coords, symbols)
 
@@ -201,16 +230,32 @@ def _draw_conformer(ax, coords, symbols, label, barber_kcal, status, our_kcal=No
                 f'$\\Delta E$ = {our_kcal:+.2f} kcal mol$^{{-1}}$ (wB97X-D)',
                 transform=ax.transAxes, ha='center', va='top', fontsize=8.5,
                 color='#1a1a1a')
-        # Barber reference (secondary, smaller, grey)
         ax.text(0.5, -0.12,
                 f'$\\Delta E$ = {barber_kcal:.2f} kcal mol$^{{-1}}$ (Barber CCSD(T))',
                 transform=ax.transAxes, ha='center', va='top', fontsize=7.5,
                 color='#666666')
-        y_status = -0.21
+        y_cas = -0.21
     else:
         ax.text(0.5, -0.03, f'$\\Delta E$ = {barber_kcal:.2f} kcal mol$^{{-1}}$',
                 transform=ax.transAxes, ha='center', va='top', fontsize=9.5)
-        y_status = -0.11
+        y_cas = -0.11
+
+    # CASSCF gap line
+    if casscf_gaps is not None:
+        cas = casscf_gaps['active_space']
+        s1  = casscf_gaps['gap_s1']
+        t1  = casscf_gaps['gap_t1']
+        gap_txt = (f'CASSCF{cas}: '
+                   f'$\\Delta E_{{S1}}$={s1:.1f}, $\\Delta E_{{T1}}$={t1:.1f} kcal mol$^{{-1}}$')
+        ax.text(0.5, y_cas, gap_txt,
+                transform=ax.transAxes, ha='center', va='top', fontsize=7.0,
+                color='#1155aa')
+        y_status = y_cas - 0.10
+    else:
+        ax.text(0.5, y_cas, 'CASSCF: pending',
+                transform=ax.transAxes, ha='center', va='top', fontsize=7.0,
+                color='#aaaaaa', style='italic')
+        y_status = y_cas - 0.10
 
     # status line (small, grey)
     ax.text(0.5, y_status, status,
@@ -222,8 +267,9 @@ def _draw_conformer(ax, coords, symbols, label, barber_kcal, status, our_kcal=No
 # Main
 # ---------------------------------------------------------------------------
 def main():
-    geoms   = load_conformer_geometries()
-    our_de  = load_our_energies()   # wB97X-D/6-31G* ΔE (kcal/mol), may be empty
+    geoms      = load_conformer_geometries()
+    our_de     = load_our_energies()    # wB97X-D/6-31G* ΔE (kcal/mol), may be empty
+    casscf_de  = load_casscf_gaps()     # CASSCF S1/T1 gaps, keyed by conformer name
 
     # Barber et al. 2018 CCSD(T)/aug-cc-pVTZ//B3LYP relative energies
     BARBER_DE = {'syn-trans': 0.00, 'syn-cis': 1.76,
@@ -236,8 +282,8 @@ def main():
         (1, 1, 'anti-cis'),
     ]
 
-    fig, axes = plt.subplots(2, 2, figsize=(7.5, 8.0),
-                              gridspec_kw={'wspace': 0.10, 'hspace': 0.36})
+    fig, axes = plt.subplots(2, 2, figsize=(7.5, 9.0),
+                              gridspec_kw={'wspace': 0.10, 'hspace': 0.52})
 
     any_approx = False
     for row, col, name in layout:
@@ -246,7 +292,8 @@ def main():
             any_approx = True
         _draw_conformer(axes[row][col], coords, symbols,
                         name, BARBER_DE[name], status,
-                        our_kcal=our_de.get(name))
+                        our_kcal=our_de.get(name),
+                        casscf_gaps=casscf_de.get(name))
 
     # row / column headers
     for ax, hdr in zip(axes[:, 0], ['syn', 'anti']):
@@ -268,7 +315,7 @@ def main():
 
     # title
     fig.text(0.5, 0.98,
-             'MVKO Conformers — Barber et al. 2018 relative energies',
+             'MVKO Conformers — wB97X-D, Barber CCSD(T), and CASSCF gaps',
              ha='center', va='top', fontsize=11)
     if any_approx:
         fig.text(0.5, 0.945,
