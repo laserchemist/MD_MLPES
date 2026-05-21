@@ -549,6 +549,10 @@ def main():
                         help='KRR gamma grid for LOO-CV')
     parser.add_argument('--alpha-values', default='1e-6,1e-5,1e-4,1e-3',
                         help='KRR alpha grid for LOO-CV')
+    parser.add_argument('--outlier-delta-s0-max', type=float, default=None,
+                        help='Exclude frames where |δ_S0| > this value (kcal/mol)')
+    parser.add_argument('--outlier-gap-t1-min', type=float, default=None,
+                        help='Exclude frames where Δgap_T1 < this value (kcal/mol)')
     parser.add_argument('--resume', default=None,
                         help='Output directory from a partial run to resume')
     parser.add_argument('--retrain-only', action='store_true',
@@ -835,9 +839,36 @@ def main():
         gap_t1_ha.append(rec.get('gap_t1_ha'))
         ok_frames.append(frame)
 
+    # Optional outlier filtering before KRR training
+    n_outlier = 0
+    if args.outlier_delta_s0_max is not None or args.outlier_gap_t1_min is not None:
+        keep = []
+        for i, (frame, ds0, gs1, gt1) in enumerate(
+                zip(ok_frames, delta_s0_ha, gap_s1_ha, gap_t1_ha)):
+            ds0_kcal = ds0 * HARTREE_TO_KCAL
+            gt1_kcal = gt1 * HARTREE_TO_KCAL if gt1 is not None else None
+            excluded = False
+            if args.outlier_delta_s0_max is not None and abs(ds0_kcal) > args.outlier_delta_s0_max:
+                excluded = True
+            if (args.outlier_gap_t1_min is not None and gt1_kcal is not None
+                    and gt1_kcal < args.outlier_gap_t1_min):
+                excluded = True
+            if excluded:
+                key = frame_key(frame)
+                print(f"    Outlier excluded: {key}  δ_S0={ds0_kcal:+.2f} kcal/mol"
+                      + (f"  gap_T1={gt1_kcal:.1f} kcal/mol" if gt1_kcal is not None else ""))
+                n_outlier += 1
+            else:
+                keep.append(i)
+        ok_frames   = [ok_frames[i]   for i in keep]
+        delta_s0_ha = [delta_s0_ha[i] for i in keep]
+        gap_s1_ha   = [gap_s1_ha[i]   for i in keep]
+        gap_t1_ha   = [gap_t1_ha[i]   for i in keep]
+
     M = len(ok_frames)
     print(f"\n  Clean frames: {M}  "
           f"(excluded: {n_switched} state-switched, "
+          f"{n_outlier} outliers, "
           f"{len(grid_frames) - len(completed)} not computed)")
 
     if M < 10:
