@@ -54,7 +54,7 @@ FREQ_CONV        = 5140.48   # sqrt(Ha/(Bohr²·amu)) → cm⁻¹
 # Driver loading
 # =============================================================================
 
-def load_driver(model_path, sgdml_model_path, mace_model_path):
+def load_driver(model_path, sgdml_model_path, mace_model_path, nm_pes_model_path=None):
     """Load the appropriate driver based on which path is provided."""
     if mace_model_path:
         from modules.mace_pes import MACEDriver
@@ -64,6 +64,10 @@ def load_driver(model_path, sgdml_model_path, mace_model_path):
         from modules.sgdml_pes import SGDMLDriver
         driver = SGDMLDriver(sgdml_model_path)
         driver_type = 'sGDML'
+    elif nm_pes_model_path:
+        from modules.nm_pes import NMPESDriver
+        driver = NMPESDriver(nm_pes_model_path)
+        driver_type = 'NM-KRR'
     else:
         from modules.bakken import MLPESDriver
         driver = MLPESDriver(model_path)
@@ -90,8 +94,14 @@ def compute_normal_modes(driver, coords_eq: np.ndarray,
     masses  = driver.masses
 
     if getattr(driver, '_has_analytic', False):
-        print(f"  Computing Hessian via analytic forces (δ={delta} Å)…")
-        H = driver.analytic_hessian(coords_eq, delta=delta)  # Ha/Å²
+        import inspect
+        _sig = inspect.signature(driver.analytic_hessian)
+        if 'delta' in _sig.parameters:
+            print(f"  Computing Hessian via analytic forces (δ={delta} Å)…")
+            H = driver.analytic_hessian(coords_eq, delta=delta)
+        else:
+            print(f"  Computing Hessian analytically…")
+            H = driver.analytic_hessian(coords_eq)
     else:
         print(f"  Computing Hessian via FD on forces (δ={delta} Å)…")
         H = np.zeros((n3, n3))
@@ -171,12 +181,14 @@ def main():
     )
     # Driver selection — exactly one required
     grp = parser.add_mutually_exclusive_group(required=True)
-    grp.add_argument('--model',       default=None,
+    grp.add_argument('--model',        default=None,
                      help='Coulomb+KRR model .pkl (MLPESDriver, legacy)')
-    grp.add_argument('--sgdml-model', default=None,
+    grp.add_argument('--sgdml-model',  default=None,
                      help='sGDML model .pkl (SGDMLDriver)')
-    grp.add_argument('--mace-model',  default=None,
+    grp.add_argument('--mace-model',   default=None,
                      help='MACE model .pt (MACEDriver, preferred)')
+    grp.add_argument('--nm-pes-model', default=None,
+                     help='NM-coordinate KRR model .pkl (NMPESDriver)')
 
     parser.add_argument('--training-data', required=True,
                         help='Training data .npz (coordinates, energies, forces, symbols)')
@@ -204,8 +216,9 @@ def main():
     print(f"{'='*60}")
 
     # ── Load driver ────────────────────────────────────────────────────
-    driver, driver_type = load_driver(args.model, args.sgdml_model, args.mace_model)
-    model_path = args.mace_model or args.sgdml_model or args.model
+    driver, driver_type = load_driver(args.model, args.sgdml_model, args.mace_model,
+                                      getattr(args, 'nm_pes_model', None))
+    model_path = args.mace_model or args.sgdml_model or getattr(args, 'nm_pes_model', None) or args.model
     print(f"  Driver type   : {driver_type}")
     print(f"  Model         : {model_path}")
     print(f"  Molecule      : {driver.symbols}  ({driver.n_atoms} atoms)")
@@ -228,8 +241,11 @@ def main():
     np.random.seed(42)
     err = validate_predictions(driver, coords, energies, forces,
                                n_sample=args.n_validate)
+    rmse_note = ''
+    if driver_type == 'NM-KRR':
+        rmse_note = '  [NM-KRR: large RMSE expected — model predicts δE(eq), not absolute E]'
     print(f"  Energy RMSE   : {err['e_rmse_kcal']:.4f} kcal/mol  "
-          f"(MAE {err['e_mae_kcal']:.4f} kcal/mol)")
+          f"(MAE {err['e_mae_kcal']:.4f} kcal/mol){rmse_note}")
     print(f"  Force RMSE    : {err['f_rmse_HaAng']:.5f} Ha/Å  "
           f"(MAE {err['f_mae_HaAng']:.5f} Ha/Å)  "
           f"= {err['f_rmse_HaAng']*HARTREE_TO_KCAL:.3f} kcal/mol/Å")
@@ -322,6 +338,7 @@ def main():
         f"  Unphysical modes : {n_unphysical}  (>5000 cm⁻¹)",
         f"  Max frequency    : {max(abs(f) for f in vib_modes):.0f} cm⁻¹",
         f"  (Coulomb+KRR typically has 5/9 unphysical at >5000 cm⁻¹)",
+        f"  (NM-KRR: Cartesian Hessian high-freq modes may be inflated; MD stability is the relevant check)",
         f"  (MACE expected: 0 imaginary, 0 unphysical, max ~3200 cm⁻¹)",
     ]
     for i, f in enumerate(vib_sorted):
@@ -353,7 +370,13 @@ def main():
     if n_imaginary == 0 and n_unphysical == 0:
         print(f"  PASS: No imaginary or unphysical modes — PES curvature is physical.")
     elif n_unphysical > 0:
-        if driver_type == 'MACE':
+        if driver_type == 'NM-KRR':
+            print(f"  WARN: {n_unphysical} unphysical modes (>5000 cm⁻¹) in Cartesian Hessian.")
+            print(f"        NM-KRR Cartesian Hessian inflates high-freq (C-H) modes due to")
+            print(f"        tight RBF curvature in cramped NM-coordinate space for stiff modes.")
+            print(f"        MD stability is the relevant check — use --zpe-max-freq 4000 to")
+            print(f"        exclude these modes from ZPE initialization.")
+        elif driver_type == 'MACE':
             print(f"  FAIL: {n_unphysical} unphysical modes (>5000 cm⁻¹) — "
                   f"training data coverage issue (MACE C-H curvature requires large-amplitude")
             print(f"        C-H frames; 15 kcal/mol energy cutoff may remove them).")

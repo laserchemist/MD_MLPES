@@ -46,3 +46,12 @@ psi4_output.dat
 outputs/**
 !outputs/**/
 !outputs/**/*.png
+
+# Large standalone model files
+mace_mvko*.model
+
+# Run logs
+logs/
+
+# Also track HTML reports in outputs
+!outputs/**/*.html

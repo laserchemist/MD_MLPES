@@ -1231,6 +1231,7 @@ def run_ir_workflow(model_path: str,
                     nm_pes_bond_wall_stiffness: float = 1.0,
                     sgdml_model_path: str | None = None,
                     mace_model_path: str | None = None,
+                    nm_eigvec_model_path: str | None = None,
                     thermostat_tau: float = 200.0) -> None:
     """
     Full ML-PES IR spectrum workflow.
@@ -1327,6 +1328,15 @@ def run_ir_workflow(model_path: str,
     elif hasattr(driver, '_base') and hasattr(getattr(driver, '_base', None), '_model'):
         _nm_pes_driver = driver._base  # NMDeltaDriver wrapping NMPESDriver
 
+    # --nm-eigvec-model forces NMDipoleSurface even when PES is MACE/Coulomb+KRR.
+    # The NM-PES pkl provides U_vib/freq_vib/eq_coords for the dipole surface.
+    if nm_eigvec_model_path and _nm_pes_driver is None:
+        import types
+        from modules.nm_pes import NMKRRPESModel as _NMKRRPESModel
+        _nm_eigvec_model_obj = _NMKRRPESModel.load(nm_eigvec_model_path)
+        _nm_pes_driver = types.SimpleNamespace(_model=_nm_eigvec_model_obj)
+        print(f"  NM eigvec model    : {nm_eigvec_model_path}  (NMDipoleSurface forced)")
+
     if dipole_model_path and Path(dipole_model_path).exists():
         print(f"\n  Loading existing dipole model from {dipole_model_path}")
         from modules.nm_pes import load_dipole_surface as _load_dipole
@@ -1374,6 +1384,22 @@ def run_ir_workflow(model_path: str,
                 _nm.U_vib,              # (3N, n_vib) mass-weighted eigenvectors
                 _nm._eigenvalues_ha,    # (n_vib,) Ha/(Bohr²·amu)
                 _mass_vec,              # (3N,) amu
+            )
+            nm_frequencies = nm_data[0]
+            print(f"  n_vib={len(nm_frequencies)}  "
+                  f"freq range [{nm_frequencies[0]:.1f}, {nm_frequencies[-1]:.1f}] cm⁻¹")
+        elif nm_eigvec_model_path:
+            # Use stored PSI4 eigenvectors from nm_eigvec_model (fast; avoids MACE Hessian)
+            print("\n--- Using stored PSI4 NM data for ZPE init (--nm-eigvec-model) ---")
+            from modules.nm_pes import NMKRRPESModel as _NMKRRPESModel2, ATOMIC_MASSES
+            _nm_zpe = _NMKRRPESModel2.load(nm_eigvec_model_path)
+            _mass_vec = np.repeat(
+                np.array([ATOMIC_MASSES[s] for s in driver.symbols]), 3)
+            nm_data = (
+                _nm_zpe.freqs_vib,
+                _nm_zpe.U_vib,
+                _nm_zpe._eigenvalues_ha,
+                _mass_vec,
             )
             nm_frequencies = nm_data[0]
             print(f"  n_vib={len(nm_frequencies)}  "
@@ -1761,6 +1787,13 @@ def main():
                         help='Berendsen thermostat coupling time in fs (default 200). '
                              'Increase to 2000+ to reduce ZPE leakage and retain C-H '
                              'stretch amplitude for longer in the ACF.')
+    parser.add_argument('--nm-eigvec-model',   default=None,
+                        help='Path to NMKRRPESModel .pkl used ONLY for normal-mode '
+                             'eigenvectors (U_vib / freq_vib). Forces NMDipoleSurface '
+                             'training and provides PSI4 NM data for ZPE init regardless '
+                             'of which PES backend is active. Use with --mace-model to '
+                             'combine stable MACE dynamics with physically meaningful '
+                             'dipole derivatives (e.g. C-H stretch region).')
     args = parser.parse_args()
 
     if (args.model is None and args.nm_pes_model is None
@@ -1804,6 +1837,7 @@ def main():
         nm_pes_bond_wall_stiffness  = args.nm_pes_bond_wall_stiffness,
         sgdml_model_path            = args.sgdml_model,
         mace_model_path             = args.mace_model,
+        nm_eigvec_model_path        = args.nm_eigvec_model,
         thermostat_tau              = args.thermostat_tau,
     )  # nm_pes_model_path already passed above
 

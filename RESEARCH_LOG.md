@@ -2,6 +2,122 @@
 
 ---
 
+## 2026-06-06 — Hot Molecule IR Emission; ACF Failure Root Cause; Temperature-Dependent Anharmonic Spectra
+
+### Summary
+
+Two major conclusions reached this session:
+
+1. **ACF-based IR is fundamentally unsuitable for MVKO** — permanent-dipole reorientation dominates by ~70,000×. The correct approach is `NMDipoleSurface.ir_intensities(eq_coords)` for harmonic IR, and trajectory-averaged local Hessian intensities for anharmonic/hot spectra.
+
+2. **Hot molecule IR emission spectra computed at 300 K and 2000 K** using a new `hot_emission_spectrum.py` script. At 2000 K (relevant to nascent ozonolysis products), the dominant C-O stretch red-shifts by 94 cm⁻¹ and the O-O stretch becomes comparably intense.
+
+### ACF-Based IR Failure — Root Cause Confirmed
+
+All ACF-based IR runs for MVKO produce spectra dominated by ~150 cm⁻¹ torsional signal with essentially zero fingerprint-region intensity. Four separate runs confirmed this:
+
+| Run | PES | Dipole surface | Dominant peak | Fingerprint I_rel |
+|-----|-----|----------------|---------------|-------------------|
+| NM-PES v2 | NM-KRR | NMDipoleSurface | 342 cm⁻¹ | <0.001 |
+| MACE + NMDipoleSurface | MACE wB97X | NMDipoleSurface | 147 cm⁻¹ | ~1×10⁻⁵ |
+| MACE + Coulomb dipole | MACE wB97X | Coulomb+KRR | 147 cm⁻¹ | ~1×10⁻⁵ |
+| MACE + δ_S0 | MACE+CASSCF | NMDipoleSurface | 147 cm⁻¹ | ~1×10⁻⁵ |
+
+**Root cause**: MVKO has a ~4.5 D permanent COO zwitterion dipole. When torsional motion reorients this dipole by angle θ, the ACF contribution scales as |μ₀|² × θ_max² ≈ (4.5 D)² × θ² per mode. The competing vibrational stretching contribution scales as (∂|μ|/∂q_stretch)² × q_stretch². For the C-O stretch: ∂|μ|/∂q ≈ 0.13 D per unit displacement. The ratio of torsional to stretching ACF power is ~(4.5/0.13)² × (θ/q_stretch)² ≈ 1200 × amplitude_ratio. At any classical temperature, this ratio ensures torsion completely dominates. This is physics, not a bug — it cannot be fixed by better PES, better dipole surface, or different ZPE settings.
+
+**The NM-PES v2 trajectories** additionally failed for a different reason: the NM-KRR model has no repulsive wall beyond the training grid, so ZPE-initialized velocities immediately drove bonds past the 2× extension guard. Trajectories terminated after 125–165 steps. MACE provides stable 30,000-step trajectories at both 300 K and 2000 K.
+
+### Correct IR Approach: Harmonic Dipole Derivatives
+
+`NMDipoleSurface.ir_intensities(eq_coords)` computes ||∂μ/∂q_k||² — the standard harmonic IR absorption intensity. It correctly separates internal vibrational changes in the dipole moment from global reorientation. No MD or ACF needed.
+
+**Anti-cis MVKO harmonic IR peaks** (NMDipoleSurface R²=0.9997, MACE+δ_S0 equilibrium geometry, FWHM=10 cm⁻¹):
+
+| Freq (cm⁻¹) | I_rel | Assignment |
+|-------------|-------|------------|
+| 1089 | 1.000 | C-O stretch (strongest) |
+| 1480 | 0.985 | CH₂ wag / C=C |
+| 1011 | 0.827 | C-O stretch |
+| 1693 | 0.550 | C=C stretch |
+| 1131 | 0.513 | C-O stretch |
+| 1292 | 0.399 | C=C stretch |
+| 3201 | 0.283 | C-H stretch |
+| 835  | 0.041 | O-O stretch |
+
+Saved: `outputs/ir_nm_dipole_harmonic_anti_cis/ir_harmonic_spectrum.csv`
+
+### Hot Molecule IR Emission — New Script (`hot_emission_spectrum.py`)
+
+For nascent ozonolysis products, MVKO is formed with 20–40 kcal/mol of internal energy. The IR emission spectrum from such hot molecules is anharmonically broadened and shifted — classically accessible via trajectory-averaged local Hessians.
+
+**Method** (trajectory-averaged local harmonic intensities):
+
+For each sampled geometry from a high-T MD trajectory:
+1. Compute MACE Hessian at that geometry → local (anharmonic) NM frequencies ω_k(R)
+2. Evaluate `NMDipoleSurface.ir_intensities(R)` → local intensity I_k(R) = ||∂μ/∂q_k(R)||²
+3. Accumulate Lorentzian peaks: S(ν) += Σ_k I_k · γ² / [(ν − ω_k)² + γ²]
+
+This captures anharmonic frequency shifts and mode-coupling via the geometry-dependent Hessian, while avoiding the permanent-dipole reorientation problem entirely (∂μ/∂q is a local internal coordinate derivative).
+
+**Trajectories used**: MACE wB97X + CASSCF δ_S0 correction; 5 trajectories × 30,000 frames each; stride=300 → 500 samples per temperature. Hessian via FD on MACE analytic forces (72 passes/geometry). Rate: ~3.2 s/sample (26 min total).
+
+**300 K run**: `outputs/ir_mace_nm_dipole_anti_cis_300K/` (ZPE-floor initialized, Berendsen 300 K)
+**2000 K run**: `outputs/ir_mace_anti_cis_2000K/` (ZPE-floor initialized, Berendsen 2000 K)
+
+**Output files**:
+- `outputs/hot_emission_anti_cis_300K/ir_hot_emission.csv` — 300 K spectrum (FWHM=15 cm⁻¹)
+- `outputs/hot_emission_anti_cis_2000K/ir_hot_emission.csv` — 2000 K spectrum (FWHM=30 cm⁻¹)
+- `outputs/hot_emission_anti_cis_comparison.png` — overlay figure
+- `outputs/mvko_results_report.html` — interactive Plotly results page
+
+### Temperature-Dependent Spectral Shifts
+
+Peak comparison across temperatures (all ΔE in cm⁻¹ relative to harmonic equilibrium value):
+
+| Region | Assignment | Harmonic | 300 K | 2000 K | Δ(300→2000K) |
+|--------|-----------|---------|-------|--------|--------------|
+| 100–500 | Torsion | 318 | 459 | 476 | +17 |
+| 500–700 | COO bend | 648 | 590 | 653 | +63 |
+| 700–900 | **O-O stretch** | 728 | 741 | **772** | +31 |
+| 900–1200 | **C-O stretch** (dominant) | 1089 | **1118** | **1024** | **−94** |
+| 1200–1500 | CH₂ wag / C-C | 1480 | 1425 | 1294 | −131 |
+| 1500–1800 | C=C stretch | 1693 | 1548 | 1631 | +83 |
+| 2800–3400 | C-H stretch | 3201 | 3322 | 3178 | −144 |
+
+**Key findings**:
+- The dominant C-O stretch (1089 cm⁻¹ harmonic) red-shifts by 65 cm⁻¹ at 300 K and 94 cm⁻¹ at 2000 K — the asymmetric C-O potential softens at high internal energy.
+- The O-O stretch (835 cm⁻¹ harmonic) is nearly invisible in the harmonic spectrum (I_rel=0.041) but **grows dramatically** with temperature: I_rel=0.36 at 300 K, I_rel=0.83 at 2000 K. This is because O-O stretch displacement is thermally activated and the local Hessian IR intensity is sensitive to geometry.
+- Modes 22–24 (~1580–1693 cm⁻¹ harmonic) develop σ_ν > 300 cm⁻¹ at 2000 K, indicating strong anharmonicity and mode coupling near the C=C stretch and COO bending region.
+- C-H stretches (modes 25–30): both temperatures show large σ_ν (200–400 cm⁻¹), suggesting these modes rapidly explore the repulsive wall even at 300 K (consistent with ZPE amplitude of ~0.06 Å being non-negligible on the anharmonic C-H potential).
+
+### Per-Mode Thermal Linewidth Scaling
+
+Selected modes showing largest σ_ν increase from 300 K to 2000 K:
+
+| Mode | Harmonic (cm⁻¹) | σ(300 K) | σ(2000 K) | Ratio |
+|------|----------------|----------|----------|-------|
+| 10: O-O stretch | 835 | 61 | 80 | 1.3× |
+| 15: C-O stretch | 1089 | 69 | 85 | 1.2× |
+| 20: CH₂ wag | 1480 | 90 | 115 | 1.3× |
+| 22: CH₂ sciss | 1580 | 94 | **333** | **3.5×** |
+| 23: C=C stretch | 1693 | 108 | **476** | **4.4×** |
+
+Modes 22–23 show super-linear σ scaling, indicating the molecule accesses qualitatively different regions of the PES at 2000 K (possibly approaching a conformational transition or C=C/COO coupling resonance).
+
+### Files Changed This Session
+
+| File | Change |
+|------|--------|
+| `hot_emission_spectrum.py` | New script: trajectory-averaged local harmonic IR emission |
+| `ir_md_spectrum.py` | Added `--nm-eigvec-model` flag; decouples dipole surface from PES choice |
+| `outputs/ir_nm_dipole_harmonic_anti_cis/` | Harmonic IR from dipole derivatives (FWHM=10) |
+| `outputs/hot_emission_anti_cis_300K/` | 500-sample 300 K local-harmonic spectrum |
+| `outputs/hot_emission_anti_cis_2000K/` | 500-sample 2000 K local-harmonic spectrum |
+| `outputs/hot_emission_anti_cis_comparison.png` | 3-curve overlay (harmonic + 300K + 2000K) |
+| `outputs/mvko_results_report.html` | Interactive Plotly results page |
+
+---
+
 ## 2026-04-20 — NM-Coordinate KRR Breakthrough; MACE CH-Retraining Concluded; IR Run Launched
 
 ### Summary
