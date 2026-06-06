@@ -55,3 +55,6 @@ logs/
 
 # Also track HTML reports in outputs
 !outputs/**/*.html
+
+# Track digitized experimental spectra (small, reference data)
+!outputs/mvko_experimental_ir_Chung2021.csv
