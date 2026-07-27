@@ -1,0 +1,337 @@
+
+======================================================================
+  ML-PES IR SPECTRUM WORKFLOW
+======================================================================
+  ML-PES model       : outputs/syn_cis_nm_pes_20260513v2/mlpes_nm.pkl
+  Training data      : outputs/syn_cis_nm_pes_20260513v2/combined_training_data.npz
+  Dipole model       : (will train now)
+  MD steps           : 5000  (dt=0.5 fs, save every 1)
+  Temperature        : 2000.0 K
+  ZPE floor init     : yes  (filter: [50, 4000] cm⁻¹)
+  bakken pre-min     : yes  (max_steps=300, tol=0.005 Ha/Å)
+  Trajectories       : 3
+  Bond dissoc guard  : 2.0× initial length
+  Output dir         : outputs/nm_pes_stability_test/syn_cis_2000K
+Loaded trajectory from outputs/syn_cis_nm_pes_20260513v2/combined_training_data.npz (npz format)
+  Frames: 292, Atoms: 12
+  NMPESDriver loaded: outputs/syn_cis_nm_pes_20260513v2/mlpes_nm.pkl
+    n_atoms=12  n_vib=30  γ=0.05  α=0.0001
+    LOO-CV RMSE: 1.3128 kcal/mol
+    Bond wall: 5 heavy-atom bonds, cutoff=1.60×d_eq, k=1.0 Ha/Å²
+      C0-O1: d_eq=1.271Å, d_cut=2.034Å
+      C0-C3: d_eq=1.458Å, d_cut=2.333Å
+      C0-C5: d_eq=1.485Å, d_cut=2.376Å
+      O1-O2: d_eq=1.347Å, d_cut=2.155Å
+      C3-C4: d_eq=1.337Å, d_cut=2.140Å
+  Molecule           : C₄H₆O₂  –  methyl vinyl ketone oxide (MVKO)  (12 atoms)
+
+======================================================================
+  TRAINING NM-COORDINATE DIPOLE SURFACE (NMDipoleSurface)
+======================================================================
+  Training frames    : 292
+  Valid dipoles      : 292 (|μ| > 1e-6 D)
+  |μ| range          : 4.158–5.574 D
+
+  NMDipoleSurface.fit: 249 train / 43 test frames
+  γ_center=0.0375  grid (9): ['0.000375', '0.00119', '0.00375', '0.0119', '0.0375', '0.119', '0.375', '1.19', '3.75']
+  Best: γ=0.01186  α=0.01  LOO-CV RMSE=0.2417 D
+  Train RMSE: 0.1454 D
+  Test  RMSE: 0.0270 D  R²=0.9617
+
+  NM dipole model saved : outputs/nm_pes_stability_test/syn_cis_2000K/dipole_surface.pkl
+
+  Starting geometry  : user-supplied (e.g. PSI4 equilibrium)  shape=(12, 3)
+
+--- Using stored PSI4 NM data for ZPE init (NM-PES model) ---
+  n_vib=30  freq range [5.1, 3294.1] cm⁻¹
+
+======================================================================
+  MULTI-TRAJECTORY MD  (3 trajectories)
+======================================================================
+  Starting geometry  : user-supplied --start-coords (all trajectories)
+  Steps per trajectory           : 5000
+  Temperature                    : 2000 K
+  Dissociation limit             : 2.0× initial bond
+
+  --- Trajectory 1/3  (user start_coords, E=-192148.17 kcal/mol, seed=42) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20759351          +0.0000          0.000310     0.01000
+       1     -306.20759351          +0.0000          0.000310     0.01000
+
+  Converged in 1 steps  ΔE = +0.0000 kcal/mol  |F|_max = 0.000310 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = +0.0000 kcal/mol from starting frame
+  ZPE floor applied  : 20/30 modes boosted, 1 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2854 K  (target: 2000 K, τ=200 fs)
+bakken MD:   0%|          | 0/5000 [00:00<?, ?step/s]bakken MD:   0%|          | 14/5000 [00:00<00:01, 3403.68step/s]
+
+  Dissociation detected: atoms 3–4  d=3.479 Å (eq=1.337 Å, limit=2.675 Å).  Truncating at step 15.
+    Dissociation at step 15 — 15 frames kept
+
+  Trajectory XYZ     : outputs/nm_pes_stability_test/syn_cis_2000K/traj_01.xyz  (15 frames, 11 KB)
+
+  Predicting dipoles for 15 frames...
+Dipole prediction:   0%|          | 0/15 [00:00<?, ?it/s]Dipole prediction: 100%|██████████| 15/15 [00:00<00:00, 10489.26it/s]
+    Dipole |μ|: 4.726–4.987 D  (mean 4.885 D)
+
+  --- Trajectory 2/3  (user start_coords, E=-192148.17 kcal/mol, seed=43) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20759351          +0.0000          0.000310     0.01000
+       1     -306.20759351          +0.0000          0.000310     0.01000
+
+  Converged in 1 steps  ΔE = +0.0000 kcal/mol  |F|_max = 0.000310 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = +0.0000 kcal/mol from starting frame
+  ZPE floor applied  : 13/30 modes boosted, 1 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 3313 K  (target: 2000 K, τ=200 fs)
+bakken MD:   0%|          | 0/5000 [00:00<?, ?step/s]bakken MD:   0%|          | 15/5000 [00:00<00:01, 2863.66step/s]
+
+  Dissociation detected: atoms 0–3  d=3.125 Å (eq=1.458 Å, limit=2.916 Å).  Truncating at step 16.
+    Dissociation at step 16 — 16 frames kept
+
+  Trajectory XYZ     : outputs/nm_pes_stability_test/syn_cis_2000K/traj_02.xyz  (16 frames, 12 KB)
+
+  Predicting dipoles for 16 frames...
+Dipole prediction:   0%|          | 0/16 [00:00<?, ?it/s]Dipole prediction: 100%|██████████| 16/16 [00:00<00:00, 11544.62it/s]
+    Dipole |μ|: 4.712–4.995 D  (mean 4.888 D)
+
+  --- Trajectory 3/3  (user start_coords, E=-192148.17 kcal/mol, seed=44) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20759351          +0.0000          0.000310     0.01000
+       1     -306.20759351          +0.0000          0.000310     0.01000
+
+  Converged in 1 steps  ΔE = +0.0000 kcal/mol  |F|_max = 0.000310 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = +0.0000 kcal/mol from starting frame
+  ZPE floor applied  : 24/30 modes boosted, 1 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2459 K  (target: 2000 K, τ=200 fs)
+bakken MD:   0%|          | 0/5000 [00:00<?, ?step/s]bakken MD:   0%|          | 14/5000 [00:00<00:01, 2744.58step/s]
+
+  Dissociation detected: atoms 0–5  d=5.734 Å (eq=1.485 Å, limit=2.971 Å).  Truncating at step 15.
+    Dissociation at step 15 — 15 frames kept
+
+  Trajectory XYZ     : outputs/nm_pes_stability_test/syn_cis_2000K/traj_03.xyz  (15 frames, 11 KB)
+
+  Predicting dipoles for 15 frames...
+Dipole prediction:   0%|          | 0/15 [00:00<?, ?it/s]Dipole prediction: 100%|██████████| 15/15 [00:00<00:00, 10273.44it/s]
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:878: UserWarning: Glyph 8315 (\N{SUPERSCRIPT MINUS}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:878: UserWarning: Glyph 8324 (\N{SUBSCRIPT FOUR}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:878: UserWarning: Glyph 8326 (\N{SUBSCRIPT SIX}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:878: UserWarning: Glyph 8322 (\N{SUBSCRIPT TWO}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+    Dipole |μ|: 4.956–5.240 D  (mean 5.058 D)
+
+  Trajectories collected: 3
+
+--- Averaging IR spectra across 3 trajectories ---
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 15
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 8 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 7 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 7
+   Padded points: 28
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4171.2 cm⁻¹
+   Frequency resolution: 379.20 cm⁻¹
+   Number of points: 11
+
+🎯 Found 1 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2275.2               1.000           C≡C, C≡N stretch    
+  Trajectory 1/3 spectrum computed  (15 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 16
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 8 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 8 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 8
+   Padded points: 32
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4313.4 cm⁻¹
+   Frequency resolution: 331.80 cm⁻¹
+   Number of points: 13
+
+🎯 Found 1 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   1990.8               1.000           C≡C, C≡N stretch    
+  Trajectory 2/3 spectrum computed  (16 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 15
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 8 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 7 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 7
+   Padded points: 28
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4171.2 cm⁻¹
+   Frequency resolution: 379.20 cm⁻¹
+   Number of points: 11
+
+🎯 Found 1 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2275.2               1.000           C≡C, C≡N stretch    
+  Trajectory 3/3 spectrum computed  (15 frames)
+
+🎯 Found 1 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   1896.0               1.000           C≡C, C≡N stretch    
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 15
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 8 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 7 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 7
+   Padded points: 28
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4171.2 cm⁻¹
+   Frequency resolution: 379.20 cm⁻¹
+   Number of points: 11
+
+🎯 Found 1 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2275.2               1.000           C≡C, C≡N stretch    
+
+  Spectrum CSV saved : outputs/nm_pes_stability_test/syn_cis_2000K/ir_spectrum.csv
+  Points             : 11
+  Frequency range    : 379.2 – 4171.2 cm⁻¹
+
+  IR spectrum figure  : outputs/nm_pes_stability_test/syn_cis_2000K/ir_spectrum_clean.png
+
+  Diagnostic figure  : skipped (multi-trajectory mode — see traj_*.xyz)
+
+======================================================================
+  IR WORKFLOW COMPLETE
+======================================================================
+  Molecule           : C₄H₆O₂  –  methyl vinyl ketone oxide (MVKO)
+  Trajectory XYZ     : outputs/nm_pes_stability_test/syn_cis_2000K/traj_01.xyz
+  Spectrum CSV       : outputs/nm_pes_stability_test/syn_cis_2000K/ir_spectrum.csv
+  Spectrum figure    : outputs/nm_pes_stability_test/syn_cis_2000K/ir_spectrum_clean.png
+  Diagnostic figure  : outputs/nm_pes_stability_test/syn_cis_2000K/ir_spectrum_figure.png
+  Summary JSON       : outputs/nm_pes_stability_test/syn_cis_2000K/ir_summary.json
+
+  ML-PES harmonic frequencies (cm⁻¹):
+    Mode  1:      5.1 cm⁻¹   ZPE = 0.007 kcal/mol
+    Mode  2:    100.5 cm⁻¹   ZPE = 0.144 kcal/mol
+    Mode  3:    228.4 cm⁻¹   ZPE = 0.327 kcal/mol
+    Mode  4:    279.3 cm⁻¹   ZPE = 0.399 kcal/mol
+    Mode  5:    354.3 cm⁻¹   ZPE = 0.507 kcal/mol
+    Mode  6:    440.6 cm⁻¹   ZPE = 0.630 kcal/mol
+    Mode  7:    481.6 cm⁻¹   ZPE = 0.688 kcal/mol
+    Mode  8:    625.0 cm⁻¹   ZPE = 0.893 kcal/mol
+    Mode  9:    683.0 cm⁻¹   ZPE = 0.976 kcal/mol
+    Mode 10:    823.5 cm⁻¹   ZPE = 1.177 kcal/mol
+    Mode 11:    994.6 cm⁻¹   ZPE = 1.422 kcal/mol
+    Mode 12:   1000.8 cm⁻¹   ZPE = 1.431 kcal/mol
+    Mode 13:   1027.1 cm⁻¹   ZPE = 1.468 kcal/mol
+    Mode 14:   1038.8 cm⁻¹   ZPE = 1.485 kcal/mol
+    Mode 15:   1067.2 cm⁻¹   ZPE = 1.526 kcal/mol
+    Mode 16:   1144.9 cm⁻¹   ZPE = 1.637 kcal/mol
+    Mode 17:   1304.1 cm⁻¹   ZPE = 1.864 kcal/mol
+    Mode 18:   1361.6 cm⁻¹   ZPE = 1.947 kcal/mol
+    Mode 19:   1418.3 cm⁻¹   ZPE = 2.028 kcal/mol
+    Mode 20:   1473.6 cm⁻¹   ZPE = 2.107 kcal/mol
+    Mode 21:   1493.8 cm⁻¹   ZPE = 2.136 kcal/mol
+    Mode 22:   1519.3 cm⁻¹   ZPE = 2.172 kcal/mol
+    Mode 23:   1574.2 cm⁻¹   ZPE = 2.250 kcal/mol
+    Mode 24:   1728.6 cm⁻¹   ZPE = 2.471 kcal/mol
+    Mode 25:   3070.9 cm⁻¹   ZPE = 4.390 kcal/mol
+    Mode 26:   3135.6 cm⁻¹   ZPE = 4.483 kcal/mol
+    Mode 27:   3198.8 cm⁻¹   ZPE = 4.573 kcal/mol
+    Mode 28:   3213.7 cm⁻¹   ZPE = 4.594 kcal/mol
+    Mode 29:   3217.3 cm⁻¹   ZPE = 4.599 kcal/mol
+    Mode 30:   3294.1 cm⁻¹   ZPE = 4.709 kcal/mol
+
+  Top IR peaks (from ACF):
+     Freq (cm⁻¹)   Intensity
+  ──────────────  ──────────
+          1896.0      1.0000

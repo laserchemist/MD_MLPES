@@ -1,0 +1,9 @@
+2026-04-17 18:06:38.644 INFO: ===========VERIFYING SETTINGS===========
+2026-04-17 18:06:38.644 INFO: Stage Two is activated as start_stage_two was defined
+2026-04-17 18:06:38.644 INFO: MACE version: 0.3.15
+2026-04-17 18:06:38.678 INFO: Using MPS GPU acceleration
+2026-04-17 18:06:38.971 INFO: ===========LOADING INPUT DATA===========
+2026-04-17 18:06:38.971 INFO: Using heads: ['Default']
+2026-04-17 18:06:38.971 INFO: Using the key specifications to parse data:
+2026-04-17 18:06:38.971 INFO: Default: KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'})
+2026-04-17 18:06:38.971 INFO: =============    Processing head Default     ===========

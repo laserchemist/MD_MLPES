@@ -1,0 +1,14 @@
+{
+  "timestamp": "20260331_075549",
+  "n_frames": 9,
+  "n_casscf_converged": 9,
+  "n_sa_converged": 7,
+  "barrier_b3lyp_kcal": 80.35027018718988,
+  "barrier_casscf_kcal": 86.51747972671811,
+  "barrier_shift_kcal": 6.16720953952823,
+  "max_H12_kcal": 48.132231746916155,
+  "irc_data": "outputs/mvko_rxn_path_20260330_181025/irc_training_data.npz",
+  "active_space": "CASSCF(4,4)",
+  "basis": "6-31G*",
+  "dynamic_corr": "not_computed"
+}

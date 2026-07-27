@@ -1,0 +1,58 @@
+ML-PES Validation Report
+============================================================
+Date         : 2026-06-03 12:34:12
+Driver type  : NM-KRR
+Model        : outputs/anti_cis_nm_pes_20260513/mlpes_nm.pkl
+Data         : outputs/anti_cis_nm_pes_20260513/combined_training_data.npz
+
+Prediction Errors
+----------------------------------------
+  n_sample      : 100
+  Energy RMSE   : 30.2641 kcal/mol
+  Energy MAE    : 26.8756 kcal/mol
+  Force  RMSE   : 0.25326 Ha/Å  (158.924 kcal/mol/Å)
+  Force  MAE    : 0.08830 Ha/Å
+
+Normal Mode Frequencies (cm⁻¹)
+----------------------------------------
+  Imaginary modes  : 0
+  Unphysical modes : 12  (>5000 cm⁻¹)
+  Max frequency    : 11915 cm⁻¹
+  (Coulomb+KRR typically has 5/9 unphysical at >5000 cm⁻¹)
+  (MACE expected: 0 imaginary, 0 unphysical, max ~3200 cm⁻¹)
+  mode  1:    737.7
+  mode  2:    945.4
+  mode  3:   1032.3
+  mode  4:   1038.8
+  mode  5:   1238.8
+  mode  6:   1392.2
+  mode  7:   1480.8
+  mode  8:   2315.6
+  mode  9:   2581.9
+  mode 10:   2967.6
+  mode 11:   3619.0
+  mode 12:   3626.5
+  mode 13:   3689.3
+  mode 14:   3844.4
+  mode 15:   3880.3
+  mode 16:   4027.0
+  mode 17:   4601.5
+  mode 18:   4830.5
+  mode 19:   5186.5 UNPHYSICAL
+  mode 20:   5277.3 UNPHYSICAL
+  mode 21:   5373.1 UNPHYSICAL
+  mode 22:   5406.5 UNPHYSICAL
+  mode 23:   5641.3 UNPHYSICAL
+  mode 24:   6031.6 UNPHYSICAL
+  mode 25:  10945.1 UNPHYSICAL
+  mode 26:  11185.5 UNPHYSICAL
+  mode 27:  11349.7 UNPHYSICAL
+  mode 28:  11374.2 UNPHYSICAL
+  mode 29:  11405.8 UNPHYSICAL
+  mode 30:  11914.7 UNPHYSICAL
+
+MD Stability
+----------------------------------------
+  Steps        : 1000
+  Energy range : 2.148 kcal/mol
+  Dissociation : no

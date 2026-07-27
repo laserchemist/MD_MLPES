@@ -1,0 +1,51 @@
+{
+  "date": "2026-03-18T23:47:35.679825",
+  "molecule_hill": "CH2O2",
+  "molecule_name": "Criegee intermediate (CH\u2082OO)",
+  "molecule_unicode": "CH\u2082O\u2082",
+  "model_path": "outputs/softer_gamma_20260318_234300/best_model.pkl",
+  "training_data": "outputs/clean_psi410_20260308_203552/training_data.npz",
+  "dipole_model": "outputs/ir_spectrum_20260318_234417/dipole_surface.pkl",
+  "n_md_steps": 20000,
+  "temperature_K": 300.0,
+  "timestep_fs": 0.5,
+  "save_every": 1,
+  "dt_eff_fs": 0.5,
+  "zpe_floor_init": true,
+  "zpe_min_freq_cm-1": 50.0,
+  "zpe_max_freq_cm-1": 4000.0,
+  "preminimized": true,
+  "n_frames_ir": 20000,
+  "trajectory_xyz": "outputs/ir_spectrum_20260318_234417/CH2O2_md_trajectory.xyz",
+  "spectrum_csv": "outputs/ir_spectrum_20260318_234417/ir_spectrum.csv",
+  "figure_spectrum": "outputs/ir_spectrum_20260318_234417/ir_spectrum_clean.png",
+  "figure_diagnostic": "outputs/ir_spectrum_20260318_234417/ir_spectrum_figure.png",
+  "dipole_surface_train_rmse_D": 3.1636933936673264e-05,
+  "dipole_surface_test_rmse_D": 8.564453554304044e-05,
+  "dipole_surface_r2_test": 0.9999998711568888,
+  "top_peaks_cm-1": [
+    {
+      "frequency_cm-1": 200.6740514720193,
+      "intensity": 1.0
+    },
+    {
+      "frequency_cm-1": 952.6708607580388,
+      "intensity": 0.16532209620715538
+    },
+    {
+      "frequency_cm-1": 116.52897962462497,
+      "intensity": 0.08022440744958095
+    }
+  ],
+  "nm_frequencies_cm-1": [
+    1253.929354427149,
+    2407.184315868746,
+    2878.1647553410403,
+    2960.4747328445196,
+    3381.1868052496907,
+    3763.4231511514254,
+    4975.8620530831095,
+    8590.021529925012,
+    11197.741908631338
+  ]
+}

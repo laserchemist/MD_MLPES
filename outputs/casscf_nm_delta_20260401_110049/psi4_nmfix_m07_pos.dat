@@ -1,0 +1,575 @@
+
+  Memory set to   5.588 GiB by Python driver.
+  Threads set to 4 by Python driver.
+
+Scratch directory: /tmp/
+   => Libint2 <=
+
+    Primary   basis highest AM E, G, H:  6, 6, 3
+    Auxiliary basis highest AM E, G, H:  7, 7, 4
+    Onebody   basis highest AM E, G, H:  -, -, -
+    Solid Harmonics ordering:            Gaussian
+
+*** tstart() called on cst14372
+*** at Wed Apr  1 11:52:15 2026
+
+   => Loading Basis Set <=
+
+    Name: 6-31G*
+    Role: ORBITAL
+    Keyword: BASIS
+    atoms 1, 4-6 entry C          line   111 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/6-31gs.gbs 
+    atoms 2-3    entry O          line   145 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/6-31gs.gbs 
+    atoms 7-12   entry H          line    44 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/6-31gs.gbs 
+
+
+         ---------------------------------------------------------
+                                   SCF
+               by Justin Turney, Rob Parrish, Andy Simmonett
+                          and Daniel G. A. Smith
+                              RHF Reference
+                        4 Threads,   5722 MiB Core
+         ---------------------------------------------------------
+
+  ==> Geometry <==
+
+    Molecular point group: c1
+    Full point group: C1
+
+    Geometry (in Angstrom), charge = 0, multiplicity = 1:
+
+       Center              X                  Y                   Z               Mass       
+    ------------   -----------------  -----------------  -----------------  -----------------
+         C           -0.002576872400     0.019018147900     0.000000152400    12.000000000000
+         O            1.282484781600    -0.115453786400     0.000000011500    15.994914619570
+         O            2.140127556200     0.953484064000     0.000000178600    15.994914619570
+         C           -0.681043706600     1.293245354400    -0.000000662500    12.000000000000
+         C           -0.145042809300     2.537641036600     0.000000065600    12.000000000000
+         C           -0.765792954600    -1.298962592100     0.000000053400    12.000000000000
+         H           -1.766462536500     1.203649657500     0.000000252300     1.007825032230
+         H            0.922712022400     2.699537350100     0.000000293800     1.007825032230
+         H           -0.815864048700     3.394389801200     0.000001003600     1.007825032230
+         H           -0.069874339700    -2.140749774500    -0.000000161800     1.007825032230
+         H           -1.411853253000    -1.373520000300     0.883568266800     1.007825032230
+         H           -1.411853478000    -1.373519525100    -0.883568012500     1.007825032230
+
+  Running in c1 symmetry.
+
+  Rotational constants: A =      0.15667  B =      0.09478  C =      0.05971 [cm^-1]
+  Rotational constants: A =   4696.92855  B =   2841.46745  C =   1790.16251 [MHz]
+  Nuclear repulsion =  225.482433105499013
+
+  Charge       = 0
+  Multiplicity = 1
+  Electrons    = 46
+  Nalpha       = 23
+  Nbeta        = 23
+
+  ==> Algorithm <==
+
+  SCF Algorithm Type is DF.
+  DIIS enabled.
+  MOM disabled.
+  Fractional occupation disabled.
+  Guess Type is SAD.
+  Energy threshold   = 1.00e-08
+  Density threshold  = 1.00e-08
+  Integral threshold = 1.00e-12
+
+  ==> Primary Basis <==
+
+  Basis Set: 6-31G*
+    Blend: 6-31G*
+    Number of shells: 48
+    Number of basis functions: 102
+    Number of Cartesian functions: 102
+    Spherical Harmonics?: false
+    Max angular momentum: 2
+
+   => Loading Basis Set <=
+
+    Name: (6-31G* AUX)
+    Role: JKFIT
+    Keyword: DF_BASIS_SCF
+    atoms 1, 4-6 entry C          line   121 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/cc-pvdz-jkfit.gbs 
+    atoms 2-3    entry O          line   221 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/cc-pvdz-jkfit.gbs 
+    atoms 7-12   entry H          line    51 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/cc-pvdz-jkfit.gbs 
+
+  ==> Integral Setup <==
+
+  DFHelper Memory: AOs need 0.054 GiB; user supplied 4.191 GiB. 
+  SCF_SUBTYPE=INCORE selected. In-core MEM_DF algorithm will be used.
+  Using in-core AOs.
+
+  ==> MemDFJK: Density-Fitted J/K Matrices <==
+
+    J tasked:                   Yes
+    K tasked:                   Yes
+    wK tasked:                   No
+    OpenMP threads:               4
+    Memory [MiB]:              4291
+    Algorithm:                 Core
+    Schwarz Cutoff:           1E-12
+    Mask sparsity (%):       1.0573
+    Fitting Condition:        1E-10
+
+   => Auxiliary Basis Set <=
+
+  Basis Set: (6-31G* AUX)
+    Blend: CC-PVDZ-JKFIT
+    Number of shells: 198
+    Number of basis functions: 636
+    Number of Cartesian functions: 636
+    Spherical Harmonics?: false
+    Max angular momentum: 3
+
+  Minimum eigenvalue in the overlap matrix is 2.8227500506E-03.
+  Reciprocal condition number of the overlap matrix is 4.1134337758E-04.
+    Using symmetric orthogonalization.
+
+  ==> Pre-Iterations <==
+
+  SCF Guess: Superposition of Atomic Densities via on-the-fly atomic UHF (no occupation information).
+
+   -------------------------
+    Irrep   Nso     Nmo    
+   -------------------------
+     A        102     102 
+   -------------------------
+    Total     102     102
+   -------------------------
+
+  ==> Iterations <==
+
+                           Total Energy        Delta E     RMS |[F,P]|
+
+   @DF-RHF iter SAD:  -299.83377008794099   -2.99834e+02   0.00000e+00 
+   @DF-RHF iter   1:  -297.98543173789687    1.84834e+00   3.03376e-02 DIIS/ADIIS
+   @DF-RHF iter   2:  -289.07027643158256    8.91516e+00   5.05022e-02 DIIS/ADIIS
+   @DF-RHF iter   3:  -303.87994303336745   -1.48097e+01   1.14513e-02 DIIS/ADIIS
+   @DF-RHF iter   4:  -304.42022706645832   -5.40284e-01   3.73894e-03 DIIS/ADIIS
+   @DF-RHF iter   5:  -304.48542320146561   -6.51961e-02   7.39932e-04 DIIS/ADIIS
+   @DF-RHF iter   6:  -304.49055357298863   -5.13037e-03   3.30353e-04 DIIS/ADIIS
+   @DF-RHF iter   7:  -304.49206040265659   -1.50683e-03   1.65685e-04 DIIS/ADIIS
+   @DF-RHF iter   8:  -304.49247830950742   -4.17907e-04   5.33668e-05 DIIS
+   @DF-RHF iter   9:  -304.49252877610093   -5.04666e-05   1.30079e-05 DIIS
+   @DF-RHF iter  10:  -304.49253153499711   -2.75890e-06   4.91351e-06 DIIS
+   @DF-RHF iter  11:  -304.49253206472508   -5.29728e-07   2.29919e-06 DIIS
+   @DF-RHF iter  12:  -304.49253215265804   -8.79330e-08   6.59361e-07 DIIS
+   @DF-RHF iter  13:  -304.49253215951740   -6.85935e-09   2.44234e-07 DIIS
+   @DF-RHF iter  14:  -304.49253216012357   -6.06178e-10   1.32468e-07 DIIS
+   @DF-RHF iter  15:  -304.49253216038147   -2.57899e-10   5.20644e-08 DIIS
+   @DF-RHF iter  16:  -304.49253216042774   -4.62705e-11   1.85015e-08 DIIS
+   @DF-RHF iter  17:  -304.49253216043752   -9.77707e-12   6.68372e-09 DIIS
+  Energy and wave function converged.
+
+
+  ==> Post-Iterations <==
+
+    Orbital Energies [Eh]
+    ---------------------
+
+    Doubly Occupied:                                                      
+
+       1A    -20.673677     2A    -20.503241     3A    -11.379454  
+       4A    -11.283671     5A    -11.269543     6A    -11.265781  
+       7A     -1.496269     8A     -1.171992     9A     -1.086292  
+      10A     -1.015667    11A     -0.889456    12A     -0.769661  
+      13A     -0.689335    14A     -0.669126    15A     -0.648674  
+      16A     -0.631615    17A     -0.583102    18A     -0.578636  
+      19A     -0.567580    20A     -0.519424    21A     -0.420948  
+      22A     -0.379449    23A     -0.347881  
+
+    Virtual:                                                              
+
+      24A      0.051144    25A      0.207634    26A      0.222155  
+      27A      0.247818    28A      0.273925    29A      0.308423  
+      30A      0.315830    31A      0.329523    32A      0.362103  
+      33A      0.400825    34A      0.469316    35A      0.481289  
+      36A      0.550493    37A      0.664966    38A      0.716578  
+      39A      0.757093    40A      0.758322    41A      0.778037  
+      42A      0.824845    43A      0.844201    44A      0.860612  
+      45A      0.889749    46A      0.897285    47A      0.942559  
+      48A      1.081268    49A      1.092408    50A      1.098957  
+      51A      1.111758    52A      1.147263    53A      1.148589  
+      54A      1.174468    55A      1.202818    56A      1.251811  
+      57A      1.261780    58A      1.322596    59A      1.335409  
+      60A      1.342389    61A      1.441264    62A      1.454139  
+      63A      1.505223    64A      1.564571    65A      1.610194  
+      66A      1.689450    67A      1.721949    68A      1.741394  
+      69A      1.853621    70A      1.860791    71A      1.952284  
+      72A      2.023669    73A      2.106482    74A      2.142939  
+      75A      2.160560    76A      2.194270    77A      2.219062  
+      78A      2.231481    79A      2.298912    80A      2.365072  
+      81A      2.394957    82A      2.450713    83A      2.498349  
+      84A      2.572667    85A      2.622764    86A      2.660062  
+      87A      2.675343    88A      2.706341    89A      2.760110  
+      90A      2.905271    91A      2.993496    92A      3.020004  
+      93A      3.140700    94A      3.214705    95A      3.436603  
+      96A      3.608707    97A      3.981475    98A      4.423907  
+      99A      4.528685   100A      4.590163   101A      4.681304  
+     102A      4.921238  
+
+    Final Occupation by Irrep:
+              A 
+    DOCC [    23 ]
+    NA   [    23 ]
+    NB   [    23 ]
+
+  @DF-RHF Final Energy:  -304.49253216043752
+
+   => Energetics <=
+
+    Nuclear Repulsion Energy =            225.4824331054990125
+    One-Electron Energy =                -862.2689804171019432
+    Two-Electron Energy =                 332.2940151511654108
+    Total Energy =                       -304.4925321604375199
+
+Computation Completed
+
+
+Properties will be evaluated at   0.000000,   0.000000,   0.000000 [a0]
+
+Properties computed using the SCF density matrix
+
+
+ Multipole Moments:
+
+ ------------------------------------------------------------------------------------
+     Multipole            Electronic (a.u.)      Nuclear  (a.u.)        Total (a.u.)
+ ------------------------------------------------------------------------------------
+
+ L = 1.  Multiply by 2.5417464519 to convert [e a0] to [Debye]
+ Dipole X            :        -27.3987957           25.0595920           -2.3392036
+ Dipole Y            :        -46.2722402           46.1465099           -0.1257302
+ Dipole Z            :         -0.0000008            0.0000015            0.0000007
+ Magnitude           :                                                    2.3425801
+
+ ------------------------------------------------------------------------------------
+
+*** tstop() called on cst14372 at Wed Apr  1 11:52:21 2026
+Module time:
+	user time   =       7.47 seconds =       0.12 minutes
+	system time =       0.06 seconds =       0.00 minutes
+	total time  =          6 seconds =       0.10 minutes
+Total time:
+	user time   =    3928.42 seconds =      65.47 minutes
+	system time =     147.36 seconds =       2.46 minutes
+	total time  =       3075 seconds =      51.25 minutes
+
+Scratch directory: /tmp/
+ MINTS: Wrapper to libmints.
+   by Justin Turney
+
+   Calculation information:
+      Number of threads:                 4
+      Number of atoms:                  12
+      Number of AO shells:              48
+      Number of SO shells:              48
+      Number of primitives:            114
+      Number of atomic orbitals:       102
+      Number of basis functions:       102
+
+      Number of irreps:                  1
+      Integral cutoff                 1.00e-12
+      Number of functions per irrep: [ 102 ]
+
+ OEINTS: Overlap, kinetic, potential, dipole, and quadrupole integrals
+         stored in file 35.
+
+      Computing two-electron integrals...done
+      Computed 10524802 non-zero two-electron integrals.
+        Stored in file 33.
+
+
+         ---------------------------------------------------------
+                Multi-Configurational Self-Consistent Field
+                            (a 'D E T C I' module)
+
+                 Daniel G. A. Smith, C. David Sherrill, and
+                              Matt L. Leininger
+         ---------------------------------------------------------
+
+
+   ==> Parameters <==
+
+    EX LEVEL       =        4      H0 BLOCKSIZE  =     1000
+    VAL EX LEVEL   =        0      H0 GUESS SIZE =     1000
+    H0COUPLINGSIZE =        0      H0 COUPLING   =       NO
+    MAXITER        =       12      NUM PRINT     =       20
+    NUM ROOTS      =        1      ICORE         =        1
+    PRINT LVL      =        1      FCI           =      YES
+    R CONV         = 1.00e-07      MIXED         =      YES
+    E CONV         = 1.00e-08      MIXED4        =      YES
+    R4S            =       NO      REPL OTF      =       NO
+    DIAG METHOD    =      SEM      FOLLOW ROOT   =        0
+    PRECONDITIONER = DAVIDSON      UPDATE        = DAVIDSON
+    S              =   0.0000      Ms0           =      YES
+    GUESS VECTOR   =  H0BLOCK      OPENTYPE      =     NONE
+    COLLAPSE SIZE  =        1      HD AVG        = EVANGELISTI
+    MAX NUM VECS   =       13      REF SYM       =     AUTO
+    IOPEN        =       NO
+
+    EX ALLOW       =  1  1  1  1 
+    STATE AVERAGE  =  0(1.00) 
+
+   ==> CI Orbital and Space information <==
+
+   ------------------------------------
+               Space    Total     A
+   ------------------------------------
+                 Nso      102   102
+                 Nmo      102   102
+               Ndocc       23    23
+               Nsocc        0     0
+   ------------------------------------
+               MCSCF Spaces
+   ------------------------------------
+         Frozen DOCC        6     6
+     Restricted DOCC       15    15
+              Active        4     4
+     Restricted UOCC       77    77
+         Frozen UOCC        0     0
+   ------------------------------------
+
+   ==> Setting up CI strings <==
+
+    There are 6 alpha and 6 beta strings
+    The CI space requires 36 (3.60E+01) determinants and 1 blocks
+
+   ==> Setting up MCSCF integrals <==
+
+  DFHelper Memory: AOs need 0.054 GiB; user supplied 4.470 GiB. 
+  SCF_SUBTYPE=INCORE selected. In-core MEM_DF algorithm will be used.
+  Using in-core AOs.
+
+  ==> MemDFJK: Density-Fitted J/K Matrices <==
+
+    J tasked:                   Yes
+    K tasked:                   Yes
+    wK tasked:                   No
+    OpenMP threads:               4
+    Memory [MiB]:              4577
+    Algorithm:                 Core
+    Schwarz Cutoff:           1E-12
+    Mask sparsity (%):       1.0573
+    Fitting Condition:        1E-10
+
+   => Auxiliary Basis Set <=
+
+  Basis Set: (6-31G* AUX)
+    Blend: CC-PVDZ-JKFIT
+    Number of shells: 198
+    Number of basis functions: 636
+    Number of Cartesian functions: 636
+    Spherical Harmonics?: false
+    Max angular momentum: 3
+
+
+   ==> Starting MCSCF iterations <==
+
+        Iter         Total Energy       Delta E   Orb RMS    CI RMS  NCI NORB
+   @MCSCF  1:   -304.497434068777   -4.9019e-03  1.82e-03  2.72e-12    1    1  Initial CI
+      Warning! Maxstep = 0.89, scaling to 0.50
+   @MCSCF  2:   -304.506734579111   -9.3005e-03  2.13e-03  3.96e-07    7    1  TS
+   @MCSCF  3:   -304.513148947222   -6.4144e-03  1.72e-03  8.32e-07    7    1  TS
+   @MCSCF  4:   -304.518470315195   -5.3214e-03  1.54e-03  1.19e-06    7    1  TS, DIIS
+   @MCSCF  5:   -304.521260817360   -2.7905e-03  1.09e-03  6.51e-07    6    1  TS, DIIS
+   @MCSCF  6:   -304.522541075038   -1.2803e-03  8.49e-04  2.01e-07    6    1  TS, DIIS
+   @MCSCF  7:   -304.523560569070   -1.0195e-03  5.36e-04  2.60e-07    6    1  TS, DIIS
+   @MCSCF  8:   -304.523728996752   -1.6843e-04  2.99e-04  2.08e-07    6    1  TS, DIIS
+   @MCSCF  9:   -304.523864779731   -1.3578e-04  1.52e-04  2.64e-07    6    1  TS, DIIS
+   @MCSCF 10:   -304.523887085359   -2.2306e-05  7.44e-05  9.74e-08    6    1  TS, DIIS
+   @MCSCF 11:   -304.523906228470   -1.9143e-05  5.01e-05  3.01e-08    7    1  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 12:   -304.523921672133   -1.5444e-05  5.28e-05  1.73e-08    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 13:   -304.523893356778    2.8315e-05  3.62e-05  4.10e-08    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 14:   -304.523886700689    6.6561e-06  2.11e-05  3.04e-08    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 15:   -304.523888074895   -1.3742e-06  1.69e-05  5.87e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 16:   -304.523889331600   -1.2567e-06  1.62e-05  4.18e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 17:   -304.523890565823   -1.2342e-06  1.64e-05  3.77e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 18:   -304.523889401166    1.1647e-06  1.59e-05  1.62e-08    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 19:   -304.523885882366    3.5188e-06  1.40e-05  1.28e-08    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 20:   -304.523886087444   -2.0508e-07  1.36e-05  3.78e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 21:   -304.523886655607   -5.6816e-07  1.36e-05  1.08e-08    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 22:   -304.523884496929    2.1587e-06  1.34e-05  3.61e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 23:   -304.523873504790    1.0992e-05  1.27e-05  9.88e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 24:   -304.523864367892    9.1369e-06  1.22e-05  1.08e-08    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 25:   -304.523859792258    4.5756e-06  1.11e-05  1.04e-08    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 26:   -304.523859398387    3.9387e-07  1.15e-05  4.96e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 27:   -304.523858787062    6.1133e-07  1.11e-05  1.05e-08    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 28:   -304.523853316991    5.4701e-06  8.07e-06  9.21e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 29:   -304.523850742908    2.5741e-06  5.93e-06  1.86e-09    8   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 30:   -304.523848432053    2.3109e-06  5.16e-06  9.20e-10    8   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 31:   -304.523847949367    4.8269e-07  5.09e-06  1.92e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 32:   -304.523847868061    8.1306e-08  5.04e-06  5.70e-10    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 33:   -304.523848060679   -1.9262e-07  5.01e-06  3.72e-09    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 34:   -304.523848228016   -1.6734e-07  5.02e-06  2.32e-09    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 35:   -304.523848109501    1.1852e-07  5.03e-06  4.81e-09    5   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 36:   -304.523847921110    1.8839e-07  5.08e-06  3.40e-09    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 37:   -304.523847981462   -6.0353e-08  5.06e-06  3.89e-09    5   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 38:   -304.523848045059   -6.3596e-08  5.06e-06  2.37e-09    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 39:   -304.523847919090    1.2597e-07  5.07e-06  4.55e-09    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 40:   -304.523847937069   -1.7979e-08  5.07e-06  3.84e-09    5   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 41:   -304.523847771737    1.6533e-07  4.99e-06  1.72e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 42:   -304.523847299020    4.7272e-07  4.92e-06  7.22e-10    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 43:   -304.523846436143    8.6288e-07  4.77e-06  1.47e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 44:   -304.523844526170    1.9100e-06  4.60e-06  1.58e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 45:   -304.523842961992    1.5642e-06  4.42e-06  2.80e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 46:   -304.523842228485    7.3351e-07  4.32e-06  2.70e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 47:   -304.523842304612   -7.6127e-08  4.27e-06  1.55e-09    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 48:   -304.523841792394    5.1222e-07  4.23e-06  3.76e-09    6   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 49:   -304.523839433682    2.3587e-06  4.12e-06  3.53e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 50:   -304.523837548370    1.8853e-06  3.84e-06  1.97e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 51:   -304.523836829108    7.1926e-07  3.49e-06  1.22e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 52:   -304.523834229557    2.5996e-06  2.75e-06  6.33e-10    8   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 53:   -304.523833600319    6.2924e-07  2.45e-06  2.27e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 54:   -304.523833316721    2.8360e-07  2.32e-06  1.77e-09    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 55:   -304.523833366464   -4.9743e-08  2.33e-06  9.07e-10    7   16  TS, DIIS
+   Warning! AH might follow negative eigenvalues!
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 56:   -304.523833313719    5.2744e-08  2.29e-06  6.96e-10    7   16  TS, DIIS
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n   Warning! AH might follow negative eigenvalues!
+      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 57:   -304.523833187729    1.2599e-07  2.25e-06  1.40e-09    7   16  TS, DIIS
+   Warning! AH might follow negative eigenvalues!
+   Warning! Multiple eigenvectors found to follow. Following closest to \lambda = 1.\n      !Warning. Augmented Hessian did not converge. Taking an approx step.
+   @MCSCF 58:   -304.523833192906   -5.1773e-09  2.26e-06  2.21e-09    5   16  TS, DIIS
+
+          @MCSCF has converged!
+
+   @MCSCF Final Energy: -304.523833192906295
+
+   Computing CI Semicanonical Orbitals
+
+   ==> Starting CI iterations <==
+
+    H0 Block Eigenvalue = -304.52383319
+
+    Simultaneous Expansion Method (Block Davidson Method)
+    Using 1 initial trial vectors
+
+     Iter   Root       Total Energy       Delta E      C RMS
+
+   @CI  0:     0   -304.523833192907   -5.6536E+00   4.2333E-13  
+    Warning: Norm of correction (root 0) is < 1.0E-13
+   @CI  1:     0   -304.523833192907   0.0000E+00   4.6455E-13 c
+
+   ==> Energetics <==
+
+    SCF energy =         -304.492532160437520
+    Total MCSCF energy = -304.523833192906295
+
+   ==> MCSCF root 0 information <==
+
+    MCSCF Root 0 energy =  -304.523833192907091
+
+   Active Space Natural occupation numbers:
+
+         A   1.998275         A   1.921931         A   0.079784
+         A   0.000010
+
+   The 20 most important determinants:
+
+    *   1   -0.979074  (    0,    0)  22AX 23AX 
+    *   2    0.134434  (    1,    1)  22AX 24AX 
+    *   3   -0.090836  (    1,    3)  22AX 24AA 25AB 
+    *   4   -0.090836  (    3,    1)  22AX 24AB 25AA 
+    *   5    0.064457  (    3,    3)  22AX 25AX 
+    *   6    0.025526  (    0,    1)  22AX 23AA 24AB 
+    *   7    0.025526  (    1,    0)  22AX 23AB 24AA 
+    *   8    0.020147  (    2,    2)  23AX 24AX 
+    *   9   -0.016112  (    0,    3)  22AX 23AA 25AB 
+    *  10   -0.016112  (    3,    0)  22AX 23AB 25AA 
+    *  11   -0.013433  (    2,    4)  23AX 24AA 25AB 
+    *  12   -0.013433  (    4,    2)  23AX 24AB 25AA 
+    *  13    0.009756  (    4,    4)  23AX 25AX 
+    *  14   -0.000262  (    4,    5)  23AA 24AB 25AX 
+    *  15   -0.000262  (    5,    4)  23AB 24AA 25AX 
+    *  16   -0.000250  (    5,    5)  24AX 25AX 
+    *  17    0.000214  (    2,    5)  23AA 24AX 25AB 
+    *  18    0.000214  (    5,    2)  23AB 24AX 25AA 
+    *  19    0.000134  (    2,    3)  22AB 23AA 24AA 25AB 
+    *  20    0.000134  (    3,    2)  22AA 23AB 24AB 25AA 
+
+
+
+Properties will be evaluated at   0.000000,   0.000000,   0.000000 [a0]
+
+Properties computed using the CASSCF density matrix
+
+
+ Multipole Moments:
+
+ ------------------------------------------------------------------------------------
+     Multipole            Electronic (a.u.)      Nuclear  (a.u.)        Total (a.u.)
+ ------------------------------------------------------------------------------------
+
+ L = 1.  Multiply by 2.5417464519 to convert [e a0] to [Debye]
+ Dipole X            :        -27.1300553           25.0595920           -2.0704633
+ Dipole Y            :        -46.4018899           46.1465099           -0.2553800
+ Dipole Z            :         -0.0000051            0.0000015           -0.0000035
+ Magnitude           :                                                    2.0861537
+
+ ------------------------------------------------------------------------------------

@@ -1,0 +1,37 @@
+{
+  "n_grid_frames": 240,
+  "n_computed_ok": 233,
+  "n_state_switched": 0,
+  "n_clean": 226,
+  "eq_reference": {
+    "e_casscf_s0_eq_ha": -304.54352830477166,
+    "e_wb97x_eq_ha": -306.20975731936596,
+    "gap_s1_eq_ha": 0.0434551529036753,
+    "gap_t1_eq_ha": 0.039465654679077034,
+    "gap_s1_eq_kcal": 27.268520141174857,
+    "gap_t1_eq_kcal": 24.765072208733265,
+    "no_occ_ref": [
+      1.9516997601734745,
+      1.7173193521559391,
+      0.2824042074541487,
+      0.048576680216438774
+    ],
+    "no_occ_threshold": 0.2,
+    "source": "test_casscf_equilibrium.py via outputs/anti_trans_casscf44_eq_ref.json"
+  },
+  "amplitudes": [
+    0.5,
+    1.0,
+    1.5,
+    2.0
+  ],
+  "T_nm_K": 300.0,
+  "basis": "6-31g*",
+  "s0_loo_cv_kcal": 0.1007090700679078,
+  "s0_gamma": 0.01,
+  "s0_alpha": 1e-06,
+  "s1_loo_cv_kcal": 0.04617750022844746,
+  "s1_n_frames": 226,
+  "t1_loo_cv_kcal": 0.04274509402338315,
+  "t1_n_frames": 226
+}

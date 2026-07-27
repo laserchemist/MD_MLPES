@@ -1,0 +1,8 @@
+{
+  "e_ts_ha": NaN,
+  "ts_coords_path": "outputs/mvko_rxn_path_20260330_181025/ts_coords.npy",
+  "d_C4H4_ts": 1.4,
+  "d_O2H4_ts": 1.363062770199633,
+  "method": "b3lyp/6-31G*",
+  "note": "B3LYP single-reference; barrier height approximate"
+}

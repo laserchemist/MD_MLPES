@@ -1,0 +1,8 @@
+{
+  "n_train": 456,
+  "n_new_points": 20,
+  "gamma": 0.2,
+  "alpha_reg": 1e-06,
+  "n_imag_modes_diag": 0,
+  "imag_mode_indices": []
+}

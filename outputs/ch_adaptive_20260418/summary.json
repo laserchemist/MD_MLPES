@@ -1,0 +1,31 @@
+{
+  "date": "2026-04-18T11:28:44.304888",
+  "training_data": "outputs/wB97X_surface_20260406_223155/training_data_wB97X_aug.npz",
+  "hessian": "outputs/mvko_20260319_074852/psi4_hessian.npy",
+  "method": "wB97X-D",
+  "basis": "6-31G*",
+  "ch_modes": [
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "ch_freqs": [
+    3048.74494862998,
+    3099.953227670345,
+    3162.515774656692,
+    3164.462962885424,
+    3179.2793764668745,
+    3323.1830247986486
+  ],
+  "n_generated": 190,
+  "n_ok": 190,
+  "n_skip_energy": 0,
+  "n_failed": 0,
+  "n_original": 1126,
+  "n_merged": 1316,
+  "ch_adaptive_frames": "outputs/ch_adaptive_20260418/ch_adaptive_frames.npz",
+  "merged_data": "outputs/ch_adaptive_20260418/training_data_ch_aug.npz"
+}

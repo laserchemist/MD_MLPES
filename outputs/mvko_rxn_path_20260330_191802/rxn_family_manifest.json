@@ -1,0 +1,9 @@
+{
+  "reactant": "outputs/mvko_20260319_081314/mlpes_initial.pkl",
+  "rxn_path": "outputs/mvko_rxn_path_20260330_191802/mlpes_rxn_path.pkl",
+  "_blend_width": 10.0,
+  "_reference_energies": {
+    "reactant": -6.33888277548067e-05,
+    "rxn_path": 7.933571964713337e-06
+  }
+}

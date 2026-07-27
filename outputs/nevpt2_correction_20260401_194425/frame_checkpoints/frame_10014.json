@@ -1,0 +1,20 @@
+{
+  "frame_idx": 10014,
+  "e_b3lyp_ha": -306.3185840048427,
+  "e_b3lyp_rel_kcal": 0.0,
+  "e_casscf_psi4_ha": -304.5238331929071,
+  "e_casscf_pyscf_ha": -304.5629641960946,
+  "e_nevpt2_ha": -305.34236241818064,
+  "e_nevpt2_corr_ha": -0.7793982220860316,
+  "delta_casscf_ha": 1.755619808748122,
+  "delta_nevpt2_ha": -0.7793982220860316,
+  "delta_total_ha": 0.9762215866620636,
+  "delta_casscf_kcal": 1101.6680627315145,
+  "delta_nevpt2_kcal": -489.07976837774083,
+  "delta_total_kcal": 612.5882943537569,
+  "no_occ": null,
+  "converged": true,
+  "error": null,
+  "wall_time_s": 72.5,
+  "casscf_psi4_pyscf_diff_kcal": -24.555075227275612
+}

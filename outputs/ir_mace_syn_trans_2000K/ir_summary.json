@@ -1,0 +1,94 @@
+{
+  "date": "2026-06-07T00:14:32.691518",
+  "molecule_hill": "C4H6O2",
+  "molecule_name": "methyl vinyl ketone oxide (MVKO)",
+  "molecule_unicode": "C\u2084H\u2086O\u2082",
+  "model_path": "None",
+  "training_data": "outputs/syn_trans_nm_pes_20260513/combined_training_data.npz",
+  "dipole_model": "outputs/ir_mace_syn_trans_2000K/dipole_surface.pkl",
+  "n_md_steps": 30000,
+  "n_trajectories": 5,
+  "temperature_K": 2000.0,
+  "timestep_fs": 0.5,
+  "save_every": 1,
+  "dt_eff_fs": 0.5,
+  "max_bond_extension": 2.0,
+  "zpe_floor_init": true,
+  "zpe_min_freq_cm-1": 50.0,
+  "zpe_max_freq_cm-1": 4000.0,
+  "preminimized": true,
+  "n_frames_ir": 30000,
+  "trajectory_xyz": "outputs/ir_mace_syn_trans_2000K/traj_01.xyz",
+  "spectrum_csv": "outputs/ir_mace_syn_trans_2000K/ir_spectrum.csv",
+  "figure_spectrum": "outputs/ir_mace_syn_trans_2000K/ir_spectrum_clean.png",
+  "figure_diagnostic": "outputs/ir_mace_syn_trans_2000K/ir_spectrum_figure.png",
+  "dipole_surface_train_rmse_D": 0.02734996418722401,
+  "dipole_surface_test_rmse_D": 0.12039465374056894,
+  "dipole_surface_r2_test": 0.7269623944702188,
+  "top_peaks_cm-1": [
+    {
+      "frequency_cm-1": 141.21507325808764,
+      "intensity": 1.0
+    },
+    {
+      "frequency_cm-1": 15.572589532220192,
+      "intensity": 0.3853849125654595
+    },
+    {
+      "frequency_cm-1": 0.7078449787372815,
+      "intensity": 0.37740762897692265
+    },
+    {
+      "frequency_cm-1": 71.49234285246543,
+      "intensity": 0.3001803629063685
+    },
+    {
+      "frequency_cm-1": 66.53742800130445,
+      "intensity": 0.30012227699426813
+    },
+    {
+      "frequency_cm-1": 46.00992361792329,
+      "intensity": 0.27094565757844735
+    },
+    {
+      "frequency_cm-1": 3.893147383055048,
+      "intensity": 0.14253902168538157
+    },
+    {
+      "frequency_cm-1": 293.75566617597184,
+      "intensity": 0.07334074483299007
+    }
+  ],
+  "nm_frequencies_cm-1": [
+    -220.16218605327683,
+    -161.7917425680612,
+    57.5585499449976,
+    138.8985849042891,
+    149.94473535098908,
+    204.98198376368572,
+    213.94932370298721,
+    247.78765341869533,
+    286.32233420849155,
+    338.0265371167258,
+    353.84760927044323,
+    379.72427593753696,
+    426.43282777324526,
+    465.73128254695666,
+    491.1955560926751,
+    534.438272675042,
+    546.563947284541,
+    673.9030054707257,
+    709.9186152176044,
+    787.9901779396569,
+    901.2774654962911,
+    903.0661578474592,
+    987.7935080104617,
+    1143.0220644493158,
+    1338.9587152841902,
+    1347.1154215553008,
+    1614.9701339797955,
+    1749.4465566172742,
+    1758.607902556142,
+    2047.226109164004
+  ]
+}

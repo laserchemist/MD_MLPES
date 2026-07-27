@@ -1,0 +1,94 @@
+{
+  "date": "2026-04-21T10:49:42.721151",
+  "molecule_hill": "C4H6O2",
+  "molecule_name": "methyl vinyl ketone oxide (MVKO)",
+  "molecule_unicode": "C\u2084H\u2086O\u2082",
+  "model_path": "outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl",
+  "training_data": "outputs/anti_trans_dipoles_20260421/training_with_dipoles.npz",
+  "dipole_model": "outputs/mvko_anti_trans_ir_lowfreq_300K/dipole_surface.pkl",
+  "n_md_steps": 30000,
+  "n_trajectories": 5,
+  "temperature_K": 300.0,
+  "timestep_fs": 0.5,
+  "save_every": 1,
+  "dt_eff_fs": 0.5,
+  "max_bond_extension": 1.5,
+  "zpe_floor_init": true,
+  "zpe_min_freq_cm-1": 50.0,
+  "zpe_max_freq_cm-1": 1200.0,
+  "preminimized": false,
+  "n_frames_ir": 2565,
+  "trajectory_xyz": "outputs/mvko_anti_trans_ir_lowfreq_300K/traj_01.xyz",
+  "spectrum_csv": "outputs/mvko_anti_trans_ir_lowfreq_300K/ir_spectrum.csv",
+  "figure_spectrum": "outputs/mvko_anti_trans_ir_lowfreq_300K/ir_spectrum_clean.png",
+  "figure_diagnostic": "outputs/mvko_anti_trans_ir_lowfreq_300K/ir_spectrum_figure.png",
+  "dipole_surface_train_rmse_D": 0.00012681306133881422,
+  "dipole_surface_test_rmse_D": 0.020254038927456034,
+  "dipole_surface_r2_test": 0.8716408413500196,
+  "top_peaks_cm-1": [
+    {
+      "frequency_cm-1": 219.47611470208219,
+      "intensity": 1.0
+    },
+    {
+      "frequency_cm-1": 163.5718213345707,
+      "intensity": 0.31476771417351307
+    },
+    {
+      "frequency_cm-1": 275.38040806959367,
+      "intensity": 0.21773411159127637
+    },
+    {
+      "frequency_cm-1": 250.5340554618108,
+      "intensity": 0.21686351507183876
+    },
+    {
+      "frequency_cm-1": 66.25694028742105,
+      "intensity": 0.1940239257171259
+    },
+    {
+      "frequency_cm-1": 95.24435166316775,
+      "intensity": 0.09424898429232834
+    },
+    {
+      "frequency_cm-1": 138.72546872678782,
+      "intensity": 0.07845733470826304
+    },
+    {
+      "frequency_cm-1": 314.72046636524993,
+      "intensity": 0.07732988918482096
+    }
+  ],
+  "nm_frequencies_cm-1": [
+    117.15390823740469,
+    161.8448866196176,
+    251.78296040095208,
+    278.56897683289213,
+    327.8755284482104,
+    396.1719618452964,
+    481.840691720946,
+    647.2401412181351,
+    731.6292832221113,
+    804.5923523871667,
+    991.2055851837292,
+    1007.3689268107664,
+    1042.0958028506807,
+    1058.7819258889335,
+    1081.149928769012,
+    1108.3117226608138,
+    1304.9316584678493,
+    1384.8435459589095,
+    1454.5972516042762,
+    1481.0342481471534,
+    1496.143631369679,
+    1499.3752519773498,
+    1575.5844386156173,
+    1721.8065368900054,
+    3072.5428676127385,
+    3139.6758790219997,
+    3188.924499182544,
+    3189.861905460173,
+    3261.344312153349,
+    3280.748177631839
+  ]
+}

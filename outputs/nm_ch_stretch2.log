@@ -1,0 +1,171 @@
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+PSI4 1.10 available
+Loaded trajectory from outputs/mvko_20260319_081314/combined_training_data.npz (npz format)
+  Frames: 904, Atoms: 12
+Molecule: ['C', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H']  (12 atoms)
+Equilibrium geometry from frame 0 of outputs/mvko_20260319_081314/combined_training_data.npz
+
+Loading Hessian from outputs/casscf_nm_delta_20260401_110049/hessian_used.npy
+
+Normal modes (30 vibrational):
+  Mode  0:    124.8 cm-1
+  Mode  1:    167.6 cm-1
+  Mode  2:    281.0 cm-1
+  Mode  3:    306.1 cm-1
+  Mode  4:    338.5 cm-1
+  Mode  5:    381.2 cm-1
+  Mode  6:    406.9 cm-1
+  Mode  7:    635.7 cm-1
+  Mode  8:    711.3 cm-1
+  Mode  9:    821.3 cm-1
+  Mode 10:    985.3 cm-1
+  Mode 11:    997.8 cm-1
+  Mode 12:   1023.4 cm-1
+  Mode 13:   1059.6 cm-1
+  Mode 14:   1060.7 cm-1
+  Mode 15:   1107.9 cm-1
+  Mode 16:   1270.6 cm-1
+  Mode 17:   1344.6 cm-1
+  Mode 18:   1437.1 cm-1
+  Mode 19:   1464.3 cm-1
+  Mode 20:   1476.6 cm-1
+  Mode 21:   1501.2 cm-1
+  Mode 22:   1534.1 cm-1
+  Mode 23:   1657.4 cm-1
+  Mode 24:   3048.7 cm-1 <-- C-H
+  Mode 25:   3100.0 cm-1 <-- C-H
+  Mode 26:   3162.5 cm-1 <-- C-H
+  Mode 27:   3164.5 cm-1 <-- C-H
+  Mode 28:   3179.3 cm-1 <-- C-H
+  Mode 29:   3323.2 cm-1 <-- C-H
+
+Selected 6 modes >= 2500 cm-1: modes [24, 25, 26, 27, 28, 29]
+
+Amplitude factors: [np.float64(1.25), np.float64(2.5), np.float64(3.75), np.float64(5.0), np.float64(6.25), np.float64(7.5), np.float64(8.75), np.float64(10.0)]
+  Mode 24 (3048.7 cm-1): a_thermal = 0.1970 Ang, max = 1.970 Ang
+  Mode 25 (3100.0 cm-1): a_thermal = 0.1883 Ang, max = 1.883 Ang
+  Mode 26 (3162.5 cm-1): a_thermal = 0.1852 Ang, max = 1.852 Ang
+  Mode 27 (3164.5 cm-1): a_thermal = 0.1858 Ang, max = 1.858 Ang
+  Mode 28 (3179.3 cm-1): a_thermal = 0.1855 Ang, max = 1.855 Ang
+  Mode 29 (3323.2 cm-1): a_thermal = 0.1750 Ang, max = 1.750 Ang
+
+Total displacements: 96 (6 modes × 8 amplitudes × 2 signs)
+
+Running PSI4 B3LYP/6-31G* single-points ...
+  [1/96] mode 24 (3049 cm-1)  factor=+1.25 ... OK  dE=+18.7 kcal/mol  (14s)
+  [2/96] mode 24 (3049 cm-1)  factor=-1.25 ... OK  dE=+34.2 kcal/mol  (12s)
+  [3/96] mode 24 (3049 cm-1)  factor=+2.50 ... OK  dE=+57.7 kcal/mol  (12s)
+  [4/96] mode 24 (3049 cm-1)  factor=-2.50 ... OK  dE=+196.9 kcal/mol  (12s)
+  [5/96] mode 24 (3049 cm-1)  factor=+3.75 ... OK  dE=+102.6 kcal/mol  (12s)
+  [6/96] mode 24 (3049 cm-1)  factor=-3.75 ... OK  dE=+679.2 kcal/mol  (11s)
+  [7/96] mode 24 (3049 cm-1)  factor=+5.00 ... OK  dE=+146.7 kcal/mol  (12s)
+  [8/96] mode 24 (3049 cm-1)  factor=-5.00 ... OK  dE=+2027.8 kcal/mol  (11s)
+  [9/96] mode 24 (3049 cm-1)  factor=+6.25 ... OK  dE=+187.4 kcal/mol  (11s)
+  [10/96] mode 24 (3049 cm-1)  factor=-6.25 ... OK  dE=+6146.2 kcal/mol  (11s)
+  [11/96] mode 24 (3049 cm-1)  factor=+7.50 ... OK  dE=+223.6 kcal/mol  (11s)
+  [12/96] mode 24 (3049 cm-1)  factor=-7.50 ... FAILED (0s): Following atoms are too close: [(5, np.int64(10), np.float64
+  [13/96] mode 24 (3049 cm-1)  factor=+8.75 ... OK  dE=+255.3 kcal/mol  (12s)
+  [14/96] mode 24 (3049 cm-1)  factor=-8.75 ... FAILED (0s): Following atoms are too close: [(10, np.int64(11), np.float6
+  [15/96] mode 24 (3049 cm-1)  factor=+10.00 ... OK  dE=+282.6 kcal/mol  (13s)
+  [16/96] mode 24 (3049 cm-1)  factor=-10.00 ... OK  dE=+7407.8 kcal/mol  (12s)
+  [17/96] mode 25 (3100 cm-1)  factor=+1.25 ... OK  dE=+27.1 kcal/mol  (12s)
+  [18/96] mode 25 (3100 cm-1)  factor=-1.25 ... OK  dE=+27.1 kcal/mol  (12s)
+  [19/96] mode 25 (3100 cm-1)  factor=+2.50 ... OK  dE=+140.0 kcal/mol  (12s)
+  [20/96] mode 25 (3100 cm-1)  factor=-2.50 ... OK  dE=+140.0 kcal/mol  (12s)
+  [21/96] mode 25 (3100 cm-1)  factor=+3.75 ... OK  dE=+473.4 kcal/mol  (13s)
+  [22/96] mode 25 (3100 cm-1)  factor=-3.75 ... OK  dE=+473.4 kcal/mol  (12s)
+  [23/96] mode 25 (3100 cm-1)  factor=+5.00 ... OK  dE=+1469.9 kcal/mol  (11s)
+  [24/96] mode 25 (3100 cm-1)  factor=-5.00 ... OK  dE=+1469.9 kcal/mol  (11s)
+  [25/96] mode 25 (3100 cm-1)  factor=+6.25 ... OK  dE=+5067.8 kcal/mol  (12s)
+  [26/96] mode 25 (3100 cm-1)  factor=-6.25 ... OK  dE=+5067.6 kcal/mol  (12s)
+  [27/96] mode 25 (3100 cm-1)  factor=+7.50 ... FAILED (0s): Following atoms are too close: [(5, np.int64(10), np.float64
+  [28/96] mode 25 (3100 cm-1)  factor=-7.50 ... FAILED (0s): Following atoms are too close: [(5, np.int64(11), np.float64
+  [29/96] mode 25 (3100 cm-1)  factor=+8.75 ... OK  dE=+4812.3 kcal/mol  (14s)
+  [30/96] mode 25 (3100 cm-1)  factor=-8.75 ... OK  dE=+4812.4 kcal/mol  (14s)
+  [31/96] mode 25 (3100 cm-1)  factor=+10.00 ... OK  dE=+1536.2 kcal/mol  (14s)
+  [32/96] mode 25 (3100 cm-1)  factor=-10.00 ... OK  dE=+1536.2 kcal/mol  (14s)
+  [33/96] mode 26 (3163 cm-1)  factor=+1.25 ... OK  dE=+33.9 kcal/mol  (12s)
+  [34/96] mode 26 (3163 cm-1)  factor=-1.25 ... OK  dE=+19.6 kcal/mol  (12s)
+  [35/96] mode 26 (3163 cm-1)  factor=+2.50 ... OK  dE=+200.5 kcal/mol  (12s)
+  [36/96] mode 26 (3163 cm-1)  factor=-2.50 ... OK  dE=+65.6 kcal/mol  (12s)
+  [37/96] mode 26 (3163 cm-1)  factor=+3.75 ... OK  dE=+743.1 kcal/mol  (11s)
+  [38/96] mode 26 (3163 cm-1)  factor=-3.75 ... OK  dE=+130.9 kcal/mol  (12s)
+  [39/96] mode 26 (3163 cm-1)  factor=+5.00 ... OK  dE=+2550.7 kcal/mol  (11s)
+  [40/96] mode 26 (3163 cm-1)  factor=-5.00 ... OK  dE=+217.2 kcal/mol  (13s)
+  [41/96] mode 26 (3163 cm-1)  factor=+6.25 ... FAILED (0s): Following atoms are too close: [(5, np.int64(9), np.float64(
+  [42/96] mode 26 (3163 cm-1)  factor=-6.25 ... OK  dE=+331.3 kcal/mol  (13s)
+  [43/96] mode 26 (3163 cm-1)  factor=+7.50 ... OK  dE=+13389.6 kcal/mol  (12s)
+  [44/96] mode 26 (3163 cm-1)  factor=-7.50 ... OK  dE=+484.6 kcal/mol  (12s)
+  [45/96] mode 26 (3163 cm-1)  factor=+8.75 ... OK  dE=+5014.9 kcal/mol  (12s)
+  [46/96] mode 26 (3163 cm-1)  factor=-8.75 ... OK  dE=+694.1 kcal/mol  (11s)
+  [47/96] mode 26 (3163 cm-1)  factor=+10.00 ... OK  dE=+7474.6 kcal/mol  (12s)
+  [48/96] mode 26 (3163 cm-1)  factor=-10.00 ... OK  dE=+984.5 kcal/mol  (12s)
+  [49/96] mode 27 (3164 cm-1)  factor=+1.25 ... OK  dE=+28.0 kcal/mol  (12s)
+  [50/96] mode 27 (3164 cm-1)  factor=-1.25 ... OK  dE=+24.5 kcal/mol  (12s)
+  [51/96] mode 27 (3164 cm-1)  factor=+2.50 ... OK  dE=+141.3 kcal/mol  (12s)
+  [52/96] mode 27 (3164 cm-1)  factor=-2.50 ... OK  dE=+106.5 kcal/mol  (12s)
+  [53/96] mode 27 (3164 cm-1)  factor=+3.75 ... OK  dE=+454.5 kcal/mol  (12s)
+  [54/96] mode 27 (3164 cm-1)  factor=-3.75 ... OK  dE=+282.9 kcal/mol  (11s)
+  [55/96] mode 27 (3164 cm-1)  factor=+5.00 ... OK  dE=+1331.2 kcal/mol  (12s)
+  [56/96] mode 27 (3164 cm-1)  factor=-5.00 ... OK  dE=+639.4 kcal/mol  (11s)
+  [57/96] mode 27 (3164 cm-1)  factor=+6.25 ... OK  dE=+4267.3 kcal/mol  (12s)
+  [58/96] mode 27 (3164 cm-1)  factor=-6.25 ... OK  dE=+1364.3 kcal/mol  (12s)
+  [59/96] mode 27 (3164 cm-1)  factor=+7.50 ... FAILED (0s): Following atoms are too close: [(3, np.int64(6), np.float64(
+  [60/96] mode 27 (3164 cm-1)  factor=-7.50 ... OK  dE=+2900.8 kcal/mol  (11s)
+  [61/96] mode 27 (3164 cm-1)  factor=+8.75 ... OK  dE=+8248.5 kcal/mol  (13s)
+  [62/96] mode 27 (3164 cm-1)  factor=-8.75 ... OK  dE=+6600.4 kcal/mol  (12s)
+  [63/96] mode 27 (3164 cm-1)  factor=+10.00 ... OK  dE=+2426.4 kcal/mol  (13s)
+  [64/96] mode 27 (3164 cm-1)  factor=-10.00 ... FAILED (0s): Following atoms are too close: [(5, np.int64(9), np.float64(
+  [65/96] mode 28 (3179 cm-1)  factor=+1.25 ... OK  dE=+34.6 kcal/mol  (12s)
+  [66/96] mode 28 (3179 cm-1)  factor=-1.25 ... OK  dE=+18.6 kcal/mol  (12s)
+  [67/96] mode 28 (3179 cm-1)  factor=+2.50 ... OK  dE=+202.8 kcal/mol  (11s)
+  [68/96] mode 28 (3179 cm-1)  factor=-2.50 ... OK  dE=+57.2 kcal/mol  (12s)
+  [69/96] mode 28 (3179 cm-1)  factor=+3.75 ... OK  dE=+721.7 kcal/mol  (12s)
+  [70/96] mode 28 (3179 cm-1)  factor=-3.75 ... OK  dE=+101.5 kcal/mol  (12s)
+  [71/96] mode 28 (3179 cm-1)  factor=+5.00 ... OK  dE=+2280.5 kcal/mol  (11s)
+  [72/96] mode 28 (3179 cm-1)  factor=-5.00 ... OK  dE=+145.2 kcal/mol  (12s)
+  [73/96] mode 28 (3179 cm-1)  factor=+6.25 ... OK  dE=+8543.4 kcal/mol  (11s)
+  [74/96] mode 28 (3179 cm-1)  factor=-6.25 ... OK  dE=+185.4 kcal/mol  (11s)
+  [75/96] mode 28 (3179 cm-1)  factor=+7.50 ... FAILED (0s): Following atoms are too close: [(4, np.int64(8), np.float64(
+  [76/96] mode 28 (3179 cm-1)  factor=-7.50 ... OK  dE=+221.1 kcal/mol  (12s)
+  [77/96] mode 28 (3179 cm-1)  factor=+8.75 ... OK  dE=+11615.7 kcal/mol  (12s)
+  [78/96] mode 28 (3179 cm-1)  factor=-8.75 ... OK  dE=+251.8 kcal/mol  (13s)
+  [79/96] mode 28 (3179 cm-1)  factor=+10.00 ... FAILED (0s): Following atoms are too close: [(3, np.int64(6), np.float64(
+  [80/96] mode 28 (3179 cm-1)  factor=-10.00 ... OK  dE=+277.9 kcal/mol  (15s)
+  [81/96] mode 29 (3323 cm-1)  factor=+1.25 ... OK  dE=+18.7 kcal/mol  (11s)
+  [82/96] mode 29 (3323 cm-1)  factor=-1.25 ... OK  dE=+36.6 kcal/mol  (12s)
+  [83/96] mode 29 (3323 cm-1)  factor=+2.50 ... OK  dE=+62.2 kcal/mol  (11s)
+  [84/96] mode 29 (3323 cm-1)  factor=-2.50 ... OK  dE=+243.1 kcal/mol  (12s)
+  [85/96] mode 29 (3323 cm-1)  factor=+3.75 ... OK  dE=+128.2 kcal/mol  (11s)
+  [86/96] mode 29 (3323 cm-1)  factor=-3.75 ... OK  dE=+1057.7 kcal/mol  (11s)
+  [87/96] mode 29 (3323 cm-1)  factor=+5.00 ... OK  dE=+228.3 kcal/mol  (12s)
+  [88/96] mode 29 (3323 cm-1)  factor=-5.00 ... OK  dE=+4894.1 kcal/mol  (11s)
+  [89/96] mode 29 (3323 cm-1)  factor=+6.25 ... OK  dE=+386.3 kcal/mol  (12s)
+  [90/96] mode 29 (3323 cm-1)  factor=-6.25 ... FAILED (0s): Following atoms are too close: [(4, np.int64(7), np.float64(
+  [91/96] mode 29 (3323 cm-1)  factor=+7.50 ... OK  dE=+643.2 kcal/mol  (12s)
+  [92/96] mode 29 (3323 cm-1)  factor=-7.50 ... OK  dE=+3260.0 kcal/mol  (11s)
+  [93/96] mode 29 (3323 cm-1)  factor=+8.75 ... OK  dE=+1066.1 kcal/mol  (13s)
+  [94/96] mode 29 (3323 cm-1)  factor=-8.75 ... OK  dE=+923.8 kcal/mol  (13s)
+  [95/96] mode 29 (3323 cm-1)  factor=+10.00 ... OK  dE=+1760.1 kcal/mol  (14s)
+  [96/96] mode 29 (3323 cm-1)  factor=-10.00 ... OK  dE=+379.0 kcal/mol  (13s)
+
+============================================================
+Completed: 86 succeeded, 10 failed out of 96 total
+Saved trajectory to outputs/nm_ch_stretch_20260402_225350/nm_displacements.npz (npz format)
+
+Saved 86 frames to outputs/nm_ch_stretch_20260402_225350/nm_displacements.npz
+
+C-H bond coverage:
+  normal (< 1.3 Ang): 401 / 516
+  stretched (1.3-2.0): 85 / 516
+  dissociated (> 2.0): 30 / 516
+  max C-H: 2.85 Ang
+
+Energy coverage:
+  < 10 kcal/mol:  0
+  10-100 kcal/mol: 16
+  > 100 kcal/mol: 70
+  max dE: 13389.6 kcal/mol

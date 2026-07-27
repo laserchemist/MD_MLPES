@@ -1,0 +1,23 @@
+PSI4 1.10 available
+
+======================================================================
+  MVKO VPT2 ANHARMONIC FREQUENCY ANALYSIS
+======================================================================
+  Method  : b3lyp/6-31G* VPT2
+  Output  : outputs/mvko_vpt2_20260319_183728
+  Focus   : C-H overtone region 5500–6500 cm⁻¹
+  Loaded PSI4-optimised geometry from outputs/mvko_20260319_081314/state.json
+  Energy: -306.3185840050427 Ha
+  Running PSI4 VPT2 (b3lyp/6-31G*) ...
+  PSI4 output → outputs/mvko_vpt2_20260319_183728/psi4_vpt2_output.dat
+  Estimated cost: ~60 Hessian evals × ~2 min each ≈ 2 hrs
+  Started: 2026-03-19 18:37:28
+Warning: used thermodynamics relations inappropriate for low-frequency modes: ['124.7864' '167.6145' '281.0251' '306.1921' '338.6247' '381.2354'
+ '406.9712']
+  VPT2 completed in 645 s (0.18 h)
+
+  Parsing VPT2 output ...
+
+  WARNING: No fundamentals parsed from PSI4 output.
+  Check outputs/mvko_vpt2_20260319_183728/psi4_vpt2_output.dat for VPT2 tables.
+  Try: python3 mvko_vpt2.py --state outputs/mvko_20260319_081314/state.json --parse-only outputs/mvko_vpt2_20260319_183728/psi4_vpt2_output.dat

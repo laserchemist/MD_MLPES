@@ -1,0 +1,21 @@
+{
+  "n_frames_total": 611,
+  "n_grid": 232,
+  "n_md_neq": 379,
+  "gamma": 0.2,
+  "alpha": 1e-05,
+  "cv_rmse_kcal": 1.007,
+  "n_imag": 0,
+  "freqs_lowest10": [
+    58,
+    79,
+    90,
+    109,
+    121,
+    152,
+    169,
+    197,
+    246,
+    274
+  ]
+}

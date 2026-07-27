@@ -1,0 +1,12 @@
+{
+  "timestamp": "20260331_162217",
+  "training_data": "outputs/mvko_20260319_081314/combined_training_data.npz",
+  "n_selected": 30,
+  "n_converged": 29,
+  "max_energy_kcal": 100.0,
+  "gamma": 5e-05,
+  "alpha": 1e-10,
+  "active_space": "CASSCF(4,4)",
+  "basis": "6-31G*",
+  "irc_results_merged": "outputs/casscf_irc_20260330_230145/casscf_results.json"
+}

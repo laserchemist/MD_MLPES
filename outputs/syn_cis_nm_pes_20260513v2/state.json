@@ -1,0 +1,18 @@
+{
+  "molecule": "mvko_syn_cis",
+  "out_dir": "outputs/syn_cis_nm_pes_20260513v2",
+  "steps_done": [
+    1,
+    2,
+    3,
+    5
+  ],
+  "eq_coords": "outputs/syn_cis_nm_pes_20260513v2/eq_coords.npy",
+  "eq_energy": -306.2075680217301,
+  "hessian": "outputs/syn_cis_nm_pes_20260513v2/hessian.npy",
+  "hess_energy": -306.20756803469413,
+  "normal_modes": "outputs/syn_cis_nm_pes_20260513v2/normal_modes.npz",
+  "nm_data": "outputs/syn_cis_nm_pes_20260513v2/nm_displacements.npz",
+  "combined_data": "outputs/syn_cis_nm_pes_20260513v2/combined_training_data.npz",
+  "model": "outputs/syn_cis_nm_pes_20260513v2/mlpes_nm.pkl"
+}

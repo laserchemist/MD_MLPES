@@ -1,0 +1,20 @@
+{
+  "training_data": "outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz",
+  "traj": [
+    "outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_01.xyz",
+    "outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_02.xyz",
+    "outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_03.xyz",
+    "outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_04.xyz",
+    "outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_05.xyz"
+  ],
+  "n_train": 150,
+  "n_traj_frames": 15000,
+  "gp_gamma": 0.001,
+  "gp_alpha": 0.0001,
+  "train_rmse_D": 0.006173349545578962,
+  "sigma_mean_D": 0.523735204429576,
+  "sigma_max_D": 0.7162176690344393,
+  "sigma_p95_D": 0.7141313424338207,
+  "frac_above_0p05D": 0.9552,
+  "frac_above_0p10D": 0.9154
+}

@@ -1,0 +1,29 @@
+MACE Training Summary
+============================================================
+Date              : 2026-04-19 18:33:12
+Molecule          : COH (12 atoms)
+Total frames      : 629
+n_train           : 529
+n_valid           : 100
+Energy cutoff     : 15 kcal/mol
+
+Architecture
+----------------------------------------
+  hidden_irreps   : 64x0e + 64x1o
+  r_max           : 5.0 Å
+  n_layers        : 2
+  device          : cpu
+  dtype           : float64
+  max_epochs      : 500
+
+Output
+----------------------------------------
+  checkpoint      : outputs/mace_wB97X_ch_1p5_20260419/mace_model.pt
+  symbols file    : outputs/mace_wB97X_ch_1p5_20260419/mace_model.symbols.pkl
+
+Why MACE
+----------------------------------------
+  Coulomb+KRR and sGDML share the same pathology: 1/r descriptor
+  second derivatives are intrinsically stiff, producing C-H normal
+  modes at 10000-38000 cm⁻¹ instead of ~3000 cm⁻¹. MACE avoids
+  this via local atomic energies + SO(3) equivariance + force training.

@@ -1,0 +1,189 @@
+
+======================================================================
+  SOFTER GAMMA ML-PES RETRAINING
+======================================================================
+  Training data : outputs/clean_psi410_20260308_203552/training_data.npz
+  Gamma values  : [0.0001, 0.0003, 0.001, 0.003, 0.01]
+  Output dir    : outputs/softer_gamma_20260318_234300
+  Pre-minimise  : True
+Loaded trajectory from outputs/clean_psi410_20260308_203552/training_data.npz (npz format)
+  Frames: 344, Atoms: 5
+
+──────────────────────────────────────────────────────────────────────
+  Training  gamma = 0.0001
+──────────────────────────────────────────────────────────────────────
+Loaded trajectory from outputs/clean_psi410_20260308_203552/training_data.npz (npz format)
+  Frames: 344, Atoms: 5
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/344 [00:00<?, ?it/s]Computing descriptors: 100%|██████████| 344/344 [00:00<00:00, 17065.14it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/5 [00:00<?, ?it/s]Grid search: 100%|██████████| 5/5 [00:00<00:00, 138.18it/s]
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+Found 12 modes above threshold (expected 9). Falling back to the {expected} highest-|ω| modes.
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0001   0.00         2.2992
+      0.0001   0.00         4.8405
+      0.0001   0.00         6.7611
+      0.0001   0.01         7.9384
+      0.0001   0.10         9.0603
+  → gamma=0.0001  alpha=1e-05  RMSE=2.2992 kcal/mol
+  Computing Hessian frequencies ...
+  NM frequencies (cm⁻¹): 1358  2428  2841  2912  3414  3580  5086  8633  11222
+  Unphysical (>4000): 3/9
+
+──────────────────────────────────────────────────────────────────────
+  Training  gamma = 0.0003
+──────────────────────────────────────────────────────────────────────
+Loaded trajectory from outputs/clean_psi410_20260308_203552/training_data.npz (npz format)
+  Frames: 344, Atoms: 5
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/344 [00:00<?, ?it/s]Computing descriptors: 100%|██████████| 344/344 [00:00<00:00, 18238.64it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/5 [00:00<?, ?it/s]Grid search: 100%|██████████| 5/5 [00:00<00:00, 602.54it/s]
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+Found 12 modes above threshold (expected 9). Falling back to the {expected} highest-|ω| modes.
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0003   0.00         1.0656
+      0.0003   0.00         2.4298
+      0.0003   0.00         5.1026
+      0.0003   0.01         7.2055
+      0.0003   0.10         8.4242
+  → gamma=0.0003  alpha=1e-05  RMSE=1.0656 kcal/mol
+  Computing Hessian frequencies ...
+  NM frequencies (cm⁻¹): 1393  2709  3317  3340  3736  4936  5718  11205  11328
+  Unphysical (>4000): 4/9
+
+──────────────────────────────────────────────────────────────────────
+  Training  gamma = 0.0010
+──────────────────────────────────────────────────────────────────────
+Loaded trajectory from outputs/clean_psi410_20260308_203552/training_data.npz (npz format)
+  Frames: 344, Atoms: 5
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/344 [00:00<?, ?it/s]Computing descriptors: 100%|██████████| 344/344 [00:00<00:00, 18148.25it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/5 [00:00<?, ?it/s]Grid search: 100%|██████████| 5/5 [00:00<00:00, 631.71it/s]
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+Found 12 modes above threshold (expected 9). Falling back to the {expected} highest-|ω| modes.
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0010   0.00         0.5012
+      0.0010   0.00         1.0881
+      0.0010   0.00         2.4748
+      0.0010   0.01         5.2593
+      0.0010   0.10         7.6282
+  → gamma=0.0010  alpha=1e-05  RMSE=0.5012 kcal/mol
+  Computing Hessian frequencies ...
+  NM frequencies (cm⁻¹): 1844  2563  3246  3510  4273  5234  5535  11222  12109
+  Unphysical (>4000): 5/9
+
+──────────────────────────────────────────────────────────────────────
+  Training  gamma = 0.0030
+──────────────────────────────────────────────────────────────────────
+Loaded trajectory from outputs/clean_psi410_20260308_203552/training_data.npz (npz format)
+  Frames: 344, Atoms: 5
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/344 [00:00<?, ?it/s]Computing descriptors: 100%|██████████| 344/344 [00:00<00:00, 18217.68it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/5 [00:00<?, ?it/s]Grid search: 100%|██████████| 5/5 [00:00<00:00, 652.16it/s]
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+Found 12 modes above threshold (expected 9). Falling back to the {expected} highest-|ω| modes.
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0030   0.00         0.4482
+      0.0030   0.00         0.6708
+      0.0030   0.00         1.3212
+      0.0030   0.01         2.8992
+      0.0030   0.10         5.8550
+  → gamma=0.0030  alpha=1e-05  RMSE=0.4482 kcal/mol
+  Computing Hessian frequencies ...
+  NM frequencies (cm⁻¹): 1883  2481  3158  3466  4521  5213  5559  11238  12379
+  Unphysical (>4000): 5/9
+
+──────────────────────────────────────────────────────────────────────
+  Training  gamma = 0.0100
+──────────────────────────────────────────────────────────────────────
+Loaded trajectory from outputs/clean_psi410_20260308_203552/training_data.npz (npz format)
+  Frames: 344, Atoms: 5
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/344 [00:00<?, ?it/s]Computing descriptors: 100%|██████████| 344/344 [00:00<00:00, 18335.06it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/5 [00:00<?, ?it/s]Grid search: 100%|██████████| 5/5 [00:00<00:00, 625.14it/s]
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+Found 12 modes above threshold (expected 9). Falling back to the {expected} highest-|ω| modes.
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0100   0.00         0.6139
+      0.0100   0.00         0.7614
+      0.0100   0.00         1.1470
+      0.0100   0.01         1.8891
+      0.0100   0.10         3.5107
+  → gamma=0.0100  alpha=1e-05  RMSE=0.6139 kcal/mol
+  Computing Hessian frequencies ...
+  NM frequencies (cm⁻¹): 1773  2374  3057  3419  4168  4944  5595  11123  12060
+  Unphysical (>4000): 5/9
+
+======================================================================
+  SUMMARY
+======================================================================
+     gamma     alpha   RMSE (kcal)  Unphysical     Freq range (cm⁻¹)
+  ────────  ────────  ────────────  ──────────  ────────────────────
+    0.0001   0.00001        2.2992           3           1358 – 3580
+    0.0003   0.00001        1.0656           4           1393 – 3736
+    0.0010   0.00001        0.5012           5           1844 – 3510
+    0.0030   0.00001        0.4482           5           1883 – 3466
+    0.0100   0.00001        0.6139           5           1773 – 3419
+
+  Recommended model  : outputs/softer_gamma_20260318_234300/best_model.pkl
+  gamma=0.0001  RMSE=2.2992 kcal/mol  unphysical modes=3/9
+
+  NM frequencies:
+    Mode  1:   1358.0 cm⁻¹
+    Mode  2:   2427.9 cm⁻¹
+    Mode  3:   2840.7 cm⁻¹
+    Mode  4:   2912.2 cm⁻¹
+    Mode  5:   3413.9 cm⁻¹
+    Mode  6:   3580.2 cm⁻¹
+    Mode  7:   5085.7 cm⁻¹  ← UNPHYSICAL
+    Mode  8:   8632.8 cm⁻¹  ← UNPHYSICAL
+    Mode  9:  11222.1 cm⁻¹  ← UNPHYSICAL
+
+  Report saved       : outputs/softer_gamma_20260318_234300/hessian_report.txt
+
+  Next step — run IR workflow with the recommended model:
+    python3 ir_md_spectrum.py \
+        --model outputs/softer_gamma_20260318_234300/best_model.pkl \
+        --training-data outputs/clean_psi410_20260308_203552/training_data.npz \
+        --steps 20000 --temp 300 --timestep 0.5 --save-every 1 \
+        --preminimize --zpe-min-freq 50 --zpe-max-freq 4000

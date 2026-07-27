@@ -1,0 +1,10 @@
+PSI4 1.10 available
+Loaded 904 training frames from outputs/mvko_20260319_081314/combined_training_data.npz
+Selected 150 frames for dipole collection
+  Frame 10/150  idx=31  |μ|=0.0000 D  [123s elapsed, 12.3s/frame]
+  Frame 20/150  idx=81  |μ|=0.0000 D  [491s elapsed, 24.5s/frame]
+  Frame 30/150  idx=131  |μ|=0.0000 D  [1574s elapsed, 52.5s/frame]
+  Frame 40/150  idx=171  |μ|=0.0000 D  [1676s elapsed, 41.9s/frame]
+  Frame 50/150  idx=217  |μ|=0.0000 D  [1778s elapsed, 35.6s/frame]
+  Frame 60/150  idx=263  |μ|=0.0000 D  [1880s elapsed, 31.3s/frame]
+  Frame 70/150  idx=382  |μ|=0.0000 D  [1984s elapsed, 28.3s/frame]

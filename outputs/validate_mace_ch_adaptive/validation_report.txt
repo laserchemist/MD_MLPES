@@ -1,0 +1,53 @@
+ML-PES Validation Report
+============================================================
+Date         : 2026-06-04 13:23:51
+Driver type  : MACE
+Model        : outputs/mace_wB97X_ch_adaptive_20260418/mace_model.pt
+Data         : outputs/anti_cis_nm_pes_20260513/combined_training_data.npz
+
+Prediction Errors
+----------------------------------------
+  n_sample      : 100
+  Energy RMSE   : 16.9431 kcal/mol
+  Energy MAE    : 5.9237 kcal/mol
+  Force  RMSE   : 0.00369 Ha/Å  (2.313 kcal/mol/Å)
+  Force  MAE    : 0.00139 Ha/Å
+
+Normal Mode Frequencies (cm⁻¹)
+----------------------------------------
+  Imaginary modes  : 0
+  Unphysical modes : 6  (>5000 cm⁻¹)
+  Max frequency    : 5969 cm⁻¹
+  (Coulomb+KRR typically has 5/9 unphysical at >5000 cm⁻¹)
+  (NM-KRR: Cartesian Hessian high-freq modes may be inflated; MD stability is the relevant check)
+  (MACE expected: 0 imaginary, 0 unphysical, max ~3200 cm⁻¹)
+  mode  1:    578.4
+  mode  2:    606.3
+  mode  3:    816.7
+  mode  4:    831.0
+  mode  5:    937.6
+  mode  6:   1068.0
+  mode  7:   1171.5
+  mode  8:   1311.1
+  mode  9:   1394.6
+  mode 10:   1442.1
+  mode 11:   1560.7
+  mode 12:   1733.5
+  mode 13:   1749.5
+  mode 14:   1890.6
+  mode 15:   1917.3
+  mode 16:   2085.0
+  mode 17:   2329.5
+  mode 18:   2349.1
+  mode 19:   2481.2
+  mode 20:   2610.0
+  mode 21:   2689.2
+  mode 22:   2935.6
+  mode 23:   2937.1
+  mode 24:   3532.7
+  mode 25:   5156.7 UNPHYSICAL
+  mode 26:   5204.8 UNPHYSICAL
+  mode 27:   5364.6 UNPHYSICAL
+  mode 28:   5573.0 UNPHYSICAL
+  mode 29:   5799.2 UNPHYSICAL
+  mode 30:   5969.1 UNPHYSICAL

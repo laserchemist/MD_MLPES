@@ -1,0 +1,233 @@
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+PSI4 1.10 available
+
+============================================================
+  ADAPTIVE C-H TRAINING DATA GENERATION
+============================================================
+  Training data : outputs/wB97X_surface_20260406_223155/training_data_wB97X_aug.npz
+  Output dir    : outputs/ch_adaptive_20260418
+  Frames        : 1126
+  E_min         : -306.210098 Ha  (12-atom molecule)
+  Eq. coords    : min-energy training frame 972  (E=-306.210098 Ha)
+
+  Loading Hessian from outputs/mvko_20260319_074852/psi4_hessian.npy
+  Hessian shape : (36, 36)
+
+  Identifying C-H stretch modes ...
+  C-H stretch modes (6): mode 25 @ 3049 cm⁻¹, mode 26 @ 3100 cm⁻¹, mode 27 @ 3163 cm⁻¹, mode 28 @ 3164 cm⁻¹, mode 29 @ 3179 cm⁻¹, mode 30 @ 3323 cm⁻¹
+  Total displacements generated: 240
+
+  Deduplicating against 1126 existing frames (max per-atom displacement < 0.03 Å; fine scale exempt) ...
+  After dedup   : 190 / 240 frames kept
+
+  Running PSI4 wB97X-D/6-31G* single-points ...
+  Energy cutoff : 80 kcal/mol above minimum
+
+  [  1/190]  mode 25 (3049 cm⁻¹)  factor=+0.125  scale=fine  ETA 0 min  OK  ΔE=-0.0 kcal/mol
+  [  2/190]  mode 25 (3049 cm⁻¹)  factor=-0.125  scale=fine  ETA 50 min  OK  ΔE=-0.0 kcal/mol
+  [  3/190]  mode 25 (3049 cm⁻¹)  factor=+0.250  scale=fine  ETA 48 min  OK  ΔE=0.0 kcal/mol
+  [  4/190]  mode 25 (3049 cm⁻¹)  factor=-0.250  scale=fine  ETA 47 min  OK  ΔE=-0.0 kcal/mol
+  [  5/190]  mode 25 (3049 cm⁻¹)  factor=+0.375  scale=fine  ETA 47 min  OK  ΔE=0.1 kcal/mol
+  [  6/190]  mode 25 (3049 cm⁻¹)  factor=-0.375  scale=fine  ETA 46 min  OK  ΔE=0.0 kcal/mol
+  [  7/190]  mode 25 (3049 cm⁻¹)  factor=+0.500  scale=fine  ETA 46 min  OK  ΔE=0.2 kcal/mol
+  [  8/190]  mode 25 (3049 cm⁻¹)  factor=-0.500  scale=fine  ETA 45 min  OK  ΔE=0.1 kcal/mol
+  [  9/190]  mode 25 (3049 cm⁻¹)  factor=+0.625  scale=fine  ETA 45 min  OK  ΔE=0.2 kcal/mol
+  [ 10/190]  mode 25 (3049 cm⁻¹)  factor=-0.625  scale=fine  ETA 45 min  OK  ΔE=0.2 kcal/mol
+  [ 11/190]  mode 25 (3049 cm⁻¹)  factor=+0.750  scale=fine  ETA 45 min  OK  ΔE=0.4 kcal/mol
+  [ 12/190]  mode 25 (3049 cm⁻¹)  factor=-0.750  scale=fine  ETA 44 min  OK  ΔE=0.3 kcal/mol
+  [ 13/190]  mode 25 (3049 cm⁻¹)  factor=+0.875  scale=fine  ETA 44 min  OK  ΔE=0.5 kcal/mol
+  [ 14/190]  mode 25 (3049 cm⁻¹)  factor=-0.875  scale=fine  ETA 44 min  OK  ΔE=0.4 kcal/mol
+  [ 15/190]  mode 25 (3049 cm⁻¹)  factor=+1.000  scale=fine  ETA 43 min  OK  ΔE=0.6 kcal/mol
+  [ 16/190]  mode 25 (3049 cm⁻¹)  factor=-1.000  scale=fine  ETA 43 min  OK  ΔE=0.5 kcal/mol
+  [ 17/190]  mode 25 (3049 cm⁻¹)  factor=+0.750  scale=medium  ETA 43 min  OK  ΔE=1.1 kcal/mol
+  [ 18/190]  mode 25 (3049 cm⁻¹)  factor=-0.750  scale=medium  ETA 43 min  OK  ΔE=1.1 kcal/mol
+  [ 19/190]  mode 25 (3049 cm⁻¹)  factor=+0.938  scale=medium  ETA 42 min  OK  ΔE=1.7 kcal/mol
+  [ 20/190]  mode 25 (3049 cm⁻¹)  factor=-0.938  scale=medium  ETA 42 min  OK  ΔE=1.8 kcal/mol
+  [ 21/190]  mode 25 (3049 cm⁻¹)  factor=+1.125  scale=medium  ETA 42 min  OK  ΔE=2.4 kcal/mol
+  [ 22/190]  mode 25 (3049 cm⁻¹)  factor=-1.125  scale=medium  ETA 42 min  OK  ΔE=2.6 kcal/mol
+  [ 23/190]  mode 25 (3049 cm⁻¹)  factor=+1.312  scale=medium  ETA 41 min  OK  ΔE=3.2 kcal/mol
+  [ 24/190]  mode 25 (3049 cm⁻¹)  factor=-1.312  scale=medium  ETA 41 min  OK  ΔE=3.7 kcal/mol
+  [ 25/190]  mode 25 (3049 cm⁻¹)  factor=+1.500  scale=medium  ETA 41 min  OK  ΔE=4.1 kcal/mol
+  [ 26/190]  mode 25 (3049 cm⁻¹)  factor=-1.500  scale=medium  ETA 41 min  OK  ΔE=4.9 kcal/mol
+  [ 27/190]  mode 25 (3049 cm⁻¹)  factor=+0.500  scale=coarse  ETA 41 min  OK  ΔE=1.0 kcal/mol
+  [ 28/190]  mode 25 (3049 cm⁻¹)  factor=-0.500  scale=coarse  ETA 40 min  OK  ΔE=0.9 kcal/mol
+  [ 29/190]  mode 25 (3049 cm⁻¹)  factor=+1.000  scale=coarse  ETA 40 min  OK  ΔE=3.7 kcal/mol
+  [ 30/190]  mode 25 (3049 cm⁻¹)  factor=-1.000  scale=coarse  ETA 40 min  OK  ΔE=4.3 kcal/mol
+  [ 31/190]  mode 25 (3049 cm⁻¹)  factor=+1.500  scale=coarse  ETA 40 min  OK  ΔE=7.8 kcal/mol
+  [ 32/190]  mode 25 (3049 cm⁻¹)  factor=-1.500  scale=coarse  ETA 39 min  OK  ΔE=10.5 kcal/mol
+  [ 33/190]  mode 25 (3049 cm⁻¹)  factor=+2.000  scale=coarse  ETA 39 min  OK  ΔE=13.1 kcal/mol
+  [ 34/190]  mode 25 (3049 cm⁻¹)  factor=-2.000  scale=coarse  ETA 39 min  OK  ΔE=20.1 kcal/mol
+  [ 35/190]  mode 26 (3100 cm⁻¹)  factor=+0.125  scale=fine  ETA 38 min  OK  ΔE=-0.0 kcal/mol
+  [ 36/190]  mode 26 (3100 cm⁻¹)  factor=-0.125  scale=fine  ETA 38 min  OK  ΔE=-0.0 kcal/mol
+  [ 37/190]  mode 26 (3100 cm⁻¹)  factor=+0.250  scale=fine  ETA 38 min  OK  ΔE=0.0 kcal/mol
+  [ 38/190]  mode 26 (3100 cm⁻¹)  factor=-0.250  scale=fine  ETA 38 min  OK  ΔE=0.0 kcal/mol
+  [ 39/190]  mode 26 (3100 cm⁻¹)  factor=+0.375  scale=fine  ETA 37 min  OK  ΔE=0.1 kcal/mol
+  [ 40/190]  mode 26 (3100 cm⁻¹)  factor=-0.375  scale=fine  ETA 37 min  OK  ΔE=0.1 kcal/mol
+  [ 41/190]  mode 26 (3100 cm⁻¹)  factor=+0.500  scale=fine  ETA 37 min  OK  ΔE=0.1 kcal/mol
+  [ 42/190]  mode 26 (3100 cm⁻¹)  factor=-0.500  scale=fine  ETA 37 min  OK  ΔE=0.1 kcal/mol
+  [ 43/190]  mode 26 (3100 cm⁻¹)  factor=+0.625  scale=fine  ETA 36 min  OK  ΔE=0.2 kcal/mol
+  [ 44/190]  mode 26 (3100 cm⁻¹)  factor=-0.625  scale=fine  ETA 36 min  OK  ΔE=0.2 kcal/mol
+  [ 45/190]  mode 26 (3100 cm⁻¹)  factor=+0.750  scale=fine  ETA 36 min  OK  ΔE=0.3 kcal/mol
+  [ 46/190]  mode 26 (3100 cm⁻¹)  factor=-0.750  scale=fine  ETA 36 min  OK  ΔE=0.3 kcal/mol
+  [ 47/190]  mode 26 (3100 cm⁻¹)  factor=+0.875  scale=fine  ETA 36 min  OK  ΔE=0.4 kcal/mol
+  [ 48/190]  mode 26 (3100 cm⁻¹)  factor=-0.875  scale=fine  ETA 35 min  OK  ΔE=0.4 kcal/mol
+  [ 49/190]  mode 26 (3100 cm⁻¹)  factor=+1.000  scale=fine  ETA 35 min  OK  ΔE=0.6 kcal/mol
+  [ 50/190]  mode 26 (3100 cm⁻¹)  factor=-1.000  scale=fine  ETA 35 min  OK  ΔE=0.6 kcal/mol
+  [ 51/190]  mode 26 (3100 cm⁻¹)  factor=+0.750  scale=medium  ETA 35 min  OK  ΔE=1.1 kcal/mol
+  [ 52/190]  mode 26 (3100 cm⁻¹)  factor=-0.750  scale=medium  ETA 34 min  OK  ΔE=1.1 kcal/mol
+  [ 53/190]  mode 26 (3100 cm⁻¹)  factor=+0.938  scale=medium  ETA 34 min  OK  ΔE=1.8 kcal/mol
+  [ 54/190]  mode 26 (3100 cm⁻¹)  factor=-0.938  scale=medium  ETA 34 min  OK  ΔE=1.8 kcal/mol
+  [ 55/190]  mode 26 (3100 cm⁻¹)  factor=+1.125  scale=medium  ETA 34 min  OK  ΔE=2.5 kcal/mol
+  [ 56/190]  mode 26 (3100 cm⁻¹)  factor=-1.125  scale=medium  ETA 33 min  OK  ΔE=2.5 kcal/mol
+  [ 57/190]  mode 26 (3100 cm⁻¹)  factor=+1.312  scale=medium  ETA 33 min  OK  ΔE=3.5 kcal/mol
+  [ 58/190]  mode 26 (3100 cm⁻¹)  factor=-1.312  scale=medium  ETA 33 min  OK  ΔE=3.5 kcal/mol
+  [ 59/190]  mode 26 (3100 cm⁻¹)  factor=+1.500  scale=medium  ETA 33 min  OK  ΔE=4.6 kcal/mol
+  [ 60/190]  mode 26 (3100 cm⁻¹)  factor=-1.500  scale=medium  ETA 32 min  OK  ΔE=4.6 kcal/mol
+  [ 61/190]  mode 26 (3100 cm⁻¹)  factor=+0.500  scale=coarse  ETA 32 min  OK  ΔE=1.0 kcal/mol
+  [ 62/190]  mode 26 (3100 cm⁻¹)  factor=-0.500  scale=coarse  ETA 32 min  OK  ΔE=1.0 kcal/mol
+  [ 63/190]  mode 26 (3100 cm⁻¹)  factor=+1.000  scale=coarse  ETA 32 min  OK  ΔE=4.1 kcal/mol
+  [ 64/190]  mode 26 (3100 cm⁻¹)  factor=-1.000  scale=coarse  ETA 31 min  OK  ΔE=4.1 kcal/mol
+  [ 65/190]  mode 26 (3100 cm⁻¹)  factor=+1.500  scale=coarse  ETA 31 min  OK  ΔE=9.3 kcal/mol
+  [ 66/190]  mode 26 (3100 cm⁻¹)  factor=-1.500  scale=coarse  ETA 31 min  OK  ΔE=9.3 kcal/mol
+  [ 67/190]  mode 26 (3100 cm⁻¹)  factor=+2.000  scale=coarse  ETA 31 min  OK  ΔE=17.0 kcal/mol
+  [ 68/190]  mode 26 (3100 cm⁻¹)  factor=-2.000  scale=coarse  ETA 30 min  OK  ΔE=17.0 kcal/mol
+  [ 69/190]  mode 27 (3163 cm⁻¹)  factor=+0.125  scale=fine  ETA 30 min  OK  ΔE=-0.0 kcal/mol
+  [ 70/190]  mode 27 (3163 cm⁻¹)  factor=-0.125  scale=fine  ETA 30 min  OK  ΔE=-0.0 kcal/mol
+  [ 71/190]  mode 27 (3163 cm⁻¹)  factor=+0.250  scale=fine  ETA 30 min  OK  ΔE=0.0 kcal/mol
+  [ 72/190]  mode 27 (3163 cm⁻¹)  factor=-0.250  scale=fine  ETA 29 min  OK  ΔE=0.0 kcal/mol
+  [ 73/190]  mode 27 (3163 cm⁻¹)  factor=+0.375  scale=fine  ETA 29 min  OK  ΔE=0.1 kcal/mol
+  [ 74/190]  mode 27 (3163 cm⁻¹)  factor=-0.375  scale=fine  ETA 29 min  OK  ΔE=0.1 kcal/mol
+  [ 75/190]  mode 27 (3163 cm⁻¹)  factor=+0.500  scale=fine  ETA 29 min  OK  ΔE=0.1 kcal/mol
+  [ 76/190]  mode 27 (3163 cm⁻¹)  factor=-0.500  scale=fine  ETA 29 min  OK  ΔE=0.1 kcal/mol
+  [ 77/190]  mode 27 (3163 cm⁻¹)  factor=+0.625  scale=fine  ETA 28 min  OK  ΔE=0.2 kcal/mol
+  [ 78/190]  mode 27 (3163 cm⁻¹)  factor=-0.625  scale=fine  ETA 28 min  OK  ΔE=0.2 kcal/mol
+  [ 79/190]  mode 27 (3163 cm⁻¹)  factor=+0.750  scale=fine  ETA 28 min  OK  ΔE=0.3 kcal/mol
+  [ 80/190]  mode 27 (3163 cm⁻¹)  factor=-0.750  scale=fine  ETA 28 min  OK  ΔE=0.3 kcal/mol
+  [ 81/190]  mode 27 (3163 cm⁻¹)  factor=+0.875  scale=fine  ETA 27 min  OK  ΔE=0.4 kcal/mol
+  [ 82/190]  mode 27 (3163 cm⁻¹)  factor=-0.875  scale=fine  ETA 27 min  OK  ΔE=0.4 kcal/mol
+  [ 83/190]  mode 27 (3163 cm⁻¹)  factor=+1.000  scale=fine  ETA 27 min  OK  ΔE=0.6 kcal/mol
+  [ 84/190]  mode 27 (3163 cm⁻¹)  factor=-1.000  scale=fine  ETA 27 min  OK  ΔE=0.6 kcal/mol
+  [ 85/190]  mode 27 (3163 cm⁻¹)  factor=+0.938  scale=medium  ETA 26 min  OK  ΔE=1.6 kcal/mol
+  [ 86/190]  mode 27 (3163 cm⁻¹)  factor=-1.125  scale=medium  ETA 26 min  OK  ΔE=2.7 kcal/mol
+  [ 87/190]  mode 27 (3163 cm⁻¹)  factor=+1.312  scale=medium  ETA 26 min  OK  ΔE=3.2 kcal/mol
+  [ 88/190]  mode 27 (3163 cm⁻¹)  factor=+1.500  scale=medium  ETA 26 min  OK  ΔE=4.1 kcal/mol
+  [ 89/190]  mode 27 (3163 cm⁻¹)  factor=-1.500  scale=medium  ETA 25 min  OK  ΔE=5.1 kcal/mol
+  [ 90/190]  mode 27 (3163 cm⁻¹)  factor=+1.000  scale=coarse  ETA 25 min  OK  ΔE=3.6 kcal/mol
+  [ 91/190]  mode 27 (3163 cm⁻¹)  factor=-1.000  scale=coarse  ETA 25 min  OK  ΔE=4.5 kcal/mol
+  [ 92/190]  mode 27 (3163 cm⁻¹)  factor=+1.500  scale=coarse  ETA 25 min  OK  ΔE=7.8 kcal/mol
+  [ 93/190]  mode 27 (3163 cm⁻¹)  factor=-1.500  scale=coarse  ETA 24 min  OK  ΔE=10.7 kcal/mol
+  [ 94/190]  mode 27 (3163 cm⁻¹)  factor=+2.000  scale=coarse  ETA 24 min  OK  ΔE=13.3 kcal/mol
+  [ 95/190]  mode 27 (3163 cm⁻¹)  factor=-2.000  scale=coarse  ETA 24 min  OK  ΔE=20.4 kcal/mol
+  [ 96/190]  mode 28 (3164 cm⁻¹)  factor=+0.125  scale=fine  ETA 24 min  OK  ΔE=-0.0 kcal/mol
+  [ 97/190]  mode 28 (3164 cm⁻¹)  factor=-0.125  scale=fine  ETA 23 min  OK  ΔE=-0.0 kcal/mol
+  [ 98/190]  mode 28 (3164 cm⁻¹)  factor=+0.250  scale=fine  ETA 23 min  OK  ΔE=0.0 kcal/mol
+  [ 99/190]  mode 28 (3164 cm⁻¹)  factor=-0.250  scale=fine  ETA 23 min  OK  ΔE=0.0 kcal/mol
+  [100/190]  mode 28 (3164 cm⁻¹)  factor=+0.375  scale=fine  ETA 23 min  OK  ΔE=0.1 kcal/mol
+  [101/190]  mode 28 (3164 cm⁻¹)  factor=-0.375  scale=fine  ETA 22 min  OK  ΔE=0.1 kcal/mol
+  [102/190]  mode 28 (3164 cm⁻¹)  factor=+0.500  scale=fine  ETA 22 min  OK  ΔE=0.1 kcal/mol
+  [103/190]  mode 28 (3164 cm⁻¹)  factor=-0.500  scale=fine  ETA 22 min  OK  ΔE=0.1 kcal/mol
+  [104/190]  mode 28 (3164 cm⁻¹)  factor=+0.625  scale=fine  ETA 22 min  OK  ΔE=0.2 kcal/mol
+  [105/190]  mode 28 (3164 cm⁻¹)  factor=-0.625  scale=fine  ETA 21 min  OK  ΔE=0.2 kcal/mol
+  [106/190]  mode 28 (3164 cm⁻¹)  factor=+0.750  scale=fine  ETA 21 min  OK  ΔE=0.3 kcal/mol
+  [107/190]  mode 28 (3164 cm⁻¹)  factor=-0.750  scale=fine  ETA 21 min  OK  ΔE=0.3 kcal/mol
+  [108/190]  mode 28 (3164 cm⁻¹)  factor=+0.875  scale=fine  ETA 21 min  OK  ΔE=0.4 kcal/mol
+  [109/190]  mode 28 (3164 cm⁻¹)  factor=-0.875  scale=fine  ETA 20 min  OK  ΔE=0.4 kcal/mol
+  [110/190]  mode 28 (3164 cm⁻¹)  factor=+1.000  scale=fine  ETA 20 min  OK  ΔE=0.6 kcal/mol
+  [111/190]  mode 28 (3164 cm⁻¹)  factor=-1.000  scale=fine  ETA 20 min  OK  ΔE=0.6 kcal/mol
+  [112/190]  mode 28 (3164 cm⁻¹)  factor=-0.750  scale=medium  ETA 20 min  OK  ΔE=1.1 kcal/mol
+  [113/190]  mode 28 (3164 cm⁻¹)  factor=+1.125  scale=medium  ETA 19 min  OK  ΔE=2.5 kcal/mol
+  [114/190]  mode 28 (3164 cm⁻¹)  factor=-1.125  scale=medium  ETA 19 min  OK  ΔE=2.6 kcal/mol
+  [115/190]  mode 28 (3164 cm⁻¹)  factor=+1.312  scale=medium  ETA 19 min  OK  ΔE=3.4 kcal/mol
+  [116/190]  mode 28 (3164 cm⁻¹)  factor=-1.312  scale=medium  ETA 19 min  OK  ΔE=3.5 kcal/mol
+  [117/190]  mode 28 (3164 cm⁻¹)  factor=+1.500  scale=medium  ETA 18 min  OK  ΔE=4.4 kcal/mol
+  [118/190]  mode 28 (3164 cm⁻¹)  factor=-1.500  scale=medium  ETA 18 min  OK  ΔE=4.7 kcal/mol
+  [119/190]  mode 28 (3164 cm⁻¹)  factor=-1.000  scale=coarse  ETA 18 min  OK  ΔE=4.1 kcal/mol
+  [120/190]  mode 28 (3164 cm⁻¹)  factor=+1.500  scale=coarse  ETA 18 min  OK  ΔE=8.9 kcal/mol
+  [121/190]  mode 28 (3164 cm⁻¹)  factor=-1.500  scale=coarse  ETA 17 min  OK  ΔE=9.5 kcal/mol
+  [122/190]  mode 28 (3164 cm⁻¹)  factor=+2.000  scale=coarse  ETA 17 min  OK  ΔE=15.8 kcal/mol
+  [123/190]  mode 28 (3164 cm⁻¹)  factor=-2.000  scale=coarse  ETA 17 min  OK  ΔE=17.5 kcal/mol
+  [124/190]  mode 29 (3179 cm⁻¹)  factor=+0.125  scale=fine  ETA 17 min  OK  ΔE=-0.0 kcal/mol
+  [125/190]  mode 29 (3179 cm⁻¹)  factor=-0.125  scale=fine  ETA 16 min  OK  ΔE=-0.0 kcal/mol
+  [126/190]  mode 29 (3179 cm⁻¹)  factor=+0.250  scale=fine  ETA 16 min  OK  ΔE=0.0 kcal/mol
+  [127/190]  mode 29 (3179 cm⁻¹)  factor=-0.250  scale=fine  ETA 16 min  OK  ΔE=0.0 kcal/mol
+  [128/190]  mode 29 (3179 cm⁻¹)  factor=+0.375  scale=fine  ETA 16 min  OK  ΔE=0.1 kcal/mol
+  [129/190]  mode 29 (3179 cm⁻¹)  factor=-0.375  scale=fine  ETA 15 min  OK  ΔE=0.1 kcal/mol
+  [130/190]  mode 29 (3179 cm⁻¹)  factor=+0.500  scale=fine  ETA 15 min  OK  ΔE=0.1 kcal/mol
+  [131/190]  mode 29 (3179 cm⁻¹)  factor=-0.500  scale=fine  ETA 15 min  OK  ΔE=0.1 kcal/mol
+  [132/190]  mode 29 (3179 cm⁻¹)  factor=+0.625  scale=fine  ETA 15 min  OK  ΔE=0.2 kcal/mol
+  [133/190]  mode 29 (3179 cm⁻¹)  factor=-0.625  scale=fine  ETA 14 min  OK  ΔE=0.2 kcal/mol
+  [134/190]  mode 29 (3179 cm⁻¹)  factor=+0.750  scale=fine  ETA 14 min  OK  ΔE=0.3 kcal/mol
+  [135/190]  mode 29 (3179 cm⁻¹)  factor=-0.750  scale=fine  ETA 14 min  OK  ΔE=0.3 kcal/mol
+  [136/190]  mode 29 (3179 cm⁻¹)  factor=+0.875  scale=fine  ETA 14 min  OK  ΔE=0.4 kcal/mol
+  [137/190]  mode 29 (3179 cm⁻¹)  factor=-0.875  scale=fine  ETA 13 min  OK  ΔE=0.5 kcal/mol
+  [138/190]  mode 29 (3179 cm⁻¹)  factor=+1.000  scale=fine  ETA 13 min  OK  ΔE=0.6 kcal/mol
+  [139/190]  mode 29 (3179 cm⁻¹)  factor=-1.000  scale=fine  ETA 13 min  OK  ΔE=0.6 kcal/mol
+  [140/190]  mode 29 (3179 cm⁻¹)  factor=+0.750  scale=medium  ETA 13 min  OK  ΔE=1.0 kcal/mol
+  [141/190]  mode 29 (3179 cm⁻¹)  factor=+0.938  scale=medium  ETA 12 min  OK  ΔE=1.6 kcal/mol
+  [142/190]  mode 29 (3179 cm⁻¹)  factor=-0.938  scale=medium  ETA 12 min  OK  ΔE=1.9 kcal/mol
+  [143/190]  mode 29 (3179 cm⁻¹)  factor=+1.125  scale=medium  ETA 12 min  OK  ΔE=2.3 kcal/mol
+  [144/190]  mode 29 (3179 cm⁻¹)  factor=-1.125  scale=medium  ETA 12 min  OK  ΔE=2.8 kcal/mol
+  [145/190]  mode 29 (3179 cm⁻¹)  factor=+1.312  scale=medium  ETA 11 min  OK  ΔE=3.1 kcal/mol
+  [146/190]  mode 29 (3179 cm⁻¹)  factor=-1.312  scale=medium  ETA 11 min  OK  ΔE=3.9 kcal/mol
+  [147/190]  mode 29 (3179 cm⁻¹)  factor=+1.500  scale=medium  ETA 11 min  OK  ΔE=4.0 kcal/mol
+  [148/190]  mode 29 (3179 cm⁻¹)  factor=-1.500  scale=medium  ETA 11 min  OK  ΔE=5.1 kcal/mol
+  [149/190]  mode 29 (3179 cm⁻¹)  factor=+0.500  scale=coarse  ETA 10 min  OK  ΔE=0.9 kcal/mol
+  [150/190]  mode 29 (3179 cm⁻¹)  factor=+1.000  scale=coarse  ETA 10 min  OK  ΔE=3.5 kcal/mol
+  [151/190]  mode 29 (3179 cm⁻¹)  factor=-1.000  scale=coarse  ETA 10 min  OK  ΔE=4.5 kcal/mol
+  [152/190]  mode 29 (3179 cm⁻¹)  factor=+1.500  scale=coarse  ETA 10 min  OK  ΔE=7.6 kcal/mol
+  [153/190]  mode 29 (3179 cm⁻¹)  factor=-1.500  scale=coarse  ETA 9 min  OK  ΔE=10.9 kcal/mol
+  [154/190]  mode 29 (3179 cm⁻¹)  factor=+2.000  scale=coarse  ETA 9 min  OK  ΔE=12.7 kcal/mol
+  [155/190]  mode 29 (3179 cm⁻¹)  factor=-2.000  scale=coarse  ETA 9 min  OK  ΔE=20.8 kcal/mol
+  [156/190]  mode 30 (3323 cm⁻¹)  factor=+0.125  scale=fine  ETA 9 min  OK  ΔE=-0.0 kcal/mol
+  [157/190]  mode 30 (3323 cm⁻¹)  factor=-0.125  scale=fine  ETA 8 min  OK  ΔE=-0.0 kcal/mol
+  [158/190]  mode 30 (3323 cm⁻¹)  factor=+0.250  scale=fine  ETA 8 min  OK  ΔE=0.0 kcal/mol
+  [159/190]  mode 30 (3323 cm⁻¹)  factor=-0.250  scale=fine  ETA 8 min  OK  ΔE=0.0 kcal/mol
+  [160/190]  mode 30 (3323 cm⁻¹)  factor=+0.375  scale=fine  ETA 8 min  OK  ΔE=0.1 kcal/mol
+  [161/190]  mode 30 (3323 cm⁻¹)  factor=-0.375  scale=fine  ETA 7 min  OK  ΔE=0.0 kcal/mol
+  [162/190]  mode 30 (3323 cm⁻¹)  factor=+0.500  scale=fine  ETA 7 min  OK  ΔE=0.1 kcal/mol
+  [163/190]  mode 30 (3323 cm⁻¹)  factor=-0.500  scale=fine  ETA 7 min  OK  ΔE=0.1 kcal/mol
+  [164/190]  mode 30 (3323 cm⁻¹)  factor=+0.625  scale=fine  ETA 7 min  OK  ΔE=0.2 kcal/mol
+  [165/190]  mode 30 (3323 cm⁻¹)  factor=-0.625  scale=fine  ETA 6 min  OK  ΔE=0.2 kcal/mol
+  [166/190]  mode 30 (3323 cm⁻¹)  factor=+0.750  scale=fine  ETA 6 min  OK  ΔE=0.4 kcal/mol
+  [167/190]  mode 30 (3323 cm⁻¹)  factor=-0.750  scale=fine  ETA 6 min  OK  ΔE=0.3 kcal/mol
+  [168/190]  mode 30 (3323 cm⁻¹)  factor=+0.875  scale=fine  ETA 6 min  OK  ΔE=0.5 kcal/mol
+  [169/190]  mode 30 (3323 cm⁻¹)  factor=-0.875  scale=fine  ETA 5 min  OK  ΔE=0.4 kcal/mol
+  [170/190]  mode 30 (3323 cm⁻¹)  factor=+1.000  scale=fine  ETA 5 min  OK  ΔE=0.6 kcal/mol
+  [171/190]  mode 30 (3323 cm⁻¹)  factor=-1.000  scale=fine  ETA 5 min  OK  ΔE=0.5 kcal/mol
+  [172/190]  mode 30 (3323 cm⁻¹)  factor=-0.562  scale=medium  ETA 5 min  OK  ΔE=0.6 kcal/mol
+  [173/190]  mode 30 (3323 cm⁻¹)  factor=+0.750  scale=medium  ETA 4 min  OK  ΔE=1.2 kcal/mol
+  [174/190]  mode 30 (3323 cm⁻¹)  factor=-0.750  scale=medium  ETA 4 min  OK  ΔE=1.0 kcal/mol
+  [175/190]  mode 30 (3323 cm⁻¹)  factor=+0.938  scale=medium  ETA 4 min  OK  ΔE=2.0 kcal/mol
+  [176/190]  mode 30 (3323 cm⁻¹)  factor=-0.938  scale=medium  ETA 4 min  OK  ΔE=1.6 kcal/mol
+  [177/190]  mode 30 (3323 cm⁻¹)  factor=+1.125  scale=medium  ETA 3 min  OK  ΔE=2.9 kcal/mol
+  [178/190]  mode 30 (3323 cm⁻¹)  factor=-1.125  scale=medium  ETA 3 min  OK  ΔE=2.2 kcal/mol
+  [179/190]  mode 30 (3323 cm⁻¹)  factor=+1.312  scale=medium  ETA 3 min  OK  ΔE=4.0 kcal/mol
+  [180/190]  mode 30 (3323 cm⁻¹)  factor=-1.312  scale=medium  ETA 3 min  OK  ΔE=3.0 kcal/mol
+  [181/190]  mode 30 (3323 cm⁻¹)  factor=+1.500  scale=medium  ETA 2 min  OK  ΔE=5.3 kcal/mol
+  [182/190]  mode 30 (3323 cm⁻¹)  factor=-1.500  scale=medium  ETA 2 min  OK  ΔE=3.9 kcal/mol
+  [183/190]  mode 30 (3323 cm⁻¹)  factor=+0.500  scale=coarse  ETA 2 min  OK  ΔE=1.1 kcal/mol
+  [184/190]  mode 30 (3323 cm⁻¹)  factor=-0.500  scale=coarse  ETA 2 min  OK  ΔE=0.9 kcal/mol
+  [185/190]  mode 30 (3323 cm⁻¹)  factor=+1.000  scale=coarse  ETA 1 min  OK  ΔE=4.7 kcal/mol
+  [186/190]  mode 30 (3323 cm⁻¹)  factor=-1.000  scale=coarse  ETA 1 min  OK  ΔE=3.5 kcal/mol
+  [187/190]  mode 30 (3323 cm⁻¹)  factor=+1.500  scale=coarse  ETA 1 min  OK  ΔE=11.3 kcal/mol
+  [188/190]  mode 30 (3323 cm⁻¹)  factor=-1.500  scale=coarse  ETA 1 min  OK  ΔE=7.4 kcal/mol
+  [189/190]  mode 30 (3323 cm⁻¹)  factor=+2.000  scale=coarse  ETA 0 min  OK  ΔE=21.8 kcal/mol
+  [190/190]  mode 30 (3323 cm⁻¹)  factor=-2.000  scale=coarse  ETA 0 min  OK  ΔE=12.6 kcal/mol
+
+  PSI4 done: 190 OK, 0 energy-skipped, 0 failed
+  New frames    : outputs/ch_adaptive_20260418/ch_adaptive_frames.npz  (190 frames)
+  Merged data   : outputs/ch_adaptive_20260418/training_data_ch_aug.npz  (1316 frames total)
+  Summary       : outputs/ch_adaptive_20260418/summary.json
+
+============================================================
+  NEXT STEP — retrain MACE:
+============================================================
+
+  python3 train_mace_model.py \
+      --training-data outputs/ch_adaptive_20260418/training_data_ch_aug.npz \
+      --output-dir    outputs/mace_wB97X_ch_adaptive_20260418_104132 \
+      --n-train all --n-valid 80 --epochs 500 \
+      --energy-cutoff 50 --device cpu

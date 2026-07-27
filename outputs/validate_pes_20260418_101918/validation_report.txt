@@ -1,0 +1,58 @@
+ML-PES Validation Report
+============================================================
+Date         : 2026-04-18 10:20:24
+Driver type  : MACE
+Model        : outputs/mace_wB97X_20260417/mace_model.pt
+Data         : outputs/wB97X_surface_20260406_223155/training_data_wB97X_aug.npz
+
+Prediction Errors
+----------------------------------------
+  n_sample      : 100
+  Energy RMSE   : 11.0363 kcal/mol
+  Energy MAE    : 8.1329 kcal/mol
+  Force  RMSE   : 0.00234 Ha/Å  (1.470 kcal/mol/Å)
+  Force  MAE    : 0.00153 Ha/Å
+
+Normal Mode Frequencies (cm⁻¹)
+----------------------------------------
+  Imaginary modes  : 1
+  Unphysical modes : 0  (>5000 cm⁻¹)
+  Max frequency    : 4598 cm⁻¹
+  (Coulomb+KRR typically has 5/9 unphysical at >5000 cm⁻¹)
+  (MACE expected: 0 imaginary, 0 unphysical, max ~3200 cm⁻¹)
+  mode  1:  -1998.6 IMAGINARY
+  mode  2:    495.8
+  mode  3:    504.5
+  mode  4:    634.4
+  mode  5:    664.1
+  mode  6:    725.3
+  mode  7:    774.6
+  mode  8:    858.3
+  mode  9:    913.3
+  mode 10:    958.6
+  mode 11:   1028.9
+  mode 12:   1145.2
+  mode 13:   1156.1
+  mode 14:   1175.2
+  mode 15:   1224.1
+  mode 16:   1409.2
+  mode 17:   1424.4
+  mode 18:   1494.8
+  mode 19:   1695.2
+  mode 20:   1703.7
+  mode 21:   1827.9
+  mode 22:   1905.0
+  mode 23:   2003.2
+  mode 24:   2119.6
+  mode 25:   2739.8
+  mode 26:   2875.8
+  mode 27:   3260.5
+  mode 28:   3456.6
+  mode 29:   3658.0
+  mode 30:   4598.1
+
+MD Stability
+----------------------------------------
+  Steps        : 1000
+  Energy range : 1.630 kcal/mol
+  Dissociation : no

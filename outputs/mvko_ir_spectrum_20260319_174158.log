@@ -1,0 +1,35 @@
+
+======================================================================
+  ML-PES IR SPECTRUM WORKFLOW
+======================================================================
+  ML-PES model       : outputs/mvko_20260319_081314/mlpes_initial.pkl
+  Training data      : outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz
+  Dipole model       : (will train now)
+  MD steps           : 30000  (dt=0.5 fs, save every 1)
+  Temperature        : 300.0 K
+  ZPE floor init     : yes  (filter: [50, 4000] cm⁻¹)
+  bakken pre-min     : yes  (max_steps=300, tol=0.005 Ha/Å)
+  Output dir         : outputs/ir_spectrum_20260319_174206
+Traceback (most recent call last):
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 1096, in <module>
+    main()
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 1074, in main
+    run_ir_workflow(
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 837, in run_ir_workflow
+    traj   = load_trajectory(training_data_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/data_formats.py", line 566, in load_trajectory
+    trajectory = handler.load(filename)
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/data_formats.py", line 394, in load
+    metadata = json.loads(str(data['metadata']))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jmsmith1/anaconda3/envs/jupyterenv/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jmsmith1/anaconda3/envs/jupyterenv/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jmsmith1/anaconda3/envs/jupyterenv/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)

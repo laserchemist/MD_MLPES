@@ -1,0 +1,102 @@
+{
+  "date": "2026-03-31T17:01:54.432735",
+  "molecule_hill": "C4H6O2",
+  "molecule_name": "methyl vinyl ketone oxide (MVKO)",
+  "molecule_unicode": "C\u2084H\u2086O\u2082",
+  "model_path": "outputs/mvko_20260319_081314/mlpes_initial.pkl",
+  "training_data": "outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz",
+  "dipole_model": "outputs/ir_spectrum_B3LYP_20260331/dipole_surface.pkl",
+  "n_md_steps": 30000,
+  "n_trajectories": 1,
+  "temperature_K": 300.0,
+  "timestep_fs": 0.5,
+  "save_every": 1,
+  "dt_eff_fs": 0.5,
+  "max_bond_extension": 0.0,
+  "zpe_floor_init": true,
+  "zpe_min_freq_cm-1": 50.0,
+  "zpe_max_freq_cm-1": 4000.0,
+  "preminimized": true,
+  "n_frames_ir": 30000,
+  "trajectory_xyz": "outputs/ir_spectrum_B3LYP_20260331/C4H6O2_md_trajectory.xyz",
+  "spectrum_csv": "outputs/ir_spectrum_B3LYP_20260331/ir_spectrum.csv",
+  "figure_spectrum": "outputs/ir_spectrum_B3LYP_20260331/ir_spectrum_clean.png",
+  "figure_diagnostic": "outputs/ir_spectrum_B3LYP_20260331/ir_spectrum_figure.png",
+  "dipole_surface_train_rmse_D": 0.005969578785898521,
+  "dipole_surface_test_rmse_D": 0.024049405344954627,
+  "dipole_surface_r2_test": 0.9811790458480226,
+  "top_peaks_cm-1": [
+    {
+      "frequency_cm-1": 322.06946532546306,
+      "intensity": 1.0
+    },
+    {
+      "frequency_cm-1": 246.68397508994255,
+      "intensity": 0.8704786828459554
+    },
+    {
+      "frequency_cm-1": 238.8976803238325,
+      "intensity": 0.8667458838416333
+    },
+    {
+      "frequency_cm-1": 37.3388226283916,
+      "intensity": 0.30050905675063955
+    },
+    {
+      "frequency_cm-1": 182.97792700358724,
+      "intensity": 0.27771931236015474
+    },
+    {
+      "frequency_cm-1": 893.1234019217649,
+      "intensity": 0.12466266870752493
+    },
+    {
+      "frequency_cm-1": 513.0106483398447,
+      "intensity": 0.12382042953332002
+    },
+    {
+      "frequency_cm-1": 370.3798851242825,
+      "intensity": 0.1016855953717641
+    },
+    {
+      "frequency_cm-1": 199.61228400391337,
+      "intensity": 0.07544032141887899
+    },
+    {
+      "frequency_cm-1": 657.9419077363032,
+      "intensity": 0.05918426816706966
+    }
+  ],
+  "nm_frequencies_cm-1": [
+    -2153.364365707993,
+    -1577.0191685792352,
+    -900.6449231921729,
+    -804.7706956867652,
+    -438.8688495798851,
+    369.10319754218796,
+    766.5976824559743,
+    810.5820300703211,
+    1474.59741209603,
+    1736.1606612013704,
+    1911.2219640681226,
+    2066.8446369784324,
+    2202.2473805278873,
+    2963.631259501511,
+    3025.215573177847,
+    3524.4665063619204,
+    3748.436555938325,
+    3845.616865227845,
+    3972.439881872357,
+    4860.307506316387,
+    5454.03934006047,
+    5852.297927808147,
+    6249.1949933607375,
+    6893.861159796867,
+    9826.955166903219,
+    10454.614921021908,
+    11378.474948820842,
+    12253.3949259131,
+    12490.711645446067,
+    15005.16442521356
+  ]
+}

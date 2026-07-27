@@ -1,0 +1,71 @@
+INFO:numexpr.utils:NumExpr defaulting to 10 threads.
+INFO:root:Using CPU
+INFO:root:Using head Default out of  ['Default']
+WARNING:root:No dtype selected, switching to float64 to match model dtype.
+
+============================================================
+  ML-PES VALIDATION
+============================================================
+cuequivariance or cuequivariance_torch is not available. Cuequivariance acceleration will be disabled.
+  MACEDriver: 12-atom molecule on cpu  (outputs/mace_wB97X_ch_adaptive_20260418/mace_model.pt)
+  Driver type   : MACE
+  Model         : outputs/mace_wB97X_ch_adaptive_20260418/mace_model.pt
+  Molecule      : ['C', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H']  (12 atoms)
+  Training data : outputs/anti_cis_nm_pes_20260513/combined_training_data.npz  (300 frames)
+  Eq. frame     : 30  (E=-306.209902 Ha)
+
+  Sampling 100 frames for prediction errors…
+  Energy RMSE   : 16.9431 kcal/mol  (MAE 5.9237 kcal/mol)
+  Force RMSE    : 0.00369 Ha/Å  (MAE 0.00139 Ha/Å)  = 2.313 kcal/mol/Å
+
+  Computing normal mode frequencies…
+  Computing Hessian via analytic forces (δ=0.005 Å)…
+
+  Trans/rot (expect ~0 cm⁻¹):
+    ['-0.2', '-0.8', '-1.5', '-56.3', '+99.1', '-117.2']
+
+  Vibrational modes (30 expected):
+    Imaginary   : 0
+    Unphysical  : 6  (|freq| > 5000 cm⁻¹)
+    Max freq    : 5969 cm⁻¹
+
+  Mode    This model
+  ────  ────────────
+     1         578.4
+     2         606.3
+     3         816.7
+     4         831.0
+     5         937.6
+     6        1068.0
+     7        1171.5
+     8        1311.1
+     9        1394.6
+    10        1442.1
+    11        1560.7
+    12        1733.5
+    13        1749.5
+    14        1890.6
+    15        1917.3
+    16        2085.0
+    17        2329.5
+    18        2349.1
+    19        2481.2
+    20        2610.0
+    21        2689.2
+    22        2935.6
+    23        2937.1
+    24        3532.7
+    25        5156.7 *** UNPHYSICAL
+    26        5204.8 *** UNPHYSICAL
+    27        5364.6 *** UNPHYSICAL
+    28        5573.0 *** UNPHYSICAL
+    29        5799.2 *** UNPHYSICAL
+    30        5969.1 *** UNPHYSICAL
+
+  Report saved  : outputs/validate_mace_ch_adaptive/validation_report.txt
+  Frequencies   : outputs/validate_mace_ch_adaptive/frequencies.npy
+
+  ── Assessment ──
+  FAIL: 6 unphysical modes (>5000 cm⁻¹) — training data coverage issue (MACE C-H curvature requires large-amplitude
+        C-H frames; 15 kcal/mol energy cutoff may remove them).
+        Try: wider energy cutoff, more C-H stretch data, or NM-KRR backend.

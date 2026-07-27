@@ -1,0 +1,94 @@
+INFO:numexpr.utils:NumExpr defaulting to 10 threads.
+
+============================================================
+  ML-PES VALIDATION
+============================================================
+  NMPESDriver loaded: outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+    n_atoms=12  n_vib=30  γ=0.1  α=1e-07
+    LOO-CV RMSE: 1.0786 kcal/mol
+    Bond wall: 5 heavy-atom bonds, cutoff=1.90×d_eq, k=0.2 Ha/Å²
+      C0-O1: d_eq=1.275Å, d_cut=2.422Å
+      C0-C3: d_eq=1.447Å, d_cut=2.750Å
+      C0-C5: d_eq=1.493Å, d_cut=2.836Å
+      O1-O2: d_eq=1.344Å, d_cut=2.553Å
+      C3-C4: d_eq=1.338Å, d_cut=2.542Å
+  Driver type   : NM-KRR
+  Model         : outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+  Molecule      : ['C', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H']  (12 atoms)
+  Training data : outputs/anti_trans_nm_pes_20260421/combined_training_data.npz  (403 frames)
+  Eq. frame     : 300  (E=-306.209757 Ha)
+
+  Sampling 100 frames for prediction errors…
+  Energy RMSE   : 133.1637 kcal/mol  (MAE 86.9320 kcal/mol)
+  Force RMSE    : 0.39312 Ha/Å  (MAE 0.16449 Ha/Å)  = 246.686 kcal/mol/Å
+
+  Computing normal mode frequencies…
+  Computing Hessian analytically…
+
+  Trans/rot (expect ~0 cm⁻¹):
+    ['-0.0', '+0.0', '+0.0', '-0.0', '-0.0', '-0.0']
+
+  Vibrational modes (30 expected):
+    Imaginary   : 0
+    Unphysical  : 12  (|freq| > 5000 cm⁻¹)
+    Max freq    : 11661 cm⁻¹
+  Warning: could not load PSI4 hessian: 'numpy.ndarray' object has no attribute 'get'
+
+  Mode    This model
+  ────  ────────────
+     1         489.3
+     2         894.3
+     3         989.3
+     4        1176.9
+     5        1392.1
+     6        1706.9
+     7        2011.3
+     8        2300.7
+     9        2604.4
+    10        2854.4
+    11        3515.1
+    12        3588.1
+    13        3698.9
+    14        3756.5
+    15        3837.4
+    16        3936.4
+    17        4631.0
+    18        4919.3
+    19        5159.7 *** UNPHYSICAL
+    20        5259.0 *** UNPHYSICAL
+    21        5320.2 *** UNPHYSICAL
+    22        5329.0 *** UNPHYSICAL
+    23        5606.8 *** UNPHYSICAL
+    24        6116.4 *** UNPHYSICAL
+    25       10864.2 *** UNPHYSICAL
+    26       11146.4 *** UNPHYSICAL
+    27       11304.2 *** UNPHYSICAL
+    28       11351.4 *** UNPHYSICAL
+    29       11620.1 *** UNPHYSICAL
+    30       11661.3 *** UNPHYSICAL
+
+  Running 1000-step stability MD at 300.0 K…
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.01 Ha/Å, max_steps=200)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20975349          +0.0000          0.000415     0.01000
+       1     -306.20975349          +0.0000          0.000415     0.01000
+
+  Converged in 1 steps  ΔE = +0.0000 kcal/mol  |F|_max = 0.000415 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = +0.0000 kcal/mol from starting frame
+bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192149.0 kcal/mol, T=217 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.7 kcal/mol, T=219 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.4 kcal/mol, T=211 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.2 kcal/mol, T=207 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192147.9 kcal/mol, T=187 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.0 kcal/mol, T=209 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.2 kcal/mol, T=240 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.2 kcal/mol, T=250 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.2 kcal/mol, T=266 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.2 kcal/mol, T=272 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192147.8 kcal/mol, T=233 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.3 kcal/mol, T=292 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.7 kcal/mol, T=345 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.5 kcal/mol, T=329 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.1 kcal/mol, T=285 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192148.1 kcal/mol, T=279 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192147.6 kcal/mol, T=231 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192147.2 kcal/mol, T=188 K]bakken MD:   0%|          | 0/1000 [00:00<?, ?step/s, E=-192146.8 kcal/mol, T=175 K]bakken MD:  98%|█████████▊| 976/1000 [00:00<00:00, 9758.26step/s, E=-192146.8 kcal/mol, T=175 K]bakken MD:  98%|█████████▊| 976/1000 [00:00<00:00, 9758.26step/s, E=-192147.5 kcal/mol, T=263 K]bakken MD: 100%|██████████| 1000/1000 [00:00<00:00, 9730.75step/s, E=-192147.5 kcal/mol, T=263 K]
+
+  MD stability (1000 steps):
+    Energy range: 2.379 kcal/mol
+    Stable — no dissociation detected
+
+  Report saved  : outputs/validate_anti_trans_nm_pes/validation_report.txt
+  Frequencies   : outputs/validate_anti_trans_nm_pes/frequencies.npy
+
+  ── Assessment ──
+  FAIL: 12 unphysical modes (>5000 cm⁻¹) — descriptor stiffness artifact (Coulomb+KRR or sGDML).
+        Switch to MACE: python3 train_mace_model.py \
+            --training-data outputs/anti_trans_nm_pes_20260421/combined_training_data.npz --output-dir outputs/mace_20260603_123402

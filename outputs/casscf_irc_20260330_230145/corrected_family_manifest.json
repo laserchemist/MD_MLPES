@@ -1,0 +1,12 @@
+{
+  "pes_family_pkl": "outputs/mvko_rxn_path_20260330_202029/pes_family.pkl",
+  "delta_ml_pkl": "outputs/casscf_irc_20260330_230145/delta_ml_casscf.pkl",
+  "taper": {
+    "type": "gaussian_energy",
+    "centre_kcal": 37.0,
+    "sigma_kcal": 25.0,
+    "description": "Gaussian taper in \u0394E above MVKO minimum; correction active in TS region (15\u201380 kcal/mol)"
+  },
+  "level": "SA-2-CASSCF(4,4)/6-31G* \u2212 B3LYP/6-31G*",
+  "note": "Dynamic correlation not included (NEVPT2/CASPT2 pending). Install forte for NEVPT2 correction."
+}

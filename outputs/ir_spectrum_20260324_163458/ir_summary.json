@@ -1,0 +1,76 @@
+{
+  "date": "2026-03-24T17:24:11.329590",
+  "molecule_hill": "C4H6O2",
+  "molecule_name": "methyl vinyl ketone oxide (MVKO)",
+  "molecule_unicode": "C\u2084H\u2086O\u2082",
+  "model_path": "outputs/adaptive_production_20260324b/mlpes_adaptive_final.pkl",
+  "training_data": "outputs/adaptive_dipoles_20260324/training_with_dipoles.npz",
+  "dipole_model": "outputs/ir_spectrum_20260324_163458/dipole_surface.pkl",
+  "n_md_steps": 30000,
+  "temperature_K": 300.0,
+  "timestep_fs": 0.5,
+  "save_every": 1,
+  "dt_eff_fs": 0.5,
+  "zpe_floor_init": true,
+  "zpe_min_freq_cm-1": 50.0,
+  "zpe_max_freq_cm-1": 4000.0,
+  "preminimized": true,
+  "n_frames_ir": 30000,
+  "trajectory_xyz": "outputs/ir_spectrum_20260324_163458/C4H6O2_md_trajectory.xyz",
+  "spectrum_csv": "outputs/ir_spectrum_20260324_163458/ir_spectrum.csv",
+  "figure_spectrum": "outputs/ir_spectrum_20260324_163458/ir_spectrum_clean.png",
+  "figure_diagnostic": "outputs/ir_spectrum_20260324_163458/ir_spectrum_figure.png",
+  "dipole_surface_train_rmse_D": 0.0028759840360393857,
+  "dipole_surface_test_rmse_D": 0.039385439329078106,
+  "dipole_surface_r2_test": 0.9905611939001031,
+  "top_peaks_cm-1": [
+    {
+      "frequency_cm-1": 111.66254539580615,
+      "intensity": 1.0
+    },
+    {
+      "frequency_cm-1": 65.1217380438299,
+      "intensity": 0.320310518866647
+    },
+    {
+      "frequency_cm-1": 114.31696406607095,
+      "intensity": 0.20420153677021918
+    },
+    {
+      "frequency_cm-1": 198.1965940464388,
+      "intensity": 0.08908566832263537
+    }
+  ],
+  "nm_frequencies_cm-1": [
+    -1284.646748136272,
+    -880.0998651138109,
+    -718.1056538148134,
+    363.8894870458248,
+    579.1298993223458,
+    724.2937335469309,
+    831.8829096403535,
+    1288.068663158761,
+    1876.4443947574093,
+    2229.140001973411,
+    2336.8581916192393,
+    2913.9746129311875,
+    3030.8283391749314,
+    3321.271899137851,
+    3429.9400875119713,
+    3597.712224799519,
+    3916.439181608425,
+    4089.343300482984,
+    4543.497641264848,
+    5365.4903919400185,
+    5832.520076423418,
+    5997.768863428933,
+    6249.100581709629,
+    6797.933751143887,
+    9876.138748149038,
+    11042.928344636211,
+    11431.427845918635,
+    11821.671214866015,
+    12348.1531286751,
+    13409.786174659612
+  ]
+}

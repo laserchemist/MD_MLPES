@@ -1,0 +1,57 @@
+{
+  "date": "2026-03-24T19:16:24.724675",
+  "molecule_hill": "C4H6O2",
+  "molecule_name": "methyl vinyl ketone oxide (MVKO)",
+  "molecule_unicode": "C\u2084H\u2086O\u2082",
+  "model_path": "outputs/adaptive_production_20260324b/mlpes_adaptive_final.pkl",
+  "training_data": "outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz",
+  "dipole_model": "outputs/ir_spectrum_20260324_185233/dipole_surface.pkl",
+  "n_md_steps": 30000,
+  "temperature_K": 300.0,
+  "timestep_fs": 0.5,
+  "save_every": 1,
+  "dt_eff_fs": 0.5,
+  "zpe_floor_init": false,
+  "zpe_min_freq_cm-1": null,
+  "zpe_max_freq_cm-1": null,
+  "preminimized": false,
+  "n_frames_ir": 30000,
+  "trajectory_xyz": "outputs/ir_spectrum_20260324_185233/C4H6O2_md_trajectory.xyz",
+  "spectrum_csv": "outputs/ir_spectrum_20260324_185233/ir_spectrum.csv",
+  "figure_spectrum": "outputs/ir_spectrum_20260324_185233/ir_spectrum_clean.png",
+  "figure_diagnostic": "outputs/ir_spectrum_20260324_185233/ir_spectrum_figure.png",
+  "dipole_surface_train_rmse_D": 0.005969578785898521,
+  "dipole_surface_test_rmse_D": 0.024049405344954627,
+  "dipole_surface_r2_test": 0.9811790458480226,
+  "top_peaks_cm-1": [
+    {
+      "frequency_cm-1": 154.31020536472735,
+      "intensity": 1.0
+    },
+    {
+      "frequency_cm-1": 102.99144440627445,
+      "intensity": 0.18976829086046737
+    },
+    {
+      "frequency_cm-1": 76.62421894831071,
+      "intensity": 0.13400042076559382
+    },
+    {
+      "frequency_cm-1": 115.5556927788612,
+      "intensity": 0.0889895542875111
+    },
+    {
+      "frequency_cm-1": 157.3185465243608,
+      "intensity": 0.08759553868854171
+    },
+    {
+      "frequency_cm-1": 39.81628005397208,
+      "intensity": 0.06124824064944668
+    },
+    {
+      "frequency_cm-1": 204.92112134444298,
+      "intensity": 0.05167915501543425
+    }
+  ],
+  "nm_frequencies_cm-1": null
+}

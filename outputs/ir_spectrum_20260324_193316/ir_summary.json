@@ -1,0 +1,65 @@
+{
+  "date": "2026-03-24T19:55:23.704941",
+  "molecule_hill": "C4H6O2",
+  "molecule_name": "methyl vinyl ketone oxide (MVKO)",
+  "molecule_unicode": "C\u2084H\u2086O\u2082",
+  "model_path": "outputs/mvko_20260319_081314/mlpes_initial.pkl",
+  "training_data": "outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz",
+  "dipole_model": "outputs/ir_spectrum_20260324_193316/dipole_surface.pkl",
+  "n_md_steps": 30000,
+  "temperature_K": 300.0,
+  "timestep_fs": 0.5,
+  "save_every": 1,
+  "dt_eff_fs": 0.5,
+  "zpe_floor_init": false,
+  "zpe_min_freq_cm-1": null,
+  "zpe_max_freq_cm-1": null,
+  "preminimized": false,
+  "n_frames_ir": 30000,
+  "trajectory_xyz": "outputs/ir_spectrum_20260324_193316/C4H6O2_md_trajectory.xyz",
+  "spectrum_csv": "outputs/ir_spectrum_20260324_193316/ir_spectrum.csv",
+  "figure_spectrum": "outputs/ir_spectrum_20260324_193316/ir_spectrum_clean.png",
+  "figure_diagnostic": "outputs/ir_spectrum_20260324_193316/ir_spectrum_figure.png",
+  "dipole_surface_train_rmse_D": 0.005969578785898521,
+  "dipole_surface_test_rmse_D": 0.024049405344954627,
+  "dipole_surface_r2_test": 0.9811790458480226,
+  "top_peaks_cm-1": [
+    {
+      "frequency_cm-1": 210.05299744028827,
+      "intensity": 1.0
+    },
+    {
+      "frequency_cm-1": 371.7955750817571,
+      "intensity": 0.6146517545008005
+    },
+    {
+      "frequency_cm-1": 247.03789757931122,
+      "intensity": 0.3928859944430912
+    },
+    {
+      "frequency_cm-1": 58.57417199051004,
+      "intensity": 0.18699100235713131
+    },
+    {
+      "frequency_cm-1": 183.15488824827156,
+      "intensity": 0.16026909258392522
+    },
+    {
+      "frequency_cm-1": 211.82260988713148,
+      "intensity": 0.1342420018816189
+    },
+    {
+      "frequency_cm-1": 322.600349059516,
+      "intensity": 0.11703498025143554
+    },
+    {
+      "frequency_cm-1": 108.83116548085702,
+      "intensity": 0.05545179255440614
+    },
+    {
+      "frequency_cm-1": 216.24664100423948,
+      "intensity": 0.05002834433868893
+    }
+  ],
+  "nm_frequencies_cm-1": null
+}
