@@ -341,7 +341,7 @@
         <div class="chart-wrap">
             <canvas id="exptCanvas"></canvas>
         </div>
-        <p class="fig-caption">Theory vs. experiment: anti-cis MVKO thermally sampled IR at 2000 K (this work, MACE+CASSCF&delta;_S0, wB97X-D/6-31G*) compared to digitized experimental bands from Chung &amp; Lee, <em>Commun. Chem.</em> 2021, Fig. 3a (5&ndash;10 &mu;s transient absorption, 0.5 cm&#8315;&#185; resolution). Shaded region = parent molecule interference in experiment. Spectra reflect thermally weighted local-harmonic IR absorption, not vibrational emission.</p>
+        <p class="fig-caption">Theory vs. experiment: anti-cis MVKO thermally sampled IR at 300 K (blue dashed) and 2000 K (red solid) vs. digitized bands from Chung &amp; Lee, <em>Commun. Chem.</em> 2021, Fig. 3a (black; 5&ndash;10 &mu;s transient absorption, 0.5 cm&#8315;&#185; resolution). Gray bands = parent-molecule interference regions. Theory: MACE+CASSCF&delta;_S0 PES, NMDipoleSurface, wB97X-D/6-31G*. Spectra are thermally weighted local-harmonic IR absorption (PES sampling), not vibrational emission.</p>
     </div>
 
     <div class="fig-panel" id="tab-papers">
@@ -929,29 +929,33 @@ document.querySelectorAll('.fig-tab').forEach(btn => {
     });
 });
 
-// --- Digitized peaks from Chung & Lee 2021, Commun. Chem. 4:8, Fig. 3a ---
-// Lorentzian peaks: [center_cm-1, half-width, relative_intensity]
+// --- Digitized peaks from Chung & Lee 2021, Commun. Chem. 4:8, Fig. 3a (top panel) ---
+// Gaussian peaks: [center_cm-1, FWHM_cm-1, relative_intensity]
+// Peak intensities estimated from ΔAbs scale relative to B4 (strongest, ~3e-3)
 const CHUNG_PEAKS = [
-    [1458, 9, 0.50],   // B1
-    [1432, 7, 0.33],   // B2
-    [1406, 7, 0.23],   // B3
-    [1133, 8, 1.00],   // B4 (strongest in fingerprint)
-    [1013, 9, 0.50],   // B5
-    [970,  8, 0.50],   // B6 (asterisk = possible)
-    [934,  7, 0.43],   // B7
+    [1458, 12, 0.50],  // B1
+    [1432, 10, 0.33],  // B2
+    [1405, 10, 0.23],  // B3
+    [1133, 12, 1.00],  // B4 (strongest)
+    [1013, 12, 0.50],  // B5
+    [970,  10, 0.43],  // B6 (blue * = possible; likely syn-cis contribution)
+    [932,  12, 0.43],  // B7
 ];
-// Gray (interference) regions in Chung & Lee Fig. 3a
-const CHUNG_GRAY = [[1205, 1265], [1060, 1110]];
+// Parent-molecule interference regions in Chung & Lee Fig. 3a (gray shading)
+const CHUNG_GRAY = [[1220, 1285], [1055, 1120]];
 
-function lorentzianSpectrum(peaks, freqMin, freqMax, step) {
-    const freq = [], inten = [];
+// Gaussian spectrum — clean tails prevent spurious peaks between bands
+function gaussianSpectrum(peaks, freqMin, freqMax, step) {
+    const pts = [];
     for (let f = freqMin; f <= freqMax; f += step) {
         let y = 0;
-        for (const [f0, g, h] of peaks) y += h * g * g / ((f - f0) ** 2 + g * g);
-        freq.push(f);
-        inten.push(parseFloat(y.toFixed(5)));
+        for (const [f0, fwhm, h] of peaks) {
+            const sig = fwhm / 2.3548;
+            y += h * Math.exp(-0.5 * ((f - f0) / sig) ** 2);
+        }
+        pts.push({x: f, y: parseFloat(y.toFixed(5))});
     }
-    return { freq, inten };
+    return pts;
 }
 
 function initIrChart() {
@@ -1047,65 +1051,67 @@ function initHotChart() {
 }
 
 function initExptChart() {
-    // Compute Lorentzian spectrum for Chung & Lee 2021 bands (850–1500 cm-1)
-    const { freq: chFreq, inten: chInten } = lorentzianSpectrum(CHUNG_PEAKS, 850, 1500, 2);
+    // Gaussian-broadened experimental peaks (clean tails, no spurious inter-band humps)
+    const chData = gaussianSpectrum(CHUNG_PEAKS, 850, 1500, 2);
 
-    // Filter 2000K thermal data to 850–1500 cm-1
-    const thFreq = [], thInten = [];
-    for (const [f, i] of SPECTRA.hot2k) {
-        if (f >= 850 && f <= 1500) { thFreq.push(f); thInten.push(i); }
+    // Helper: filter & normalize SPECTRA array to 850–1500, return {x,y} points
+    function thermalXY(specArr) {
+        const pts = specArr.filter(([f]) => f >= 850 && f <= 1500).map(([f, i]) => ({x: f, y: i}));
+        const mx = Math.max(...pts.map(p => p.y));
+        return pts.map(p => ({x: p.x, y: parseFloat((p.y / mx).toFixed(5))}));
     }
-    // Normalize to max in this range
-    const thMax = Math.max(...thInten);
-    const thNorm = thInten.map(v => parseFloat((v / thMax).toFixed(5)));
+    const hot2kData  = thermalXY(SPECTRA.hot2k);
+    const hot300Data = thermalXY(SPECTRA.hot300);
 
-    // Shade interference regions as background annotation (via dataset with fill)
     const ctx = document.getElementById('exptCanvas').getContext('2d');
-    new Chart(ctx, {
+    const myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: chFreq,
             datasets: [
                 {
                     label: 'Expt. Chung & Lee 2021 (digitized, Fig. 3a)',
-                    data: chInten,
+                    data: chData,
                     borderColor: '#1f2937',
                     backgroundColor: 'transparent',
                     pointRadius: 0,
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0.1
+                    borderWidth: 2.5,
+                    fill: false
                 },
                 {
-                    label: 'This work — Thermal sampling 2000 K (MACE+CASSCF δ_S0, anti-cis)',
-                    // map theory freqs onto chart labels (same x axis)
-                    data: chFreq.map(f => {
-                        const idx = Math.round((f - thFreq[0]) / (thFreq[1] - thFreq[0]));
-                        return (idx >= 0 && idx < thNorm.length) ? thNorm[idx] : null;
-                    }),
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37,99,235,0.08)',
+                    label: 'This work — Thermal 2000 K (MACE+CASSCF δ_S0, anti-cis)',
+                    data: hot2kData,
+                    borderColor: '#ef4444',
+                    backgroundColor: 'transparent',
                     pointRadius: 0,
-                    borderWidth: 2,
+                    borderWidth: 1.8,
+                    fill: false
+                },
+                {
+                    label: 'This work — Thermal 300 K (MACE+CASSCF δ_S0, anti-cis)',
+                    data: hot300Data,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'transparent',
+                    pointRadius: 0,
+                    borderWidth: 1.8,
                     fill: false,
-                    tension: 0.1
+                    borderDash: [4, 3]
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            parsing: false,
             plugins: {
                 legend: { position: 'top' },
-                title: { display: true, text: 'Theory vs. Experiment: MVKO Fingerprint Region — Thermal Sampling 2000 K vs. Chung & Lee 2021' }
+                title: { display: true, text: 'Theory vs. Experiment: MVKO Fingerprint Region — Chung & Lee 2021 Fig. 3a vs. Thermal Sampling' }
             },
             scales: {
                 x: {
+                    type: 'linear',
+                    min: 850, max: 1500,
                     title: { display: true, text: 'Frequency (cm⁻¹)' },
-                    ticks: {
-                        maxTicksLimit: 14,
-                        callback: function(val, idx) { return chFreq[idx]; }
-                    }
+                    ticks: { stepSize: 50 }
                 },
                 y: {
                     title: { display: true, text: 'Intensity (normalized)' },
@@ -1115,24 +1121,21 @@ function initExptChart() {
         }
     });
 
-    // Draw gray interference bands as canvas overlays after chart renders
+    // Gray interference bands — now using actual frequency values on linear axis
     setTimeout(() => {
-        const canvas = document.getElementById('exptCanvas');
-        const chart = Chart.getChart(canvas);
+        const chart = Chart.getChart('exptCanvas');
         if (!chart) return;
-        const ctx2 = canvas.getContext('2d');
+        const ctx2 = document.getElementById('exptCanvas').getContext('2d');
         ctx2.save();
-        ctx2.globalAlpha = 0.12;
+        ctx2.globalAlpha = 0.13;
         ctx2.fillStyle = '#6b7280';
         for (const [lo, hi] of CHUNG_GRAY) {
-            const x1 = chart.scales.x.getPixelForValue(lo - 850);
-            const x2 = chart.scales.x.getPixelForValue(hi - 850);
-            const y1 = chart.chartArea.top;
-            const y2 = chart.chartArea.bottom;
-            ctx2.fillRect(x1, y1, x2 - x1, y2 - y1);
+            const x1 = chart.scales.x.getPixelForValue(lo);
+            const x2 = chart.scales.x.getPixelForValue(hi);
+            ctx2.fillRect(x1, chart.chartArea.top, x2 - x1, chart.chartArea.bottom - chart.chartArea.top);
         }
         ctx2.restore();
-    }, 400);
+    }, 350);
 }
 </script>
 </body>
