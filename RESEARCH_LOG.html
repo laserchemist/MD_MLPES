@@ -276,6 +276,7 @@
 <nav>
     <div class="nav-content">
         <a href="#figures">Key Figures</a>
+        <a href="#figures" onclick="document.querySelector('[data-target=tab-papers]').click(); return false;">Key Papers</a>
         <a href="#overview">Overview</a>
         <a href="#ch2oo">CH&#8322;OO</a>
         <a href="#mvko">MVKO</a>
@@ -297,12 +298,12 @@
 
     <div class="fig-tabs">
         <button class="fig-tab active" data-target="tab-mlpes">ML-PES Results</button>
+        <button class="fig-tab" data-target="tab-papers">Key Papers</button>
         <button class="fig-tab" data-target="tab-ch2oo-ir">CH&#8322;OO IR Spectrum</button>
         <button class="fig-tab" data-target="tab-conformers">MVKO Conformers</button>
         <button class="fig-tab" data-target="tab-ir">Anti-cis Harmonic IR</button>
-        <button class="fig-tab" data-target="tab-hot">Hot Emission vs Eq.</button>
+        <button class="fig-tab" data-target="tab-hot">Thermal vs Eq.</button>
         <button class="fig-tab" data-target="tab-expt">Expt. Comparison</button>
-        <button class="fig-tab" data-target="tab-papers">Key Papers</button>
     </div>
 
     <div class="fig-panel active" id="tab-mlpes">
@@ -333,14 +334,14 @@
         <div class="chart-wrap">
             <canvas id="hotCanvas"></canvas>
         </div>
-        <p class="fig-caption">Anti-cis MVKO — MACE+CASSCF&delta;_S0 PES + NMDipoleSurface (wB97X-D/6-31G*): hot-molecule emission 300 K (orange) and 2000 K (red) vs. equilibrium harmonic (blue)</p>
+        <p class="fig-caption">Anti-cis MVKO — MACE+CASSCF&delta;_S0 PES + NMDipoleSurface (wB97X-D/6-31G*): thermally sampled IR absorption at 300 K (orange) and 2000 K (red) vs. equilibrium harmonic (blue). Spectra reflect local-harmonic IR weighted by thermal PES sampling, not vibrational emission.</p>
     </div>
 
     <div class="fig-panel" id="tab-expt">
         <div class="chart-wrap">
             <canvas id="exptCanvas"></canvas>
         </div>
-        <p class="fig-caption">Theory vs. experiment: anti-cis MVKO harmonic IR (this work, MACE+CASSCF&delta;_S0, wB97X-D/6-31G*) compared to digitized experimental bands from Chung &amp; Lee, <em>Commun. Chem.</em> 2021, Fig. 3a (5&ndash;10 &mu;s transient absorption, 0.5 cm&#8315;&#185; resolution). Shaded region = parent molecule interference in experiment.</p>
+        <p class="fig-caption">Theory vs. experiment: anti-cis MVKO thermally sampled IR at 2000 K (this work, MACE+CASSCF&delta;_S0, wB97X-D/6-31G*) compared to digitized experimental bands from Chung &amp; Lee, <em>Commun. Chem.</em> 2021, Fig. 3a (5&ndash;10 &mu;s transient absorption, 0.5 cm&#8315;&#185; resolution). Shaded region = parent molecule interference in experiment. Spectra reflect thermally weighted local-harmonic IR absorption, not vibrational emission.</p>
     </div>
 
     <div class="fig-panel" id="tab-papers">
@@ -1006,7 +1007,7 @@ function initHotChart() {
                     fill: false
                 },
                 {
-                    label: 'Hot Emission 300 K',
+                    label: 'Thermal sampling 300 K',
                     data: SPECTRA.hot300.map(p => p[1]),
                     borderColor: '#f59e0b',
                     backgroundColor: 'transparent',
@@ -1015,7 +1016,7 @@ function initHotChart() {
                     fill: false
                 },
                 {
-                    label: 'Hot Emission 2000 K',
+                    label: 'Thermal sampling 2000 K',
                     data: SPECTRA.hot2k.map(p => p[1]),
                     borderColor: '#ef4444',
                     backgroundColor: 'transparent',
@@ -1030,7 +1031,7 @@ function initHotChart() {
             maintainAspectRatio: false,
             plugins: {
                 legend: { position: 'top' },
-                title: { display: true, text: 'Anti-cis MVKO — Hot Emission vs. Equilibrium Harmonic (MACE+CASSCF δ_S0, wB97X-D/6-31G*)' }
+                title: { display: true, text: 'Anti-cis MVKO — Thermally Sampled IR vs. Equilibrium Harmonic (MACE+CASSCF δ_S0, wB97X-D/6-31G*)' }
             },
             scales: {
                 x: {
@@ -1049,12 +1050,12 @@ function initExptChart() {
     // Compute Lorentzian spectrum for Chung & Lee 2021 bands (850–1500 cm-1)
     const { freq: chFreq, inten: chInten } = lorentzianSpectrum(CHUNG_PEAKS, 850, 1500, 2);
 
-    // Filter our harmonic data to 850–1500 cm-1
+    // Filter 2000K thermal data to 850–1500 cm-1
     const thFreq = [], thInten = [];
-    for (const [f, i] of SPECTRA.harm) {
+    for (const [f, i] of SPECTRA.hot2k) {
         if (f >= 850 && f <= 1500) { thFreq.push(f); thInten.push(i); }
     }
-    // Normalize theory to its max in this range (so it's comparable)
+    // Normalize to max in this range
     const thMax = Math.max(...thInten);
     const thNorm = thInten.map(v => parseFloat((v / thMax).toFixed(5)));
 
@@ -1076,7 +1077,7 @@ function initExptChart() {
                     tension: 0.1
                 },
                 {
-                    label: 'This work — Harmonic IR (MACE+CASSCF δ_S0, anti-cis)',
+                    label: 'This work — Thermal sampling 2000 K (MACE+CASSCF δ_S0, anti-cis)',
                     // map theory freqs onto chart labels (same x axis)
                     data: chFreq.map(f => {
                         const idx = Math.round((f - thFreq[0]) / (thFreq[1] - thFreq[0]));
@@ -1096,7 +1097,7 @@ function initExptChart() {
             maintainAspectRatio: false,
             plugins: {
                 legend: { position: 'top' },
-                title: { display: true, text: 'Theory vs. Experiment: MVKO Fingerprint Region (850–1500 cm⁻¹)' }
+                title: { display: true, text: 'Theory vs. Experiment: MVKO Fingerprint Region — Thermal Sampling 2000 K vs. Chung & Lee 2021' }
             },
             scales: {
                 x: {
