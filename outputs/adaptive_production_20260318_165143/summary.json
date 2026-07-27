@@ -1,0 +1,16 @@
+{
+  "history": [
+    {
+      "cycle": 0,
+      "n_valid": 10,
+      "mean_error": 0.6553755562337711,
+      "max_error": 1.005645880077704,
+      "std_error": 0.26318715817771826,
+      "n_above_threshold": 0,
+      "model": "outputs/nm_training_20260308_203606/mlpes_model_nm.pkl",
+      "data": "outputs/nm_training_20260308_203606/combined_training_data.npz"
+    }
+  ],
+  "final_model": "outputs/nm_training_20260308_203606/mlpes_model_nm.pkl",
+  "final_training_data": "outputs/nm_training_20260308_203606/combined_training_data.npz",
+  "converged": 

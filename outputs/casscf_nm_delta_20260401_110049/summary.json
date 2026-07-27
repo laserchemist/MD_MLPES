@@ -1,0 +1,78 @@
+{
+  "timestamp": "20260401_110049",
+  "casscf_results_in": "outputs/casscf_surface_20260331_133413/surface_results.json",
+  "training_data": "outputs/mvko_20260319_081314/combined_training_data.npz",
+  "eq_coords": "outputs/mvko_20260319_081314/psi4_eq_coords.npy",
+  "hessian_source": "B3LYP/6-31G* (pre-saved)",
+  "n_frames_total": 59,
+  "n_frames_filtered": 48,
+  "n_vib": 30,
+  "freqs_vib_min_cm1": 124.775729632579,
+  "freqs_vib_max_cm1": 3323.183561741524,
+  "n_imag_modes": 0,
+  "q_norm2_min": 0.0,
+  "q_norm2_max": 870.3656990510701,
+  "delta_min_kcal": -4.592677679571753,
+  "delta_max_kcal": 31.100011639190335,
+  "best_gamma": 0.05,
+  "best_alpha": 1e-08,
+  "loo_cv_rmse_kcal": 8.163596110529252,
+  "train_rmse_kcal": 7.30534709928956,
+  "model_path": "outputs/casscf_nm_delta_20260401_110049/nm_delta_model.pkl",
+  "filter_max_energy_kcal": 50.0,
+  "fix_a_nm_points": 30,
+  "e_b3lyp_ref_ha": -306.3185840048427,
+  "e_cas_ref_ha": -304.55184073424704,
+  "grid_search": [
+    {
+      "gamma": 0.05,
+      "alpha": 1e-08,
+      "loo_rmse_kcal": 8.163596110529252
+    },
+    {
+      "gamma": 0.1,
+      "alpha": 0.0001,
+      "loo_rmse_kcal": 8.169131055203485
+    },
+    {
+      "gamma": 0.05,
+      "alpha": 1e-06,
+      "loo_rmse_kcal": 8.17287023041249
+    },
+    {
+      "gamma": 0.1,
+      "alpha": 1e-06,
+      "loo_rmse_kcal": 8.245261991425272
+    },
+    {
+      "gamma": 0.1,
+      "alpha": 1e-08,
+      "loo_rmse_kcal": 8.247074161321628
+    },
+    {
+      "gamma": 0.1,
+      "alpha": 0.01,
+      "loo_rmse_kcal": 8.285301000262832
+    },
+    {
+      "gamma": 0.05,
+      "alpha": 0.01,
+      "loo_rmse_kcal": 8.41384818455154
+    },
+    {
+      "gamma": 0.05,
+      "alpha": 0.0001,
+      "loo_rmse_kcal": 8.42038820220107
+    },
+    {
+      "gamma": 0.5,
+      "alpha": 1e-08,
+      "loo_rmse_kcal": 9.234115069958765
+    },
+    {
+      "gamma": 0.5,
+      "alpha": 1e-06,
+      "loo_rmse_kcal": 9.234117318987508
+    }
+  ]
+}

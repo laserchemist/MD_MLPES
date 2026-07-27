@@ -1,0 +1,53 @@
+sGDML Validation Report
+============================================================
+Date     : 2026-04-17 17:37:08
+Model    : outputs/sgdml_wB97X_20260417/sgdml_model.pkl
+Data     : outputs/wB97X_surface_20260406_223155/training_data_wB97X_aug.npz
+
+Prediction Errors
+----------------------------------------
+  n_sample      : 80
+  Energy RMSE   : 20.5731 kcal/mol
+  Energy MAE    : 13.8591 kcal/mol
+  Force  RMSE   : 0.02288 Ha/Å
+  Force  MAE    : 0.01058 Ha/Å
+
+Normal Mode Frequencies (cm⁻¹)
+----------------------------------------
+  Imaginary modes: 8
+  mode  1: -15250.0 IMAGINARY
+  mode  2:  -3851.0 IMAGINARY
+  mode  3:  -1814.4 IMAGINARY
+  mode  4:  -1039.6 IMAGINARY
+  mode  5:   -931.0 IMAGINARY
+  mode  6:   -798.6 IMAGINARY
+  mode  7:   -336.8 IMAGINARY
+  mode  8:   -186.4 IMAGINARY
+  mode  9:    448.6
+  mode 10:    600.0
+  mode 11:    805.8
+  mode 12:    976.0
+  mode 13:   1049.7
+  mode 14:   1186.7
+  mode 15:   1552.9
+  mode 16:   2051.5
+  mode 17:   2149.0
+  mode 18:   2162.4
+  mode 19:   2295.5
+  mode 20:   2491.8
+  mode 21:   2676.7
+  mode 22:   2745.8
+  mode 23:   2846.2
+  mode 24:   3058.3
+  mode 25:   3755.5
+  mode 26:   4655.6
+  mode 27:   6923.0
+  mode 28:   7919.8
+  mode 29:   8440.1
+  mode 30:  16690.1
+
+MD Stability
+----------------------------------------
+  Steps        : 500
+  Energy range : 168.445 kcal/mol
+  Dissociation : no

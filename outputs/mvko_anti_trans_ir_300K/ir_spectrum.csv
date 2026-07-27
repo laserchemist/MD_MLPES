@@ -1,0 +1,16 @@
+# IR spectrum — C₄H₆O₂  –  methyl vinyl ketone oxide (MVKO)
+# Temperature: 300.0 K
+# MD steps: 30000  Δt_eff: 0.5 fs
+# Method: ML-PES (KRR) + ML dipole surface (KRR)
+# Date: 2026-04-21T10:49:42.236899
+frequency_cm-1,intensity_normalized
+442.4031,0.02574053
+884.8062,0.20714605
+1327.2093,0.57568175
+1769.6124,0.94370457
+2212.0156,1.00000000
+2654.4187,0.77057261
+3096.8218,0.47886482
+3539.2249,0.29407248
+3981.6280,0.19147007
+4424.0311,0.13272938

@@ -1,0 +1,604 @@
+
+======================================================================
+  ML-PES IR SPECTRUM WORKFLOW
+======================================================================
+  ML-PES model       : outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+  Training data      : outputs/anti_trans_dipoles_20260421/training_with_dipoles.npz
+  Dipole model       : (will train now)
+  MD steps           : 30000  (dt=0.5 fs, save every 1)
+  Temperature        : 300.0 K
+  ZPE floor init     : yes  (filter: [50, 1200] cm⁻¹)
+  bakken pre-min     : no
+  Trajectories       : 5
+  Bond dissoc guard  : 1.5× initial length
+  Output dir         : outputs/mvko_anti_trans_ir_lowfreq_300K
+Loaded trajectory from outputs/anti_trans_dipoles_20260421/training_with_dipoles.npz (npz format)
+  Frames: 112, Atoms: 12
+  NMPESDriver loaded: outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+    n_atoms=12  n_vib=30  γ=0.1  α=1e-07
+    LOO-CV RMSE: 1.1770 kcal/mol
+    Bond wall: 5 heavy-atom bonds, cutoff=1.15×d_eq, k=15.0 Ha/Å²
+      C0-O1: d_eq=1.275Å, d_cut=1.466Å
+      C0-C3: d_eq=1.447Å, d_cut=1.664Å
+      C0-C5: d_eq=1.493Å, d_cut=1.717Å
+      O1-O2: d_eq=1.344Å, d_cut=1.545Å
+      C3-C4: d_eq=1.338Å, d_cut=1.539Å
+  Molecule           : C₄H₆O₂  –  methyl vinyl ketone oxide (MVKO)  (12 atoms)
+
+======================================================================
+  TRAINING ML DIPOLE SURFACE
+======================================================================
+  Training frames    : 112
+  Valid dipoles      : 112 (|μ| > 1e-6 D)
+  Dipole range (D)   : μx [-5.038, -4.043]  μy [1.730, 1.979]  μz [-0.314, 0.314]
+
+================================================================================
+  TRAINING DIPOLE MOMENT SURFACE
+================================================================================
+
+📊 Computing descriptors for 112 configurations...
+   Descriptor shape: (112, 78)
+   Dipole shape: (112, 3)
+
+📂 Data split:
+   Training: 89 samples
+   Testing: 23 samples
+
+⚙️  Scaling data...
+
+🔍 Hyperparameter optimization...
+   Best parameters: {'alpha': 1e-05, 'gamma': 0.001, 'kernel': 'rbf'}
+
+📊 Training Results:
+   Training RMSE (μx, μy, μz): 0.0001, 0.0001, 0.0002 Debye
+   Testing RMSE (μx, μy, μz):  0.0186, 0.0193, 0.0226 Debye
+   Training RMSE (total): 0.0001 Debye
+   Testing RMSE (total):  0.0203 Debye
+   R² (train): 0.999997
+   R² (test):  0.871641
+✅ Dipole surface saved: outputs/mvko_anti_trans_ir_lowfreq_300K/dipole_surface.pkl
+
+  Dipole model saved : outputs/mvko_anti_trans_ir_lowfreq_300K/dipole_surface.pkl
+
+  Starting geometry  : user-supplied (e.g. PSI4 equilibrium)  shape=(12, 3)
+
+--- Using stored PSI4 NM data for ZPE init (NM-PES model) ---
+  n_vib=30  freq range [117.2, 3280.7] cm⁻¹
+
+======================================================================
+  MULTI-TRAJECTORY MD  (5 trajectories)
+======================================================================
+  Starting geometry  : user-supplied --start-coords (all trajectories)
+  Steps per trajectory           : 30000
+  Temperature                    : 300 K
+  Dissociation limit             : 1.5× initial bond
+
+  --- Trajectory 1/5  (user start_coords, E=-192149.52 kcal/mol, seed=42) ---
+  ZPE floor applied  : 16/30 modes boosted, 14 skipped (outside [50, 1200] cm⁻¹)
+  ZPE init T_eff     : 639 K  (target: 300 K, τ=200 fs)
+
+  Dissociation detected: atoms 0–3  d=3.058 Å (eq=1.447 Å, limit=2.171 Å).  Truncating at step 2864.
+    Dissociation at step 2864 — 2864 frames kept
+
+  Trajectory XYZ     : outputs/mvko_anti_trans_ir_lowfreq_300K/traj_01.xyz  (2864 frames, 2128 KB)
+
+  Predicting dipoles for 2864 frames...
+    Dipole |μ|: 4.628–5.317 D  (mean 4.915 D)
+
+  --- Trajectory 2/5  (user start_coords, E=-192149.52 kcal/mol, seed=43) ---
+  ZPE floor applied  : 13/30 modes boosted, 14 skipped (outside [50, 1200] cm⁻¹)
+  ZPE init T_eff     : 693 K  (target: 300 K, τ=200 fs)
+
+  Dissociation detected: atoms 3–4  d=2.030 Å (eq=1.338 Å, limit=2.007 Å).  Truncating at step 1729.
+    Dissociation at step 1729 — 1729 frames kept
+
+  Trajectory XYZ     : outputs/mvko_anti_trans_ir_lowfreq_300K/traj_02.xyz  (1729 frames, 1284 KB)
+
+  Predicting dipoles for 1729 frames...
+    Dipole |μ|: 4.695–5.168 D  (mean 4.934 D)
+
+  --- Trajectory 3/5  (user start_coords, E=-192149.52 kcal/mol, seed=44) ---
+  ZPE floor applied  : 14/30 modes boosted, 14 skipped (outside [50, 1200] cm⁻¹)
+  ZPE init T_eff     : 613 K  (target: 300 K, τ=200 fs)
+
+  Dissociation detected: atoms 0–5  d=3.227 Å (eq=1.493 Å, limit=2.239 Å).  Truncating at step 4835.
+    Dissociation at step 4835 — 4835 frames kept
+
+  Trajectory XYZ     : outputs/mvko_anti_trans_ir_lowfreq_300K/traj_03.xyz  (4835 frames, 3595 KB)
+
+  Predicting dipoles for 4835 frames...
+    Dipole |μ|: 4.687–5.182 D  (mean 4.925 D)
+
+  --- Trajectory 4/5  (user start_coords, E=-192149.52 kcal/mol, seed=45) ---
+  ZPE floor applied  : 14/30 modes boosted, 14 skipped (outside [50, 1200] cm⁻¹)
+  ZPE init T_eff     : 648 K  (target: 300 K, τ=200 fs)
+
+  Dissociation detected: atoms 0–5  d=2.636 Å (eq=1.493 Å, limit=2.239 Å).  Truncating at step 4917.
+    Dissociation at step 4917 — 4917 frames kept
+
+  Trajectory XYZ     : outputs/mvko_anti_trans_ir_lowfreq_300K/traj_04.xyz  (4917 frames, 3656 KB)
+
+  Predicting dipoles for 4917 frames...
+    Dipole |μ|: 4.728–5.174 D  (mean 4.925 D)
+
+  --- Trajectory 5/5  (user start_coords, E=-192149.52 kcal/mol, seed=46) ---
+  ZPE floor applied  : 13/30 modes boosted, 14 skipped (outside [50, 1200] cm⁻¹)
+  ZPE init T_eff     : 689 K  (target: 300 K, τ=200 fs)
+
+  Dissociation detected: atoms 0–5  d=3.675 Å (eq=1.493 Å, limit=2.239 Å).  Truncating at step 2565.
+    Dissociation at step 2565 — 2565 frames kept
+
+  Trajectory XYZ     : outputs/mvko_anti_trans_ir_lowfreq_300K/traj_05.xyz  (2565 frames, 1905 KB)
+
+  Predicting dipoles for 2565 frames...
+    Dipole |μ|: 4.720–5.157 D  (mean 4.916 D)
+
+  Trajectories collected: 5
+
+--- Averaging IR spectra across 5 trajectories ---
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 2864
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 1432 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 1432 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 1432
+   Padded points: 5728
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4498.8 cm⁻¹
+   Frequency resolution: 1.85 cm⁻¹
+   Number of points: 2427
+
+🎯 Found 4 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   218.7                1.000           Torsion/bending     
+   250.2                0.375           Torsion/bending     
+   189.1                0.154           Torsion/bending     
+   159.4                0.057           Torsion/bending     
+  Trajectory 1/5 spectrum computed  (2864 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 1729
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 864 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 864 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 864
+   Padded points: 3456
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4497.8 cm⁻¹
+   Frequency resolution: 3.07 cm⁻¹
+   Number of points: 1464
+
+🎯 Found 3 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   212.0                1.000           Torsion/bending     
+   270.4                0.245           Torsion/bending     
+   52.2                 0.082           Torsion/bending     
+  Trajectory 2/5 spectrum computed  (1729 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 4835
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 2418 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 2417 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 2417
+   Padded points: 9668
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.4 cm⁻¹
+   Frequency resolution: 1.10 cm⁻¹
+   Number of points: 4097
+
+🎯 Found 5 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   220.7                1.000           Torsion/bending     
+   231.7                0.723           Torsion/bending     
+   260.3                0.323           Torsion/bending     
+   314.1                0.132           Torsion/bending     
+   242.7                0.069           Torsion/bending     
+  Trajectory 3/5 spectrum computed  (4835 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 4917
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 2458 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 2458 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 2458
+   Padded points: 9832
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4500.0 cm⁻¹
+   Frequency resolution: 1.08 cm⁻¹
+   Number of points: 4167
+
+🎯 Found 12 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   163.1                1.000           Torsion/bending     
+   176.0                0.619           Torsion/bending     
+   233.3                0.531           Torsion/bending     
+   217.1                0.310           Torsion/bending     
+   67.0                 0.152           Torsion/bending     
+   266.7                0.108           Torsion/bending     
+   313.2                0.105           Torsion/bending     
+   186.8                0.091           Torsion/bending     
+   16.2                 0.090           Torsion/bending     
+   326.1                0.089           Torsion/bending     
+  Trajectory 4/5 spectrum computed  (4917 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 2565
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 1282 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 1282 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 1282
+   Padded points: 5128
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.3 cm⁻¹
+   Frequency resolution: 2.07 cm⁻¹
+   Number of points: 2173
+
+🎯 Found 9 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   223.6                1.000           Torsion/bending     
+   198.8                0.767           Torsion/bending     
+   275.4                0.513           Torsion/bending     
+   66.3                 0.494           Torsion/bending     
+   244.3                0.271           Torsion/bending     
+   95.2                 0.264           Torsion/bending     
+   136.7                0.216           Torsion/bending     
+   296.1                0.106           Torsion/bending     
+   173.9                0.105           Torsion/bending     
+  Trajectory 5/5 spectrum computed  (2565 frames)
+
+🎯 Found 8 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   219.5                1.000           Torsion/bending     
+   163.6                0.315           Torsion/bending     
+   275.4                0.218           Torsion/bending     
+   250.5                0.217           Torsion/bending     
+   66.3                 0.194           Torsion/bending     
+   95.2                 0.094           Torsion/bending     
+   138.7                0.078           Torsion/bending     
+   314.7                0.077           Torsion/bending     
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 2565
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 1282 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 1282 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 1282
+   Padded points: 5128
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.3 cm⁻¹
+   Frequency resolution: 2.07 cm⁻¹
+   Number of points: 2173
+
+🎯 Found 9 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   223.6                1.000           Torsion/bending     
+   198.8                0.767           Torsion/bending     
+   275.4                0.513           Torsion/bending     
+   66.3                 0.494           Torsion/bending     
+   244.3                0.271           Torsion/bending     
+   95.2                 0.264           Torsion/bending     
+   136.7                0.216           Torsion/bending     
+   296.1                0.106           Torsion/bending     
+   173.9                0.105           Torsion/bending     
+
+  Spectrum CSV saved : outputs/mvko_anti_trans_ir_lowfreq_300K/ir_spectrum.csv
+  Points             : 2173
+  Frequency range    : 2.1 – 4499.3 cm⁻¹
+
+  IR spectrum figure  : outputs/mvko_anti_trans_ir_lowfreq_300K/ir_spectrum_clean.png
+
+  Diagnostic figure  : skipped (multi-trajectory mode — see traj_*.xyz)
+
+======================================================================
+  IR WORKFLOW COMPLETE
+======================================================================
+  Molecule           : C₄H₆O₂  –  methyl vinyl ketone oxide (MVKO)
+  Trajectory XYZ     : outputs/mvko_anti_trans_ir_lowfreq_300K/traj_01.xyz
+  Spectrum CSV       : outputs/mvko_anti_trans_ir_lowfreq_300K/ir_spectrum.csv
+  Spectrum figure    : outputs/mvko_anti_trans_ir_lowfreq_300K/ir_spectrum_clean.png
+  Diagnostic figure  : outputs/mvko_anti_trans_ir_lowfreq_300K/ir_spectrum_figure.png
+  Summary JSON       : outputs/mvko_anti_trans_ir_lowfreq_300K/ir_summary.json
+
+  ML-PES harmonic frequencies (cm⁻¹):
+    Mode  1:    117.2 cm⁻¹   ZPE = 0.167 kcal/mol
+    Mode  2:    161.8 cm⁻¹   ZPE = 0.231 kcal/mol
+    Mode  3:    251.8 cm⁻¹   ZPE = 0.360 kcal/mol
+    Mode  4:    278.6 cm⁻¹   ZPE = 0.398 kcal/mol
+    Mode  5:    327.9 cm⁻¹   ZPE = 0.469 kcal/mol
+    Mode  6:    396.2 cm⁻¹   ZPE = 0.566 kcal/mol
+    Mode  7:    481.8 cm⁻¹   ZPE = 0.689 kcal/mol
+    Mode  8:    647.2 cm⁻¹   ZPE = 0.925 kcal/mol
+    Mode  9:    731.6 cm⁻¹   ZPE = 1.046 kcal/mol
+    Mode 10:    804.6 cm⁻¹   ZPE = 1.150 kcal/mol
+    Mode 11:    991.2 cm⁻¹   ZPE = 1.417 kcal/mol
+    Mode 12:   1007.4 cm⁻¹   ZPE = 1.440 kcal/mol
+    Mode 13:   1042.1 cm⁻¹   ZPE = 1.490 kcal/mol
+    Mode 14:   1058.8 cm⁻¹   ZPE = 1.514 kcal/mol
+    Mode 15:   1081.1 cm⁻¹   ZPE = 1.546 kcal/mol
+    Mode 16:   1108.3 cm⁻¹   ZPE = 1.584 kcal/mol
+    Mode 17:   1304.9 cm⁻¹   ZPE = 1.865 kcal/mol
+    Mode 18:   1384.8 cm⁻¹   ZPE = 1.980 kcal/mol
+    Mode 19:   1454.6 cm⁻¹   ZPE = 2.079 kcal/mol
+    Mode 20:   1481.0 cm⁻¹   ZPE = 2.117 kcal/mol
+    Mode 21:   1496.1 cm⁻¹   ZPE = 2.139 kcal/mol
+    Mode 22:   1499.4 cm⁻¹   ZPE = 2.143 kcal/mol
+    Mode 23:   1575.6 cm⁻¹   ZPE = 2.252 kcal/mol
+    Mode 24:   1721.8 cm⁻¹   ZPE = 2.461 kcal/mol
+    Mode 25:   3072.5 cm⁻¹   ZPE = 4.392 kcal/mol
+    Mode 26:   3139.7 cm⁻¹   ZPE = 4.488 kcal/mol
+    Mode 27:   3188.9 cm⁻¹   ZPE = 4.559 kcal/mol
+    Mode 28:   3189.9 cm⁻¹   ZPE = 4.560 kcal/mol
+    Mode 29:   3261.3 cm⁻¹   ZPE = 4.662 kcal/mol
+    Mode 30:   3280.7 cm⁻¹   ZPE = 4.690 kcal/mol
+
+  Top IR peaks (from ACF):
+     Freq (cm⁻¹)   Intensity
+  ──────────────  ──────────
+            66.3      0.1940
+            95.2      0.0942
+           138.7      0.0785
+           163.6      0.3148
+           219.5      1.0000
+           250.5      0.2169
+           275.4      0.2177
+           314.7      0.0773
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   3%|▎         | 892/30000 [00:00<00:03, 8911.34step/s]
+bakken MD:   3%|▎         | 892/30000 [00:00<00:03, 8911.34step/s, E=-192146.7 kcal/mol, T=287 K]
+bakken MD:   6%|▌         | 1834/30000 [00:00<00:03, 9207.71step/s, E=-192146.7 kcal/mol, T=287 K]
+bakken MD:   9%|▉         | 2769/30000 [00:00<00:02, 9271.95step/s, E=-192146.7 kcal/mol, T=287 K]
+bakken MD:  10%|▉         | 2863/30000 [00:00<00:02, 9217.29step/s, E=-192146.7 kcal/mol, T=287 K]
+
+Dipole prediction:   0%|          | 0/2864 [00:00<?, ?it/s]
+Dipole prediction:   7%|▋         | 187/2864 [00:00<00:01, 1862.24it/s]
+Dipole prediction:  13%|█▎        | 376/2864 [00:00<00:01, 1873.71it/s]
+Dipole prediction:  20%|█▉        | 565/2864 [00:00<00:01, 1881.09it/s]
+Dipole prediction:  26%|██▋       | 754/2864 [00:00<00:01, 1853.40it/s]
+Dipole prediction:  33%|███▎      | 945/2864 [00:00<00:01, 1871.28it/s]
+Dipole prediction:  40%|███▉      | 1137/2864 [00:00<00:00, 1886.76it/s]
+Dipole prediction:  46%|████▋     | 1328/2864 [00:00<00:00, 1892.13it/s]
+Dipole prediction:  53%|█████▎    | 1518/2864 [00:00<00:00, 1894.50it/s]
+Dipole prediction:  60%|█████▉    | 1708/2864 [00:00<00:00, 1889.95it/s]
+Dipole prediction:  66%|██████▋   | 1899/2864 [00:01<00:00, 1894.49it/s]
+Dipole prediction:  73%|███████▎  | 2089/2864 [00:01<00:00, 1877.17it/s]
+Dipole prediction:  80%|███████▉  | 2280/2864 [00:01<00:00, 1886.26it/s]
+Dipole prediction:  86%|████████▌ | 2470/2864 [00:01<00:00, 1887.55it/s]
+Dipole prediction:  93%|█████████▎| 2661/2864 [00:01<00:00, 1891.57it/s]
+Dipole prediction: 100%|█████████▉| 2851/2864 [00:01<00:00, 1892.75it/s]
+Dipole prediction: 100%|██████████| 2864/2864 [00:01<00:00, 1885.19it/s]
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   3%|▎         | 932/30000 [00:00<00:03, 9315.46step/s]
+bakken MD:   3%|▎         | 932/30000 [00:00<00:03, 9315.46step/s, E=-192146.2 kcal/mol, T=256 K]
+bakken MD:   6%|▌         | 1728/30000 [00:00<00:03, 9297.62step/s, E=-192146.2 kcal/mol, T=256 K]
+
+Dipole prediction:   0%|          | 0/1729 [00:00<?, ?it/s]
+Dipole prediction:  11%|█         | 189/1729 [00:00<00:00, 1885.82it/s]
+Dipole prediction:  22%|██▏       | 379/1729 [00:00<00:00, 1892.92it/s]
+Dipole prediction:  33%|███▎      | 570/1729 [00:00<00:00, 1898.21it/s]
+Dipole prediction:  44%|████▍     | 760/1729 [00:00<00:00, 1891.55it/s]
+Dipole prediction:  55%|█████▍    | 950/1729 [00:00<00:00, 1890.10it/s]
+Dipole prediction:  66%|██████▌   | 1142/1729 [00:00<00:00, 1899.98it/s]
+Dipole prediction:  77%|███████▋  | 1333/1729 [00:00<00:00, 1900.76it/s]
+Dipole prediction:  88%|████████▊ | 1525/1729 [00:00<00:00, 1904.12it/s]
+Dipole prediction:  99%|█████████▉| 1716/1729 [00:00<00:00, 1900.83it/s]
+Dipole prediction: 100%|██████████| 1729/1729 [00:00<00:00, 1897.70it/s]
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   3%|▎         | 935/30000 [00:00<00:03, 9341.97step/s]
+bakken MD:   3%|▎         | 935/30000 [00:00<00:03, 9341.97step/s, E=-192146.2 kcal/mol, T=275 K]
+bakken MD:   6%|▌         | 1870/30000 [00:00<00:03, 9301.99step/s, E=-192146.2 kcal/mol, T=275 K]
+bakken MD:   9%|▉         | 2816/30000 [00:00<00:02, 9372.45step/s, E=-192146.2 kcal/mol, T=275 K]
+bakken MD:   9%|▉         | 2816/30000 [00:00<00:02, 9372.45step/s, E=-192146.5 kcal/mol, T=317 K]
+bakken MD:  13%|█▎        | 3754/30000 [00:00<00:02, 9356.21step/s, E=-192146.5 kcal/mol, T=317 K]
+bakken MD:  13%|█▎        | 3754/30000 [00:00<00:02, 9356.21step/s, E=-192146.3 kcal/mol, T=270 K]
+bakken MD:  16%|█▌        | 4690/30000 [00:00<00:02, 9302.53step/s, E=-192146.3 kcal/mol, T=270 K]
+bakken MD:  16%|█▌        | 4834/30000 [00:00<00:02, 9310.08step/s, E=-192146.3 kcal/mol, T=270 K]
+
+Dipole prediction:   0%|          | 0/4835 [00:00<?, ?it/s]
+Dipole prediction:   4%|▍         | 190/4835 [00:00<00:02, 1888.26it/s]
+Dipole prediction:   8%|▊         | 381/4835 [00:00<00:02, 1900.68it/s]
+Dipole prediction:  12%|█▏        | 572/4835 [00:00<00:02, 1896.32it/s]
+Dipole prediction:  16%|█▌        | 765/4835 [00:00<00:02, 1907.93it/s]
+Dipole prediction:  20%|█▉        | 956/4835 [00:00<00:02, 1908.05it/s]
+Dipole prediction:  24%|██▎       | 1147/4835 [00:00<00:01, 1901.98it/s]
+Dipole prediction:  28%|██▊       | 1339/4835 [00:00<00:01, 1906.87it/s]
+Dipole prediction:  32%|███▏      | 1530/4835 [00:00<00:01, 1905.15it/s]
+Dipole prediction:  36%|███▌      | 1722/4835 [00:00<00:01, 1908.02it/s]
+Dipole prediction:  40%|███▉      | 1913/4835 [00:01<00:01, 1892.37it/s]
+Dipole prediction:  44%|████▎     | 2105/4835 [00:01<00:01, 1898.53it/s]
+Dipole prediction:  47%|████▋     | 2295/4835 [00:01<00:01, 1872.28it/s]
+Dipole prediction:  51%|█████▏    | 2483/4835 [00:01<00:01, 1841.54it/s]
+Dipole prediction:  55%|█████▌    | 2668/4835 [00:01<00:01, 1817.22it/s]
+Dipole prediction:  59%|█████▉    | 2850/4835 [00:01<00:01, 1775.63it/s]
+Dipole prediction:  63%|██████▎   | 3028/4835 [00:01<00:01, 1720.48it/s]
+Dipole prediction:  66%|██████▋   | 3204/4835 [00:01<00:00, 1731.14it/s]
+Dipole prediction:  70%|██████▉   | 3380/4835 [00:01<00:00, 1736.96it/s]
+Dipole prediction:  74%|███████▎  | 3557/4835 [00:01<00:00, 1744.78it/s]
+Dipole prediction:  77%|███████▋  | 3733/4835 [00:02<00:00, 1746.93it/s]
+Dipole prediction:  81%|████████  | 3915/4835 [00:02<00:00, 1766.75it/s]
+Dipole prediction:  85%|████████▍ | 4097/4835 [00:02<00:00, 1781.89it/s]
+Dipole prediction:  89%|████████▊ | 4280/4835 [00:02<00:00, 1795.90it/s]
+Dipole prediction:  92%|█████████▏| 4460/4835 [00:02<00:00, 1796.88it/s]
+Dipole prediction:  96%|█████████▌| 4643/4835 [00:02<00:00, 1805.08it/s]
+Dipole prediction: 100%|█████████▉| 4824/4835 [00:02<00:00, 1799.25it/s]
+Dipole prediction: 100%|██████████| 4835/4835 [00:02<00:00, 1822.78it/s]
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   3%|▎         | 891/30000 [00:00<00:03, 8904.02step/s]
+bakken MD:   3%|▎         | 891/30000 [00:00<00:03, 8904.02step/s, E=-192147.1 kcal/mol, T=331 K]
+bakken MD:   6%|▌         | 1790/30000 [00:00<00:03, 8949.74step/s, E=-192147.1 kcal/mol, T=331 K]
+bakken MD:   9%|▉         | 2712/30000 [00:00<00:03, 9072.84step/s, E=-192147.1 kcal/mol, T=331 K]
+bakken MD:   9%|▉         | 2712/30000 [00:00<00:03, 9072.84step/s, E=-192147.1 kcal/mol, T=326 K]
+bakken MD:  12%|█▏        | 3644/30000 [00:00<00:02, 9168.80step/s, E=-192147.1 kcal/mol, T=326 K]
+bakken MD:  12%|█▏        | 3644/30000 [00:00<00:02, 9168.80step/s, E=-192146.5 kcal/mol, T=252 K]
+bakken MD:  15%|█▌        | 4561/30000 [00:00<00:02, 9097.70step/s, E=-192146.5 kcal/mol, T=252 K]
+bakken MD:  16%|█▋        | 4916/30000 [00:00<00:02, 9085.58step/s, E=-192146.5 kcal/mol, T=252 K]
+
+Dipole prediction:   0%|          | 0/4917 [00:00<?, ?it/s]
+Dipole prediction:   4%|▎         | 177/4917 [00:00<00:02, 1765.82it/s]
+Dipole prediction:   7%|▋         | 358/4917 [00:00<00:02, 1787.26it/s]
+Dipole prediction:  11%|█         | 542/4917 [00:00<00:02, 1807.12it/s]
+Dipole prediction:  15%|█▍        | 728/4917 [00:00<00:02, 1824.73it/s]
+Dipole prediction:  19%|█▊        | 911/4917 [00:00<00:02, 1768.83it/s]
+Dipole prediction:  22%|██▏       | 1089/4917 [00:00<00:02, 1555.32it/s]
+Dipole prediction:  26%|██▌       | 1255/4917 [00:00<00:02, 1585.63it/s]
+Dipole prediction:  29%|██▉       | 1440/4917 [00:00<00:02, 1661.95it/s]
+Dipole prediction:  33%|███▎      | 1620/4917 [00:00<00:01, 1702.64it/s]
+Dipole prediction:  37%|███▋      | 1803/4917 [00:01<00:01, 1740.07it/s]
+Dipole prediction:  40%|████      | 1979/4917 [00:01<00:01, 1620.76it/s]
+Dipole prediction:  44%|████▎     | 2144/4917 [00:01<00:01, 1402.15it/s]
+Dipole prediction:  47%|████▋     | 2326/4917 [00:01<00:01, 1508.47it/s]
+Dipole prediction:  51%|█████     | 2514/4917 [00:01<00:01, 1607.42it/s]
+Dipole prediction:  55%|█████▍    | 2703/4917 [00:01<00:01, 1684.34it/s]
+Dipole prediction:  59%|█████▉    | 2891/4917 [00:01<00:01, 1739.77it/s]
+Dipole prediction:  63%|██████▎   | 3077/4917 [00:01<00:01, 1772.63it/s]
+Dipole prediction:  66%|██████▋   | 3265/4917 [00:01<00:00, 1801.26it/s]
+Dipole prediction:  70%|███████   | 3449/4917 [00:02<00:00, 1812.18it/s]
+Dipole prediction:  74%|███████▍  | 3635/4917 [00:02<00:00, 1823.51it/s]
+Dipole prediction:  78%|███████▊  | 3823/4917 [00:02<00:00, 1836.06it/s]
+Dipole prediction:  82%|████████▏ | 4008/4917 [00:02<00:00, 1839.93it/s]
+Dipole prediction:  85%|████████▌ | 4195/4917 [00:02<00:00, 1846.01it/s]
+Dipole prediction:  89%|████████▉ | 4383/4917 [00:02<00:00, 1854.19it/s]
+Dipole prediction:  93%|█████████▎| 4571/4917 [00:02<00:00, 1859.50it/s]
+Dipole prediction:  97%|█████████▋| 4758/4917 [00:02<00:00, 1857.75it/s]
+Dipole prediction: 100%|██████████| 4917/4917 [00:02<00:00, 1738.85it/s]
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   3%|▎         | 913/30000 [00:00<00:03, 9125.79step/s]
+bakken MD:   3%|▎         | 913/30000 [00:00<00:03, 9125.79step/s, E=-192145.7 kcal/mol, T=242 K]
+bakken MD:   6%|▌         | 1826/30000 [00:00<00:03, 9125.20step/s, E=-192145.7 kcal/mol, T=242 K]
+bakken MD:   9%|▊         | 2564/30000 [00:00<00:03, 9135.84step/s, E=-192145.7 kcal/mol, T=242 K]
+
+Dipole prediction:   0%|          | 0/2565 [00:00<?, ?it/s]
+Dipole prediction:   7%|▋         | 185/2565 [00:00<00:01, 1841.95it/s]
+Dipole prediction:  14%|█▍        | 370/2565 [00:00<00:01, 1818.75it/s]
+Dipole prediction:  22%|██▏       | 552/2565 [00:00<00:01, 1813.42it/s]
+Dipole prediction:  29%|██▊       | 734/2565 [00:00<00:01, 1812.98it/s]
+Dipole prediction:  36%|███▌      | 922/2565 [00:00<00:00, 1834.58it/s]
+Dipole prediction:  43%|████▎     | 1109/2565 [00:00<00:00, 1844.10it/s]
+Dipole prediction:  50%|█████     | 1294/2565 [00:00<00:00, 1842.62it/s]
+Dipole prediction:  58%|█████▊    | 1482/2565 [00:00<00:00, 1852.37it/s]
+Dipole prediction:  65%|██████▌   | 1668/2565 [00:00<00:00, 1841.54it/s]
+Dipole prediction:  72%|███████▏  | 1853/2565 [00:01<00:00, 1820.47it/s]
+Dipole prediction:  79%|███████▉  | 2039/2565 [00:01<00:00, 1829.82it/s]
+Dipole prediction:  87%|████████▋ | 2224/2565 [00:01<00:00, 1833.88it/s]
+Dipole prediction:  94%|█████████▍| 2412/2565 [00:01<00:00, 1846.18it/s]
+Dipole prediction: 100%|██████████| 2565/2565 [00:01<00:00, 1829.96it/s]
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:835: UserWarning: Glyph 8315 (\N{SUPERSCRIPT MINUS}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:835: UserWarning: Glyph 8324 (\N{SUBSCRIPT FOUR}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:835: UserWarning: Glyph 8326 (\N{SUBSCRIPT SIX}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:835: UserWarning: Glyph 8322 (\N{SUBSCRIPT TWO}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+
+

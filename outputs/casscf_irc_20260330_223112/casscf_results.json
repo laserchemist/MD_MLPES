@@ -1,0 +1,18 @@
+[
+  {
+    "frame_idx": 5,
+    "irc_s": 0.0,
+    "e_b3lyp": -306.2356847705571,
+    "e_b3lyp_rel": 52.02005490131333,
+    "e_rhf": -304.4007601417267,
+    "e_casscf_ss": -304.44296140146764,
+    "e_sa_root0": -304.4227566689699,
+    "e_sa_root1": -304.2999657193924,
+    "gap_kcal": 77.05248418134167,
+    "H12_kcal": 38.526242090670834,
+    "no_occs": null,
+    "e_caspt2": null,
+    "delta_kcal": null,
+    "output_file": "outputs/casscf_irc_20260330_223112/psi4_frame05_s+0.00.dat"
+  }
+]

@@ -1,0 +1,107 @@
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+Found 36 modes above threshold (expected 30). Falling back to the {expected} highest-|ω| modes.
+Loading training data: outputs/mvko_ch_retrain_20260403_101429/combined_training_data.npz
+Loaded trajectory from outputs/mvko_ch_retrain_20260403_101429/combined_training_data.npz (npz format)
+  Frames: 952, Atoms: 12
+  Applying dE < 50 kcal/mol filter: 783 / 952 frames kept
+
+Building ACSF descriptor (R_cut=6.0 Å, aggregate=sum_by_species) ...
+  ACSF(8 G2 × 3 species = 24 radial, 12 G4 × 6 pairs = 72 angular, 99 feat/atom, aggregate='sum_by_species', total=3 × 99 = 297)
+  Full descriptor dimension: 297 (12 atoms × 99 features/atom)
+
+Computing ACSF descriptors for 783 frames ...
+  Descriptor shape: (783, 297)
+
+Grid search: 5 γ × 4 α = 20 combos (5-fold CV)
+         γ           α    CV RMSE (kcal/mol)
+---------------------------------------------
+   1.0e-04     1.0e-06                7.3241
+   1.0e-04     1.0e-05                5.7287
+   1.0e-04     1.0e-04                4.2795
+   1.0e-04     1.0e-03                3.3655
+   3.0e-04     1.0e-06                5.1028
+   3.0e-04     1.0e-05                3.9781
+   3.0e-04     1.0e-04                3.5183
+   3.0e-04     1.0e-03                3.3919
+   1.0e-03     1.0e-06                4.7502
+   1.0e-03     1.0e-05                4.4076
+   1.0e-03     1.0e-04                3.6032
+   1.0e-03     1.0e-03                3.2571
+   3.0e-03     1.0e-06                4.1962
+   3.0e-03     1.0e-05                4.0176
+   3.0e-03     1.0e-04                3.7420
+   3.0e-03     1.0e-03                3.5145
+   1.0e-02     1.0e-06                4.0844
+   1.0e-02     1.0e-05                4.0645
+   1.0e-02     1.0e-04                4.0437
+   1.0e-02     1.0e-03                4.0070
+
+Best: γ=1.0e-03, α=1.0e-03, CV RMSE=3.2571 kcal/mol
+Grid search results saved: outputs/acsf_model_20260403_154057/grid_search_results.json
+
+Training final model (γ=0.001, α=0.001) ...
+🔧 Computing descriptors...
+🔧 Scaling data...
+🤖 Training model...
+  Validation RMSE : 3.1825 kcal/mol
+  Validation MAE  : 1.4798 kcal/mol
+  Model saved: outputs/acsf_model_20260403_154057/mlpes_acsf.pkl
+
+--- Hessian frequency check (FD on ACSF ML-PES) ---
+  Computing FD Hessian (36×36, δ=0.005 Å) ...
+
+  NM frequencies (ACSF ML-PES FD Hessian):
+   Mode   freq (cm-1)
+    0     -123009.3
+    1       -7740.3
+    2       -6247.7
+    3       -5559.0
+    4       -3986.9
+    5       -3763.3
+    6       -2119.2
+    7       -1126.8
+    8         838.0
+    9         866.0
+   10         870.7
+   11        1384.9
+   12        1400.2
+   13        1801.8
+   14        2012.5
+   15        2126.4
+   16        2485.0
+   17        2697.4
+   18        2812.7  <-- C-H (physical!)
+   19        3121.2  <-- C-H (physical!)
+   20        3844.1
+   21        4604.6
+   22        5054.9  <-- C-H (stiff)
+   23        5871.3  <-- C-H (stiff)
+   24        7202.5  <-- C-H (stiff)
+   25        8036.0  <-- C-H (stiff)
+   26        9781.1  <-- C-H (stiff)
+   27       20070.9  <-- C-H (stiff)
+   28       63716.2  <-- C-H (stiff)
+   29      112714.1  <-- C-H (stiff)
+
+============================================================
+  ACSF+KRR model summary
+============================================================
+  Output dir       : outputs/acsf_model_20260403_154057
+  Descriptor       : ACSF(8 G2 × 3 species = 24 radial, 12 G4 × 6 pairs = 72 angular, 99 feat/atom, aggregate='sum_by_species', total=3 × 99 = 297)
+  Training frames  : 783 (dE < 50 kcal/mol)
+  Best γ / α       : 1.0e-03 / 1.0e-03
+  Validation RMSE  : 3.1825 kcal/mol
+
+  Coulomb+KRR baseline (904 frames, γ=0.001, α=1e-5):
+    Validation RMSE  : 0.2734 kcal/mol
+    C-H Hessian modes: 9825–15005 cm-1 (stiff artifact)
+
+  To run IR spectrum with ACSF model:
+    python3 ir_md_spectrum.py \
+      --model outputs/acsf_model_20260403_154057/mlpes_acsf.pkl \
+      --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+      --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+      --n-trajectories 5 --max-bond-extension 2.5

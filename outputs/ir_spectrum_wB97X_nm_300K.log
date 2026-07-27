@@ -1,0 +1,448 @@
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+INFO:normal_modes:Normal modes: 30 vibrational, -3–12546 cm⁻¹ (all), 715–12546 cm⁻¹ (vib)
+
+======================================================================
+  ML-PES IR SPECTRUM WORKFLOW
+======================================================================
+  ML-PES model       : outputs/wB97X_surface_20260406_223155/mlpes_wB97X_nm.pkl
+  Training data      : outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz
+  Dipole model       : (will train now)
+  MD steps           : 30000  (dt=0.5 fs, save every 1)
+  Temperature        : 300.0 K
+  ZPE floor init     : yes  (filter: [50, 4000] cm⁻¹)
+  bakken pre-min     : yes  (max_steps=300, tol=0.005 Ha/Å)
+  Trajectories       : 5
+  Bond dissoc guard  : 2.0× initial length
+  Output dir         : outputs/ir_spectrum_wB97X_nm_300K
+Loaded trajectory from outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz (npz format)
+  Frames: 150, Atoms: 12
+  NMPESDriver loaded: outputs/wB97X_surface_20260406_223155/mlpes_wB97X_nm.pkl
+    n_atoms=12  n_vib=30  γ=0.2  α=1e-06
+    LOO-CV RMSE: 1.4321 kcal/mol
+  Molecule           : C₄H₆O₂  –  methyl vinyl ketone oxide (MVKO)  (12 atoms)
+
+======================================================================
+  TRAINING ML DIPOLE SURFACE
+======================================================================
+  Training frames    : 150
+  Valid dipoles      : 150 (|μ| > 1e-6 D)
+  Dipole range (D)   : μx [-5.445, -1.687]  μy [-1.923, 2.510]  μz [-0.659, 0.793]
+
+================================================================================
+  TRAINING DIPOLE MOMENT SURFACE
+================================================================================
+
+📊 Computing descriptors for 150 configurations...
+   Descriptor shape: (150, 78)
+   Dipole shape: (150, 3)
+
+📂 Data split:
+   Training: 120 samples
+   Testing: 30 samples
+
+⚙️  Scaling data...
+
+🔍 Hyperparameter optimization...
+   Best parameters: {'alpha': 0.0001, 'gamma': 0.001, 'kernel': 'rbf'}
+
+📊 Training Results:
+   Training RMSE (μx, μy, μz): 0.0029, 0.0033, 0.0094 Debye
+   Testing RMSE (μx, μy, μz):  0.0095, 0.0209, 0.0347 Debye
+   Training RMSE (total): 0.0060 Debye
+   Testing RMSE (total):  0.0240 Debye
+   R² (train): 0.999254
+   R² (test):  0.981179
+✅ Dipole surface saved: outputs/ir_spectrum_wB97X_nm_300K/dipole_surface.pkl
+
+  Dipole model saved : outputs/ir_spectrum_wB97X_nm_300K/dipole_surface.pkl
+
+  Starting geometry  : frame 0  (E = -192217.81 kcal/mol)
+
+--- ML-PES Normal Mode Analysis (for ZPE init) ---
+
+  Computing ML-PES Hessian (36×36, δ=0.01 Å) ...
+
+   Mode   Freq (cm⁻¹)   ZPE (kcal/mol)
+  ─────  ────────────  ───────────────
+      1         714.9            1.022
+      2        1044.7            1.493
+      3        1155.6            1.652
+      4        1168.2            1.670
+      5        1535.2            2.195
+      6        1879.3            2.687
+      7        2342.7            3.349
+      8        2656.2            3.797
+      9        2990.8            4.276
+     10        3004.0            4.294
+     11        3534.7            5.053
+     12        3704.2            5.295
+     13        3742.0            5.349
+     14        3818.8            5.459
+     15        3860.8            5.519
+     16        3996.8            5.714
+     17        4619.9            6.604
+     18        4866.6            6.957
+     19        5215.8            7.456
+     20        5308.2            7.588
+     21        5365.8            7.671
+     22        5446.6            7.786
+     23        5573.3            7.967
+     24        6037.9            8.632
+     25       11077.5           15.836
+     26       11605.9           16.592
+     27       11718.9           16.753
+     28       11815.0           16.890
+     29       11977.0           17.122
+     30       12545.6           17.935
+           Total ZPE          220.615 kcal/mol
+
+======================================================================
+  MULTI-TRAJECTORY MD  (5 trajectories)
+======================================================================
+  Starting frames (lowest energy): [0, 64, 65, 96, 9]
+  Steps per trajectory           : 30000
+  Temperature                    : 300 K
+  Dissociation limit             : 2.0× initial bond
+
+  --- Trajectory 1/5  (frame 0, E=-192217.81 kcal/mol, seed=42) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.21012918          +0.0000          0.028342     0.01000
+      20     -306.21098189          -0.5351          0.006717     0.15000
+      40     -306.21137507          -0.7818          0.004989     0.15000
+      40     -306.21137507          -0.7818          0.004989     0.15000
+
+  Converged in 40 steps  ΔE = -0.7818 kcal/mol  |F|_max = 0.004989 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.7818 kcal/mol from starting frame
+  ZPE floor applied  : 16/30 modes boosted, 14 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2087 K  (target: 300 K, τ=200 fs)
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]bakken MD:   3%|▎         | 756/30000 [00:00<00:03, 7555.11step/s]bakken MD:   3%|▎         | 756/30000 [00:00<00:03, 7555.11step/s, E=-192164.9 kcal/mol, T=939 K]bakken MD:   5%|▌         | 1555/30000 [00:00<00:03, 7810.72step/s, E=-192164.9 kcal/mol, T=939 K]bakken MD:   8%|▊         | 2363/30000 [00:00<00:03, 7929.39step/s, E=-192164.9 kcal/mol, T=939 K]bakken MD:   8%|▊         | 2363/30000 [00:00<00:03, 7929.39step/s, E=-192170.1 kcal/mol, T=421 K]bakken MD:  11%|█         | 3197/30000 [00:00<00:03, 8088.93step/s, E=-192170.1 kcal/mol, T=421 K]bakken MD:  13%|█▎        | 4006/30000 [00:00<00:03, 8080.99step/s, E=-192170.1 kcal/mol, T=421 K]bakken MD:  13%|█▎        | 4006/30000 [00:00<00:03, 8080.99step/s, E=-192171.0 kcal/mol, T=335 K]bakken MD:  16%|█▌        | 4815/30000 [00:00<00:03, 7945.95step/s, E=-192171.0 kcal/mol, T=335 K]bakken MD:  17%|█▋        | 5051/30000 [00:00<00:03, 7955.72step/s, E=-192171.0 kcal/mol, T=335 K]
+
+  Dissociation detected: atoms 0–3  d=2.884 Å (eq=1.442 Å, limit=2.884 Å).  Truncating at step 5052.
+    Dissociation at step 5052 — 5052 frames kept
+
+  Trajectory XYZ     : outputs/ir_spectrum_wB97X_nm_300K/traj_01.xyz  (5052 frames, 3756 KB)
+
+  Predicting dipoles for 5052 frames...
+Dipole prediction:   0%|          | 0/5052 [00:00<?, ?it/s]Dipole prediction:   4%|▎         | 184/5052 [00:00<00:02, 1831.61it/s]Dipole prediction:   7%|▋         | 372/5052 [00:00<00:02, 1854.52it/s]Dipole prediction:  11%|█         | 558/5052 [00:00<00:02, 1844.37it/s]Dipole prediction:  15%|█▍        | 747/5052 [00:00<00:02, 1859.89it/s]Dipole prediction:  19%|█▊        | 938/5052 [00:00<00:02, 1877.43it/s]Dipole prediction:  22%|██▏       | 1128/5052 [00:00<00:02, 1884.12it/s]Dipole prediction:  26%|██▌       | 1320/5052 [00:00<00:01, 1893.17it/s]Dipole prediction:  30%|██▉       | 1510/5052 [00:00<00:01, 1886.32it/s]Dipole prediction:  34%|███▎      | 1700/5052 [00:00<00:01, 1888.93it/s]Dipole prediction:  37%|███▋      | 1889/5052 [00:01<00:01, 1886.19it/s]Dipole prediction:  41%|████      | 2079/5052 [00:01<00:01, 1890.23it/s]Dipole prediction:  45%|████▍     | 2269/5052 [00:01<00:01, 1891.46it/s]Dipole prediction:  49%|████▊     | 2459/5052 [00:01<00:01, 1889.37it/s]Dipole prediction:  52%|█████▏    | 2648/5052 [00:01<00:01, 1883.43it/s]Dipole prediction:  56%|█████▌    | 2840/5052 [00:01<00:01, 1893.80it/s]Dipole prediction:  60%|██████    | 3033/5052 [00:01<00:01, 1903.78it/s]Dipole prediction:  64%|██████▍   | 3226/5052 [00:01<00:00, 1911.06it/s]Dipole prediction:  68%|██████▊   | 3418/5052 [00:01<00:00, 1888.10it/s]Dipole prediction:  71%|███████▏  | 3608/5052 [00:01<00:00, 1889.86it/s]Dipole prediction:  75%|███████▌  | 3798/5052 [00:02<00:00, 1880.60it/s]Dipole prediction:  79%|███████▉  | 3987/5052 [00:02<00:00, 1880.27it/s]Dipole prediction:  83%|████████▎ | 4176/5052 [00:02<00:00, 1878.80it/s]Dipole prediction:  86%|████████▋ | 4367/5052 [00:02<00:00, 1885.51it/s]Dipole prediction:  90%|█████████ | 4556/5052 [00:02<00:00, 1876.40it/s]Dipole prediction:  94%|█████████▍| 4744/5052 [00:02<00:00, 1875.77it/s]Dipole prediction:  98%|█████████▊| 4937/5052 [00:02<00:00, 1890.43it/s]Dipole prediction: 100%|██████████| 5052/5052 [00:02<00:00, 1885.75it/s]
+    Dipole |μ|: 3.880–5.191 D  (mean 4.483 D)
+
+  --- Trajectory 2/5  (frame 64, E=-192217.81 kcal/mol, seed=43) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.21012918          +0.0000          0.028342     0.01000
+      20     -306.21098189          -0.5351          0.006717     0.15000
+      40     -306.21137507          -0.7818          0.004989     0.15000
+      40     -306.21137507          -0.7818          0.004989     0.15000
+
+  Converged in 40 steps  ΔE = -0.7818 kcal/mol  |F|_max = 0.004989 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.7818 kcal/mol from starting frame
+  ZPE floor applied  : 16/30 modes boosted, 14 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2191 K  (target: 300 K, τ=200 fs)
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]bakken MD:   3%|▎         | 813/30000 [00:00<00:03, 8123.35step/s]bakken MD:   3%|▎         | 813/30000 [00:00<00:03, 8123.35step/s, E=-192163.2 kcal/mol, T=870 K]bakken MD:   5%|▌         | 1632/30000 [00:00<00:03, 8161.48step/s, E=-192163.2 kcal/mol, T=870 K]bakken MD:   8%|▊         | 2449/30000 [00:00<00:03, 8107.19step/s, E=-192163.2 kcal/mol, T=870 K]bakken MD:   8%|▊         | 2449/30000 [00:00<00:03, 8107.19step/s, E=-192170.2 kcal/mol, T=460 K]bakken MD:  11%|█         | 3260/30000 [00:00<00:03, 8052.84step/s, E=-192170.2 kcal/mol, T=460 K]bakken MD:  14%|█▎        | 4066/30000 [00:00<00:03, 8046.53step/s, E=-192170.2 kcal/mol, T=460 K]bakken MD:  14%|█▎        | 4066/30000 [00:00<00:03, 8046.53step/s, E=-192170.6 kcal/mol, T=295 K]bakken MD:  16%|█▌        | 4871/30000 [00:00<00:03, 7946.09step/s, E=-192170.6 kcal/mol, T=295 K]bakken MD:  19%|█▉        | 5696/30000 [00:00<00:03, 8042.77step/s, E=-192170.6 kcal/mol, T=295 K]bakken MD:  19%|█▉        | 5696/30000 [00:00<00:03, 8042.77step/s, E=-192171.3 kcal/mol, T=342 K]bakken MD:  22%|██▏       | 6501/30000 [00:00<00:02, 8015.88step/s, E=-192171.3 kcal/mol, T=342 K]bakken MD:  24%|██▍       | 7340/30000 [00:00<00:02, 8129.29step/s, E=-192171.3 kcal/mol, T=342 K]bakken MD:  24%|██▍       | 7340/30000 [00:00<00:02, 8129.29step/s, E=-192170.6 kcal/mol, T=247 K]bakken MD:  27%|██▋       | 8154/30000 [00:01<00:02, 8123.18step/s, E=-192170.6 kcal/mol, T=247 K]bakken MD:  30%|██▉       | 8975/30000 [00:01<00:02, 8146.68step/s, E=-192170.6 kcal/mol, T=247 K]bakken MD:  30%|██▉       | 8975/30000 [00:01<00:02, 8146.68step/s, E=-192170.7 kcal/mol, T=256 K]bakken MD:  33%|███▎      | 9790/30000 [00:01<00:02, 8068.69step/s, E=-192170.7 kcal/mol, T=256 K]bakken MD:  33%|███▎      | 9790/30000 [00:01<00:02, 8068.69step/s, E=-192171.4 kcal/mol, T=336 K]bakken MD:  35%|███▌      | 10598/30000 [00:01<00:02, 8039.39step/s, E=-192171.4 kcal/mol, T=336 K]bakken MD:  38%|███▊      | 11403/30000 [00:01<00:02, 8007.75step/s, E=-192171.4 kcal/mol, T=336 K]bakken MD:  38%|███▊      | 11403/30000 [00:01<00:02, 8007.75step/s, E=-192171.3 kcal/mol, T=332 K]bakken MD:  41%|████      | 12204/30000 [00:01<00:02, 7817.20step/s, E=-192171.3 kcal/mol, T=332 K]bakken MD:  43%|████▎     | 13018/30000 [00:01<00:02, 7910.48step/s, E=-192171.3 kcal/mol, T=332 K]bakken MD:  43%|████▎     | 13018/30000 [00:01<00:02, 7910.48step/s, E=-192171.6 kcal/mol, T=362 K]bakken MD:  46%|████▌     | 13810/30000 [00:01<00:02, 7831.11step/s, E=-192171.6 kcal/mol, T=362 K]bakken MD:  49%|████▊     | 14598/30000 [00:01<00:01, 7843.72step/s, E=-192171.6 kcal/mol, T=362 K]bakken MD:  49%|████▊     | 14598/30000 [00:01<00:01, 7843.72step/s, E=-192171.4 kcal/mol, T=340 K]bakken MD:  51%|█████▏    | 15409/30000 [00:01<00:01, 7921.21step/s, E=-192171.4 kcal/mol, T=340 K]bakken MD:  54%|█████▍    | 16228/30000 [00:02<00:01, 7998.90step/s, E=-192171.4 kcal/mol, T=340 K]bakken MD:  54%|█████▍    | 16228/30000 [00:02<00:01, 7998.90step/s, E=-192170.6 kcal/mol, T=248 K]bakken MD:  57%|█████▋    | 17029/30000 [00:02<00:01, 7902.98step/s, E=-192170.6 kcal/mol, T=248 K]bakken MD:  59%|█████▉    | 17820/30000 [00:02<00:01, 7848.75step/s, E=-192170.6 kcal/mol, T=248 K]bakken MD:  59%|█████▉    | 17820/30000 [00:02<00:01, 7848.75step/s, E=-192171.3 kcal/mol, T=323 K]bakken MD:  62%|██████▏   | 18606/30000 [00:02<00:01, 7844.01step/s, E=-192171.3 kcal/mol, T=323 K]bakken MD:  65%|██████▍   | 19407/30000 [00:02<00:01, 7891.80step/s, E=-192171.3 kcal/mol, T=323 K]bakken MD:  65%|██████▍   | 19407/30000 [00:02<00:01, 7891.80step/s, E=-192171.3 kcal/mol, T=327 K]bakken MD:  67%|██████▋   | 20197/30000 [00:02<00:01, 7816.70step/s, E=-192171.3 kcal/mol, T=327 K]bakken MD:  67%|██████▋   | 20197/30000 [00:02<00:01, 7816.70step/s, E=-192171.1 kcal/mol, T=304 K]bakken MD:  70%|███████   | 21005/30000 [00:02<00:01, 7892.97step/s, E=-192171.1 kcal/mol, T=304 K]bakken MD:  73%|███████▎  | 21795/30000 [00:02<00:01, 7867.11step/s, E=-192171.1 kcal/mol, T=304 K]bakken MD:  73%|███████▎  | 21795/30000 [00:02<00:01, 7867.11step/s, E=-192171.0 kcal/mol, T=288 K]bakken MD:  75%|███████▌  | 22588/30000 [00:02<00:00, 7884.09step/s, E=-192171.0 kcal/mol, T=288 K]bakken MD:  78%|███████▊  | 23409/30000 [00:02<00:00, 7979.29step/s, E=-192171.0 kcal/mol, T=288 K]bakken MD:  78%|███████▊  | 23409/30000 [00:03<00:00, 7979.29step/s, E=-192171.4 kcal/mol, T=343 K]bakken MD:  81%|████████  | 24215/30000 [00:03<00:00, 8001.01step/s, E=-192171.4 kcal/mol, T=343 K]bakken MD:  83%|████████▎ | 25016/30000 [00:03<00:00, 7864.40step/s, E=-192171.4 kcal/mol, T=343 K]bakken MD:  83%|████████▎ | 25016/30000 [00:03<00:00, 7864.40step/s, E=-192171.0 kcal/mol, T=294 K]bakken MD:  86%|████████▌ | 25808/30000 [00:03<00:00, 7880.44step/s, E=-192171.0 kcal/mol, T=294 K]bakken MD:  89%|████████▉ | 26634/30000 [00:03<00:00, 7992.59step/s, E=-192171.0 kcal/mol, T=294 K]bakken MD:  89%|████████▉ | 26634/30000 [00:03<00:00, 7992.59step/s, E=-192171.0 kcal/mol, T=289 K]bakken MD:  91%|█████████▏| 27434/30000 [00:03<00:00, 7878.88step/s, E=-192171.0 kcal/mol, T=289 K]bakken MD:  94%|█████████▍| 28223/30000 [00:03<00:00, 7864.06step/s, E=-192171.0 kcal/mol, T=289 K]bakken MD:  94%|█████████▍| 28223/30000 [00:03<00:00, 7864.06step/s, E=-192171.4 kcal/mol, T=345 K]bakken MD:  97%|█████████▋| 29014/30000 [00:03<00:00, 7874.87step/s, E=-192171.4 kcal/mol, T=345 K]bakken MD:  99%|█████████▉| 29802/30000 [00:03<00:00, 7845.54step/s, E=-192171.4 kcal/mol, T=345 K]bakken MD:  99%|█████████▉| 29802/30000 [00:03<00:00, 7845.54step/s, E=-192171.3 kcal/mol, T=329 K]bakken MD: 100%|██████████| 30000/30000 [00:03<00:00, 7943.90step/s, E=-192171.3 kcal/mol, T=329 K]
+    Completed — 30000 frames
+
+  Trajectory XYZ     : outputs/ir_spectrum_wB97X_nm_300K/traj_02.xyz  (30000 frames, 22350 KB)
+
+  Predicting dipoles for 30000 frames...
+Dipole prediction:   0%|          | 0/30000 [00:00<?, ?it/s]Dipole prediction:   1%|          | 188/30000 [00:00<00:15, 1876.83it/s]Dipole prediction:   1%|▏         | 376/30000 [00:00<00:15, 1875.26it/s]Dipole prediction:   2%|▏         | 569/30000 [00:00<00:15, 1896.48it/s]Dipole prediction:   3%|▎         | 761/30000 [00:00<00:15, 1905.44it/s]Dipole prediction:   3%|▎         | 952/30000 [00:00<00:15, 1904.40it/s]Dipole prediction:   4%|▍         | 1143/30000 [00:00<00:16, 1759.94it/s]Dipole prediction:   4%|▍         | 1332/30000 [00:00<00:15, 1797.86it/s]Dipole prediction:   5%|▌         | 1519/30000 [00:00<00:15, 1818.15it/s]Dipole prediction:   6%|▌         | 1708/30000 [00:00<00:15, 1838.21it/s]Dipole prediction:   6%|▋         | 1896/30000 [00:01<00:15, 1848.40it/s]Dipole prediction:   7%|▋         | 2085/30000 [00:01<00:15, 1859.67it/s]Dipole prediction:   8%|▊         | 2273/30000 [00:01<00:14, 1865.08it/s]Dipole prediction:   8%|▊         | 2464/30000 [00:01<00:14, 1876.11it/s]Dipole prediction:   9%|▉         | 2656/30000 [00:01<00:14, 1888.62it/s]Dipole prediction:   9%|▉         | 2847/30000 [00:01<00:14, 1894.21it/s]Dipole prediction:  10%|█         | 3037/30000 [00:01<00:14, 1885.76it/s]Dipole prediction:  11%|█         | 3226/30000 [00:01<00:14, 1886.51it/s]Dipole prediction:  11%|█▏        | 3415/30000 [00:01<00:14, 1885.60it/s]Dipole prediction:  12%|█▏        | 3604/30000 [00:01<00:13, 1886.61it/s]Dipole prediction:  13%|█▎        | 3793/30000 [00:02<00:13, 1886.12it/s]Dipole prediction:  13%|█▎        | 3982/30000 [00:02<00:13, 1886.85it/s]Dipole prediction:  14%|█▍        | 4172/30000 [00:02<00:13, 1889.06it/s]Dipole prediction:  15%|█▍        | 4366/30000 [00:02<00:13, 1903.08it/s]Dipole prediction:  15%|█▌        | 4557/30000 [00:02<00:13, 1904.98it/s]Dipole prediction:  16%|█▌        | 4749/30000 [00:02<00:13, 1909.21it/s]Dipole prediction:  16%|█▋        | 4940/30000 [00:02<00:13, 1898.08it/s]Dipole prediction:  17%|█▋        | 5130/30000 [00:02<00:13, 1885.82it/s]Dipole prediction:  18%|█▊        | 5319/30000 [00:02<00:13, 1878.98it/s]Dipole prediction:  18%|█▊        | 5507/30000 [00:02<00:13, 1875.57it/s]Dipole prediction:  19%|█▉        | 5695/30000 [00:03<00:12, 1876.27it/s]Dipole prediction:  20%|█▉        | 5886/30000 [00:03<00:12, 1884.37it/s]Dipole prediction:  20%|██        | 6075/30000 [00:03<00:12, 1881.12it/s]Dipole prediction:  21%|██        | 6265/30000 [00:03<00:12, 1885.54it/s]Dipole prediction:  22%|██▏       | 6456/30000 [00:03<00:12, 1892.19it/s]Dipole prediction:  22%|██▏       | 6646/30000 [00:03<00:12, 1885.71it/s]Dipole prediction:  23%|██▎       | 6835/30000 [00:03<00:12, 1884.39it/s]Dipole prediction:  23%|██▎       | 7024/30000 [00:03<00:12, 1885.55it/s]Dipole prediction:  24%|██▍       | 7213/30000 [00:03<00:12, 1880.08it/s]Dipole prediction:  25%|██▍       | 7402/30000 [00:03<00:12, 1879.10it/s]Dipole prediction:  25%|██▌       | 7592/30000 [00:04<00:11, 1882.96it/s]Dipole prediction:  26%|██▌       | 7782/30000 [00:04<00:11, 1885.49it/s]Dipole prediction:  27%|██▋       | 7972/30000 [00:04<00:11, 1888.43it/s]Dipole prediction:  27%|██▋       | 8162/30000 [00:04<00:11, 1889.58it/s]Dipole prediction:  28%|██▊       | 8356/30000 [00:04<00:11, 1902.21it/s]Dipole prediction:  28%|██▊       | 8547/30000 [00:04<00:11, 1901.05it/s]Dipole prediction:  29%|██▉       | 8738/30000 [00:04<00:11, 1895.92it/s]Dipole prediction:  30%|██▉       | 8929/30000 [00:04<00:11, 1897.83it/s]Dipole prediction:  30%|███       | 9119/30000 [00:04<00:11, 1890.84it/s]Dipole prediction:  31%|███       | 9309/30000 [00:04<00:11, 1875.98it/s]Dipole prediction:  32%|███▏      | 9497/30000 [00:05<00:10, 1875.54it/s]Dipole prediction:  32%|███▏      | 9687/30000 [00:05<00:10, 1881.51it/s]Dipole prediction:  33%|███▎      | 9878/30000 [00:05<00:10, 1889.59it/s]Dipole prediction:  34%|███▎      | 10067/30000 [00:05<00:10, 1887.83it/s]Dipole prediction:  34%|███▍      | 10261/30000 [00:05<00:10, 1901.53it/s]Dipole prediction:  35%|███▍      | 10452/30000 [00:05<00:10, 1889.47it/s]Dipole prediction:  35%|███▌      | 10641/30000 [00:05<00:10, 1876.22it/s]Dipole prediction:  36%|███▌      | 10830/30000 [00:05<00:10, 1879.81it/s]Dipole prediction:  37%|███▋      | 11019/30000 [00:05<00:10, 1878.34it/s]Dipole prediction:  37%|███▋      | 11207/30000 [00:05<00:10, 1874.52it/s]Dipole prediction:  38%|███▊      | 11395/30000 [00:06<00:09, 1867.79it/s]Dipole prediction:  39%|███▊      | 11587/30000 [00:06<00:09, 1881.33it/s]Dipole prediction:  39%|███▉      | 11776/30000 [00:06<00:09, 1883.79it/s]Dipole prediction:  40%|███▉      | 11969/30000 [00:06<00:09, 1895.75it/s]Dipole prediction:  41%|████      | 12161/30000 [00:06<00:09, 1901.17it/s]Dipole prediction:  41%|████      | 12354/30000 [00:06<00:09, 1907.08it/s]Dipole prediction:  42%|████▏     | 12545/30000 [00:06<00:09, 1907.29it/s]Dipole prediction:  42%|████▏     | 12736/30000 [00:06<00:09, 1888.04it/s]Dipole prediction:  43%|████▎     | 12928/30000 [00:06<00:09, 1895.99it/s]Dipole prediction:  44%|████▎     | 13119/30000 [00:06<00:08, 1899.71it/s]Dipole prediction:  44%|████▍     | 13309/30000 [00:07<00:08, 1892.64it/s]Dipole prediction:  45%|████▍     | 13499/30000 [00:07<00:08, 1885.05it/s]Dipole prediction:  46%|████▌     | 13688/30000 [00:07<00:08, 1885.04it/s]Dipole prediction:  46%|████▋     | 13880/30000 [00:07<00:08, 1893.99it/s]Dipole prediction:  47%|████▋     | 14073/30000 [00:07<00:08, 1903.61it/s]Dipole prediction:  48%|████▊     | 14264/30000 [00:07<00:08, 1895.45it/s]Dipole prediction:  48%|████▊     | 14454/30000 [00:07<00:08, 1893.52it/s]Dipole prediction:  49%|████▉     | 14644/30000 [00:07<00:08, 1886.59it/s]Dipole prediction:  49%|████▉     | 14837/30000 [00:07<00:07, 1896.91it/s]Dipole prediction:  50%|█████     | 15027/30000 [00:07<00:07, 1891.67it/s]Dipole prediction:  51%|█████     | 15217/30000 [00:08<00:07, 1889.25it/s]Dipole prediction:  51%|█████▏    | 15406/30000 [00:08<00:07, 1876.83it/s]Dipole prediction:  52%|█████▏    | 15596/30000 [00:08<00:07, 1883.18it/s]Dipole prediction:  53%|█████▎    | 15791/30000 [00:08<00:07, 1900.49it/s]Dipole prediction:  53%|█████▎    | 15987/30000 [00:08<00:07, 1916.07it/s]Dipole prediction:  54%|█████▍    | 16181/30000 [00:08<00:07, 1920.57it/s]Dipole prediction:  55%|█████▍    | 16374/30000 [00:08<00:07, 1904.58it/s]Dipole prediction:  55%|█████▌    | 16565/30000 [00:08<00:07, 1899.85it/s]Dipole prediction:  56%|█████▌    | 16756/30000 [00:08<00:06, 1895.24it/s]Dipole prediction:  56%|█████▋    | 16946/30000 [00:08<00:06, 1890.92it/s]Dipole prediction:  57%|█████▋    | 17136/30000 [00:09<00:06, 1893.30it/s]Dipole prediction:  58%|█████▊    | 17326/30000 [00:09<00:06, 1888.44it/s]Dipole prediction:  58%|█████▊    | 17515/30000 [00:09<00:06, 1884.91it/s]Dipole prediction:  59%|█████▉    | 17710/30000 [00:09<00:06, 1902.14it/s]Dipole prediction:  60%|█████▉    | 17904/30000 [00:09<00:06, 1912.11it/s]Dipole prediction:  60%|██████    | 18096/30000 [00:09<00:06, 1907.28it/s]Dipole prediction:  61%|██████    | 18287/30000 [00:09<00:06, 1904.37it/s]Dipole prediction:  62%|██████▏   | 18478/30000 [00:09<00:06, 1901.99it/s]Dipole prediction:  62%|██████▏   | 18670/30000 [00:09<00:05, 1906.01it/s]Dipole prediction:  63%|██████▎   | 18861/30000 [00:09<00:05, 1905.29it/s]Dipole prediction:  64%|██████▎   | 19053/30000 [00:10<00:05, 1906.41it/s]Dipole prediction:  64%|██████▍   | 19244/30000 [00:10<00:05, 1906.96it/s]Dipole prediction:  65%|██████▍   | 19435/30000 [00:10<00:05, 1905.46it/s]Dipole prediction:  65%|██████▌   | 19627/30000 [00:10<00:05, 1907.95it/s]Dipole prediction:  66%|██████▌   | 19822/30000 [00:10<00:05, 1920.49it/s]Dipole prediction:  67%|██████▋   | 20015/30000 [00:10<00:05, 1912.34it/s]Dipole prediction:  67%|██████▋   | 20207/30000 [00:10<00:05, 1914.45it/s]Dipole prediction:  68%|██████▊   | 20399/30000 [00:10<00:05, 1913.50it/s]Dipole prediction:  69%|██████▊   | 20592/30000 [00:10<00:04, 1917.22it/s]Dipole prediction:  69%|██████▉   | 20784/30000 [00:10<00:04, 1916.92it/s]Dipole prediction:  70%|██████▉   | 20976/30000 [00:11<00:04, 1905.35it/s]Dipole prediction:  71%|███████   | 21168/30000 [00:11<00:04, 1908.82it/s]Dipole prediction:  71%|███████   | 21360/30000 [00:11<00:04, 1910.02it/s]Dipole prediction:  72%|███████▏  | 21552/30000 [00:11<00:04, 1899.65it/s]Dipole prediction:  72%|███████▏  | 21745/30000 [00:11<00:04, 1906.75it/s]Dipole prediction:  73%|███████▎  | 21936/30000 [00:11<00:04, 1903.52it/s]Dipole prediction:  74%|███████▍  | 22129/30000 [00:11<00:04, 1909.77it/s]Dipole prediction:  74%|███████▍  | 22320/30000 [00:11<00:04, 1908.43it/s]Dipole prediction:  75%|███████▌  | 22511/30000 [00:11<00:03, 1907.36it/s]Dipole prediction:  76%|███████▌  | 22702/30000 [00:12<00:03, 1897.92it/s]Dipole prediction:  76%|███████▋  | 22892/30000 [00:12<00:03, 1891.37it/s]Dipole prediction:  77%|███████▋  | 23082/30000 [00:12<00:03, 1890.68it/s]Dipole prediction:  78%|███████▊  | 23272/30000 [00:12<00:03, 1820.20it/s]Dipole prediction:  78%|███████▊  | 23463/30000 [00:12<00:03, 1845.35it/s]Dipole prediction:  79%|███████▉  | 23649/30000 [00:12<00:03, 1849.09it/s]Dipole prediction:  79%|███████▉  | 23839/30000 [00:12<00:03, 1862.23it/s]Dipole prediction:  80%|████████  | 24031/30000 [00:12<00:03, 1876.42it/s]Dipole prediction:  81%|████████  | 24220/30000 [00:12<00:03, 1877.94it/s]Dipole prediction:  81%|████████▏ | 24409/30000 [00:12<00:02, 1879.47it/s]Dipole prediction:  82%|████████▏ | 24598/30000 [00:13<00:02, 1875.76it/s]Dipole prediction:  83%|████████▎ | 24788/30000 [00:13<00:02, 1880.28it/s]Dipole prediction:  83%|████████▎ | 24979/30000 [00:13<00:02, 1887.47it/s]Dipole prediction:  84%|████████▍ | 25171/30000 [00:13<00:02, 1897.03it/s]Dipole prediction:  85%|████████▍ | 25366/30000 [00:13<00:02, 1908.42it/s]Dipole prediction:  85%|████████▌ | 25557/30000 [00:13<00:02, 1906.59it/s]Dipole prediction:  86%|████████▌ | 25748/30000 [00:13<00:02, 1907.24it/s]Dipole prediction:  86%|████████▋ | 25939/30000 [00:13<00:02, 1904.05it/s]Dipole prediction:  87%|████████▋ | 26132/30000 [00:13<00:02, 1911.25it/s]Dipole prediction:  88%|████████▊ | 26324/30000 [00:13<00:01, 1906.74it/s]Dipole prediction:  88%|████████▊ | 26515/30000 [00:14<00:01, 1904.46it/s]Dipole prediction:  89%|████████▉ | 26707/30000 [00:14<00:01, 1906.62it/s]Dipole prediction:  90%|████████▉ | 26898/30000 [00:14<00:01, 1902.78it/s]Dipole prediction:  90%|█████████ | 27091/30000 [00:14<00:01, 1908.14it/s]Dipole prediction:  91%|█████████ | 27285/30000 [00:14<00:01, 1914.75it/s]Dipole prediction:  92%|█████████▏| 27478/30000 [00:14<00:01, 1918.28it/s]Dipole prediction:  92%|█████████▏| 27670/30000 [00:14<00:01, 1898.56it/s]Dipole prediction:  93%|█████████▎| 27860/30000 [00:14<00:01, 1898.62it/s]Dipole prediction:  94%|█████████▎| 28050/30000 [00:14<00:01, 1894.18it/s]Dipole prediction:  94%|█████████▍| 28240/30000 [00:14<00:00, 1893.63it/s]Dipole prediction:  95%|█████████▍| 28430/30000 [00:15<00:00, 1893.66it/s]Dipole prediction:  95%|█████████▌| 28622/30000 [00:15<00:00, 1899.05it/s]Dipole prediction:  96%|█████████▌| 28812/30000 [00:15<00:00, 1895.53it/s]Dipole prediction:  97%|█████████▋| 29003/30000 [00:15<00:00, 1899.37it/s]Dipole prediction:  97%|█████████▋| 29193/30000 [00:15<00:00, 1899.14it/s]Dipole prediction:  98%|█████████▊| 29383/30000 [00:15<00:00, 1897.39it/s]Dipole prediction:  99%|█████████▊| 29575/30000 [00:15<00:00, 1902.98it/s]Dipole prediction:  99%|█████████▉| 29766/30000 [00:15<00:00, 1897.22it/s]Dipole prediction: 100%|█████████▉| 29956/30000 [00:15<00:00, 1887.17it/s]Dipole prediction: 100%|██████████| 30000/30000 [00:15<00:00, 1890.69it/s]
+    Dipole |μ|: 3.804–5.359 D  (mean 4.799 D)
+
+  --- Trajectory 3/5  (frame 65, E=-192217.65 kcal/mol, seed=44) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20970599          +0.0000          0.031808     0.01000
+      20     -306.21083809          -0.7104          0.006859     0.15000
+      40     -306.21130906          -1.0059          0.005715     0.15000
+      57     -306.21149975          -1.1256          0.004972     0.15000
+
+  Converged in 57 steps  ΔE = -1.1256 kcal/mol  |F|_max = 0.004972 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -1.1256 kcal/mol from starting frame
+  ZPE floor applied  : 16/30 modes boosted, 14 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2102 K  (target: 300 K, τ=200 fs)
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]bakken MD:   3%|▎         | 826/30000 [00:00<00:03, 8252.16step/s]bakken MD:   3%|▎         | 826/30000 [00:00<00:03, 8252.16step/s, E=-192146.8 kcal/mol, T=454 K]bakken MD:   6%|▌         | 1652/30000 [00:00<00:03, 8240.15step/s, E=-192146.8 kcal/mol, T=454 K]bakken MD:   8%|▊         | 2485/30000 [00:00<00:03, 8277.19step/s, E=-192146.8 kcal/mol, T=454 K]bakken MD:   8%|▊         | 2485/30000 [00:00<00:03, 8277.19step/s, E=-192147.8 kcal/mol, T=305 K]bakken MD:  11%|█         | 3317/30000 [00:00<00:03, 8291.98step/s, E=-192147.8 kcal/mol, T=305 K]bakken MD:  14%|█▍        | 4148/30000 [00:00<00:03, 8297.64step/s, E=-192147.8 kcal/mol, T=305 K]bakken MD:  14%|█▍        | 4148/30000 [00:00<00:03, 8297.64step/s, E=-192147.4 kcal/mol, T=208 K]bakken MD:  17%|█▋        | 4980/30000 [00:00<00:03, 8304.76step/s, E=-192147.4 kcal/mol, T=208 K]bakken MD:  19%|█▉        | 5811/30000 [00:00<00:02, 8276.28step/s, E=-192147.4 kcal/mol, T=208 K]bakken MD:  19%|█▉        | 5811/30000 [00:00<00:02, 8276.28step/s, E=-192148.0 kcal/mol, T=273 K]bakken MD:  22%|██▏       | 6644/30000 [00:00<00:02, 8290.86step/s, E=-192148.0 kcal/mol, T=273 K]bakken MD:  25%|██▍       | 7474/30000 [00:00<00:02, 8261.20step/s, E=-192148.0 kcal/mol, T=273 K]bakken MD:  25%|██▍       | 7474/30000 [00:00<00:02, 8261.20step/s, E=-192148.5 kcal/mol, T=326 K]bakken MD:  28%|██▊       | 8301/30000 [00:01<00:02, 8016.13step/s, E=-192148.5 kcal/mol, T=326 K]bakken MD:  28%|██▊       | 8301/30000 [00:01<00:02, 8016.13step/s, E=-192148.2 kcal/mol, T=294 K]bakken MD:  30%|███       | 9105/30000 [00:01<00:02, 7905.84step/s, E=-192148.2 kcal/mol, T=294 K]bakken MD:  33%|███▎      | 9902/30000 [00:01<00:02, 7922.39step/s, E=-192148.2 kcal/mol, T=294 K]bakken MD:  33%|███▎      | 9902/30000 [00:01<00:02, 7922.39step/s, E=-192148.8 kcal/mol, T=366 K]bakken MD:  36%|███▌      | 10696/30000 [00:01<00:02, 7899.15step/s, E=-192148.8 kcal/mol, T=366 K]bakken MD:  38%|███▊      | 11500/30000 [00:01<00:02, 7939.56step/s, E=-192148.8 kcal/mol, T=366 K]bakken MD:  38%|███▊      | 11500/30000 [00:01<00:02, 7939.56step/s, E=-192149.3 kcal/mol, T=419 K]bakken MD:  40%|████      | 12097/30000 [00:01<00:02, 8097.07step/s, E=-192149.3 kcal/mol, T=419 K]
+
+  Dissociation detected: atoms 1–2  d=2.692 Å (eq=1.346 Å, limit=2.692 Å).  Truncating at step 12098.
+    Dissociation at step 12098 — 12098 frames kept
+
+  Trajectory XYZ     : outputs/ir_spectrum_wB97X_nm_300K/traj_03.xyz  (12098 frames, 9001 KB)
+
+  Predicting dipoles for 12098 frames...
+Dipole prediction:   0%|          | 0/12098 [00:00<?, ?it/s]Dipole prediction:   2%|▏         | 191/12098 [00:00<00:06, 1908.66it/s]Dipole prediction:   3%|▎         | 382/12098 [00:00<00:06, 1864.56it/s]Dipole prediction:   5%|▍         | 569/12098 [00:00<00:06, 1866.44it/s]Dipole prediction:   6%|▋         | 757/12098 [00:00<00:06, 1871.31it/s]Dipole prediction:   8%|▊         | 946/12098 [00:00<00:05, 1874.87it/s]Dipole prediction:   9%|▉         | 1136/12098 [00:00<00:05, 1880.49it/s]Dipole prediction:  11%|█         | 1328/12098 [00:00<00:05, 1891.92it/s]Dipole prediction:  13%|█▎        | 1520/12098 [00:00<00:05, 1899.11it/s]Dipole prediction:  14%|█▍        | 1710/12098 [00:00<00:05, 1895.83it/s]Dipole prediction:  16%|█▌        | 1900/12098 [00:01<00:05, 1889.64it/s]Dipole prediction:  17%|█▋        | 2089/12098 [00:01<00:05, 1884.67it/s]Dipole prediction:  19%|█▉        | 2278/12098 [00:01<00:05, 1882.50it/s]Dipole prediction:  20%|██        | 2467/12098 [00:01<00:05, 1867.52it/s]Dipole prediction:  22%|██▏       | 2655/12098 [00:01<00:05, 1869.81it/s]Dipole prediction:  24%|██▎       | 2846/12098 [00:01<00:04, 1879.57it/s]Dipole prediction:  25%|██▌       | 3035/12098 [00:01<00:04, 1880.61it/s]Dipole prediction:  27%|██▋       | 3227/12098 [00:01<00:04, 1892.15it/s]Dipole prediction:  28%|██▊       | 3420/12098 [00:01<00:04, 1900.90it/s]Dipole prediction:  30%|██▉       | 3611/12098 [00:01<00:04, 1894.61it/s]Dipole prediction:  31%|███▏      | 3802/12098 [00:02<00:04, 1899.08it/s]Dipole prediction:  33%|███▎      | 3992/12098 [00:02<00:04, 1892.38it/s]Dipole prediction:  35%|███▍      | 4182/12098 [00:02<00:04, 1889.34it/s]Dipole prediction:  36%|███▌      | 4371/12098 [00:02<00:04, 1878.73it/s]Dipole prediction:  38%|███▊      | 4559/12098 [00:02<00:04, 1874.15it/s]Dipole prediction:  39%|███▉      | 4747/12098 [00:02<00:03, 1874.14it/s]Dipole prediction:  41%|████      | 4937/12098 [00:02<00:03, 1879.34it/s]Dipole prediction:  42%|████▏     | 5129/12098 [00:02<00:03, 1891.02it/s]Dipole prediction:  44%|████▍     | 5321/12098 [00:02<00:03, 1898.22it/s]Dipole prediction:  46%|████▌     | 5511/12098 [00:02<00:03, 1893.58it/s]Dipole prediction:  47%|████▋     | 5701/12098 [00:03<00:03, 1889.20it/s]Dipole prediction:  49%|████▊     | 5890/12098 [00:03<00:03, 1882.86it/s]Dipole prediction:  50%|█████     | 6079/12098 [00:03<00:03, 1881.66it/s]Dipole prediction:  52%|█████▏    | 6268/12098 [00:03<00:03, 1880.31it/s]Dipole prediction:  53%|█████▎    | 6457/12098 [00:03<00:03, 1878.60it/s]Dipole prediction:  55%|█████▍    | 6645/12098 [00:03<00:02, 1869.65it/s]Dipole prediction:  56%|█████▋    | 6835/12098 [00:03<00:02, 1877.14it/s]Dipole prediction:  58%|█████▊    | 7025/12098 [00:03<00:02, 1881.08it/s]Dipole prediction:  60%|█████▉    | 7214/12098 [00:03<00:02, 1881.05it/s]Dipole prediction:  61%|██████    | 7403/12098 [00:03<00:02, 1875.07it/s]Dipole prediction:  63%|██████▎   | 7591/12098 [00:04<00:02, 1875.31it/s]Dipole prediction:  64%|██████▍   | 7779/12098 [00:04<00:02, 1876.33it/s]Dipole prediction:  66%|██████▌   | 7967/12098 [00:04<00:02, 1877.10it/s]Dipole prediction:  67%|██████▋   | 8155/12098 [00:04<00:02, 1876.96it/s]Dipole prediction:  69%|██████▉   | 8343/12098 [00:04<00:02, 1877.01it/s]Dipole prediction:  71%|███████   | 8531/12098 [00:04<00:01, 1864.71it/s]Dipole prediction:  72%|███████▏  | 8720/12098 [00:04<00:01, 1870.13it/s]Dipole prediction:  74%|███████▎  | 8911/12098 [00:04<00:01, 1880.93it/s]Dipole prediction:  75%|███████▌  | 9103/12098 [00:04<00:01, 1891.64it/s]Dipole prediction:  77%|███████▋  | 9293/12098 [00:04<00:01, 1878.84it/s]Dipole prediction:  78%|███████▊  | 9483/12098 [00:05<00:01, 1884.89it/s]Dipole prediction:  80%|███████▉  | 9672/12098 [00:05<00:01, 1879.64it/s]Dipole prediction:  82%|████████▏ | 9860/12098 [00:05<00:01, 1876.20it/s]Dipole prediction:  83%|████████▎ | 10050/12098 [00:05<00:01, 1882.77it/s]Dipole prediction:  85%|████████▍ | 10239/12098 [00:05<00:00, 1879.48it/s]Dipole prediction:  86%|████████▌ | 10428/12098 [00:05<00:00, 1880.80it/s]Dipole prediction:  88%|████████▊ | 10617/12098 [00:05<00:00, 1874.00it/s]Dipole prediction:  89%|████████▉ | 10812/12098 [00:05<00:00, 1893.86it/s]Dipole prediction:  91%|█████████ | 11006/12098 [00:05<00:00, 1905.75it/s]Dipole prediction:  93%|█████████▎| 11197/12098 [00:05<00:00, 1898.49it/s]Dipole prediction:  94%|█████████▍| 11388/12098 [00:06<00:00, 1901.71it/s]Dipole prediction:  96%|█████████▌| 11579/12098 [00:06<00:00, 1893.87it/s]Dipole prediction:  97%|█████████▋| 11769/12098 [00:06<00:00, 1892.55it/s]Dipole prediction:  99%|█████████▉| 11959/12098 [00:06<00:00, 1886.22it/s]Dipole prediction: 100%|██████████| 12098/12098 [00:06<00:00, 1883.28it/s]
+    Dipole |μ|: 3.691–4.860 D  (mean 4.387 D)
+
+  --- Trajectory 4/5  (frame 96, E=-192217.27 kcal/mol, seed=45) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20899104          +0.0000          0.034690     0.01000
+      20     -306.21066394          -1.0498          0.008181     0.15000
+      40     -306.21123341          -1.4071          0.006299     0.15000
+      60     -306.21147666          -1.5598          0.005305     0.15000
+      67     -306.21153729          -1.5978          0.004968     0.15000
+
+  Converged in 67 steps  ΔE = -1.5978 kcal/mol  |F|_max = 0.004968 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -1.5978 kcal/mol from starting frame
+  ZPE floor applied  : 16/30 modes boosted, 14 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2100 K  (target: 300 K, τ=200 fs)
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]bakken MD:   3%|▎         | 829/30000 [00:00<00:03, 8280.49step/s]bakken MD:   3%|▎         | 829/30000 [00:00<00:03, 8280.49step/s, E=-192165.7 kcal/mol, T=1063 K]bakken MD:   6%|▌         | 1658/30000 [00:00<00:03, 8274.31step/s, E=-192165.7 kcal/mol, T=1063 K]bakken MD:   8%|▊         | 2486/30000 [00:00<00:03, 8262.70step/s, E=-192165.7 kcal/mol, T=1063 K]bakken MD:   8%|▊         | 2486/30000 [00:00<00:03, 8262.70step/s, E=-192171.2 kcal/mol, T=549 K] bakken MD:  11%|█         | 3318/30000 [00:00<00:03, 8284.20step/s, E=-192171.2 kcal/mol, T=549 K]bakken MD:  14%|█▍        | 4147/30000 [00:00<00:03, 7647.55step/s, E=-192171.2 kcal/mol, T=549 K]bakken MD:  14%|█▍        | 4147/30000 [00:00<00:03, 7647.55step/s, E=-192171.2 kcal/mol, T=356 K]bakken MD:  16%|█▌        | 4781/30000 [00:00<00:03, 7948.49step/s, E=-192171.2 kcal/mol, T=356 K]
+
+  Dissociation detected: atoms 3–4  d=2.691 Å (eq=1.345 Å, limit=2.691 Å).  Truncating at step 4782.
+    Dissociation at step 4782 — 4782 frames kept
+
+  Trajectory XYZ     : outputs/ir_spectrum_wB97X_nm_300K/traj_04.xyz  (4782 frames, 3555 KB)
+
+  Predicting dipoles for 4782 frames...
+Dipole prediction:   0%|          | 0/4782 [00:00<?, ?it/s]Dipole prediction:   4%|▍         | 191/4782 [00:00<00:02, 1904.08it/s]Dipole prediction:   8%|▊         | 382/4782 [00:00<00:02, 1896.09it/s]Dipole prediction:  12%|█▏        | 574/4782 [00:00<00:02, 1905.01it/s]Dipole prediction:  16%|█▌        | 765/4782 [00:00<00:02, 1896.88it/s]Dipole prediction:  20%|█▉        | 956/4782 [00:00<00:02, 1898.35it/s]Dipole prediction:  24%|██▍       | 1146/4782 [00:00<00:01, 1888.01it/s]Dipole prediction:  28%|██▊       | 1335/4782 [00:00<00:01, 1878.66it/s]Dipole prediction:  32%|███▏      | 1524/4782 [00:00<00:01, 1880.41it/s]Dipole prediction:  36%|███▌      | 1714/4782 [00:00<00:01, 1885.78it/s]Dipole prediction:  40%|███▉      | 1903/4782 [00:01<00:01, 1880.18it/s]Dipole prediction:  44%|████▎     | 2092/4782 [00:01<00:01, 1878.77it/s]Dipole prediction:  48%|████▊     | 2280/4782 [00:01<00:01, 1879.02it/s]Dipole prediction:  52%|█████▏    | 2468/4782 [00:01<00:01, 1878.06it/s]Dipole prediction:  56%|█████▌    | 2656/4782 [00:01<00:01, 1875.36it/s]Dipole prediction:  60%|█████▉    | 2849/4782 [00:01<00:01, 1889.01it/s]Dipole prediction:  64%|██████▎   | 3040/4782 [00:01<00:00, 1895.28it/s]Dipole prediction:  68%|██████▊   | 3230/4782 [00:01<00:00, 1892.58it/s]Dipole prediction:  72%|███████▏  | 3420/4782 [00:01<00:00, 1889.77it/s]Dipole prediction:  75%|███████▌  | 3609/4782 [00:01<00:00, 1882.72it/s]Dipole prediction:  79%|███████▉  | 3798/4782 [00:02<00:00, 1878.66it/s]Dipole prediction:  83%|████████▎ | 3987/4782 [00:02<00:00, 1879.64it/s]Dipole prediction:  87%|████████▋ | 4176/4782 [00:02<00:00, 1881.51it/s]Dipole prediction:  91%|█████████▏| 4366/4782 [00:02<00:00, 1886.14it/s]Dipole prediction:  95%|█████████▌| 4555/4782 [00:02<00:00, 1883.26it/s]Dipole prediction:  99%|█████████▉| 4748/4782 [00:02<00:00, 1895.15it/s]Dipole prediction: 100%|██████████| 4782/4782 [00:02<00:00, 1887.16it/s]
+    Dipole |μ|: 3.673–5.054 D  (mean 4.498 D)
+
+  --- Trajectory 5/5  (frame 9, E=-192217.16 kcal/mol, seed=46) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20873036          +0.0000          0.025064     0.01000
+      20     -306.21007796          -0.8456          0.011545     0.15000
+      40     -306.21092985          -1.3802          0.005857     0.15000
+      60     -306.21134164          -1.6386          0.004967     0.15000
+      60     -306.21134164          -1.6386          0.004967     0.15000
+
+  Converged in 60 steps  ΔE = -1.6386 kcal/mol  |F|_max = 0.004967 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -1.6386 kcal/mol from starting frame
+  ZPE floor applied  : 16/30 modes boosted, 14 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2136 K  (target: 300 K, τ=200 fs)
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]bakken MD:   3%|▎         | 808/30000 [00:00<00:03, 8079.51step/s]bakken MD:   3%|▎         | 808/30000 [00:00<00:03, 8079.51step/s, E=-192159.2 kcal/mol, T=664 K]bakken MD:   5%|▌         | 1616/30000 [00:00<00:03, 7897.05step/s, E=-192159.2 kcal/mol, T=664 K]bakken MD:   8%|▊         | 2406/30000 [00:00<00:03, 7722.18step/s, E=-192159.2 kcal/mol, T=664 K]bakken MD:   8%|▊         | 2406/30000 [00:00<00:03, 7722.18step/s, E=-192162.5 kcal/mol, T=436 K]bakken MD:  11%|█         | 3179/30000 [00:00<00:03, 7616.28step/s, E=-192162.5 kcal/mol, T=436 K]bakken MD:  13%|█▎        | 3941/30000 [00:00<00:03, 7601.25step/s, E=-192162.5 kcal/mol, T=436 K]bakken MD:  13%|█▎        | 3941/30000 [00:00<00:03, 7601.25step/s, E=-192169.6 kcal/mol, T=386 K]bakken MD:  16%|█▌        | 4705/30000 [00:00<00:03, 7612.61step/s, E=-192169.6 kcal/mol, T=386 K]bakken MD:  18%|█▊        | 5477/30000 [00:00<00:03, 7646.23step/s, E=-192169.6 kcal/mol, T=386 K]bakken MD:  18%|█▊        | 5477/30000 [00:00<00:03, 7646.23step/s, E=-192171.1 kcal/mol, T=347 K]bakken MD:  21%|██        | 6279/30000 [00:00<00:03, 7764.07step/s, E=-192171.1 kcal/mol, T=347 K]bakken MD:  24%|██▎       | 7056/30000 [00:00<00:03, 7619.06step/s, E=-192171.1 kcal/mol, T=347 K]bakken MD:  24%|██▎       | 7056/30000 [00:00<00:03, 7619.06step/s, E=-192171.0 kcal/mol, T=300 K]bakken MD:  26%|██▌       | 7819/30000 [00:01<00:02, 7568.92step/s, E=-192171.0 kcal/mol, T=300 K]bakken MD:  29%|██▊       | 8624/30000 [00:01<00:02, 7713.11step/s, E=-192171.0 kcal/mol, T=300 K]bakken MD:  29%|██▊       | 8624/30000 [00:01<00:02, 7713.11step/s, E=-192171.0 kcal/mol, T=297 K]bakken MD:  31%|███▏      | 9413/30000 [00:01<00:02, 7764.36step/s, E=-192171.0 kcal/mol, T=297 K]bakken MD:  34%|███▍      | 10190/30000 [00:01<00:02, 7564.00step/s, E=-192171.0 kcal/mol, T=297 K]bakken MD:  34%|███▍      | 10190/30000 [00:01<00:02, 7564.00step/s, E=-192171.2 kcal/mol, T=325 K]bakken MD:  36%|███▋      | 10948/30000 [00:01<00:02, 7528.75step/s, E=-192171.2 kcal/mol, T=325 K]bakken MD:  39%|███▉      | 11702/30000 [00:01<00:02, 7523.89step/s, E=-192171.2 kcal/mol, T=325 K]bakken MD:  39%|███▉      | 11702/30000 [00:01<00:02, 7523.89step/s, E=-192171.6 kcal/mol, T=361 K]bakken MD:  42%|████▏     | 12475/30000 [00:01<00:02, 7584.40step/s, E=-192171.6 kcal/mol, T=361 K]bakken MD:  44%|████▍     | 13242/30000 [00:01<00:02, 7608.03step/s, E=-192171.6 kcal/mol, T=361 K]bakken MD:  44%|████▍     | 13242/30000 [00:01<00:02, 7608.03step/s, E=-192171.6 kcal/mol, T=367 K]bakken MD:  47%|████▋     | 14004/30000 [00:01<00:02, 7542.51step/s, E=-192171.6 kcal/mol, T=367 K]bakken MD:  49%|████▉     | 14771/30000 [00:01<00:02, 7578.67step/s, E=-192171.6 kcal/mol, T=367 K]bakken MD:  49%|████▉     | 14771/30000 [00:01<00:02, 7578.67step/s, E=-192170.8 kcal/mol, T=265 K]bakken MD:  52%|█████▏    | 15531/30000 [00:02<00:01, 7582.49step/s, E=-192170.8 kcal/mol, T=265 K]bakken MD:  54%|█████▍    | 16319/30000 [00:02<00:01, 7670.49step/s, E=-192170.8 kcal/mol, T=265 K]bakken MD:  54%|█████▍    | 16319/30000 [00:02<00:01, 7670.49step/s, E=-192170.9 kcal/mol, T=284 K]bakken MD:  57%|█████▋    | 17087/30000 [00:02<00:01, 7617.58step/s, E=-192170.9 kcal/mol, T=284 K]bakken MD:  60%|█████▉    | 17898/30000 [00:02<00:01, 7763.06step/s, E=-192170.9 kcal/mol, T=284 K]bakken MD:  60%|█████▉    | 17898/30000 [00:02<00:01, 7763.06step/s, E=-192171.8 kcal/mol, T=393 K]bakken MD:  62%|██████▏   | 18675/30000 [00:02<00:01, 7666.91step/s, E=-192171.8 kcal/mol, T=393 K]bakken MD:  65%|██████▍   | 19450/30000 [00:02<00:01, 7691.47step/s, E=-192171.8 kcal/mol, T=393 K]bakken MD:  65%|██████▍   | 19450/30000 [00:02<00:01, 7691.47step/s, E=-192171.6 kcal/mol, T=361 K]bakken MD:  67%|██████▋   | 20220/30000 [00:02<00:01, 7664.12step/s, E=-192171.6 kcal/mol, T=361 K]bakken MD:  70%|██████▉   | 20987/30000 [00:02<00:01, 7623.19step/s, E=-192171.6 kcal/mol, T=361 K]bakken MD:  70%|██████▉   | 20987/30000 [00:02<00:01, 7623.19step/s, E=-192171.6 kcal/mol, T=368 K]bakken MD:  72%|███████▎  | 21750/30000 [00:02<00:01, 7520.77step/s, E=-192171.6 kcal/mol, T=368 K]bakken MD:  72%|███████▎  | 21750/30000 [00:02<00:01, 7520.77step/s, E=-192170.7 kcal/mol, T=258 K]bakken MD:  75%|███████▌  | 22542/30000 [00:02<00:00, 7637.85step/s, E=-192170.7 kcal/mol, T=258 K]bakken MD:  78%|███████▊  | 23375/30000 [00:03<00:00, 7842.76step/s, E=-192170.7 kcal/mol, T=258 K]bakken MD:  78%|███████▊  | 23375/30000 [00:03<00:00, 7842.76step/s, E=-192170.7 kcal/mol, T=256 K]bakken MD:  81%|████████  | 24182/30000 [00:03<00:00, 7908.87step/s, E=-192170.7 kcal/mol, T=256 K]bakken MD:  82%|████████▏ | 24520/30000 [00:03<00:00, 7671.24step/s, E=-192170.7 kcal/mol, T=256 K]
+
+  Dissociation detected: atoms 0–5  d=2.994 Å (eq=1.496 Å, limit=2.993 Å).  Truncating at step 24521.
+    Dissociation at step 24521 — 24521 frames kept
+
+  Trajectory XYZ     : outputs/ir_spectrum_wB97X_nm_300K/traj_05.xyz  (24521 frames, 18262 KB)
+
+  Predicting dipoles for 24521 frames...
+Dipole prediction:   0%|          | 0/24521 [00:00<?, ?it/s]Dipole prediction:   1%|          | 184/24521 [00:00<00:13, 1839.14it/s]Dipole prediction:   2%|▏         | 374/24521 [00:00<00:12, 1873.58it/s]Dipole prediction:   2%|▏         | 566/24521 [00:00<00:12, 1891.27it/s]Dipole prediction:   3%|▎         | 756/24521 [00:00<00:12, 1890.57it/s]Dipole prediction:   4%|▍         | 949/24521 [00:00<00:12, 1904.47it/s]Dipole prediction:   5%|▍         | 1140/24521 [00:00<00:12, 1892.70it/s]Dipole prediction:   5%|▌         | 1330/24521 [00:00<00:12, 1881.51it/s]Dipole prediction:   6%|▌         | 1519/24521 [00:00<00:12, 1866.79it/s]Dipole prediction:   7%|▋         | 1706/24521 [00:00<00:12, 1867.63it/s]Dipole prediction:   8%|▊         | 1894/24521 [00:01<00:12, 1870.12it/s]Dipole prediction:   8%|▊         | 2082/24521 [00:01<00:11, 1871.85it/s]Dipole prediction:   9%|▉         | 2275/24521 [00:01<00:11, 1886.57it/s]Dipole prediction:  10%|█         | 2467/24521 [00:01<00:11, 1895.45it/s]Dipole prediction:  11%|█         | 2659/24521 [00:01<00:11, 1900.53it/s]Dipole prediction:  12%|█▏        | 2852/24521 [00:01<00:11, 1909.26it/s]Dipole prediction:  12%|█▏        | 3043/24521 [00:01<00:11, 1905.23it/s]Dipole prediction:  13%|█▎        | 3234/24521 [00:01<00:11, 1892.91it/s]Dipole prediction:  14%|█▍        | 3424/24521 [00:01<00:11, 1888.39it/s]Dipole prediction:  15%|█▍        | 3613/24521 [00:01<00:11, 1881.76it/s]Dipole prediction:  16%|█▌        | 3804/24521 [00:02<00:10, 1887.02it/s]Dipole prediction:  16%|█▋        | 3993/24521 [00:02<00:10, 1883.83it/s]Dipole prediction:  17%|█▋        | 4185/24521 [00:02<00:10, 1893.08it/s]Dipole prediction:  18%|█▊        | 4378/24521 [00:02<00:10, 1901.49it/s]Dipole prediction:  19%|█▊        | 4569/24521 [00:02<00:10, 1898.93it/s]Dipole prediction:  19%|█▉        | 4759/24521 [00:02<00:10, 1899.03it/s]Dipole prediction:  20%|██        | 4949/24521 [00:02<00:10, 1891.31it/s]Dipole prediction:  21%|██        | 5139/24521 [00:02<00:10, 1889.74it/s]Dipole prediction:  22%|██▏       | 5328/24521 [00:02<00:10, 1886.05it/s]Dipole prediction:  22%|██▏       | 5517/24521 [00:02<00:10, 1875.80it/s]Dipole prediction:  23%|██▎       | 5705/24521 [00:03<00:10, 1874.16it/s]Dipole prediction:  24%|██▍       | 5897/24521 [00:03<00:09, 1886.79it/s]Dipole prediction:  25%|██▍       | 6092/24521 [00:03<00:09, 1903.21it/s]Dipole prediction:  26%|██▌       | 6285/24521 [00:03<00:09, 1908.96it/s]Dipole prediction:  26%|██▋       | 6476/24521 [00:03<00:09, 1904.19it/s]Dipole prediction:  27%|██▋       | 6667/24521 [00:03<00:09, 1903.59it/s]Dipole prediction:  28%|██▊       | 6858/24521 [00:03<00:09, 1896.12it/s]Dipole prediction:  29%|██▊       | 7048/24521 [00:03<00:09, 1892.34it/s]Dipole prediction:  30%|██▉       | 7238/24521 [00:03<00:09, 1892.73it/s]Dipole prediction:  30%|███       | 7428/24521 [00:03<00:09, 1881.34it/s]Dipole prediction:  31%|███       | 7617/24521 [00:04<00:09, 1870.45it/s]Dipole prediction:  32%|███▏      | 7806/24521 [00:04<00:08, 1875.87it/s]Dipole prediction:  33%|███▎      | 7999/24521 [00:04<00:08, 1891.71it/s]Dipole prediction:  33%|███▎      | 8191/24521 [00:04<00:08, 1898.15it/s]Dipole prediction:  34%|███▍      | 8381/24521 [00:04<00:08, 1884.20it/s]Dipole prediction:  35%|███▍      | 8574/24521 [00:04<00:08, 1897.13it/s]Dipole prediction:  36%|███▌      | 8764/24521 [00:04<00:08, 1893.92it/s]Dipole prediction:  37%|███▋      | 8954/24521 [00:04<00:08, 1892.65it/s]Dipole prediction:  37%|███▋      | 9144/24521 [00:04<00:08, 1887.31it/s]Dipole prediction:  38%|███▊      | 9333/24521 [00:04<00:08, 1878.63it/s]Dipole prediction:  39%|███▉      | 9521/24521 [00:05<00:08, 1867.28it/s]Dipole prediction:  40%|███▉      | 9710/24521 [00:05<00:07, 1873.30it/s]Dipole prediction:  40%|████      | 9902/24521 [00:05<00:07, 1886.90it/s]Dipole prediction:  41%|████      | 10091/24521 [00:05<00:07, 1876.07it/s]Dipole prediction:  42%|████▏     | 10279/24521 [00:05<00:08, 1770.38it/s]Dipole prediction:  43%|████▎     | 10466/24521 [00:05<00:07, 1797.68it/s]Dipole prediction:  43%|████▎     | 10653/24521 [00:05<00:07, 1818.33it/s]Dipole prediction:  44%|████▍     | 10840/24521 [00:05<00:07, 1832.80it/s]Dipole prediction:  45%|████▍     | 11028/24521 [00:05<00:07, 1846.67it/s]Dipole prediction:  46%|████▌     | 11214/24521 [00:05<00:07, 1844.93it/s]Dipole prediction:  46%|████▋     | 11399/24521 [00:06<00:07, 1841.59it/s]Dipole prediction:  47%|████▋     | 11587/24521 [00:06<00:06, 1850.55it/s]Dipole prediction:  48%|████▊     | 11777/24521 [00:06<00:06, 1862.76it/s]Dipole prediction:  49%|████▉     | 11966/24521 [00:06<00:06, 1868.88it/s]Dipole prediction:  50%|████▉     | 12153/24521 [00:06<00:06, 1861.34it/s]Dipole prediction:  50%|█████     | 12340/24521 [00:06<00:06, 1861.33it/s]Dipole prediction:  51%|█████     | 12527/24521 [00:06<00:06, 1861.47it/s]Dipole prediction:  52%|█████▏    | 12714/24521 [00:06<00:06, 1857.87it/s]Dipole prediction:  53%|█████▎    | 12900/24521 [00:06<00:06, 1856.59it/s]Dipole prediction:  53%|█████▎    | 13088/24521 [00:06<00:06, 1861.20it/s]Dipole prediction:  54%|█████▍    | 13276/24521 [00:07<00:06, 1866.56it/s]Dipole prediction:  55%|█████▍    | 13468/24521 [00:07<00:05, 1881.98it/s]Dipole prediction:  56%|█████▌    | 13658/24521 [00:07<00:05, 1886.92it/s]Dipole prediction:  56%|█████▋    | 13847/24521 [00:07<00:05, 1882.43it/s]Dipole prediction:  57%|█████▋    | 14036/24521 [00:07<00:05, 1884.28it/s]Dipole prediction:  58%|█████▊    | 14228/24521 [00:07<00:05, 1893.48it/s]Dipole prediction:  59%|█████▉    | 14418/24521 [00:07<00:05, 1892.43it/s]Dipole prediction:  60%|█████▉    | 14609/24521 [00:07<00:05, 1894.86it/s]Dipole prediction:  60%|██████    | 14799/24521 [00:07<00:05, 1894.81it/s]Dipole prediction:  61%|██████    | 14990/24521 [00:07<00:05, 1899.04it/s]Dipole prediction:  62%|██████▏   | 15180/24521 [00:08<00:04, 1895.94it/s]Dipole prediction:  63%|██████▎   | 15374/24521 [00:08<00:04, 1906.45it/s]Dipole prediction:  63%|██████▎   | 15566/24521 [00:08<00:04, 1907.97it/s]Dipole prediction:  64%|██████▍   | 15757/24521 [00:08<00:04, 1901.12it/s]Dipole prediction:  65%|██████▌   | 15948/24521 [00:08<00:04, 1897.53it/s]Dipole prediction:  66%|██████▌   | 16140/24521 [00:08<00:04, 1900.44it/s]Dipole prediction:  67%|██████▋   | 16331/24521 [00:08<00:04, 1901.06it/s]Dipole prediction:  67%|██████▋   | 16522/24521 [00:08<00:04, 1887.77it/s]Dipole prediction:  68%|██████▊   | 16711/24521 [00:08<00:04, 1882.56it/s]Dipole prediction:  69%|██████▉   | 16900/24521 [00:08<00:04, 1884.68it/s]Dipole prediction:  70%|██████▉   | 17089/24521 [00:09<00:03, 1884.16it/s]Dipole prediction:  70%|███████   | 17283/24521 [00:09<00:03, 1898.29it/s]Dipole prediction:  71%|███████▏  | 17475/24521 [00:09<00:03, 1903.69it/s]Dipole prediction:  72%|███████▏  | 17666/24521 [00:09<00:03, 1890.25it/s]Dipole prediction:  73%|███████▎  | 17856/24521 [00:09<00:03, 1888.54it/s]Dipole prediction:  74%|███████▎  | 18045/24521 [00:09<00:03, 1884.54it/s]Dipole prediction:  74%|███████▍  | 18234/24521 [00:09<00:03, 1879.41it/s]Dipole prediction:  75%|███████▌  | 18422/24521 [00:09<00:03, 1875.36it/s]Dipole prediction:  76%|███████▌  | 18610/24521 [00:09<00:03, 1875.48it/s]Dipole prediction:  77%|███████▋  | 18799/24521 [00:09<00:03, 1878.24it/s]Dipole prediction:  77%|███████▋  | 18989/24521 [00:10<00:02, 1882.23it/s]Dipole prediction:  78%|███████▊  | 19180/24521 [00:10<00:02, 1888.13it/s]Dipole prediction:  79%|███████▉  | 19372/24521 [00:10<00:02, 1897.47it/s]Dipole prediction:  80%|███████▉  | 19562/24521 [00:10<00:02, 1892.47it/s]Dipole prediction:  81%|████████  | 19752/24521 [00:10<00:02, 1876.51it/s]Dipole prediction:  81%|████████▏ | 19941/24521 [00:10<00:02, 1878.59it/s]Dipole prediction:  82%|████████▏ | 20131/24521 [00:10<00:02, 1884.71it/s]Dipole prediction:  83%|████████▎ | 20320/24521 [00:10<00:02, 1881.00it/s]Dipole prediction:  84%|████████▎ | 20509/24521 [00:10<00:02, 1876.32it/s]Dipole prediction:  84%|████████▍ | 20697/24521 [00:11<00:02, 1869.81it/s]Dipole prediction:  85%|████████▌ | 20885/24521 [00:11<00:01, 1870.71it/s]Dipole prediction:  86%|████████▌ | 21079/24521 [00:11<00:01, 1890.95it/s]Dipole prediction:  87%|████████▋ | 21274/24521 [00:11<00:01, 1906.26it/s]Dipole prediction:  88%|████████▊ | 21465/24521 [00:11<00:01, 1904.09it/s]Dipole prediction:  88%|████████▊ | 21656/24521 [00:11<00:01, 1896.43it/s]Dipole prediction:  89%|████████▉ | 21846/24521 [00:11<00:01, 1885.71it/s]Dipole prediction:  90%|████████▉ | 22035/24521 [00:11<00:01, 1881.26it/s]Dipole prediction:  91%|█████████ | 22224/24521 [00:11<00:01, 1882.80it/s]Dipole prediction:  91%|█████████▏| 22413/24521 [00:11<00:01, 1882.37it/s]Dipole prediction:  92%|█████████▏| 22602/24521 [00:12<00:01, 1882.59it/s]Dipole prediction:  93%|█████████▎| 22792/24521 [00:12<00:00, 1885.62it/s]Dipole prediction:  94%|█████████▎| 22985/24521 [00:12<00:00, 1897.75it/s]Dipole prediction:  95%|█████████▍| 23181/24521 [00:12<00:00, 1915.92it/s]Dipole prediction:  95%|█████████▌| 23373/24521 [00:12<00:00, 1915.01it/s]Dipole prediction:  96%|█████████▌| 23566/24521 [00:12<00:00, 1918.49it/s]Dipole prediction:  97%|█████████▋| 23758/24521 [00:12<00:00, 1901.23it/s]Dipole prediction:  98%|█████████▊| 23949/24521 [00:12<00:00, 1903.17it/s]Dipole prediction:  98%|█████████▊| 24141/24521 [00:12<00:00, 1906.84it/s]Dipole prediction:  99%|█████████▉| 24332/24521 [00:12<00:00, 1907.16it/s]Dipole prediction: 100%|██████████| 24521/24521 [00:13<00:00, 1883.71it/s]
+    Dipole |μ|: 4.093–5.395 D  (mean 4.517 D)
+
+  Trajectories collected: 5
+
+--- Averaging IR spectra across 5 trajectories ---
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 5052
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 2526 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 2526 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 2526
+   Padded points: 10104
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.7 cm⁻¹
+   Frequency resolution: 1.05 cm⁻¹
+   Number of points: 4282
+
+🎯 Found 7 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   233.3                1.000           Torsion/bending     
+   112.4                0.305           Torsion/bending     
+   142.9                0.233           Torsion/bending     
+   201.8                0.227           Torsion/bending     
+   14.7                 0.091           Torsion/bending     
+   245.9                0.068           Torsion/bending     
+   216.5                0.064           Torsion/bending     
+  Trajectory 1/5 spectrum computed  (5052 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 30000
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 15000 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 15000 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 15000
+   Padded points: 60000
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.9 cm⁻¹
+   Frequency resolution: 0.18 cm⁻¹
+   Number of points: 25429
+
+🎯 Found 5 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   252.2                1.000           Torsion/bending     
+   265.1                0.808           Torsion/bending     
+   236.6                0.233           Torsion/bending     
+   255.0                0.194           Torsion/bending     
+   261.4                0.081           Torsion/bending     
+  Trajectory 2/5 spectrum computed  (30000 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 12098
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 6049 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 6049 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 6049
+   Padded points: 24196
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.7 cm⁻¹
+   Frequency resolution: 0.44 cm⁻¹
+   Number of points: 10254
+
+🎯 Found 1 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2.2                  1.000           Torsion/bending     
+  Trajectory 3/5 spectrum computed  (12098 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 4782
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 2391 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 2391 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 2391
+   Padded points: 9564
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.5 cm⁻¹
+   Frequency resolution: 1.11 cm⁻¹
+   Number of points: 4053
+
+🎯 Found 5 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   5.6                  1.000           Torsion/bending     
+   234.2                0.421           Torsion/bending     
+   88.8                 0.121           Torsion/bending     
+   208.7                0.094           Torsion/bending     
+   179.8                0.093           Torsion/bending     
+  Trajectory 4/5 spectrum computed  (4782 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 24521
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 12260 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 12260 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 12260
+   Padded points: 49040
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4500.0 cm⁻¹
+   Frequency resolution: 0.22 cm⁻¹
+   Number of points: 20784
+
+🎯 Found 3 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   108.7                1.000           Torsion/bending     
+   251.6                0.429           Torsion/bending     
+   114.1                0.121           Torsion/bending     
+  Trajectory 5/5 spectrum computed  (24521 frames)
+Traceback (most recent call last):
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 1668, in <module>
+    main()
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 1635, in main
+    run_ir_workflow(
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 1309, in run_ir_workflow
+    intensities  = np.mean(all_intensities, axis=0)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jmsmith1/anaconda3/envs/jupyterenv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py", line 3860, in mean
+    return _methods._mean(a, axis=axis, dtype=dtype,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jmsmith1/anaconda3/envs/jupyterenv/lib/python3.12/site-packages/numpy/_core/_methods.py", line 119, in _mean
+    arr = asanyarray(a)
+          ^^^^^^^^^^^^^
+ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (5,) + inhomogeneous part.

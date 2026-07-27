@@ -1,0 +1,53 @@
+PSI4 1.10 available
+
+Loading existing dipoles from outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz
+  150 existing frames  |μ| 4.630 D mean
+
+Reading 5 trajectories (stride=30)…
+  traj_01.xyz: 1000 frames after stride
+  traj_02.xyz: 1000 frames after stride
+  traj_03.xyz: 1000 frames after stride
+  traj_04.xyz: 1000 frames after stride
+  traj_05.xyz: 1000 frames after stride
+  Pool total: 5000 frames
+
+Selecting 120 new frames (C-H-displacement-biased)…
+  |ΔrCH| range in pool: 0.0089–0.2658 Å  q25=0.0590 q75=0.1303
+  Tier counts after dedup — large: 72  middle: 24  near: 24
+  Total selected: 120
+  C3-H6 bond: 1.0813–1.3323 Å  mean=1.1946
+  C4-H7 bond: 1.0681–1.3224 Å  mean=1.1855
+  C4-H8 bond: 1.0758–1.3135 Å  mean=1.1465
+  C5-H9 bond: 1.0785–1.3542 Å  mean=1.1602
+  C5-H10 bond: 1.0836–1.3474 Å  mean=1.2303
+  C5-H11 bond: 1.0404–1.3558 Å  mean=1.2294
+
+Computing PSI4 b3lyp/6-31G* dipoles for 120 frames…
+  10/120  |μ|=4.3733 D  [89s  8.9s/frame]
+  20/120  |μ|=4.7522 D  [174s  8.7s/frame]
+  30/120  |μ|=4.4413 D  [261s  8.7s/frame]
+  40/120  |μ|=4.4099 D  [349s  8.7s/frame]
+  50/120  |μ|=4.8349 D  [436s  8.7s/frame]
+  60/120  |μ|=5.1591 D  [521s  8.7s/frame]
+  70/120  |μ|=5.0663 D  [608s  8.7s/frame]
+  80/120  |μ|=5.1833 D  [694s  8.7s/frame]
+  90/120  |μ|=4.5524 D  [780s  8.7s/frame]
+  100/120  |μ|=4.4904 D  [866s  8.7s/frame]
+  110/120  |μ|=5.2177 D  [953s  8.7s/frame]
+  120/120  |μ|=4.5436 D  [1040s  8.7s/frame]
+
+  120/120 frames with valid dipoles
+
+Saved 270 frames → outputs/mvko_dipoles_ch_v2_20260420/training_with_dipoles.npz
+  |μ| range: 2.971–5.609 D  mean=4.687
+
+Run IR spectrum with the new dipole data:
+  python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v2/nm_pes_model.pkl \
+    --training-data outputs/mvko_dipoles_ch_v2_20260420/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 \
+    --nm-pes-bond-wall-factor 1.15 --nm-pes-bond-wall-stiffness 15.0 \
+    --max-bond-extension 1.35 \
+    --output-dir outputs/ir_spectrum_NM_PES_ch_dipoles_300K

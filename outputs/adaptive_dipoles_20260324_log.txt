@@ -1,0 +1,35 @@
+PSI4 1.10 available
+Loaded 1300 training frames from outputs/adaptive_production_20260324b/training_data_final.npz
+Selected 200 frames for dipole collection
+  Frame 10/200  idx=31  |μ|=4.4953 D  [130s elapsed, 13.0s/frame]
+  Frame 20/200  idx=81  |μ|=4.3679 D  [231s elapsed, 11.5s/frame]
+  Frame 30/200  idx=123  |μ|=4.3404 D  [332s elapsed, 11.1s/frame]
+  Frame 40/200  idx=163  |μ|=4.3952 D  [434s elapsed, 10.8s/frame]
+  Frame 50/200  idx=211  |μ|=4.3755 D  [537s elapsed, 10.7s/frame]
+  Frame 60/200  idx=251  |μ|=4.3716 D  [638s elapsed, 10.6s/frame]
+  Frame 70/200  idx=291  |μ|=4.3820 D  [740s elapsed, 10.6s/frame]
+  Frame 80/200  idx=502  |μ|=4.3739 D  [843s elapsed, 10.5s/frame]
+  Frame 90/200  idx=621  |μ|=5.2467 D  [946s elapsed, 10.5s/frame]
+  Frame 100/200  idx=784  |μ|=5.4122 D  [1049s elapsed, 10.5s/frame]
+  Frame 110/200  idx=912  |μ|=4.3818 D  [1150s elapsed, 10.5s/frame]
+  Frame 120/200  idx=979  |μ|=4.0380 D  [1250s elapsed, 10.4s/frame]
+  Frame 130/200  idx=1002  |μ|=3.9171 D  [1353s elapsed, 10.4s/frame]
+  Frame 140/200  idx=1060  |μ|=4.4286 D  [1454s elapsed, 10.4s/frame]
+  Frame 150/200  idx=1110  |μ|=4.3157 D  [1554s elapsed, 10.4s/frame]
+  Frame 160/200  idx=1126  |μ|=5.0216 D  [1659s elapsed, 10.4s/frame]
+  Frame 170/200  idx=1169  |μ|=4.4208 D  [1764s elapsed, 10.4s/frame]
+  Frame 180/200  idx=1201  |μ|=5.8672 D  [1869s elapsed, 10.4s/frame]
+  Frame 190/200  idx=1247  |μ|=3.7336 D  [1972s elapsed, 10.4s/frame]
+  Frame 200/200  idx=1296  |μ|=4.3648 D  [2070s elapsed, 10.3s/frame]
+
+  200/200 frames with valid dipoles
+  Dipole magnitudes: min=2.9706  max=6.0352  mean=4.5084 D
+
+Saved to outputs/adaptive_dipoles_20260324/training_with_dipoles.npz
+
+Run IR spectrum with:
+  python3 ir_md_spectrum.py \
+    --model outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/adaptive_dipoles_20260324/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --timestep 0.5 --save-every 1 \
+    --preminimize --zpe-min-freq 50 --zpe-max-freq 4000

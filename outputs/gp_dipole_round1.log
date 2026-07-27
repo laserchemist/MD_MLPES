@@ -1,0 +1,106 @@
+
+Loading training dipoles: outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz
+  150 frames, 12 atoms
+  |μ| range: 2.971–5.609 D
+
+Computing Coulomb-matrix descriptors for training set …
+  descriptor shape: (150, 78)
+
+Fitting GP dipole model …
+  GP dipole fitted: 150 training pts, γ=0.001, α=0.0001
+  Training RMSE: 0.0062 D
+  σ at training pts: mean=0.0047 max=0.0072 D
+
+Loading trajectory: outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_01.xyz  (stride=10)
+  3000 frames  (0.00–15.00 ps)
+
+Loading trajectory: outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_02.xyz  (stride=10)
+  3000 frames  (0.00–15.00 ps)
+
+Loading trajectory: outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_03.xyz  (stride=10)
+  3000 frames  (0.00–15.00 ps)
+
+Loading trajectory: outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_04.xyz  (stride=10)
+  3000 frames  (0.00–15.00 ps)
+
+Loading trajectory: outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_05.xyz  (stride=10)
+  3000 frames  (0.00–15.00 ps)
+
+Pooled: 15000 frames from 5 trajectory/trajectories
+Computing descriptors for trajectory …
+Computing GP posterior variance …
+
+=== GP Dipole Coverage Report ===
+  Traj frames evaluated : 15000
+  σ  mean   : 0.5237 D
+  σ  median : 0.6288 D
+  σ  95th%  : 0.7141 D
+  σ  max    : 0.7162 D
+  Frames with σ > 0.10 D : 13731 (91.5%)
+  Frames with σ > 0.05 D : 14328 (95.5%)
+  Frames with σ > 0.02 D : 14987 (99.9%)
+
+Saved coverage data → outputs/gp_dipole_round1/gp_coverage.npz
+Coverage plot → outputs/gp_dipole_round1/gp_coverage.png
+
+=== Active Learning: computing dipoles for top 50 frames ===
+  Method: wb97x-d/6-31G*
+  σ range in selection: 0.7160–0.7162 D
+  [  1/50]  traj_02.xyz  frame= 5908  t=14.540 ps  σ=0.7162 D  … μ=(-4.843,-4.517,-0.760) D  |μ|=6.666 D  (21.2s)
+  [  2/50]  traj_02.xyz  frame= 5901  t=14.505 ps  σ=0.7162 D  … μ=(-4.968,-4.571,-0.746) D  |μ|=6.792 D  (16.8s)
+  [  3/50]  traj_02.xyz  frame= 5887  t=14.435 ps  σ=0.7162 D  … μ=(-4.946,-4.695,-0.827) D  |μ|=6.869 D  (18.6s)
+  [  4/50]  traj_02.xyz  frame= 5892  t=14.460 ps  σ=0.7162 D  … μ=(-5.036,-4.605,-0.920) D  |μ|=6.886 D  (18.3s)
+  [  5/50]  traj_02.xyz  frame= 5893  t=14.466 ps  σ=0.7162 D  … μ=(-4.782,-4.715,-0.734) D  |μ|=6.755 D  (18.6s)
+  [  6/50]  traj_02.xyz  frame= 5894  t=14.470 ps  σ=0.7162 D  … μ=(-4.676,-4.856,-0.529) D  |μ|=6.762 D  (18.5s)
+  [  7/50]  traj_02.xyz  frame= 5902  t=14.511 ps  σ=0.7162 D  … μ=(-4.917,-4.853,-0.618) D  |μ|=6.936 D  (20.4s)
+  [  8/50]  traj_02.xyz  frame= 5888  t=14.441 ps  σ=0.7162 D  … μ=(-4.728,-4.737,-0.851) D  |μ|=6.746 D  (21.1s)
+  [  9/50]  traj_02.xyz  frame= 5878  t=14.390 ps  σ=0.7162 D  … μ=(-4.985,-4.651,-0.702) D  |μ|=6.853 D  (19.8s)
+  [ 10/50]  traj_02.xyz  frame= 5886  t=14.431 ps  σ=0.7162 D  … μ=(-4.927,-4.650,-0.562) D  |μ|=6.799 D  (18.0s)
+  [ 11/50]  traj_02.xyz  frame= 5881  t=14.405 ps  σ=0.7162 D  … μ=(-4.833,-4.746,-0.748) D  |μ|=6.815 D  (16.4s)
+  [ 12/50]  traj_02.xyz  frame= 5900  t=14.501 ps  σ=0.7162 D  … μ=(-4.778,-4.793,-0.822) D  |μ|=6.818 D  (18.6s)
+  [ 13/50]  traj_02.xyz  frame= 5882  t=14.411 ps  σ=0.7161 D  … μ=(-4.973,-4.839,-0.648) D  |μ|=6.969 D  (16.8s)
+  [ 14/50]  traj_02.xyz  frame= 5895  t=14.476 ps  σ=0.7161 D  … μ=(-4.991,-4.513,-0.804) D  |μ|=6.777 D  (16.9s)
+  [ 15/50]  traj_02.xyz  frame= 5898  t=14.491 ps  σ=0.7161 D  … μ=(-5.057,-4.616,-0.654) D  |μ|=6.878 D  (19.6s)
+  [ 16/50]  traj_02.xyz  frame= 5909  t=14.546 ps  σ=0.7161 D  … μ=(-4.882,-4.776,-0.630) D  |μ|=6.859 D  (18.9s)
+  [ 17/50]  traj_02.xyz  frame= 5871  t=14.355 ps  σ=0.7161 D  … μ=(-5.005,-4.653,-0.703) D  |μ|=6.870 D  (17.5s)
+  [ 18/50]  traj_02.xyz  frame= 5877  t=14.386 ps  σ=0.7161 D  … μ=(-4.874,-4.556,-0.823) D  |μ|=6.723 D  (19.2s)
+  [ 19/50]  traj_02.xyz  frame= 5866  t=14.331 ps  σ=0.7161 D  … μ=(-4.784,-4.677,-0.559) D  |μ|=6.714 D  (18.4s)
+  [ 20/50]  traj_02.xyz  frame= 5899  t=14.495 ps  σ=0.7161 D  … μ=(-4.828,-4.705,-0.737) D  |μ|=6.782 D  (18.9s)
+  [ 21/50]  traj_02.xyz  frame= 5915  t=14.575 ps  σ=0.7161 D  … μ=(-4.786,-4.677,-0.627) D  |μ|=6.721 D  (18.2s)
+  [ 22/50]  traj_02.xyz  frame= 5874  t=14.370 ps  σ=0.7161 D  … μ=(-4.969,-4.611,-0.664) D  |μ|=6.811 D  (19.2s)
+  [ 23/50]  traj_02.xyz  frame= 5859  t=14.296 ps  σ=0.7161 D  … μ=(-5.023,-4.577,-0.690) D  |μ|=6.830 D  (19.0s)
+  [ 24/50]  traj_02.xyz  frame= 5907  t=14.536 ps  σ=0.7161 D  … μ=(-4.884,-4.667,-0.725) D  |μ|=6.794 D  (17.6s)
+  [ 25/50]  traj_02.xyz  frame= 5858  t=14.290 ps  σ=0.7161 D  … μ=(-4.959,-4.690,-0.709) D  |μ|=6.862 D  (16.1s)
+  [ 26/50]  traj_02.xyz  frame= 5913  t=14.566 ps  σ=0.7161 D  … μ=(-4.992,-4.615,-0.651) D  |μ|=6.830 D  (19.0s)
+  [ 27/50]  traj_02.xyz  frame= 5873  t=14.366 ps  σ=0.7161 D  … μ=(-4.794,-4.793,-0.920) D  |μ|=6.841 D  (18.0s)
+  [ 28/50]  traj_02.xyz  frame= 5889  t=14.445 ps  σ=0.7161 D  … μ=(-4.923,-4.533,-0.842) D  |μ|=6.745 D  (18.3s)
+  [ 29/50]  traj_02.xyz  frame= 5863  t=14.316 ps  σ=0.7161 D  … μ=(-5.084,-4.765,-0.851) D  |μ|=7.020 D  (17.1s)
+  [ 30/50]  traj_02.xyz  frame= 5903  t=14.515 ps  σ=0.7161 D  … μ=(-4.955,-4.913,-0.793) D  |μ|=7.023 D  (18.1s)
+  [ 31/50]  traj_02.xyz  frame= 5919  t=14.595 ps  σ=0.7161 D  … μ=(-4.989,-4.722,-0.774) D  |μ|=6.913 D  (17.5s)
+  [ 32/50]  traj_02.xyz  frame= 5914  t=14.570 ps  σ=0.7161 D  … μ=(-4.802,-4.770,-0.566) D  |μ|=6.792 D  (16.9s)
+  [ 33/50]  traj_02.xyz  frame= 5879  t=14.396 ps  σ=0.7161 D  … μ=(-4.941,-4.915,-0.751) D  |μ|=7.010 D  (17.5s)
+  [ 34/50]  traj_02.xyz  frame= 5872  t=14.361 ps  σ=0.7161 D  … μ=(-4.749,-4.841,-0.883) D  |μ|=6.839 D  (18.9s)
+  [ 35/50]  traj_02.xyz  frame= 5870  t=14.351 ps  σ=0.7161 D  … μ=(-5.122,-4.722,-0.731) D  |μ|=7.005 D  (17.6s)
+  [ 36/50]  traj_02.xyz  frame= 5880  t=14.400 ps  σ=0.7161 D  … μ=(-4.741,-4.824,-0.813) D  |μ|=6.813 D  (17.5s)
+  [ 37/50]  traj_02.xyz  frame= 5906  t=14.530 ps  σ=0.7161 D  … μ=(-4.896,-4.833,-0.557) D  |μ|=6.902 D  (19.0s)
+  [ 38/50]  traj_02.xyz  frame= 5885  t=14.425 ps  σ=0.7161 D  … μ=(-4.729,-4.870,-0.534) D  |μ|=6.809 D  (17.7s)
+  [ 39/50]  traj_02.xyz  frame= 5905  t=14.525 ps  σ=0.7161 D  … μ=(-4.922,-4.650,-0.580) D  |μ|=6.796 D  (18.4s)
+  [ 40/50]  traj_02.xyz  frame= 5851  t=14.255 ps  σ=0.7161 D  … μ=(-4.992,-4.687,-0.729) D  |μ|=6.886 D  (17.0s)
+  [ 41/50]  traj_02.xyz  frame= 5845  t=14.226 ps  σ=0.7161 D  … μ=(-4.811,-4.769,-0.879) D  |μ|=6.831 D  (17.0s)
+  [ 42/50]  traj_02.xyz  frame= 5883  t=14.415 ps  σ=0.7161 D  … μ=(-5.043,-4.621,-0.901) D  |μ|=6.899 D  (19.4s)
+  [ 43/50]  traj_02.xyz  frame= 5865  t=14.325 ps  σ=0.7161 D  … μ=(-4.773,-4.756,-0.697) D  |μ|=6.774 D  (17.7s)
+  [ 44/50]  traj_04.xyz  frame=10594  t=7.971 ps  σ=0.7161 D  … μ=(-4.266,+1.795,+1.406) D  |μ|=4.837 D  (22.5s)
+  [ 45/50]  traj_02.xyz  frame= 5884  t=14.421 ps  σ=0.7161 D  … μ=(-4.999,-4.637,-0.963) D  |μ|=6.886 D  (18.1s)
+  [ 46/50]  traj_02.xyz  frame= 5912  t=14.560 ps  σ=0.7161 D  … μ=(-4.938,-4.648,-0.730) D  |μ|=6.820 D  (18.1s)
+  [ 47/50]  traj_02.xyz  frame= 5852  t=14.261 ps  σ=0.7161 D  … μ=(-4.746,-4.774,-0.884) D  |μ|=6.790 D  (17.0s)
+  [ 48/50]  traj_02.xyz  frame= 5897  t=14.486 ps  σ=0.7161 D  … μ=(-4.906,-4.956,-0.607) D  |μ|=7.000 D  (18.0s)
+  [ 49/50]  traj_04.xyz  frame=10597  t=7.986 ps  σ=0.7160 D  … μ=(-4.583,+0.861,+0.322) D  |μ|=4.674 D  (20.1s)
+  [ 50/50]  traj_02.xyz  frame= 5864  t=14.320 ps  σ=0.7160 D  … μ=(-4.929,-4.901,-0.920) D  |μ|=7.011 D  (19.8s)
+
+  Saved 50 new dipoles → outputs/gp_dipole_round1/new_dipoles.npz
+  Merge command:
+    python3 gp_dipole_coverage.py \
+      --training-data <current.npz> \
+      --merge outputs/gp_dipole_round1/new_dipoles.npz \
+      --output-dir outputs/mvko_dipoles_gp_round1
+Summary → outputs/gp_dipole_round1/gp_coverage_summary.json

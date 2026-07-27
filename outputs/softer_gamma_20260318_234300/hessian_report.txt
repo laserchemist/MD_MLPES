@@ -1,0 +1,20 @@
+Softer gamma retraining report — 20260318_234300
+Training data: outputs/clean_psi410_20260308_203552/training_data.npz
+
+gamma=0.000100  alpha=1e-05  RMSE=2.2992 kcal/mol
+  NM frequencies (cm⁻¹): 1358.0  2427.9  2840.7  2912.2  3413.9  3580.2  5085.7  8632.8  11222.1
+
+gamma=0.000300  alpha=1e-05  RMSE=1.0656 kcal/mol
+  NM frequencies (cm⁻¹): 1392.6  2708.7  3317.2  3340.4  3736.4  4935.7  5718.3  11205.2  11328.2
+
+gamma=0.001000  alpha=1e-05  RMSE=0.5012 kcal/mol
+  NM frequencies (cm⁻¹): 1843.9  2562.8  3246.5  3510.3  4273.0  5234.1  5534.7  11221.6  12109.0
+
+gamma=0.003000  alpha=1e-05  RMSE=0.4482 kcal/mol
+  NM frequencies (cm⁻¹): 1883.1  2481.2  3157.7  3466.0  4521.5  5212.9  5558.8  11238.3  12379.3
+
+gamma=0.010000  alpha=1e-05  RMSE=0.6139 kcal/mol
+  NM frequencies (cm⁻¹): 1773.3  2374.3  3057.2  3418.7  4168.2  4943.6  5594.7  11122.7  12060.4
+
+
+Recommended: gamma=0.000100  model: outputs/softer_gamma_20260318_234300/mlpes_gamma_0.000100.pkl

@@ -1,0 +1,417 @@
+2026-04-18 23:31:33.053 INFO: ===========VERIFYING SETTINGS===========
+2026-04-18 23:31:33.054 INFO: Stage Two is activated as start_stage_two was defined
+2026-04-18 23:31:33.054 INFO: MACE version: 0.3.15
+2026-04-18 23:31:33.054 DEBUG: Configuration: Namespace(config=None, name='mace_mvko', seed=42, work_dir='.', log_dir='/Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418', model_dir='.', checkpoints_dir='/Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418', results_dir='/Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418', downloads_dir='./downloads', device='cpu', default_dtype='float64', distributed=False, launcher='slurm', log_level='INFO', plot=True, plot_frequency=0, plot_interaction_e=False, error_table='PerAtomRMSE', model='MACE', r_max=5.0, radial_type='bessel', num_radial_basis=8, num_cutoff_basis=5, pair_repulsion=False, distance_transform='None', apply_cutoff=True, use_last_readout_only=False, use_embedding_readout=False, interaction='RealAgnosticResidualInteractionBlock', interaction_first='RealAgnosticResidualInteractionBlock', max_ell=3, correlation=3, use_reduced_cg=False, use_so3=False, use_agnostic_product=False, num_interactions=2, MLP_irreps='16x0e', radial_MLP='[64, 64, 64]', hidden_irreps='64x0e + 64x1o', edge_irreps=None, num_channels=64, max_L=1, gate='silu', scaling='rms_forces_scaling', avg_num_neighbors=1, compute_avg_num_neighbors=True, compute_stress=False, compute_forces=True, compute_polarizability=False, compute_atomic_dipole=False, train_file='/Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/train.xyz', valid_file='/Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/valid.xyz', valid_fraction=0.1, test_file=None, test_dir=None, multi_processed_test=False, num_workers=0, pin_memory=True, atomic_numbers=None, mean=None, std=None, statistics_file=None, les_arguments=None, E0s='average', pseudolabel_replay=False, pseudolabel_replay_compute_stress=False, foundation_filter_elements=True, heads=None, multiheads_finetuning=True, foundation_head=None, weight_pt_head=1.0, real_pt_data_ratio_threshold=0.1, num_samples_pt=10000, force_mh_ft_lr=False, subselect_pt='random', filter_type_pt='none', allow_random_padding_pt=True, pt_train_file=None, pt_valid_file=None, foundation_model_elements=False, keep_isolated_atoms=False, lora=False, lora_rank=4, lora_alpha=1.0, energy_key='REF_energy', forces_key='REF_forces', virials_key='REF_virials', stress_key='REF_stress', dipole_key='dipole', polarizability_key='polarizability', head_key='head', charges_key='REF_charges', elec_temp_key='elec_temp', total_spin_key='total_spin', total_charge_key='total_charge', embedding_specs=None, skip_evaluate_heads='pt_head', loss='weighted', forces_weight=100.0, swa_forces_weight=100.0, energy_weight=1.0, swa_energy_weight=1000.0, virials_weight=1.0, swa_virials_weight=10.0, stress_weight=1.0, swa_stress_weight=10.0, dipole_weight=1.0, swa_dipole_weight=1.0, swa_polarizability_weight=1.0, polarizability_weight=1.0, config_type_weights='{"Default":1.0}', huber_delta=0.01, optimizer='adam', beta=0.9, beta1_schedulefree=0.9, beta2_schedulefree=0.98, batch_size=10, valid_batch_size=10, lr=0.01, swa_lr=0.001, weight_decay=5e-07, lr_params_factors='{"embedding_lr_factor": 1.0, "interactions_lr_factor": 1.0, "products_lr_factor": 1.0, "readouts_lr_factor": 1.0}', freeze=None, amsgrad=True, scheduler='ReduceLROnPlateau', lr_factor=0.8, scheduler_patience=5, lr_scheduler_gamma=0.9993, swa=True, start_swa=450, lbfgs=False, ema=False, ema_decay=0.99, max_num_epochs=500, patience=2048, foundation_model=None, foundation_model_kwargs='{}', foundation_model_readout=True, eval_interval=2, keep_checkpoints=False, save_all_checkpoints=False, restart_latest=False, save_cpu=False, clip_grad=10.0, dry_run=False, enable_cueq=False, only_cueq=False, enable_oeq=False, wandb=False, wandb_dir=None, wandb_project='', wandb_entity='', wandb_name='', wandb_log_hypers=['num_channels', 'max_L', 'correlation', 'lr', 'swa_lr', 'weight_decay', 'batch_size', 'max_num_epochs', 'start_swa', 'energy_weight', 'forces_weight'], key_specification=KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'}))
+2026-04-18 23:31:33.054 INFO: Using CPU
+2026-04-18 23:31:33.274 DEBUG: Popen(['git', 'version'], cwd=/Users/jmsmith1/Documents/Research/code/MD_MLPES, stdin=None, shell=False, universal_newlines=False)
+2026-04-18 23:31:33.299 DEBUG: Popen(['git', 'version'], cwd=/Users/jmsmith1/Documents/Research/code/MD_MLPES, stdin=None, shell=False, universal_newlines=False)
+2026-04-18 23:31:33.324 DEBUG: sys.platform='darwin', git_executable='git'
+2026-04-18 23:31:33.327 DEBUG: Popen(['git', 'cat-file', '--batch-check'], cwd=/Users/jmsmith1/Documents/Research/code/MD_MLPES, stdin=<valid stream>, shell=False, universal_newlines=False)
+2026-04-18 23:31:33.350 DEBUG: Current Git commit: 654ff97af04039fdaf3d9975ab3b36ee3b7252f0
+2026-04-18 23:31:33.350 INFO: ===========LOADING INPUT DATA===========
+2026-04-18 23:31:33.350 INFO: Using heads: ['Default']
+2026-04-18 23:31:33.350 INFO: Using the key specifications to parse data:
+2026-04-18 23:31:33.351 INFO: Default: KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'})
+2026-04-18 23:31:33.351 INFO: =============    Processing head Default     ===========
+2026-04-18 23:31:33.351 DEBUG: Loading training file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/train.xyz
+2026-04-18 23:31:33.532 INFO: Training set 1/1 [energy: 1016, stress: 0, virials: 0, dipole components: 0, head: 1016, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 1016, charges: 0]
+2026-04-18 23:31:33.535 INFO: Total Training set [energy: 1016, stress: 0, virials: 0, dipole components: 0, head: 1016, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 1016, charges: 0]
+2026-04-18 23:31:33.551 INFO: Validation set 1/1 [energy: 80, stress: 0, virials: 0, dipole components: 0, head: 80, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 80, charges: 0]
+2026-04-18 23:31:33.551 INFO: Total Validation set [energy: 80, stress: 0, virials: 0, dipole components: 0, head: 80, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 80, charges: 0]
+2026-04-18 23:31:33.551 INFO: Total number of configurations: train=1016, valid=80, tests=[],
+2026-04-18 23:31:33.553 INFO: Atomic Numbers used: [1, 6, 8]
+2026-04-18 23:31:33.553 INFO: Isolated Atomic Energies (E0s) not in training file, using command line argument
+2026-04-18 23:31:33.553 INFO: Computing average Atomic Energies using least squares regression
+2026-04-18 23:31:33.555 INFO: Atomic Energies used (z: eV) for head Default: {1: -892.6892100212959, 6: -595.1261400141965, 8: -297.5630700070982}
+2026-04-18 23:31:33.555 INFO: Processing datasets for head 'Default'
+2026-04-18 23:31:33.757 DEBUG: Successfully loaded dataset from ASE files: ['/Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/train.xyz']
+2026-04-18 23:31:33.757 INFO: Combining 1 list datasets for head 'Default'
+2026-04-18 23:31:33.769 DEBUG: Successfully loaded validation dataset from ASE files: ['/Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/valid.xyz']
+2026-04-18 23:31:33.769 INFO: Combining 1 list datasets for head 'Default_valid'
+2026-04-18 23:31:33.770 INFO: Combined validation datasets for Default
+2026-04-18 23:31:33.770 INFO: Head 'Default' training dataset size: 1016
+2026-04-18 23:31:33.770 INFO: Computing average number of neighbors
+2026-04-18 23:31:33.881 INFO: Average number of neighbors: 10.811056105610561
+2026-04-18 23:31:33.881 INFO: During training the following quantities will be reported: energy, forces
+2026-04-18 23:31:33.881 INFO: ===========MODEL DETAILS===========
+2026-04-18 23:31:33.985 INFO: Building model
+2026-04-18 23:31:33.985 INFO: Message passing with 64 channels and max_L=1 (64x0e + 64x1o)
+2026-04-18 23:31:33.985 INFO: 2 layers, each with correlation order: 3 (body order: 4) and spherical harmonics up to: l=3
+2026-04-18 23:31:33.986 INFO: 8 radial and 5 basis functions
+2026-04-18 23:31:33.986 INFO: Radial cutoff: 5.0 A (total receptive field for each atom: 10.0 A)
+2026-04-18 23:31:33.986 INFO: Distance transform for radial basis functions: None
+2026-04-18 23:31:33.986 INFO: Hidden irreps: 64x0e + 64x1o
+2026-04-18 23:31:34.710 INFO: ===========OPTIMIZER INFORMATION===========
+2026-04-18 23:31:34.710 INFO: Using ADAM as parameter optimizer
+2026-04-18 23:31:34.711 INFO: Batch size: 10
+2026-04-18 23:31:34.711 INFO: Number of gradient updates: 50800
+2026-04-18 23:31:34.711 INFO: Learning rate: 0.01, weight decay: 5e-07
+2026-04-18 23:31:34.711 INFO: WeightedEnergyForcesLoss(energy_weight=1.000, forces_weight=100.000)
+2026-04-18 23:31:34.711 INFO: === Layer's learning rates ===
+2026-04-18 23:31:34.712 INFO: Param group 0: lr = 0.01
+2026-04-18 23:31:34.712 INFO: Param group 1: lr = 0.01
+2026-04-18 23:31:34.712 INFO: Param group 2: lr = 0.01
+2026-04-18 23:31:34.712 INFO: Param group 3: lr = 0.01
+2026-04-18 23:31:34.712 INFO: Param group 4: lr = 0.01
+2026-04-18 23:31:34.712 INFO: Stage Two (after 450 epochs) with loss function: WeightedEnergyForcesLoss(energy_weight=1000.000, forces_weight=100.000), with energy weight : 1000.0, forces weight : 100.0 and learning rate : 0.001
+2026-04-18 23:31:34.759 INFO: Using gradient clipping with tolerance=10.000
+2026-04-18 23:31:34.759 INFO: 
+2026-04-18 23:31:34.759 INFO: ===========TRAINING===========
+2026-04-18 23:31:34.759 INFO: Started training, reporting errors on validation set
+2026-04-18 23:31:34.759 INFO: Loss metrics on validation set
+2026-04-18 23:31:36.700 INFO: Initial: head: Default, loss=0.76474083, RMSE_E_per_atom=   51.87 meV, RMSE_F=  276.49 meV / A
+2026-04-18 23:32:31.122 INFO: Epoch 0: head: Default, loss=0.07035695, RMSE_E_per_atom=  154.45 meV, RMSE_F=   82.44 meV / A
+2026-04-18 23:32:31.123 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-0.pt
+2026-04-18 23:34:16.164 INFO: Epoch 2: head: Default, loss=0.04081017, RMSE_E_per_atom=   80.74 meV, RMSE_F=   63.37 meV / A
+2026-04-18 23:34:16.165 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-0.pt
+2026-04-18 23:34:16.166 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-2.pt
+2026-04-18 23:36:02.181 INFO: Epoch 4: head: Default, loss=0.02979982, RMSE_E_per_atom=   65.36 meV, RMSE_F=   54.20 meV / A
+2026-04-18 23:36:02.182 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-2.pt
+2026-04-18 23:36:02.183 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-4.pt
+2026-04-18 23:37:48.102 INFO: Epoch 6: head: Default, loss=0.03125612, RMSE_E_per_atom=   55.76 meV, RMSE_F=   55.63 meV / A
+2026-04-18 23:39:33.230 INFO: Epoch 8: head: Default, loss=0.03497611, RMSE_E_per_atom=   59.74 meV, RMSE_F=   58.84 meV / A
+2026-04-18 23:41:17.969 INFO: Epoch 10: head: Default, loss=0.03430135, RMSE_E_per_atom=   62.31 meV, RMSE_F=   58.23 meV / A
+2026-04-18 23:43:03.181 INFO: Epoch 12: head: Default, loss=0.02900823, RMSE_E_per_atom=   44.83 meV, RMSE_F=   53.67 meV / A
+2026-04-18 23:43:03.182 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-4.pt
+2026-04-18 23:43:03.183 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-12.pt
+2026-04-18 23:44:47.840 INFO: Epoch 14: head: Default, loss=0.02640409, RMSE_E_per_atom=   48.81 meV, RMSE_F=   51.15 meV / A
+2026-04-18 23:44:47.841 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-12.pt
+2026-04-18 23:44:47.841 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-14.pt
+2026-04-18 23:46:33.168 INFO: Epoch 16: head: Default, loss=0.03328769, RMSE_E_per_atom=   42.50 meV, RMSE_F=   57.54 meV / A
+2026-04-18 23:48:18.660 INFO: Epoch 18: head: Default, loss=0.02607397, RMSE_E_per_atom=   45.08 meV, RMSE_F=   50.86 meV / A
+2026-04-18 23:48:18.661 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-14.pt
+2026-04-18 23:48:18.661 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-18.pt
+2026-04-18 23:50:04.485 INFO: Epoch 20: head: Default, loss=0.02599475, RMSE_E_per_atom=   44.40 meV, RMSE_F=   50.79 meV / A
+2026-04-18 23:50:04.486 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-18.pt
+2026-04-18 23:50:04.486 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-20.pt
+2026-04-18 23:51:49.362 INFO: Epoch 22: head: Default, loss=0.02420229, RMSE_E_per_atom=   44.41 meV, RMSE_F=   48.99 meV / A
+2026-04-18 23:51:49.362 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-20.pt
+2026-04-18 23:51:49.363 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-22.pt
+2026-04-18 23:53:34.337 INFO: Epoch 24: head: Default, loss=0.03896204, RMSE_E_per_atom=   42.70 meV, RMSE_F=   62.27 meV / A
+2026-04-18 23:55:20.161 INFO: Epoch 26: head: Default, loss=0.02400291, RMSE_E_per_atom=   47.79 meV, RMSE_F=   48.76 meV / A
+2026-04-18 23:55:20.162 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-22.pt
+2026-04-18 23:55:20.163 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-26.pt
+2026-04-18 23:57:07.564 INFO: Epoch 28: head: Default, loss=0.02186935, RMSE_E_per_atom=   45.12 meV, RMSE_F=   46.55 meV / A
+2026-04-18 23:57:07.565 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-26.pt
+2026-04-18 23:57:07.565 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-28.pt
+2026-04-18 23:58:55.891 INFO: Epoch 30: head: Default, loss=0.02863830, RMSE_E_per_atom=   51.58 meV, RMSE_F=   53.27 meV / A
+2026-04-19 00:00:44.084 INFO: Epoch 32: head: Default, loss=0.02365877, RMSE_E_per_atom=   46.37 meV, RMSE_F=   48.42 meV / A
+2026-04-19 00:02:32.040 INFO: Epoch 34: head: Default, loss=0.02370347, RMSE_E_per_atom=   44.06 meV, RMSE_F=   48.49 meV / A
+2026-04-19 00:04:19.516 INFO: Epoch 36: head: Default, loss=0.02383088, RMSE_E_per_atom=   41.75 meV, RMSE_F=   48.64 meV / A
+2026-04-19 00:06:08.240 INFO: Epoch 38: head: Default, loss=0.02215609, RMSE_E_per_atom=   40.08 meV, RMSE_F=   46.90 meV / A
+2026-04-19 00:07:56.820 INFO: Epoch 40: head: Default, loss=0.02310089, RMSE_E_per_atom=   39.69 meV, RMSE_F=   47.90 meV / A
+2026-04-19 00:09:45.071 INFO: Epoch 42: head: Default, loss=0.02071556, RMSE_E_per_atom=   42.27 meV, RMSE_F=   45.32 meV / A
+2026-04-19 00:09:45.071 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-28.pt
+2026-04-19 00:09:45.071 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-42.pt
+2026-04-19 00:11:30.287 INFO: Epoch 44: head: Default, loss=0.02984499, RMSE_E_per_atom=   44.93 meV, RMSE_F=   54.45 meV / A
+2026-04-19 00:13:16.573 INFO: Epoch 46: head: Default, loss=0.02131025, RMSE_E_per_atom=   39.58 meV, RMSE_F=   45.99 meV / A
+2026-04-19 00:15:07.228 INFO: Epoch 48: head: Default, loss=0.02307583, RMSE_E_per_atom=   39.64 meV, RMSE_F=   47.87 meV / A
+2026-04-19 00:16:53.536 INFO: Epoch 50: head: Default, loss=0.01996385, RMSE_E_per_atom=   41.56 meV, RMSE_F=   44.49 meV / A
+2026-04-19 00:16:53.538 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-42.pt
+2026-04-19 00:16:53.538 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-50.pt
+2026-04-19 00:18:39.876 INFO: Epoch 52: head: Default, loss=0.01962799, RMSE_E_per_atom=   38.77 meV, RMSE_F=   44.13 meV / A
+2026-04-19 00:18:39.876 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-50.pt
+2026-04-19 00:18:39.877 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-52.pt
+2026-04-19 00:20:29.937 INFO: Epoch 54: head: Default, loss=0.01962553, RMSE_E_per_atom=   38.74 meV, RMSE_F=   44.13 meV / A
+2026-04-19 00:20:29.937 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-52.pt
+2026-04-19 00:20:29.938 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-54.pt
+2026-04-19 00:22:16.472 INFO: Epoch 56: head: Default, loss=0.02208493, RMSE_E_per_atom=   38.89 meV, RMSE_F=   46.83 meV / A
+2026-04-19 00:24:02.563 INFO: Epoch 58: head: Default, loss=0.02194157, RMSE_E_per_atom=   41.63 meV, RMSE_F=   46.66 meV / A
+2026-04-19 00:25:50.468 INFO: Epoch 60: head: Default, loss=0.02568431, RMSE_E_per_atom=   42.17 meV, RMSE_F=   50.50 meV / A
+2026-04-19 00:27:39.252 INFO: Epoch 62: head: Default, loss=0.02075292, RMSE_E_per_atom=   38.54 meV, RMSE_F=   45.39 meV / A
+2026-04-19 00:29:25.611 INFO: Epoch 64: head: Default, loss=0.01949478, RMSE_E_per_atom=   39.50 meV, RMSE_F=   43.98 meV / A
+2026-04-19 00:29:25.611 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-54.pt
+2026-04-19 00:29:25.612 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-64.pt
+2026-04-19 00:31:12.196 INFO: Epoch 66: head: Default, loss=0.01938917, RMSE_E_per_atom=   38.19 meV, RMSE_F=   43.87 meV / A
+2026-04-19 00:31:12.197 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-64.pt
+2026-04-19 00:31:12.197 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-66.pt
+2026-04-19 00:33:03.142 INFO: Epoch 68: head: Default, loss=0.01875057, RMSE_E_per_atom=   39.66 meV, RMSE_F=   43.12 meV / A
+2026-04-19 00:33:03.142 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-66.pt
+2026-04-19 00:33:03.143 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-68.pt
+2026-04-19 00:34:49.445 INFO: Epoch 70: head: Default, loss=0.01904161, RMSE_E_per_atom=   39.24 meV, RMSE_F=   43.46 meV / A
+2026-04-19 00:36:36.016 INFO: Epoch 72: head: Default, loss=0.02361458, RMSE_E_per_atom=   41.97 meV, RMSE_F=   48.41 meV / A
+2026-04-19 00:38:26.593 INFO: Epoch 74: head: Default, loss=0.01997724, RMSE_E_per_atom=   39.78 meV, RMSE_F=   44.52 meV / A
+2026-04-19 00:40:13.917 INFO: Epoch 76: head: Default, loss=0.01889559, RMSE_E_per_atom=   38.87 meV, RMSE_F=   43.29 meV / A
+2026-04-19 00:42:00.686 INFO: Epoch 78: head: Default, loss=0.01770000, RMSE_E_per_atom=   38.93 meV, RMSE_F=   41.89 meV / A
+2026-04-19 00:42:00.687 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-68.pt
+2026-04-19 00:42:00.688 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-78.pt
+2026-04-19 00:43:51.448 INFO: Epoch 80: head: Default, loss=0.01957489, RMSE_E_per_atom=   37.66 meV, RMSE_F=   44.08 meV / A
+2026-04-19 00:45:37.624 INFO: Epoch 82: head: Default, loss=0.01935326, RMSE_E_per_atom=   39.66 meV, RMSE_F=   43.81 meV / A
+2026-04-19 00:47:23.494 INFO: Epoch 84: head: Default, loss=0.01809689, RMSE_E_per_atom=   38.92 meV, RMSE_F=   42.36 meV / A
+2026-04-19 00:49:10.505 INFO: Epoch 86: head: Default, loss=0.01858341, RMSE_E_per_atom=   39.32 meV, RMSE_F=   42.93 meV / A
+2026-04-19 00:51:00.664 INFO: Epoch 88: head: Default, loss=0.01810882, RMSE_E_per_atom=   38.35 meV, RMSE_F=   42.38 meV / A
+2026-04-19 00:52:46.695 INFO: Epoch 90: head: Default, loss=0.01845541, RMSE_E_per_atom=   38.23 meV, RMSE_F=   42.79 meV / A
+2026-04-19 00:54:33.060 INFO: Epoch 92: head: Default, loss=0.01874439, RMSE_E_per_atom=   38.97 meV, RMSE_F=   43.12 meV / A
+2026-04-19 00:56:24.487 INFO: Epoch 94: head: Default, loss=0.02014837, RMSE_E_per_atom=   39.54 meV, RMSE_F=   44.71 meV / A
+2026-04-19 00:58:10.273 INFO: Epoch 96: head: Default, loss=0.01783513, RMSE_E_per_atom=   38.43 meV, RMSE_F=   42.06 meV / A
+2026-04-19 00:59:56.009 INFO: Epoch 98: head: Default, loss=0.01761937, RMSE_E_per_atom=   37.91 meV, RMSE_F=   41.80 meV / A
+2026-04-19 00:59:56.010 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-78.pt
+2026-04-19 00:59:56.010 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-98.pt
+2026-04-19 01:01:46.608 INFO: Epoch 100: head: Default, loss=0.01771348, RMSE_E_per_atom=   38.24 meV, RMSE_F=   41.91 meV / A
+2026-04-19 01:03:33.339 INFO: Epoch 102: head: Default, loss=0.02086932, RMSE_E_per_atom=   39.44 meV, RMSE_F=   45.51 meV / A
+2026-04-19 01:05:19.266 INFO: Epoch 104: head: Default, loss=0.01885919, RMSE_E_per_atom=   39.29 meV, RMSE_F=   43.25 meV / A
+2026-04-19 01:07:10.003 INFO: Epoch 106: head: Default, loss=0.01845732, RMSE_E_per_atom=   39.00 meV, RMSE_F=   42.78 meV / A
+2026-04-19 01:08:56.112 INFO: Epoch 108: head: Default, loss=0.01852453, RMSE_E_per_atom=   39.05 meV, RMSE_F=   42.86 meV / A
+2026-04-19 01:10:41.874 INFO: Epoch 110: head: Default, loss=0.01762039, RMSE_E_per_atom=   38.19 meV, RMSE_F=   41.80 meV / A
+2026-04-19 01:12:28.466 INFO: Epoch 112: head: Default, loss=0.01764272, RMSE_E_per_atom=   38.11 meV, RMSE_F=   41.83 meV / A
+2026-04-19 01:14:19.532 INFO: Epoch 114: head: Default, loss=0.01829718, RMSE_E_per_atom=   37.78 meV, RMSE_F=   42.61 meV / A
+2026-04-19 01:16:05.790 INFO: Epoch 116: head: Default, loss=0.01742307, RMSE_E_per_atom=   38.16 meV, RMSE_F=   41.57 meV / A
+2026-04-19 01:16:05.791 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-98.pt
+2026-04-19 01:16:05.791 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-116.pt
+2026-04-19 01:17:52.045 INFO: Epoch 118: head: Default, loss=0.01746447, RMSE_E_per_atom=   38.56 meV, RMSE_F=   41.61 meV / A
+2026-04-19 01:19:43.687 INFO: Epoch 120: head: Default, loss=0.01830889, RMSE_E_per_atom=   38.56 meV, RMSE_F=   42.61 meV / A
+2026-04-19 01:21:30.045 INFO: Epoch 122: head: Default, loss=0.01813592, RMSE_E_per_atom=   38.56 meV, RMSE_F=   42.41 meV / A
+2026-04-19 01:23:15.432 INFO: Epoch 124: head: Default, loss=0.01812420, RMSE_E_per_atom=   38.71 meV, RMSE_F=   42.40 meV / A
+2026-04-19 01:25:01.959 INFO: Epoch 126: head: Default, loss=0.01750268, RMSE_E_per_atom=   38.15 meV, RMSE_F=   41.66 meV / A
+2026-04-19 01:26:53.219 INFO: Epoch 128: head: Default, loss=0.01758388, RMSE_E_per_atom=   38.27 meV, RMSE_F=   41.76 meV / A
+2026-04-19 01:28:39.704 INFO: Epoch 130: head: Default, loss=0.01740066, RMSE_E_per_atom=   37.93 meV, RMSE_F=   41.54 meV / A
+2026-04-19 01:28:39.705 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-116.pt
+2026-04-19 01:28:39.706 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-130.pt
+2026-04-19 01:30:26.067 INFO: Epoch 132: head: Default, loss=0.01717607, RMSE_E_per_atom=   38.13 meV, RMSE_F=   41.27 meV / A
+2026-04-19 01:30:26.069 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-130.pt
+2026-04-19 01:30:26.069 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-132.pt
+2026-04-19 01:32:16.834 INFO: Epoch 134: head: Default, loss=0.01694358, RMSE_E_per_atom=   38.38 meV, RMSE_F=   40.98 meV / A
+2026-04-19 01:32:16.836 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-132.pt
+2026-04-19 01:32:16.837 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-134.pt
+2026-04-19 01:34:04.260 INFO: Epoch 136: head: Default, loss=0.01740907, RMSE_E_per_atom=   38.08 meV, RMSE_F=   41.55 meV / A
+2026-04-19 01:35:51.406 INFO: Epoch 138: head: Default, loss=0.01723062, RMSE_E_per_atom=   38.20 meV, RMSE_F=   41.33 meV / A
+2026-04-19 01:37:39.042 INFO: Epoch 140: head: Default, loss=0.01732709, RMSE_E_per_atom=   38.31 meV, RMSE_F=   41.45 meV / A
+2026-04-19 01:39:28.866 INFO: Epoch 142: head: Default, loss=0.01759655, RMSE_E_per_atom=   38.70 meV, RMSE_F=   41.77 meV / A
+2026-04-19 01:41:15.955 INFO: Epoch 144: head: Default, loss=0.01719577, RMSE_E_per_atom=   38.24 meV, RMSE_F=   41.29 meV / A
+2026-04-19 01:43:02.328 INFO: Epoch 146: head: Default, loss=0.01687087, RMSE_E_per_atom=   38.26 meV, RMSE_F=   40.90 meV / A
+2026-04-19 01:43:02.329 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-134.pt
+2026-04-19 01:43:02.329 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-146.pt
+2026-04-19 01:44:54.166 INFO: Epoch 148: head: Default, loss=0.01755716, RMSE_E_per_atom=   38.42 meV, RMSE_F=   41.72 meV / A
+2026-04-19 01:46:42.049 INFO: Epoch 150: head: Default, loss=0.01720456, RMSE_E_per_atom=   38.29 meV, RMSE_F=   41.30 meV / A
+2026-04-19 01:48:28.754 INFO: Epoch 152: head: Default, loss=0.01732308, RMSE_E_per_atom=   38.20 meV, RMSE_F=   41.45 meV / A
+2026-04-19 01:50:20.855 INFO: Epoch 154: head: Default, loss=0.01728480, RMSE_E_per_atom=   38.04 meV, RMSE_F=   41.40 meV / A
+2026-04-19 01:52:07.104 INFO: Epoch 156: head: Default, loss=0.01727681, RMSE_E_per_atom=   38.01 meV, RMSE_F=   41.39 meV / A
+2026-04-19 01:53:54.571 INFO: Epoch 158: head: Default, loss=0.01703134, RMSE_E_per_atom=   38.14 meV, RMSE_F=   41.09 meV / A
+2026-04-19 01:55:42.263 INFO: Epoch 160: head: Default, loss=0.01743721, RMSE_E_per_atom=   37.98 meV, RMSE_F=   41.58 meV / A
+2026-04-19 01:57:33.468 INFO: Epoch 162: head: Default, loss=0.01723663, RMSE_E_per_atom=   38.48 meV, RMSE_F=   41.34 meV / A
+2026-04-19 01:59:19.905 INFO: Epoch 164: head: Default, loss=0.01696908, RMSE_E_per_atom=   38.35 meV, RMSE_F=   41.01 meV / A
+2026-04-19 02:01:05.924 INFO: Epoch 166: head: Default, loss=0.01745056, RMSE_E_per_atom=   38.47 meV, RMSE_F=   41.60 meV / A
+2026-04-19 02:02:57.273 INFO: Epoch 168: head: Default, loss=0.01706876, RMSE_E_per_atom=   38.32 meV, RMSE_F=   41.14 meV / A
+2026-04-19 02:04:44.055 INFO: Epoch 170: head: Default, loss=0.01730318, RMSE_E_per_atom=   38.47 meV, RMSE_F=   41.42 meV / A
+2026-04-19 02:06:30.820 INFO: Epoch 172: head: Default, loss=0.01698537, RMSE_E_per_atom=   38.26 meV, RMSE_F=   41.04 meV / A
+2026-04-19 02:08:19.172 INFO: Epoch 174: head: Default, loss=0.01699333, RMSE_E_per_atom=   38.31 meV, RMSE_F=   41.04 meV / A
+2026-04-19 02:10:09.684 INFO: Epoch 176: head: Default, loss=0.01698344, RMSE_E_per_atom=   38.21 meV, RMSE_F=   41.03 meV / A
+2026-04-19 02:11:56.262 INFO: Epoch 178: head: Default, loss=0.01696303, RMSE_E_per_atom=   38.34 meV, RMSE_F=   41.01 meV / A
+2026-04-19 02:13:43.676 INFO: Epoch 180: head: Default, loss=0.01695505, RMSE_E_per_atom=   38.15 meV, RMSE_F=   41.00 meV / A
+2026-04-19 02:15:34.984 INFO: Epoch 182: head: Default, loss=0.01705023, RMSE_E_per_atom=   38.27 meV, RMSE_F=   41.11 meV / A
+2026-04-19 02:17:21.339 INFO: Epoch 184: head: Default, loss=0.01693392, RMSE_E_per_atom=   38.38 meV, RMSE_F=   40.97 meV / A
+2026-04-19 02:19:08.049 INFO: Epoch 186: head: Default, loss=0.01700825, RMSE_E_per_atom=   38.42 meV, RMSE_F=   41.06 meV / A
+2026-04-19 02:20:55.510 INFO: Epoch 188: head: Default, loss=0.01689956, RMSE_E_per_atom=   38.22 meV, RMSE_F=   40.93 meV / A
+2026-04-19 02:22:46.533 INFO: Epoch 190: head: Default, loss=0.01691398, RMSE_E_per_atom=   38.29 meV, RMSE_F=   40.95 meV / A
+2026-04-19 02:24:33.081 INFO: Epoch 192: head: Default, loss=0.01697450, RMSE_E_per_atom=   38.34 meV, RMSE_F=   41.02 meV / A
+2026-04-19 02:26:19.653 INFO: Epoch 194: head: Default, loss=0.01687559, RMSE_E_per_atom=   38.28 meV, RMSE_F=   40.90 meV / A
+2026-04-19 02:28:11.374 INFO: Epoch 196: head: Default, loss=0.01689101, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.92 meV / A
+2026-04-19 02:29:59.386 INFO: Epoch 198: head: Default, loss=0.01693412, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.97 meV / A
+2026-04-19 02:31:45.819 INFO: Epoch 200: head: Default, loss=0.01702981, RMSE_E_per_atom=   38.34 meV, RMSE_F=   41.09 meV / A
+2026-04-19 02:33:32.526 INFO: Epoch 202: head: Default, loss=0.01688281, RMSE_E_per_atom=   38.22 meV, RMSE_F=   40.91 meV / A
+2026-04-19 02:35:25.013 INFO: Epoch 204: head: Default, loss=0.01693248, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 02:37:12.585 INFO: Epoch 206: head: Default, loss=0.01694946, RMSE_E_per_atom=   38.28 meV, RMSE_F=   40.99 meV / A
+2026-04-19 02:38:59.482 INFO: Epoch 208: head: Default, loss=0.01699987, RMSE_E_per_atom=   38.34 meV, RMSE_F=   41.05 meV / A
+2026-04-19 02:40:51.934 INFO: Epoch 210: head: Default, loss=0.01693528, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.97 meV / A
+2026-04-19 02:42:38.189 INFO: Epoch 212: head: Default, loss=0.01690449, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.94 meV / A
+2026-04-19 02:44:25.644 INFO: Epoch 214: head: Default, loss=0.01692655, RMSE_E_per_atom=   38.30 meV, RMSE_F=   40.96 meV / A
+2026-04-19 02:46:13.084 INFO: Epoch 216: head: Default, loss=0.01698250, RMSE_E_per_atom=   38.35 meV, RMSE_F=   41.03 meV / A
+2026-04-19 02:48:05.911 INFO: Epoch 218: head: Default, loss=0.01687969, RMSE_E_per_atom=   38.29 meV, RMSE_F=   40.91 meV / A
+2026-04-19 02:49:53.336 INFO: Epoch 220: head: Default, loss=0.01693746, RMSE_E_per_atom=   38.30 meV, RMSE_F=   40.98 meV / A
+2026-04-19 02:51:40.843 INFO: Epoch 222: head: Default, loss=0.01693642, RMSE_E_per_atom=   38.30 meV, RMSE_F=   40.98 meV / A
+2026-04-19 02:53:33.039 INFO: Epoch 224: head: Default, loss=0.01693516, RMSE_E_per_atom=   38.28 meV, RMSE_F=   40.97 meV / A
+2026-04-19 02:55:20.696 INFO: Epoch 226: head: Default, loss=0.01691817, RMSE_E_per_atom=   38.30 meV, RMSE_F=   40.95 meV / A
+2026-04-19 02:57:07.728 INFO: Epoch 228: head: Default, loss=0.01693820, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.98 meV / A
+2026-04-19 02:58:57.861 INFO: Epoch 230: head: Default, loss=0.01694259, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.98 meV / A
+2026-04-19 03:00:46.419 INFO: Epoch 232: head: Default, loss=0.01695620, RMSE_E_per_atom=   38.33 meV, RMSE_F=   41.00 meV / A
+2026-04-19 03:02:33.633 INFO: Epoch 234: head: Default, loss=0.01693167, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:04:22.511 INFO: Epoch 236: head: Default, loss=0.01691403, RMSE_E_per_atom=   38.30 meV, RMSE_F=   40.95 meV / A
+2026-04-19 03:06:13.584 INFO: Epoch 238: head: Default, loss=0.01692703, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:08:01.378 INFO: Epoch 240: head: Default, loss=0.01693337, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:09:48.834 INFO: Epoch 242: head: Default, loss=0.01693664, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.98 meV / A
+2026-04-19 03:11:41.419 INFO: Epoch 244: head: Default, loss=0.01692474, RMSE_E_per_atom=   38.30 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:13:29.662 INFO: Epoch 246: head: Default, loss=0.01693150, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:15:17.052 INFO: Epoch 248: head: Default, loss=0.01693523, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:17:09.329 INFO: Epoch 250: head: Default, loss=0.01694213, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.98 meV / A
+2026-04-19 03:18:57.686 INFO: Epoch 252: head: Default, loss=0.01694493, RMSE_E_per_atom=   38.33 meV, RMSE_F=   40.99 meV / A
+2026-04-19 03:20:45.028 INFO: Epoch 254: head: Default, loss=0.01692362, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:22:37.409 INFO: Epoch 256: head: Default, loss=0.01692442, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:24:25.066 INFO: Epoch 258: head: Default, loss=0.01692626, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:26:12.854 INFO: Epoch 260: head: Default, loss=0.01692598, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:28:04.552 INFO: Epoch 262: head: Default, loss=0.01692249, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:29:53.169 INFO: Epoch 264: head: Default, loss=0.01693524, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:31:40.521 INFO: Epoch 266: head: Default, loss=0.01693278, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:33:28.560 INFO: Epoch 268: head: Default, loss=0.01693462, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:35:21.707 INFO: Epoch 270: head: Default, loss=0.01692939, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:37:09.994 INFO: Epoch 272: head: Default, loss=0.01693552, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:38:57.905 INFO: Epoch 274: head: Default, loss=0.01692974, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:40:50.303 INFO: Epoch 276: head: Default, loss=0.01692374, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:42:37.516 INFO: Epoch 278: head: Default, loss=0.01693201, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:44:25.300 INFO: Epoch 280: head: Default, loss=0.01692616, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:46:18.345 INFO: Epoch 282: head: Default, loss=0.01692532, RMSE_E_per_atom=   38.31 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:48:06.099 INFO: Epoch 284: head: Default, loss=0.01692667, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:49:55.334 INFO: Epoch 286: head: Default, loss=0.01692788, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:51:43.129 INFO: Epoch 288: head: Default, loss=0.01692851, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 03:53:29.919 INFO: Epoch 290: head: Default, loss=0.01692489, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:55:16.971 INFO: Epoch 292: head: Default, loss=0.01692682, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:57:03.405 INFO: Epoch 294: head: Default, loss=0.01692662, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 03:58:56.692 INFO: Epoch 296: head: Default, loss=0.01692616, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:00:42.836 INFO: Epoch 298: head: Default, loss=0.01692922, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:02:29.157 INFO: Epoch 300: head: Default, loss=0.01692757, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:04:16.358 INFO: Epoch 302: head: Default, loss=0.01692802, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:06:07.294 INFO: Epoch 304: head: Default, loss=0.01692720, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:07:53.597 INFO: Epoch 306: head: Default, loss=0.01692903, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:09:39.871 INFO: Epoch 308: head: Default, loss=0.01692850, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:11:31.039 INFO: Epoch 310: head: Default, loss=0.01693024, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:13:18.002 INFO: Epoch 312: head: Default, loss=0.01692866, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:15:05.126 INFO: Epoch 314: head: Default, loss=0.01692840, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:16:54.014 INFO: Epoch 316: head: Default, loss=0.01692861, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:18:43.676 INFO: Epoch 318: head: Default, loss=0.01692717, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:20:30.357 INFO: Epoch 320: head: Default, loss=0.01692704, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:22:17.250 INFO: Epoch 322: head: Default, loss=0.01692761, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:24:09.414 INFO: Epoch 324: head: Default, loss=0.01692778, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:25:56.666 INFO: Epoch 326: head: Default, loss=0.01692819, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:27:43.632 INFO: Epoch 328: head: Default, loss=0.01692757, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:29:35.832 INFO: Epoch 330: head: Default, loss=0.01692695, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:31:21.986 INFO: Epoch 332: head: Default, loss=0.01692781, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:33:08.423 INFO: Epoch 334: head: Default, loss=0.01692863, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:34:54.872 INFO: Epoch 336: head: Default, loss=0.01692739, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:36:46.525 INFO: Epoch 338: head: Default, loss=0.01692815, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:38:33.797 INFO: Epoch 340: head: Default, loss=0.01692836, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:40:20.704 INFO: Epoch 342: head: Default, loss=0.01692810, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.96 meV / A
+2026-04-19 04:42:11.408 INFO: Epoch 344: head: Default, loss=0.01692850, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:43:58.493 INFO: Epoch 346: head: Default, loss=0.01692827, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:45:45.569 INFO: Epoch 348: head: Default, loss=0.01692861, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:47:32.455 INFO: Epoch 350: head: Default, loss=0.01692875, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:49:24.018 INFO: Epoch 352: head: Default, loss=0.01692858, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:51:10.865 INFO: Epoch 354: head: Default, loss=0.01692859, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:52:57.681 INFO: Epoch 356: head: Default, loss=0.01692830, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:54:47.767 INFO: Epoch 358: head: Default, loss=0.01692829, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:56:35.853 INFO: Epoch 360: head: Default, loss=0.01692833, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 04:58:22.538 INFO: Epoch 362: head: Default, loss=0.01692826, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:00:08.863 INFO: Epoch 364: head: Default, loss=0.01692828, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:02:01.237 INFO: Epoch 366: head: Default, loss=0.01692822, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:03:48.051 INFO: Epoch 368: head: Default, loss=0.01692851, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:05:35.601 INFO: Epoch 370: head: Default, loss=0.01692844, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:07:26.565 INFO: Epoch 372: head: Default, loss=0.01692821, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:09:13.071 INFO: Epoch 374: head: Default, loss=0.01692832, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:10:59.749 INFO: Epoch 376: head: Default, loss=0.01692828, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:12:51.149 INFO: Epoch 378: head: Default, loss=0.01692836, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:14:37.775 INFO: Epoch 380: head: Default, loss=0.01692830, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:16:24.789 INFO: Epoch 382: head: Default, loss=0.01692836, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:18:15.215 INFO: Epoch 384: head: Default, loss=0.01692831, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:20:02.919 INFO: Epoch 386: head: Default, loss=0.01692838, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:21:50.149 INFO: Epoch 388: head: Default, loss=0.01692834, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:23:37.054 INFO: Epoch 390: head: Default, loss=0.01692845, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:25:29.794 INFO: Epoch 392: head: Default, loss=0.01692829, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:27:16.629 INFO: Epoch 394: head: Default, loss=0.01692836, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:29:02.946 INFO: Epoch 396: head: Default, loss=0.01692835, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:30:54.198 INFO: Epoch 398: head: Default, loss=0.01692832, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:32:41.569 INFO: Epoch 400: head: Default, loss=0.01692836, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:34:28.402 INFO: Epoch 402: head: Default, loss=0.01692834, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:36:15.850 INFO: Epoch 404: head: Default, loss=0.01692830, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:38:07.440 INFO: Epoch 406: head: Default, loss=0.01692829, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:39:54.721 INFO: Epoch 408: head: Default, loss=0.01692833, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:41:41.295 INFO: Epoch 410: head: Default, loss=0.01692829, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:43:30.258 INFO: Epoch 412: head: Default, loss=0.01692829, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:45:19.808 INFO: Epoch 414: head: Default, loss=0.01692828, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:47:06.167 INFO: Epoch 416: head: Default, loss=0.01692830, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:48:52.759 INFO: Epoch 418: head: Default, loss=0.01692835, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:50:43.764 INFO: Epoch 420: head: Default, loss=0.01692828, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:52:30.230 INFO: Epoch 422: head: Default, loss=0.01692831, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:54:17.111 INFO: Epoch 424: head: Default, loss=0.01692830, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:56:08.311 INFO: Epoch 426: head: Default, loss=0.01692831, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:57:56.072 INFO: Epoch 428: head: Default, loss=0.01692833, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 05:59:42.578 INFO: Epoch 430: head: Default, loss=0.01692829, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:01:29.265 INFO: Epoch 432: head: Default, loss=0.01692833, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:03:21.020 INFO: Epoch 434: head: Default, loss=0.01692827, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:05:07.790 INFO: Epoch 436: head: Default, loss=0.01692824, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:06:55.608 INFO: Epoch 438: head: Default, loss=0.01692826, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:08:47.241 INFO: Epoch 440: head: Default, loss=0.01692826, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:10:33.921 INFO: Epoch 442: head: Default, loss=0.01692821, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:12:21.063 INFO: Epoch 444: head: Default, loss=0.01692820, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:14:12.751 INFO: Epoch 446: head: Default, loss=0.01692831, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:16:00.202 INFO: Epoch 448: head: Default, loss=0.01692828, RMSE_E_per_atom=   38.32 meV, RMSE_F=   40.97 meV / A
+2026-04-19 06:16:52.746 INFO: Changing loss based on Stage Two Weights
+2026-04-19 06:17:47.591 INFO: Epoch 450: head: Default, loss=0.11850210, RMSE_E_per_atom=   28.67 meV, RMSE_F=   60.24 meV / A
+2026-04-19 06:17:47.591 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-450_swa.pt
+2026-04-19 06:19:34.619 INFO: Epoch 452: head: Default, loss=0.10214748, RMSE_E_per_atom=   24.91 meV, RMSE_F=   63.33 meV / A
+2026-04-19 06:19:34.620 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-450_swa.pt
+2026-04-19 06:19:34.621 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-452_swa.pt
+2026-04-19 06:21:26.093 INFO: Epoch 454: head: Default, loss=0.08949666, RMSE_E_per_atom=   22.79 meV, RMSE_F=   61.27 meV / A
+2026-04-19 06:21:26.095 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-452_swa.pt
+2026-04-19 06:21:26.095 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-454_swa.pt
+2026-04-19 06:23:12.698 INFO: Epoch 456: head: Default, loss=0.09111458, RMSE_E_per_atom=   21.30 meV, RMSE_F=   67.64 meV / A
+2026-04-19 06:24:59.788 INFO: Epoch 458: head: Default, loss=0.09094838, RMSE_E_per_atom=   22.88 meV, RMSE_F=   62.14 meV / A
+2026-04-19 06:26:51.285 INFO: Epoch 460: head: Default, loss=0.08497106, RMSE_E_per_atom=   21.45 meV, RMSE_F=   62.42 meV / A
+2026-04-19 06:26:51.286 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-454_swa.pt
+2026-04-19 06:26:51.287 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-460_swa.pt
+2026-04-19 06:28:38.142 INFO: Epoch 462: head: Default, loss=0.08622994, RMSE_E_per_atom=   21.50 meV, RMSE_F=   63.24 meV / A
+2026-04-19 06:30:25.437 INFO: Epoch 464: head: Default, loss=0.08313722, RMSE_E_per_atom=   20.86 meV, RMSE_F=   62.96 meV / A
+2026-04-19 06:30:25.438 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-460_swa.pt
+2026-04-19 06:30:25.439 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-464_swa.pt
+2026-04-19 06:32:12.473 INFO: Epoch 466: head: Default, loss=0.08175569, RMSE_E_per_atom=   20.52 meV, RMSE_F=   62.98 meV / A
+2026-04-19 06:32:12.474 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-464_swa.pt
+2026-04-19 06:32:12.474 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-466_swa.pt
+2026-04-19 06:34:04.551 INFO: Epoch 468: head: Default, loss=0.08309345, RMSE_E_per_atom=   20.92 meV, RMSE_F=   62.70 meV / A
+2026-04-19 06:35:52.614 INFO: Epoch 470: head: Default, loss=0.08224447, RMSE_E_per_atom=   20.81 meV, RMSE_F=   62.41 meV / A
+2026-04-19 06:37:39.994 INFO: Epoch 472: head: Default, loss=0.08519611, RMSE_E_per_atom=   19.80 meV, RMSE_F=   67.81 meV / A
+2026-04-19 06:39:27.246 INFO: Epoch 474: head: Default, loss=0.08088214, RMSE_E_per_atom=   20.31 meV, RMSE_F=   62.94 meV / A
+2026-04-19 06:39:27.247 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-466_swa.pt
+2026-04-19 06:39:27.247 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-474_swa.pt
+2026-04-19 06:41:18.750 INFO: Epoch 476: head: Default, loss=0.08149168, RMSE_E_per_atom=   20.65 meV, RMSE_F=   62.32 meV / A
+2026-04-19 06:43:05.570 INFO: Epoch 478: head: Default, loss=0.08617342, RMSE_E_per_atom=   21.07 meV, RMSE_F=   64.64 meV / A
+2026-04-19 06:44:53.181 INFO: Epoch 480: head: Default, loss=0.08082930, RMSE_E_per_atom=   20.30 meV, RMSE_F=   62.94 meV / A
+2026-04-19 06:44:53.181 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-474_swa.pt
+2026-04-19 06:44:53.182 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-480_swa.pt
+2026-04-19 06:46:45.224 INFO: Epoch 482: head: Default, loss=0.07821322, RMSE_E_per_atom=   20.25 meV, RMSE_F=   60.99 meV / A
+2026-04-19 06:46:45.224 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-480_swa.pt
+2026-04-19 06:46:45.225 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-482_swa.pt
+2026-04-19 06:48:32.240 INFO: Epoch 484: head: Default, loss=0.08066617, RMSE_E_per_atom=   20.16 meV, RMSE_F=   63.28 meV / A
+2026-04-19 06:50:18.773 INFO: Epoch 486: head: Default, loss=0.07839548, RMSE_E_per_atom=   19.98 meV, RMSE_F=   62.04 meV / A
+2026-04-19 06:52:08.260 INFO: Epoch 488: head: Default, loss=0.08120227, RMSE_E_per_atom=   19.53 meV, RMSE_F=   65.63 meV / A
+2026-04-19 06:53:57.062 INFO: Epoch 490: head: Default, loss=0.07756947, RMSE_E_per_atom=   19.59 meV, RMSE_F=   62.61 meV / A
+2026-04-19 06:53:57.063 DEBUG: Deleting old checkpoint file: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-482_swa.pt
+2026-04-19 06:53:57.063 DEBUG: Saving checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-490_swa.pt
+2026-04-19 06:55:44.224 INFO: Epoch 492: head: Default, loss=0.08068854, RMSE_E_per_atom=   20.09 meV, RMSE_F=   63.50 meV / A
+2026-04-19 06:57:31.326 INFO: Epoch 494: head: Default, loss=0.07762528, RMSE_E_per_atom=   20.10 meV, RMSE_F=   61.03 meV / A
+2026-04-19 06:59:22.863 INFO: Epoch 496: head: Default, loss=0.07891013, RMSE_E_per_atom=   19.23 meV, RMSE_F=   64.75 meV / A
+2026-04-19 07:01:09.574 INFO: Epoch 498: head: Default, loss=0.07918116, RMSE_E_per_atom=   20.88 meV, RMSE_F=   59.64 meV / A
+2026-04-19 07:02:02.160 INFO: Training complete
+2026-04-19 07:02:02.160 INFO: 
+2026-04-19 07:02:02.160 INFO: ===========RESULTS===========
+2026-04-19 07:02:02.160 INFO: Loading checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-146.pt
+2026-04-19 07:02:02.176 INFO: Loaded Stage one model from epoch 146 for evaluation
+2026-04-19 07:02:02.176 INFO: Saving model to /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42.model
+2026-04-19 07:02:02.284 INFO: Compiling model, saving metadata to mace_mvko_compiled.model
+2026-04-19 07:02:02.746 INFO: Computing metrics for training, validation, and test sets
+2026-04-19 07:02:02.747 INFO: Skipping evaluation for heads: ['pt_head']
+2026-04-19 07:02:02.747 INFO: Evaluating train_Default ...
+2026-04-19 07:02:23.481 INFO: Evaluating valid_Default ...
+2026-04-19 07:02:25.168 INFO: Error-table on TRAIN and VALID:
++---------------+---------------------+------------------+-------------------+
+|  config_type  | RMSE E / meV / atom | RMSE F / meV / A | relative F RMSE % |
++---------------+---------------------+------------------+-------------------+
+| train_Default |           38.4      |         36.2     |         12.16     |
+| valid_Default |           38.3      |         40.9     |         14.78     |
++---------------+---------------------+------------------+-------------------+
+2026-04-19 07:02:25.168 DEBUG: Running inference on train_Default dataset
+2026-04-19 07:02:46.092 DEBUG: Running inference on valid_Default dataset
+2026-04-19 07:02:49.680 INFO: Loading checkpoint: /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_epoch-490_swa.pt
+2026-04-19 07:02:49.688 INFO: Loaded Stage two model from epoch 490 for evaluation
+2026-04-19 07:02:49.689 INFO: Saving model to /Users/jmsmith1/Documents/Research/code/MD_MLPES/outputs/mace_wB97X_ch_fine_20260418/mace_mvko_run-42_stagetwo.model
+2026-04-19 07:02:49.790 INFO: Compiling model, saving metadata mace_mvko_stagetwo_compiled.model
+2026-04-19 07:02:50.096 INFO: Computing metrics for training, validation, and test sets
+2026-04-19 07:02:50.097 INFO: Skipping evaluation for heads: ['pt_head']
+2026-04-19 07:02:50.097 INFO: Evaluating train_Default ...
+2026-04-19 07:03:10.811 INFO: Evaluating valid_Default ...
+2026-04-19 07:03:12.439 INFO: Error-table on TRAIN and VALID:
++---------------+---------------------+------------------+-------------------+
+|  config_type  | RMSE E / meV / atom | RMSE F / meV / A | relative F RMSE % |
++---------------+---------------------+------------------+-------------------+
+| train_Default |           21.9      |         58.0     |         19.42     |
+| valid_Default |           19.6      |         62.6     |         22.63     |
++---------------+---------------------+------------------+-------------------+
+2026-04-19 07:03:12.440 DEBUG: Running inference on train_Default dataset
+2026-04-19 07:03:33.065 DEBUG: Running inference on valid_Default dataset
+2026-04-19 07:03:35.683 INFO: Done

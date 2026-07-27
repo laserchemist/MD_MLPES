@@ -1,0 +1,30 @@
+PSI4 1.10 available
+Loaded 904 training frames from outputs/mvko_20260319_081314/combined_training_data.npz
+Selected 150 frames for dipole collection
+  Frame 10/150  idx=31  |μ|=4.4953 D  [130s elapsed, 13.0s/frame]
+  Frame 20/150  idx=81  |μ|=4.3679 D  [233s elapsed, 11.6s/frame]
+  Frame 30/150  idx=131  |μ|=4.3757 D  [335s elapsed, 11.2s/frame]
+  Frame 40/150  idx=171  |μ|=4.3970 D  [437s elapsed, 10.9s/frame]
+  Frame 50/150  idx=217  |μ|=4.3993 D  [540s elapsed, 10.8s/frame]
+  Frame 60/150  idx=263  |μ|=4.3663 D  [642s elapsed, 10.7s/frame]
+  Frame 70/150  idx=382  |μ|=4.9293 D  [745s elapsed, 10.6s/frame]
+  Frame 80/150  idx=491  |μ|=4.5534 D  [849s elapsed, 10.6s/frame]
+  Frame 90/150  idx=639  |μ|=5.0287 D  [950s elapsed, 10.6s/frame]
+  Frame 100/150  idx=709  |μ|=4.3850 D  [1055s elapsed, 10.5s/frame]
+  Frame 110/150  idx=779  |μ|=5.4037 D  [1157s elapsed, 10.5s/frame]
+  Frame 120/150  idx=801  |μ|=5.1619 D  [1254s elapsed, 10.5s/frame]
+  Frame 130/150  idx=842  |μ|=5.1900 D  [1356s elapsed, 10.4s/frame]
+  Frame 140/150  idx=884  |μ|=4.3195 D  [1459s elapsed, 10.4s/frame]
+  Frame 150/150  idx=903  |μ|=4.1406 D  [1561s elapsed, 10.4s/frame]
+
+  150/150 frames with valid dipoles
+  Dipole magnitudes: min=2.9706  max=5.6086  mean=4.6302 D
+
+Saved to outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz
+
+Run IR spectrum with:
+  python3 ir_md_spectrum.py \
+    --model outputs/mvko_20260319_081314/mlpes_initial.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --timestep 0.5 --save-every 1 \
+    --preminimize --zpe-min-freq 50 --zpe-max-freq 4000

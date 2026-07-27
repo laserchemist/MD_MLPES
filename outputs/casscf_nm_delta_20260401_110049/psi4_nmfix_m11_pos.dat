@@ -1,0 +1,468 @@
+
+  Memory set to   5.588 GiB by Python driver.
+  Threads set to 4 by Python driver.
+
+Scratch directory: /tmp/
+   => Libint2 <=
+
+    Primary   basis highest AM E, G, H:  6, 6, 3
+    Auxiliary basis highest AM E, G, H:  7, 7, 4
+    Onebody   basis highest AM E, G, H:  -, -, -
+    Solid Harmonics ordering:            Gaussian
+
+*** tstart() called on cst14372
+*** at Wed Apr  1 12:22:33 2026
+
+   => Loading Basis Set <=
+
+    Name: 6-31G*
+    Role: ORBITAL
+    Keyword: BASIS
+    atoms 1, 4-6 entry C          line   111 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/6-31gs.gbs 
+    atoms 2-3    entry O          line   145 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/6-31gs.gbs 
+    atoms 7-12   entry H          line    44 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/6-31gs.gbs 
+
+
+         ---------------------------------------------------------
+                                   SCF
+               by Justin Turney, Rob Parrish, Andy Simmonett
+                          and Daniel G. A. Smith
+                              RHF Reference
+                        4 Threads,   5722 MiB Core
+         ---------------------------------------------------------
+
+  ==> Geometry <==
+
+    Molecular point group: c1
+    Full point group: C1
+
+    Geometry (in Angstrom), charge = 0, multiplicity = 1:
+
+       Center              X                  Y                   Z               Mass       
+    ------------   -----------------  -----------------  -----------------  -----------------
+         C            0.004751352100     0.029288959500     0.000432626400    12.000000000000
+         O            1.284148212900    -0.127771848600     0.000047774400    15.994914619570
+         O            2.120460640700     0.945866808500    -0.000133084000    15.994914619570
+         C           -0.689101259300     1.288483874200    -0.005479159300    12.000000000000
+         C           -0.145935230100     2.526361922800     0.017162751000    12.000000000000
+         C           -0.746150111900    -1.269626727200    -0.000204231200    12.000000000000
+         H           -1.773060473000     1.186124810100     0.000635510600     1.007825032230
+         H            0.924709068500     2.663862327400    -0.072137580400     1.007825032230
+         H           -0.800603510000     3.394839716900    -0.070222290500     1.007825032230
+         H           -0.048154677400    -2.109264826600     0.000479493000     1.007825032230
+         H           -1.391945318200    -1.343952657200     0.883601468300     1.007825032230
+         H           -1.393118254200    -1.346211674800    -0.882950294300     1.007825032230
+
+  Running in c1 symmetry.
+
+  Rotational constants: A =      0.15733  B =      0.09672  C =      0.06058 [cm^-1]
+  Rotational constants: A =   4716.74661  B =   2899.52159  C =   1816.14816 [MHz]
+  Nuclear repulsion =  226.948982908617438
+
+  Charge       = 0
+  Multiplicity = 1
+  Electrons    = 46
+  Nalpha       = 23
+  Nbeta        = 23
+
+  ==> Algorithm <==
+
+  SCF Algorithm Type is DF.
+  DIIS enabled.
+  MOM disabled.
+  Fractional occupation disabled.
+  Guess Type is SAD.
+  Energy threshold   = 1.00e-08
+  Density threshold  = 1.00e-08
+  Integral threshold = 1.00e-12
+
+  ==> Primary Basis <==
+
+  Basis Set: 6-31G*
+    Blend: 6-31G*
+    Number of shells: 48
+    Number of basis functions: 102
+    Number of Cartesian functions: 102
+    Spherical Harmonics?: false
+    Max angular momentum: 2
+
+   => Loading Basis Set <=
+
+    Name: (6-31G* AUX)
+    Role: JKFIT
+    Keyword: DF_BASIS_SCF
+    atoms 1, 4-6 entry C          line   121 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/cc-pvdz-jkfit.gbs 
+    atoms 2-3    entry O          line   221 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/cc-pvdz-jkfit.gbs 
+    atoms 7-12   entry H          line    51 file /Users/jmsmith1/anaconda3/envs/jupyterenv/share/psi4/basis/cc-pvdz-jkfit.gbs 
+
+  ==> Integral Setup <==
+
+  DFHelper Memory: AOs need 0.054 GiB; user supplied 4.191 GiB. 
+  SCF_SUBTYPE=INCORE selected. In-core MEM_DF algorithm will be used.
+  Using in-core AOs.
+
+  ==> MemDFJK: Density-Fitted J/K Matrices <==
+
+    J tasked:                   Yes
+    K tasked:                   Yes
+    wK tasked:                   No
+    OpenMP threads:               4
+    Memory [MiB]:              4291
+    Algorithm:                 Core
+    Schwarz Cutoff:           1E-12
+    Mask sparsity (%):       0.9419
+    Fitting Condition:        1E-10
+
+   => Auxiliary Basis Set <=
+
+  Basis Set: (6-31G* AUX)
+    Blend: CC-PVDZ-JKFIT
+    Number of shells: 198
+    Number of basis functions: 636
+    Number of Cartesian functions: 636
+    Spherical Harmonics?: false
+    Max angular momentum: 3
+
+  Minimum eigenvalue in the overlap matrix is 2.8207125209E-03.
+  Reciprocal condition number of the overlap matrix is 4.0743342599E-04.
+    Using symmetric orthogonalization.
+
+  ==> Pre-Iterations <==
+
+  SCF Guess: Superposition of Atomic Densities via on-the-fly atomic UHF (no occupation information).
+
+   -------------------------
+    Irrep   Nso     Nmo    
+   -------------------------
+     A        102     102 
+   -------------------------
+    Total     102     102
+   -------------------------
+
+  ==> Iterations <==
+
+                           Total Energy        Delta E     RMS |[F,P]|
+
+   @DF-RHF iter SAD:  -299.95857688447597   -2.99959e+02   0.00000e+00 
+   @DF-RHF iter   1:  -297.88387762828552    2.07470e+00   3.06262e-02 DIIS/ADIIS
+   @DF-RHF iter   2:  -288.98385850895369    8.90002e+00   5.06368e-02 DIIS/ADIIS
+   @DF-RHF iter   3:  -303.87425915502513   -1.48904e+01   1.15395e-02 DIIS/ADIIS
+   @DF-RHF iter   4:  -304.42238120936895   -5.48122e-01   3.69920e-03 DIIS/ADIIS
+   @DF-RHF iter   5:  -304.48579118889944   -6.34100e-02   7.34915e-04 DIIS/ADIIS
+   @DF-RHF iter   6:  -304.49072940088473   -4.93821e-03   3.24809e-04 DIIS/ADIIS
+   @DF-RHF iter   7:  -304.49215941108451   -1.43001e-03   1.61713e-04 DIIS/ADIIS
+   @DF-RHF iter   8:  -304.49254893579467   -3.89525e-04   5.48937e-05 DIIS
+   @DF-RHF iter   9:  -304.49259990117667   -5.09654e-05   1.49864e-05 DIIS
+   @DF-RHF iter  10:  -304.49260306055180   -3.15938e-06   8.03204e-06 DIIS
+   @DF-RHF iter  11:  -304.49260371439323   -6.53841e-07   3.07091e-06 DIIS
+   @DF-RHF iter  12:  -304.49260389978809   -1.85395e-07   1.69525e-06 DIIS
+   @DF-RHF iter  13:  -304.49260393542420   -3.56361e-08   3.33044e-07 DIIS
+   @DF-RHF iter  14:  -304.49260393711933   -1.69513e-09   1.20877e-07 DIIS
+   @DF-RHF iter  15:  -304.49260393740161   -2.82284e-10   5.14872e-08 DIIS
+   @DF-RHF iter  16:  -304.49260393745084   -4.92264e-11   1.78426e-08 DIIS
+   @DF-RHF iter  17:  -304.49260393746056   -9.72022e-12   4.76942e-09 DIIS
+  Energy and wave function converged.
+
+
+  ==> Post-Iterations <==
+
+    Orbital Energies [Eh]
+    ---------------------
+
+    Doubly Occupied:                                                      
+
+       1A    -20.676269     2A    -20.500417     3A    -11.375744  
+       4A    -11.283399     5A    -11.265725     6A    -11.265397  
+       7A     -1.503841     8A     -1.174997     9A     -1.089395  
+      10A     -1.017053    11A     -0.889076    12A     -0.772513  
+      13A     -0.690529    14A     -0.670465    15A     -0.653103  
+      16A     -0.634027    17A     -0.583310    18A     -0.576506  
+      19A     -0.568997    20A     -0.520924    21A     -0.422250  
+      22A     -0.378577    23A     -0.346236  
+
+    Virtual:                                                              
+
+      24A      0.051236    25A      0.206478    26A      0.222128  
+      27A      0.249415    28A      0.275811    29A      0.308184  
+      30A      0.317904    31A      0.329570    32A      0.373757  
+      33A      0.407810    34A      0.466829    35A      0.483612  
+      36A      0.551238    37A      0.669316    38A      0.718307  
+      39A      0.756917    40A      0.764996    41A      0.777844  
+      42A      0.827341    43A      0.847781    44A      0.860835  
+      45A      0.893180    46A      0.896952    47A      0.951942  
+      48A      1.079361    49A      1.089969    50A      1.098864  
+      51A      1.108214    52A      1.145687    53A      1.152414  
+      54A      1.176533    55A      1.204825    56A      1.252123  
+      57A      1.263161    58A      1.304797    59A      1.338800  
+      60A      1.348220    61A      1.437657    62A      1.450681  
+      63A      1.498871    64A      1.566097    65A      1.607682  
+      66A      1.674614    67A      1.714932    68A      1.751266  
+      69A      1.855327    70A      1.864186    71A      1.968226  
+      72A      2.026204    73A      2.123513    74A      2.156275  
+      75A      2.165747    76A      2.206623    77A      2.232094  
+      78A      2.241382    79A      2.303760    80A      2.363764  
+      81A      2.402360    82A      2.454480    83A      2.503417  
+      84A      2.584934    85A      2.635135    86A      2.667772  
+      87A      2.676220    88A      2.717951    89A      2.780859  
+      90A      2.926427    91A      2.998545    92A      3.022362  
+      93A      3.161232    94A      3.206363    95A      3.454179  
+      96A      3.606131    97A      3.994244    98A      4.429261  
+      99A      4.530049   100A      4.614350   101A      4.678434  
+     102A      4.930844  
+
+    Final Occupation by Irrep:
+              A 
+    DOCC [    23 ]
+    NA   [    23 ]
+    NB   [    23 ]
+
+  @DF-RHF Final Energy:  -304.49260393746056
+
+   => Energetics <=
+
+    Nuclear Repulsion Energy =            226.9489829086174382
+    One-Electron Energy =                -865.1656689945374410
+    Two-Electron Energy =                 333.7240821484593880
+    Total Energy =                       -304.4926039374605580
+
+Computation Completed
+
+
+Properties will be evaluated at   0.000000,   0.000000,   0.000000 [a0]
+
+Properties computed using the SCF density matrix
+
+
+ Multipole Moments:
+
+ ------------------------------------------------------------------------------------
+     Multipole            Electronic (a.u.)      Nuclear  (a.u.)        Total (a.u.)
+ ------------------------------------------------------------------------------------
+
+ L = 1.  Multiply by 2.5417464519 to convert [e a0] to [Debye]
+ Dipole X            :        -27.4474354           25.1259614           -2.3214740
+ Dipole Y            :        -46.2886824           46.1796258           -0.1090567
+ Dipole Z            :          0.0987291           -0.1319109           -0.0331818
+ Magnitude           :                                                    2.3242711
+
+ ------------------------------------------------------------------------------------
+
+*** tstop() called on cst14372 at Wed Apr  1 12:22:39 2026
+Module time:
+	user time   =       7.51 seconds =       0.13 minutes
+	system time =       0.09 seconds =       0.00 minutes
+	total time  =          6 seconds =       0.10 minutes
+Total time:
+	user time   =    6180.46 seconds =     103.01 minutes
+	system time =     234.41 seconds =       3.91 minutes
+	total time  =       4893 seconds =      81.55 minutes
+
+Scratch directory: /tmp/
+ MINTS: Wrapper to libmints.
+   by Justin Turney
+
+   Calculation information:
+      Number of threads:                 4
+      Number of atoms:                  12
+      Number of AO shells:              48
+      Number of SO shells:              48
+      Number of primitives:            114
+      Number of atomic orbitals:       102
+      Number of basis functions:       102
+
+      Number of irreps:                  1
+      Integral cutoff                 1.00e-12
+      Number of functions per irrep: [ 102 ]
+
+ OEINTS: Overlap, kinetic, potential, dipole, and quadrupole integrals
+         stored in file 35.
+
+      Computing two-electron integrals...done
+      Computed 12421031 non-zero two-electron integrals.
+        Stored in file 33.
+
+
+         ---------------------------------------------------------
+                Multi-Configurational Self-Consistent Field
+                            (a 'D E T C I' module)
+
+                 Daniel G. A. Smith, C. David Sherrill, and
+                              Matt L. Leininger
+         ---------------------------------------------------------
+
+
+   ==> Parameters <==
+
+    EX LEVEL       =        4      H0 BLOCKSIZE  =     1000
+    VAL EX LEVEL   =        0      H0 GUESS SIZE =     1000
+    H0COUPLINGSIZE =        0      H0 COUPLING   =       NO
+    MAXITER        =       12      NUM PRINT     =       20
+    NUM ROOTS      =        1      ICORE         =        1
+    PRINT LVL      =        1      FCI           =      YES
+    R CONV         = 1.00e-07      MIXED         =      YES
+    E CONV         = 1.00e-08      MIXED4        =      YES
+    R4S            =       NO      REPL OTF      =       NO
+    DIAG METHOD    =      SEM      FOLLOW ROOT   =        0
+    PRECONDITIONER = DAVIDSON      UPDATE        = DAVIDSON
+    S              =   0.0000      Ms0           =      YES
+    GUESS VECTOR   =  H0BLOCK      OPENTYPE      =     NONE
+    COLLAPSE SIZE  =        1      HD AVG        = EVANGELISTI
+    MAX NUM VECS   =       13      REF SYM       =     AUTO
+    IOPEN        =       NO
+
+    EX ALLOW       =  1  1  1  1 
+    STATE AVERAGE  =  0(1.00) 
+
+   ==> CI Orbital and Space information <==
+
+   ------------------------------------
+               Space    Total     A
+   ------------------------------------
+                 Nso      102   102
+                 Nmo      102   102
+               Ndocc       23    23
+               Nsocc        0     0
+   ------------------------------------
+               MCSCF Spaces
+   ------------------------------------
+         Frozen DOCC        6     6
+     Restricted DOCC       15    15
+              Active        4     4
+     Restricted UOCC       77    77
+         Frozen UOCC        0     0
+   ------------------------------------
+
+   ==> Setting up CI strings <==
+
+    There are 6 alpha and 6 beta strings
+    The CI space requires 36 (3.60E+01) determinants and 1 blocks
+
+   ==> Setting up MCSCF integrals <==
+
+  DFHelper Memory: AOs need 0.054 GiB; user supplied 4.470 GiB. 
+  SCF_SUBTYPE=INCORE selected. In-core MEM_DF algorithm will be used.
+  Using in-core AOs.
+
+  ==> MemDFJK: Density-Fitted J/K Matrices <==
+
+    J tasked:                   Yes
+    K tasked:                   Yes
+    wK tasked:                   No
+    OpenMP threads:               4
+    Memory [MiB]:              4577
+    Algorithm:                 Core
+    Schwarz Cutoff:           1E-12
+    Mask sparsity (%):       0.9419
+    Fitting Condition:        1E-10
+
+   => Auxiliary Basis Set <=
+
+  Basis Set: (6-31G* AUX)
+    Blend: CC-PVDZ-JKFIT
+    Number of shells: 198
+    Number of basis functions: 636
+    Number of Cartesian functions: 636
+    Spherical Harmonics?: false
+    Max angular momentum: 3
+
+
+   ==> Starting MCSCF iterations <==
+
+        Iter         Total Energy       Delta E   Orb RMS    CI RMS  NCI NORB
+   @MCSCF  1:   -304.497576600519   -4.9727e-03  1.90e-03  4.01e-12    1    1  Initial CI
+      Warning! Maxstep = 2.12, scaling to 0.50
+   @MCSCF  2:   -304.506102357892   -8.5258e-03  3.03e-03  3.17e-07    9    1  TS
+      Warning! Maxstep = 0.58, scaling to 0.50
+   @MCSCF  3:   -304.519682201942   -1.3580e-02  2.25e-03  6.96e-07    8    1  TS
+   @MCSCF  4:   -304.526391020130   -6.7088e-03  1.85e-03  5.90e-07    8    1  TS, DIIS
+   @MCSCF  5:   -304.535195502882   -8.8045e-03  1.60e-03  1.31e-06    8    1  TS, DIIS
+   @MCSCF  6:   -304.541659845847   -6.4643e-03  1.42e-03  9.46e-07    8    1  TS, DIIS
+   @MCSCF  7:   -304.543642304377   -1.9825e-03  1.38e-03  2.54e-07    8    1  TS, DIIS
+   @MCSCF  8:   -304.546685527754   -3.0432e-03  1.03e-03  5.38e-07    8    1  TS, DIIS
+   @MCSCF  9:   -304.550113931723   -3.4284e-03  5.17e-04  8.71e-07    8    1  TS, DIIS
+   @MCSCF 10:   -304.550287155442   -1.7322e-04  2.47e-04  6.32e-08    8    1  TS, DIIS
+   @MCSCF 11:   -304.550313726617   -2.6571e-05  1.75e-04  8.97e-08    8    1  TS, DIIS
+   @MCSCF 12:   -304.550351270056   -3.7543e-05  8.29e-05  6.04e-08    8    1  TS, DIIS
+   @MCSCF 13:   -304.550361893229   -1.0623e-05  5.39e-05  4.09e-08    8    1  TS, DIIS
+   @MCSCF 14:   -304.550370706593   -8.8134e-06  3.16e-05  4.24e-08    8    9  AH
+   @MCSCF 15:   -304.550370992776   -2.8618e-07  1.83e-05  1.81e-08    8    5  AH
+   @MCSCF 16:   -304.550371063061   -7.0284e-08  9.92e-06  9.44e-09    8    5  AH
+   @MCSCF 17:   -304.550371081747   -1.8686e-08  5.21e-06  4.69e-09    8    5  AH
+   @MCSCF 18:   -304.550371086767   -5.0197e-09  2.71e-06  2.35e-09    8    5  AH
+
+          @MCSCF has converged!
+
+   @MCSCF Final Energy: -304.550371086766575
+
+   Computing CI Semicanonical Orbitals
+
+   ==> Starting CI iterations <==
+
+    H0 Block Eigenvalue = -304.55037109
+
+    Simultaneous Expansion Method (Block Davidson Method)
+    Using 1 initial trial vectors
+
+     Iter   Root       Total Energy       Delta E      C RMS
+
+   @CI  0:     0   -304.550371086767   -3.8095E+00   3.8493E-13  
+    Warning: Norm of correction (root 0) is < 1.0E-13
+   @CI  1:     0   -304.550371086767   4.4409E-16   1.8098E-13 c
+
+   ==> Energetics <==
+
+    SCF energy =         -304.492603937460558
+    Total MCSCF energy = -304.550371086766575
+
+   ==> MCSCF root 0 information <==
+
+    MCSCF Root 0 energy =  -304.550371086767257
+
+   Active Space Natural occupation numbers:
+
+         A   1.931911         A   1.890572         A   0.117227
+         A   0.060290
+
+   The 20 most important determinants:
+
+    *   1    0.953537  (    0,    0)  22AX 23AX 
+    *   2   -0.162586  (    1,    1)  22AX 24AX 
+    *   3   -0.103824  (    2,    2)  23AX 24AX 
+    *   4   -0.074612  (    3,    3)  22AX 25AX 
+    *   5    0.072672  (    2,    3)  22AB 23AA 24AA 25AB 
+    *   6    0.072672  (    3,    2)  22AA 23AB 24AB 25AA 
+    *   7   -0.071648  (    2,    4)  23AX 24AA 25AB 
+    *   8   -0.071648  (    4,    2)  23AX 24AB 25AA 
+    *   9   -0.070406  (    4,    4)  23AX 25AX 
+    *  10    0.066527  (    1,    3)  22AX 24AA 25AB 
+    *  11    0.066527  (    3,    1)  22AX 24AB 25AA 
+    *  12    0.047947  (    1,    4)  22AA 23AB 24AA 25AB 
+    *  13    0.047947  (    4,    1)  22AB 23AA 24AB 25AA 
+    *  14    0.040725  (    0,    1)  22AX 23AA 24AB 
+    *  15    0.040725  (    1,    0)  22AX 23AB 24AA 
+    *  16    0.038039  (    5,    5)  24AX 25AX 
+    *  17    0.025365  (    1,    2)  22AA 23AB 24AX 
+    *  18    0.025365  (    2,    1)  22AB 23AA 24AX 
+    *  19   -0.024725  (    0,    5)  22AA 23AA 24AB 25AB 
+    *  20   -0.024725  (    5,    0)  22AB 23AB 24AA 25AA 
+
+
+
+Properties will be evaluated at   0.000000,   0.000000,   0.000000 [a0]
+
+Properties computed using the CASSCF density matrix
+
+
+ Multipole Moments:
+
+ ------------------------------------------------------------------------------------
+     Multipole            Electronic (a.u.)      Nuclear  (a.u.)        Total (a.u.)
+ ------------------------------------------------------------------------------------
+
+ L = 1.  Multiply by 2.5417464519 to convert [e a0] to [Debye]
+ Dipole X            :        -27.1785637           25.1259614           -2.0526023
+ Dipole Y            :        -46.5632859           46.1796258           -0.3836601
+ Dipole Z            :          0.0947815           -0.1319109           -0.0371294
+ Magnitude           :                                                    2.0884803
+
+ ------------------------------------------------------------------------------------

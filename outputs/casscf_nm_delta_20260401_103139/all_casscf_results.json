@@ -1,0 +1,466 @@
+[
+  {
+    "frame_idx": 0,
+    "e_b3lyp": -306.3185840048427,
+    "e_b3lyp_rel": 0.0,
+    "e_rhf": -304.4940561202835,
+    "e_casscf_ss": -304.52484969864724,
+    "no_occs": [
+      1.998301,
+      1.923845,
+      0.077824,
+      3e-05
+    ],
+    "delta_kcal": 0.0,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0000.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 16,
+    "e_b3lyp": -306.2509834202529,
+    "e_b3lyp_rel": 42.42000727803637,
+    "e_rhf": -304.4099374337479,
+    "e_casscf_ss": -304.4761834229967,
+    "no_occs": [
+      1.918737,
+      1.849062,
+      0.155795,
+      0.076406
+    ],
+    "delta_kcal": -11.88145824303172,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0016.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 18,
+    "e_b3lyp": -306.1625721196749,
+    "e_b3lyp_rel": 97.89893599939448,
+    "e_rhf": -304.3053650787813,
+    "e_casscf_ss": -304.3797765495758,
+    "no_occs": [
+      1.913965,
+      1.796011,
+      0.207139,
+      0.082885
+    ],
+    "delta_kcal": -6.864160534054037,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0018.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 29,
+    "e_b3lyp": -306.275407237829,
+    "e_b3lyp_rel": 27.09383035780833,
+    "e_rhf": -304.4560313729209,
+    "e_casscf_ss": -304.51188045490994,
+    "no_occs": [
+      1.932014,
+      1.89569,
+      0.113103,
+      0.059193
+    ],
+    "delta_kcal": -18.95550704203594,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0029.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 34,
+    "e_b3lyp": -306.31226199938004,
+    "e_b3lyp_rel": 3.967118322501437,
+    "e_rhf": -304.48541597890284,
+    "e_casscf_ss": -304.51483551802266,
+    "no_occs": [
+      1.998369,
+      1.928598,
+      0.073011,
+      2.2e-05
+    ],
+    "delta_kcal": 2.316874893769844,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0034.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 35,
+    "e_b3lyp": -306.30988653875494,
+    "e_b3lyp_rel": 5.457742369867649,
+    "e_rhf": -304.4842475940308,
+    "e_casscf_ss": -304.516217247803,
+    "no_occs": [
+      1.998239,
+      1.920322,
+      0.081416,
+      2.3e-05
+    ],
+    "delta_kcal": -0.04079768127296024,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0035.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 36,
+    "e_b3lyp": -306.30188474129733,
+    "e_b3lyp_rel": 10.478946083546678,
+    "e_rhf": -304.4727898103672,
+    "e_casscf_ss": -304.50457648688496,
+    "no_occs": [
+      1.995206,
+      1.933143,
+      0.067206,
+      0.004445
+    ],
+    "delta_kcal": 2.2426863656968052,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0036.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 38,
+    "e_b3lyp": -306.2834585199817,
+    "e_b3lyp_rel": 22.041574529120012,
+    "e_rhf": -304.45122024769006,
+    "e_casscf_ss": -304.4821636597138,
+    "no_occs": [
+      1.994381,
+      1.938738,
+      0.061709,
+      0.005172
+    ],
+    "delta_kcal": 4.744319309137126,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0038.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 39,
+    "e_b3lyp": -306.29386873130755,
+    "e_b3lyp_rel": 15.509068295808456,
+    "e_rhf": -304.46466977069446,
+    "e_casscf_ss": -304.49715491472665,
+    "no_occs": [
+      1.998204,
+      1.919027,
+      0.082749,
+      2.1e-05
+    ],
+    "delta_kcal": 1.8696709947474854,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0039.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 40,
+    "e_b3lyp": -306.2535574527716,
+    "e_b3lyp_rel": 40.80477748618042,
+    "e_rhf": -304.4171137405447,
+    "e_casscf_ss": -304.43762427105395,
+    "no_occs": [
+      1.993952,
+      1.94963,
+      0.047509,
+      0.008909
+    ],
+    "delta_kcal": 13.93000470231383,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0040.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 50,
+    "e_b3lyp": -306.28196739673723,
+    "e_b3lyp_rel": 22.977268491931213,
+    "e_rhf": -304.45713139366484,
+    "e_casscf_ss": -304.4864553345123,
+    "no_occs": [
+      1.99828,
+      1.933175,
+      0.068534,
+      1.1e-05
+    ],
+    "delta_kcal": 1.1155587509523883,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0050.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 60,
+    "e_b3lyp": -306.21786871931414,
+    "e_b3lyp_rel": 63.19979584578985,
+    "e_rhf": -304.3572608186698,
+    "e_casscf_ss": -304.4236652920292,
+    "no_occs": [
+      1.910895,
+      1.84827,
+      0.154836,
+      0.085999
+    ],
+    "delta_kcal": 0.2943779280843728,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0060.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 68,
+    "e_b3lyp": -306.29863187536534,
+    "e_b3lyp_rel": 12.520150273518293,
+    "e_rhf": -304.47535363768645,
+    "e_casscf_ss": -304.5063355035246,
+    "no_occs": [
+      1.995491,
+      1.938227,
+      0.06206,
+      0.004222
+    ],
+    "delta_kcal": -0.902317430580748,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0068.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 77,
+    "e_b3lyp": -306.29721175188666,
+    "e_b3lyp_rel": 13.41129121064048,
+    "e_rhf": -304.47388988796246,
+    "e_casscf_ss": -304.50252526446786,
+    "no_occs": [
+      1.998411,
+      1.931279,
+      0.070281,
+      2.9e-05
+    ],
+    "delta_kcal": 0.5975027386108689,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0077.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 103,
+    "e_b3lyp": -306.3135577801553,
+    "e_b3lyp_rel": 3.1540036098041266,
+    "e_rhf": -304.48777308095794,
+    "e_casscf_ss": -304.51940455534924,
+    "no_occs": [
+      1.998276,
+      1.91679,
+      0.084919,
+      1.6e-05
+    ],
+    "delta_kcal": 0.2628753969812996,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0103.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 107,
+    "e_b3lyp": -306.2967526289243,
+    "e_b3lyp_rel": 13.69939521924874,
+    "e_rhf": -304.46910581538145,
+    "e_casscf_ss": -304.5022276491142,
+    "no_occs": [
+      1.998299,
+      1.897415,
+      0.104254,
+      3.1e-05
+    ],
+    "delta_kcal": 0.4961551840227969,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0107.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 109,
+    "e_b3lyp": -306.2828027428308,
+    "e_b3lyp_rel": 22.453080904131436,
+    "e_rhf": -304.4540363498566,
+    "e_casscf_ss": -304.4887441303457,
+    "no_occs": [
+      1.998578,
+      1.865108,
+      0.136289,
+      2.5e-05
+    ],
+    "delta_kcal": 0.20350526923683532,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0109.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 269,
+    "e_b3lyp": -306.29454320306877,
+    "e_b3lyp_rel": 15.085830875700548,
+    "e_rhf": -304.46699764351524,
+    "e_casscf_ss": -304.49802375718264,
+    "no_occs": [
+      1.998303,
+      1.92271,
+      0.078978,
+      9e-06
+    ],
+    "delta_kcal": 1.7477015423105016,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0269.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 702,
+    "e_b3lyp": -306.25118231562243,
+    "e_b3lyp_rel": 42.29519854932673,
+    "e_rhf": -304.42093029828555,
+    "e_casscf_ss": -304.4917579427803,
+    "no_occs": [
+      1.887249,
+      1.873909,
+      0.129787,
+      0.109055
+    ],
+    "delta_kcal": -21.52980823151264,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0702.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 748,
+    "e_b3lyp": -306.2705339176655,
+    "e_b3lyp_rel": 30.151884930229258,
+    "e_rhf": -304.44370376650994,
+    "e_casscf_ss": -304.50570946910386,
+    "no_occs": [
+      1.927278,
+      1.880036,
+      0.125672,
+      0.067013
+    ],
+    "delta_kcal": -18.14120955722249,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0748.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 757,
+    "e_b3lyp": -306.2222841679816,
+    "e_b3lyp_rel": 60.42905997498108,
+    "e_rhf": -304.388457104275,
+    "e_casscf_ss": -304.45055876462277,
+    "no_occs": [
+      1.929519,
+      1.88049,
+      0.124481,
+      0.065511
+    ],
+    "delta_kcal": -13.810795042314034,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0757.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 776,
+    "e_b3lyp": -306.2228236511833,
+    "e_b3lyp_rel": 60.0905291548556,
+    "e_rhf": -304.4055974819356,
+    "e_casscf_ss": -304.4675889231711,
+    "no_occs": [
+      1.924774,
+      1.889908,
+      0.116412,
+      0.068906
+    ],
+    "delta_kcal": -24.158850054983333,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0776.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 803,
+    "e_b3lyp": -306.20228661046974,
+    "e_b3lyp_rel": 72.97771677054915,
+    "e_rhf": -304.35937245185914,
+    "e_casscf_ss": -304.42539982589824,
+    "no_occs": [
+      1.912757,
+      1.885543,
+      0.121266,
+      0.080434
+    ],
+    "delta_kcal": -10.571979432453837,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0803.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 849,
+    "e_b3lyp": -306.2220634143895,
+    "e_b3lyp_rel": 60.56758494547203,
+    "e_rhf": -304.3983469547884,
+    "e_casscf_ss": -304.461182089723,
+    "no_occs": [
+      1.934611,
+      1.888702,
+      0.111525,
+      0.065161
+    ],
+    "delta_kcal": -20.615557158596985,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0849.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 850,
+    "e_b3lyp": -306.2249274258803,
+    "e_b3lyp_rel": 58.77039060133229,
+    "e_rhf": -304.40255737910286,
+    "e_casscf_ss": -304.4653657144129,
+    "no_occs": [
+      1.934839,
+      1.888833,
+      0.111355,
+      0.064972
+    ],
+    "delta_kcal": -21.443626943003665,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0850.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 866,
+    "e_b3lyp": -306.226029225665,
+    "e_b3lyp_rel": 58.079000797986865,
+    "e_rhf": -304.413441225445,
+    "e_casscf_ss": -304.47708640030714,
+    "no_occs": [
+      1.924171,
+      1.896625,
+      0.103213,
+      0.075991
+    ],
+    "delta_kcal": -28.107078580085112,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0866.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 868,
+    "e_b3lyp": -306.22218064431036,
+    "e_b3lyp_rel": 60.49402205948688,
+    "e_rhf": -304.4071630355129,
+    "e_casscf_ss": -304.47097037992125,
+    "no_occs": [
+      1.920744,
+      1.898894,
+      0.1009,
+      0.079461
+    ],
+    "delta_kcal": -26.684239106262652,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0868.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 880,
+    "e_b3lyp": -306.2273770728398,
+    "e_b3lyp_rel": 57.233213926314356,
+    "e_rhf": -304.3868570398794,
+    "e_casscf_ss": -304.45346995008924,
+    "no_occs": [
+      1.904041,
+      1.889181,
+      0.110599,
+      0.09618
+    ],
+    "delta_kcal": -12.441745454430475,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0880.dat",
+    "error": null
+  },
+  {
+    "frame_idx": 895,
+    "e_b3lyp": -306.20761228133904,
+    "e_b3lyp_rel": 69.63580784465945,
+    "e_rhf": -304.35924105513726,
+    "e_casscf_ss": -304.43201276029765,
+    "no_occs": [
+      1.883798,
+      1.845073,
+      0.155055,
+      0.116074
+    ],
+    "delta_kcal": -11.379749493136586,
+    "output_file": "outputs/casscf_surface_20260331_133413/psi4_frame0895.dat",
+    "error": null
+  }
+]

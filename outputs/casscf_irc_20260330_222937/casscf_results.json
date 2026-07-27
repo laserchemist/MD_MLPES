@@ -1,0 +1,19 @@
+[
+  {
+    "frame_idx": 5,
+    "irc_s": 0.0,
+    "e_b3lyp": -306.2356847705571,
+    "e_b3lyp_rel": 52.02005490131333,
+    "e_rhf": -304.400760141732,
+    "e_casscf_ss": null,
+    "e_sa_root0": null,
+    "e_sa_root1": null,
+    "gap_kcal": null,
+    "H12_kcal": null,
+    "no_occs": null,
+    "e_caspt2": null,
+    "delta_kcal": null,
+    "output_file": "outputs/casscf_irc_20260330_222937/psi4_frame05_s+0.00.dat",
+    "error": "casscf_ss: ras_set3(): Wrong size of array\nvalue in input is incorrect\nplease change FROZEN_DOCC in input"
+  }
+]

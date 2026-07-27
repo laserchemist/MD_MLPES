@@ -1,0 +1,17 @@
+{
+  "timestamp": "20260330_191802",
+  "output_dir": "outputs/mvko_rxn_path_20260330_191802",
+  "steps_run": [
+    "train",
+    "md"
+  ],
+  "reactant_model": "outputs/mvko_20260319_081314/mlpes_initial.pkl",
+  "irc_data": "outputs/mvko_rxn_path_20260330_181025/irc_training_data.npz",
+  "family_pkl": "outputs/mvko_rxn_path_20260330_191802/pes_family.pkl",
+  "md_params": {
+    "temperature": 2000.0,
+    "n_steps": 50000,
+    "timestep": 0.3
+  },
+  "multi_ref_note": "B3LYP/6-31G* is single-reference. TS barrier \u00b15 kcal/mol. VHP/OH product region (O2-H4 < 1.2 A) has significant biradical character. Replace IRC training data with CASSCF(4,4)/6-31G* or NEVPT2 single-points for quantitative results."
+}

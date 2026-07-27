@@ -1,0 +1,19 @@
+sGDML Training Summary
+==================================================
+Date         : 2026-04-17 17:12:23
+Molecule     : COOCCCHHHHHH (12 atoms)
+Total frames : 999
+n_train      : 300
+n_valid      : 50
+use_sym      : True
+Best sig     : 10
+Force RMSE   : nan Ha/Å  (nan kcal/mol/Å)
+Energy RMSE  : nan Ha  (nan kcal/mol)
+
+Sig sweep:
+------------------------------
+  sig=  10: F-RMSE=nan Ha/Å  E-RMSE=nan Ha ←
+  sig=  25: F-RMSE=nan Ha/Å  E-RMSE=nan Ha
+  sig=  50: F-RMSE=nan Ha/Å  E-RMSE=nan Ha
+  sig= 100: F-RMSE=nan Ha/Å  E-RMSE=nan Ha
+  sig= 200: F-RMSE=nan Ha/Å  E-RMSE=nan Ha

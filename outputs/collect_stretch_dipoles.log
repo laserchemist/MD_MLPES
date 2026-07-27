@@ -1,0 +1,77 @@
+PSI4 1.10 available
+
+Loading NM-PES model from outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl
+  Target modes (0-indexed → 1-indexed):
+    Mode 11:    985.3 cm-1  (coord_scale = 0.2274 √amu·Bohr)
+    Mode 12:    997.8 cm-1  (coord_scale = 0.2246 √amu·Bohr)
+    Mode 13:   1023.4 cm-1  (coord_scale = 0.2190 √amu·Bohr)
+    Mode 14:   1059.6 cm-1  (coord_scale = 0.2115 √amu·Bohr)
+    Mode 15:   1060.7 cm-1  (coord_scale = 0.2112 √amu·Bohr)
+    Mode 16:   1107.9 cm-1  (coord_scale = 0.2022 √amu·Bohr)
+
+Loading existing dipoles from outputs/mvko_dipoles_ch_v2_20260420/training_with_dipoles.npz
+  270 existing frames
+
+Generated 36 displaced geometries (6 modes × 6 amplitudes, 0 rejected for bad geometry)
+
+  Key bond lengths in displaced frames:
+    Mode 11  amp=-3   O-O=1.4401 Å  C-O=1.3060 Å
+    Mode 11  amp=-2   O-O=1.4137 Å  C-O=1.3001 Å
+    Mode 11  amp=-1   O-O=1.3873 Å  C-O=1.2945 Å
+    Mode 11  amp=+1   O-O=1.3346 Å  C-O=1.2837 Å
+    Mode 11  amp=+2   O-O=1.3084 Å  C-O=1.2787 Å
+    Mode 11  amp=+3   O-O=1.2822 Å  C-O=1.2738 Å
+    Mode 12  amp=-3   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 12  amp=-2   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 12  amp=-1   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 12  amp=+1   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 12  amp=+2   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 12  amp=+3   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 13  amp=-3   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 13  amp=-2   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 13  amp=-1   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 13  amp=+1   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 13  amp=+2   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 13  amp=+3   O-O=1.3609 Å  C-O=1.2890 Å
+    Mode 14  amp=-3   O-O=1.3609 Å  C-O=1.2896 Å
+    Mode 14  amp=-2   O-O=1.3609 Å  C-O=1.2893 Å
+    Mode 14  amp=-1   O-O=1.3609 Å  C-O=1.2891 Å
+    Mode 14  amp=+1   O-O=1.3609 Å  C-O=1.2891 Å
+    Mode 14  amp=+2   O-O=1.3610 Å  C-O=1.2893 Å
+    Mode 14  amp=+3   O-O=1.3610 Å  C-O=1.2896 Å
+    Mode 15  amp=-3   O-O=1.2888 Å  C-O=1.3021 Å
+    Mode 15  amp=-2   O-O=1.3128 Å  C-O=1.2977 Å
+    Mode 15  amp=-1   O-O=1.3369 Å  C-O=1.2934 Å
+    Mode 15  amp=+1   O-O=1.3850 Å  C-O=1.2847 Å
+    Mode 15  amp=+2   O-O=1.4090 Å  C-O=1.2804 Å
+    Mode 15  amp=+3   O-O=1.4331 Å  C-O=1.2761 Å
+    Mode 16  amp=-3   O-O=1.4008 Å  C-O=1.2524 Å
+    Mode 16  amp=-2   O-O=1.3875 Å  C-O=1.2646 Å
+    Mode 16  amp=-1   O-O=1.3742 Å  C-O=1.2768 Å
+    Mode 16  amp=+1   O-O=1.3478 Å  C-O=1.3012 Å
+    Mode 16  amp=+2   O-O=1.3347 Å  C-O=1.3134 Å
+    Mode 16  amp=+3   O-O=1.3216 Å  C-O=1.3256 Å
+
+Computing PSI4 b3lyp/6-31G* dipoles for 36 frames…
+  6/36  Mode 11 amp=+3  |μ|=4.0992 D  [52s  8.7s/frame]
+  12/36  Mode 12 amp=+3  |μ|=4.3665 D  [104s  8.7s/frame]
+  18/36  Mode 13 amp=+3  |μ|=4.3140 D  [156s  8.7s/frame]
+  24/36  Mode 14 amp=+3  |μ|=4.3885 D  [207s  8.6s/frame]
+  30/36  Mode 15 amp=+3  |μ|=4.7361 D  [259s  8.6s/frame]
+  36/36  Mode 16 amp=+3  |μ|=4.1982 D  [310s  8.6s/frame]
+
+  36/36 frames with valid dipoles
+
+Saved 306 frames → outputs/mvko_dipoles_stretch_20260420/training_with_dipoles.npz
+  |μ| range: 2.971–5.609 D  mean=4.649
+
+Run IR with:
+  python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl \
+    --training-data outputs/mvko_dipoles_stretch_20260420/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 \
+    --nm-pes-bond-wall-factor 1.15 --nm-pes-bond-wall-stiffness 15.0 \
+    --max-bond-extension 1.35 \
+    --output-dir outputs/ir_spectrum_NM_PES_stretch_dipoles_300K

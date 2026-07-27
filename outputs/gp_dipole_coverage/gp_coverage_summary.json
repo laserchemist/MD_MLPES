@@ -1,0 +1,14 @@
+{
+  "training_data": "outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz",
+  "traj": "outputs/ir_spectrum_NM_PES_v5_300K_20260512_204433/traj_01.xyz",
+  "n_train": 150,
+  "n_traj_frames": 3000,
+  "gp_gamma": 0.001,
+  "gp_alpha": 0.0001,
+  "train_rmse_D": 0.006173349545578962,
+  "sigma_mean_D": 0.5153377673575077,
+  "sigma_max_D": 0.714944409501395,
+  "sigma_p95_D": 0.7108902446615399,
+  "frac_above_0p05D": 0.9596666666666667,
+  "frac_above_0p10D": 0.9386666666666666
+}

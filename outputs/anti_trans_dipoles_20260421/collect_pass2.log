@@ -1,0 +1,104 @@
+PSI4 1.10 available
+
+Loading NM-PES model from outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+  Target modes (0-indexed → 1-indexed):
+    Mode 11:    991.2 cm-1  (coord_scale = 0.2261 √amu·Bohr)
+    Mode 12:   1007.4 cm-1  (coord_scale = 0.2224 √amu·Bohr)
+    Mode 13:   1042.1 cm-1  (coord_scale = 0.2150 √amu·Bohr)
+    Mode 14:   1058.8 cm-1  (coord_scale = 0.2116 √amu·Bohr)
+    Mode 15:   1081.1 cm-1  (coord_scale = 0.2073 √amu·Bohr)
+    Mode 16:   1108.3 cm-1  (coord_scale = 0.2022 √amu·Bohr)
+    Mode 17:   1304.9 cm-1  (coord_scale = 0.1717 √amu·Bohr)
+    Mode 25:   3072.5 cm-1  (coord_scale = 0.0729 √amu·Bohr)
+    Mode 26:   3139.7 cm-1  (coord_scale = 0.0714 √amu·Bohr)
+    Mode 27:   3188.9 cm-1  (coord_scale = 0.0703 √amu·Bohr)
+    Mode 28:   3189.9 cm-1  (coord_scale = 0.0702 √amu·Bohr)
+    Mode 29:   3261.3 cm-1  (coord_scale = 0.0687 √amu·Bohr)
+    Mode 30:   3280.7 cm-1  (coord_scale = 0.0683 √amu·Bohr)
+
+Loading existing dipoles from outputs/anti_trans_dipoles_20260421/training_with_dipoles.npz
+  60 existing frames
+
+Generated 52 displaced geometries (13 modes × 4 amplitudes, 0 rejected for bad geometry)
+
+  Key bond lengths in displaced frames:
+    Mode 11  amp=-3   O-O=1.3940 Å  C-O=1.2911 Å
+    Mode 11  amp=-2   O-O=1.3772 Å  C-O=1.2855 Å
+    Mode 11  amp=+2   O-O=1.3102 Å  C-O=1.2645 Å
+    Mode 11  amp=+3   O-O=1.2936 Å  C-O=1.2597 Å
+    Mode 12  amp=-3   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 12  amp=-2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 12  amp=+2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 12  amp=+3   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 13  amp=-3   O-O=1.4121 Å  C-O=1.2771 Å
+    Mode 13  amp=-2   O-O=1.3892 Å  C-O=1.2763 Å
+    Mode 13  amp=+2   O-O=1.2979 Å  C-O=1.2732 Å
+    Mode 13  amp=+3   O-O=1.2751 Å  C-O=1.2725 Å
+    Mode 14  amp=-3   O-O=1.3436 Å  C-O=1.2754 Å
+    Mode 14  amp=-2   O-O=1.3436 Å  C-O=1.2750 Å
+    Mode 14  amp=+2   O-O=1.3436 Å  C-O=1.2750 Å
+    Mode 14  amp=+3   O-O=1.3436 Å  C-O=1.2754 Å
+    Mode 15  amp=-3   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 15  amp=-2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 15  amp=+2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 15  amp=+3   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 16  amp=-3   O-O=1.2704 Å  C-O=1.2991 Å
+    Mode 16  amp=-2   O-O=1.2948 Å  C-O=1.2909 Å
+    Mode 16  amp=+2   O-O=1.3924 Å  C-O=1.2589 Å
+    Mode 16  amp=+3   O-O=1.4169 Å  C-O=1.2512 Å
+    Mode 17  amp=-3   O-O=1.3338 Å  C-O=1.2916 Å
+    Mode 17  amp=-2   O-O=1.3370 Å  C-O=1.2859 Å
+    Mode 17  amp=+2   O-O=1.3502 Å  C-O=1.2636 Å
+    Mode 17  amp=+3   O-O=1.3535 Å  C-O=1.2581 Å
+    Mode 25  amp=-3   O-O=1.3435 Å  C-O=1.2749 Å
+    Mode 25  amp=-2   O-O=1.3435 Å  C-O=1.2748 Å
+    Mode 25  amp=+2   O-O=1.3437 Å  C-O=1.2746 Å
+    Mode 25  amp=+3   O-O=1.3437 Å  C-O=1.2746 Å
+    Mode 26  amp=-3   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 26  amp=-2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 26  amp=+2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 26  amp=+3   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 27  amp=-3   O-O=1.3436 Å  C-O=1.2746 Å
+    Mode 27  amp=-2   O-O=1.3436 Å  C-O=1.2746 Å
+    Mode 27  amp=+2   O-O=1.3436 Å  C-O=1.2748 Å
+    Mode 27  amp=+3   O-O=1.3436 Å  C-O=1.2749 Å
+    Mode 28  amp=-3   O-O=1.3435 Å  C-O=1.2748 Å
+    Mode 28  amp=-2   O-O=1.3436 Å  C-O=1.2748 Å
+    Mode 28  amp=+2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 28  amp=+3   O-O=1.3436 Å  C-O=1.2746 Å
+    Mode 29  amp=-3   O-O=1.3435 Å  C-O=1.2748 Å
+    Mode 29  amp=-2   O-O=1.3435 Å  C-O=1.2747 Å
+    Mode 29  amp=+2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 29  amp=+3   O-O=1.3437 Å  C-O=1.2747 Å
+    Mode 30  amp=-3   O-O=1.3436 Å  C-O=1.2748 Å
+    Mode 30  amp=-2   O-O=1.3436 Å  C-O=1.2748 Å
+    Mode 30  amp=+2   O-O=1.3436 Å  C-O=1.2747 Å
+    Mode 30  amp=+3   O-O=1.3435 Å  C-O=1.2747 Å
+
+Computing PSI4 b3lyp/6-31G* dipoles for 52 frames…
+  6/52  Mode 12 amp=-2  |μ|=4.8481 D  [53s  8.8s/frame]
+  12/52  Mode 13 amp=+3  |μ|=4.5471 D  [104s  8.7s/frame]
+  18/52  Mode 15 amp=-2  |μ|=4.9449 D  [155s  8.6s/frame]
+  24/52  Mode 16 amp=+3  |μ|=5.3862 D  [207s  8.6s/frame]
+  30/52  Mode 25 amp=-2  |μ|=4.9666 D  [259s  8.6s/frame]
+  36/52  Mode 26 amp=+3  |μ|=4.9218 D  [314s  8.7s/frame]
+  42/52  Mode 28 amp=-2  |μ|=4.9126 D  [366s  8.7s/frame]
+  48/52  Mode 29 amp=+3  |μ|=4.8936 D  [418s  8.7s/frame]
+  52/52  Mode 30 amp=+3  |μ|=4.9273 D  [453s  8.7s/frame]
+
+  52/52 frames with valid dipoles
+
+Saved 112 frames → outputs/anti_trans_dipoles_20260421/training_with_dipoles.npz
+  |μ| range: 4.415–5.386 D  mean=4.927
+
+Run IR with:
+  python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl \
+    --training-data outputs/anti_trans_dipoles_20260421/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 \
+    --nm-pes-bond-wall-factor 1.15 --nm-pes-bond-wall-stiffness 15.0 \
+    --max-bond-extension 1.35 \
+    --output-dir outputs/ir_spectrum_NM_PES_stretch_dipoles_300K
+

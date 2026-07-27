@@ -1,0 +1,16 @@
+{
+  "e_casscf_s0_eq_ha": -304.54352830477166,
+  "e_wb97x_eq_ha": -306.20975731936596,
+  "gap_s1_eq_ha": 0.0434551529036753,
+  "gap_t1_eq_ha": 0.039465654679077034,
+  "gap_s1_eq_kcal": 27.268520141174857,
+  "gap_t1_eq_kcal": 24.765072208733265,
+  "no_occ_ref": [
+    1.9516997601734745,
+    1.7173193521559391,
+    0.2824042074541487,
+    0.048576680216438774
+  ],
+  "no_occ_threshold": 0.2,
+  "source": "test_casscf_equilibrium.py via outputs/anti_trans_casscf44_eq_ref.json"
+}

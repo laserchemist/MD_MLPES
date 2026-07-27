@@ -1,0 +1,177 @@
+PSI4 1.10 available
+
+======================================================================
+  MVKO 1D ANHARMONIC ANALYSIS
+======================================================================
+  Method  : b3lyp/6-31G*
+  Output  : outputs/mvko_anharm_20260319_202143
+  Focus   : C-H overtone region 5500–6500 cm⁻¹
+  Geometry from outputs/mvko_20260319_081314/state.json
+  E = -306.3185840050427 Ha
+
+  Parsing harmonic normal modes from outputs/mvko_vpt2_20260319_183728/psi4_vpt2_output.dat ...
+  Found 6 C-H modes:
+    Mode 31  ω = 3048.96 cm⁻¹  μ = 1.0389 u  IR = 7.61 km/mol
+    Mode 32  ω = 3100.25 cm⁻¹  μ = 1.1008 u  IR = 8.64 km/mol
+    Mode 33  ω = 3162.81 cm⁻¹  μ = 1.0929 u  IR = 6.33 km/mol
+    Mode 34  ω = 3164.74 cm⁻¹  μ = 1.0841 u  IR = 5.32 km/mol
+    Mode 35  ω = 3179.55 cm⁻¹  μ = 1.0775 u  IR = 19.19 km/mol
+    Mode 36  ω = 3323.51 cm⁻¹  μ = 1.1091 u  IR = 1.76 km/mol
+
+  Computing 1D potential curves (6 modes × 10 displacements = 60 PSI4 energy calls) ...
+  Equilibrium energy: -306.31858400 Ha
+  mode 31  α=-0.25 Å  E=-306.26243511 Ha  [1/60, 9s]
+  mode 31  α=-0.20 Å  E=-306.28501212 Ha  [2/60, 18s]
+  mode 31  α=-0.15 Å  E=-306.30091184 Ha  [3/60, 27s]
+  mode 31  α=-0.10 Å  E=-306.31122216 Ha  [4/60, 35s]
+  mode 31  α=-0.05 Å  E=-306.31685654 Ha  [5/60, 44s]
+  mode 31  α=+0.05 Å  E=-306.31705339 Ha  [6/60, 53s]
+  mode 31  α=+0.10 Å  E=-306.31281313 Ha  [7/60, 62s]
+  mode 31  α=+0.15 Å  E=-306.30632770 Ha  [8/60, 71s]
+  mode 31  α=+0.20 Å  E=-306.29799106 Ha  [9/60, 80s]
+  mode 31  α=+0.25 Å  E=-306.28813801 Ha  [10/60, 89s]
+  mode 32  α=-0.25 Å  E=-306.26940371 Ha  [11/60, 98s]
+  mode 32  α=-0.20 Å  E=-306.28820189 Ha  [12/60, 106s]
+  mode 32  α=-0.15 Å  E=-306.30196114 Ha  [13/60, 115s]
+  mode 32  α=-0.10 Å  E=-306.31134175 Ha  [14/60, 124s]
+  mode 32  α=-0.05 Å  E=-306.31679504 Ha  [15/60, 133s]
+  mode 32  α=+0.05 Å  E=-306.31679504 Ha  [16/60, 141s]
+  mode 32  α=+0.10 Å  E=-306.31134175 Ha  [17/60, 150s]
+  mode 32  α=+0.15 Å  E=-306.30196114 Ha  [18/60, 159s]
+  mode 32  α=+0.20 Å  E=-306.28820189 Ha  [19/60, 167s]
+  mode 32  α=+0.25 Å  E=-306.26940371 Ha  [20/60, 176s]
+  mode 33  α=-0.25 Å  E=-306.28263093 Ha  [21/60, 185s]
+  mode 33  α=-0.20 Å  E=-306.29452124 Ha  [22/60, 194s]
+  mode 33  α=-0.15 Å  E=-306.30438700 Ha  [23/60, 202s]
+  mode 33  α=-0.10 Å  E=-306.31194540 Ha  [24/60, 211s]
+  mode 33  α=-0.05 Å  E=-306.31683230 Ha  [25/60, 220s]
+  mode 33  α=+0.05 Å  E=-306.31661457 Ha  [26/60, 229s]
+  mode 33  α=+0.10 Å  E=-306.31018720 Ha  [27/60, 237s]
+  mode 33  α=+0.15 Å  E=-306.29837802 Ha  [28/60, 246s]
+  mode 33  α=+0.20 Å  E=-306.28002957 Ha  [29/60, 255s]
+  mode 33  α=+0.25 Å  E=-306.25369028 Ha  [30/60, 264s]
+  mode 34  α=-0.25 Å  E=-306.27296884 Ha  [31/60, 273s]
+  mode 34  α=-0.20 Å  E=-306.28962101 Ha  [32/60, 281s]
+  mode 34  α=-0.15 Å  E=-306.30234849 Ha  [33/60, 290s]
+  mode 34  α=-0.10 Å  E=-306.31135997 Ha  [34/60, 299s]
+  mode 34  α=-0.05 Å  E=-306.31676745 Ha  [35/60, 308s]
+  mode 34  α=+0.05 Å  E=-306.31671847 Ha  [36/60, 317s]
+  mode 34  α=+0.10 Å  E=-306.31096652 Ha  [37/60, 326s]
+  mode 34  α=+0.15 Å  E=-306.30099786 Ha  [38/60, 335s]
+  mode 34  α=+0.20 Å  E=-306.28633826 Ha  [39/60, 343s]
+  mode 34  α=+0.25 Å  E=-306.26634539 Ha  [40/60, 352s]
+  mode 35  α=-0.25 Å  E=-306.25265076 Ha  [41/60, 361s]
+  mode 35  α=-0.20 Å  E=-306.27949423 Ha  [42/60, 370s]
+  mode 35  α=-0.15 Å  E=-306.29816808 Ha  [43/60, 379s]
+  mode 35  α=-0.10 Å  E=-306.31014081 Ha  [44/60, 388s]
+  mode 35  α=-0.05 Å  E=-306.31661601 Ha  [45/60, 397s]
+  mode 35  α=+0.05 Å  E=-306.31686233 Ha  [46/60, 406s]
+  mode 35  α=+0.10 Å  E=-306.31212773 Ha  [47/60, 414s]
+  mode 35  α=+0.15 Å  E=-306.30494191 Ha  [48/60, 423s]
+  mode 35  α=+0.20 Å  E=-306.29577221 Ha  [49/60, 432s]
+  mode 35  α=+0.25 Å  E=-306.28500840 Ha  [50/60, 441s]
+  mode 36  α=-0.25 Å  E=-306.23614145 Ha  [51/60, 450s]
+  mode 36  α=-0.20 Å  E=-306.27099142 Ha  [52/60, 459s]
+  mode 36  α=-0.15 Å  E=-306.29429218 Ha  [53/60, 468s]
+  mode 36  α=-0.10 Å  E=-306.30873104 Ha  [54/60, 477s]
+  mode 36  α=-0.05 Å  E=-306.31632364 Ha  [55/60, 486s]
+  mode 36  α=+0.05 Å  E=-306.31664641 Ha  [56/60, 495s]
+  mode 36  α=+0.10 Å  E=-306.31135441 Ha  [57/60, 503s]
+  mode 36  α=+0.15 Å  E=-306.30332678 Ha  [58/60, 512s]
+  mode 36  α=+0.20 Å  E=-306.29300672 Ha  [59/60, 521s]
+  mode 36  α=+0.25 Å  E=-306.28069848 Ha  [60/60, 530s]
+
+  Curves saved → outputs/mvko_anharm_20260319_202143/curves.npz
+
+  Curves done in 540 s
+
+  Solving 1D Schrödinger equations ...
+
+===========================================================================
+  MVKO 1D ANHARMONIC C-H STRETCH ANALYSIS  (B3LYP/6-31G*)
+===========================================================================
+
+  C-H Fundamental Frequencies
+   Mode    ω(harm)      ν(1D)   Δ(anharm)   IR (km/mol)
+  -------------------------------------------------------
+     31     3049.0     3002.1       -46.9          7.61
+     32     3100.2     3166.5        66.2          8.64
+     33     3162.8     3150.2       -12.6          6.33
+     34     3164.7     3209.0        44.2          5.32
+     35     3179.6     3130.8       -48.8         19.19
+     36     3323.5     3300.2       -23.3          1.76
+
+  C-H Overtone Frequencies (2νᵢ)
+   Mode   2ω(harm)     2ν(1D)   anharmon.    in target?
+  -------------------------------------------------------
+     31     6097.9     5980.8       -23.4  ← IN RANGE
+     32     6200.5     6404.1        71.1  ← IN RANGE
+     33     6325.6     6297.4        -3.1  ← IN RANGE
+     34     6329.5     6461.6        43.7  ← IN RANGE
+     35     6359.1     6232.0       -29.5  ← IN RANGE
+     36     6647.0     6603.4         3.0
+
+  C-H Combination Bands νᵢ+νⱼ (diagonal estimate)
+       Modes    ω_i+ω_j    ν_i+ν_j    in target?
+  --------------------------------------------------
+     ν31+ν32     6149.2     6168.6  ← IN RANGE
+     ν31+ν33     6211.8     6152.4  ← IN RANGE
+     ν31+ν34     6213.7     6211.1  ← IN RANGE
+     ν31+ν35     6228.5     6132.9  ← IN RANGE
+     ν31+ν36     6372.5     6302.3  ← IN RANGE
+     ν32+ν33     6263.1     6316.7  ← IN RANGE
+     ν32+ν34     6265.0     6375.5  ← IN RANGE
+     ν32+ν35     6279.8     6297.2  ← IN RANGE
+     ν32+ν36     6423.8     6466.7  ← IN RANGE
+     ν33+ν34     6327.6     6359.2  ← IN RANGE
+     ν33+ν35     6342.4     6281.0  ← IN RANGE
+     ν33+ν36     6486.3     6450.5  ← IN RANGE
+     ν34+ν35     6344.3     6339.7  ← IN RANGE
+     ν34+ν36     6488.3     6509.2
+     ν35+ν36     6503.1     6431.0  ← IN RANGE
+
+  Summary
+  ──────────────────────────────────────────────────
+  C-H stretch overtones in 5500–6500 cm⁻¹: 5 / 6
+  C-H combination bands  in 5500–6500 cm⁻¹: 14 / 15
+  Total transitions in range: 19
+  (Paper predicts 21 per conformer: 6 overtones + 15 combinations)
+
+  NOTE: combination-band estimates use no cross-anharmonicity (xᵢⱼ=0).
+  True xᵢⱼ for C-H pairs is typically −5 to −25 cm⁻¹,
+  shifting combination bands down by ≲50 cm⁻¹ from harmonic sum.
+
+===========================================================================
+  CAN CLASSICAL MD ACCESS THE 2νCH REGION?
+===========================================================================
+
+  Short answer: NO — for two independent reasons.
+
+  1. QUANTUM EFFECT (fundamental barrier)
+     Overtones and combination bands are purely quantum mechanical phenomena.
+     In the ACF-based IR spectrum from classical trajectory MD, the dipole
+     auto-correlation function (DACF) captures only the *fundamental* (0→1)
+     transitions, which appear at νᵢ.  The classical harmonic oscillator
+     DACF spectrum has peaks only at ωᵢ, not at 2ωᵢ or ωᵢ+ωⱼ.  Even a
+     perfectly anharmonic PES cannot produce overtone peaks in a classical
+     trajectory — you need quantum-mechanical population of v=2.
+
+  2. WRONG C-H FREQUENCIES IN THE CURRENT ML-PES
+     The Coulomb-matrix+RBF kernel has stiff numerical second derivatives
+     under C-H displacements.  The ML-PES Hessian gives C-H stretch modes
+     at 10 000–15 000 cm⁻¹ instead of ~3000 cm⁻¹.  Even if classical MD
+     could in principle give overtones, the ML-MD trajectory would run at
+     the wrong frequency.
+
+  WHAT GIVES THE 2νCH REGION CORRECTLY?
+  • VPT2 (second-order vibrational perturbation theory) from an ab-initio
+    or DFT code that implements it (Gaussian, CFOUR, ORCA with VPT2 module).
+    The 1D anharmonic results above are equivalent to the *diagonal* VPT2
+    approximation; they give the C-H overtone positions to ±30 cm⁻¹.
+  • Variational vibrational calculations (e.g. VSCF, VCI, MCTDH) on a
+    full-dimensional potential give more accurate combination intensities.
+  • Our results here (1D DVR on B3LYP/6-31G* quartic potential) give the
+    right order of magnitude but lack the off-diagonal anharmonicity xᵢⱼ
+    needed for exact combination-band positions.
+
+  Results → outputs/mvko_anharm_20260319_202143/anharmonic_results.json

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD_MLPES — Smith Lab</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --border: #e5e7eb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #6d28d9);
+            color: white;
+            padding: 3.5rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.6rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.15rem;
+            opacity: 0.88;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        header .meta {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .doc-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--dark);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+        }
+
+        .card-banner {
+            height: 8px;
+        }
+
+        .banner-blue   { background: linear-gradient(90deg, #2563eb, #7c3aed); }
+        .banner-green  { background: linear-gradient(90deg, #065f46, #1d4ed8); }
+
+        .card-body {
+            padding: 1.8rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-icon {
+            font-size: 2.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .card-description {
+            font-size: 0.97rem;
+            color: #374151;
+            flex: 1;
+        }
+
+        .card-tags {
+            margin-top: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .tag {
+            font-size: 0.78rem;
+            background: var(--light);
+            border: 1px solid var(--border);
+            color: #374151;
+            padding: 0.2rem 0.6rem;
+            border-radius: 99px;
+        }
+
+        .card-link {
+            display: block;
+            margin-top: 1.4rem;
+            text-align: center;
+            background: var(--primary);
+            color: white;
+            padding: 0.65rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .card-link:hover { background: var(--secondary); }
+        .card-link.green { background: #065f46; }
+        .card-link.green:hover { background: var(--primary); }
+
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1.25rem;
+        }
+
+        .about {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 2rem;
+        }
+
+        .about h2 {
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .about p { color: #374151; font-size: 0.97rem; margin-bottom: 0.6rem; }
+
+        .molecule-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .molecule-chip {
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .molecule-chip strong { display: block; color: var(--primary); }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #9ca3af;
+            font-size: 0.88rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>MD_MLPES</h1>
+    <p>Machine-Learning Potential Energy Surfaces for Criegee Intermediate Dynamics &amp; IR Spectroscopy</p>
+    <p class="meta">Jonathan M. Smith &nbsp;&middot;&nbsp; Temple University &nbsp;&middot;&nbsp; 2025–2026</p>
+</header>
+
+<main>
+
+    <div class="about">
+        <h2>About this project</h2>
+        <p>This repository develops ML-PES pipelines for Criegee intermediates: PSI4 quantum chemistry &rarr; Coulomb-matrix descriptor &rarr; Kernel Ridge Regression &rarr; ML-MD &rarr; IR spectra. Multi-state CASSCF/NEVPT2 corrections are applied via normal-mode coordinate delta-ML. The MACE equivariant neural network backend is the current preferred engine for vibrational spectra.</p>
+        <div class="molecule-row">
+            <div class="molecule-chip"><strong>CH&#8322;OO</strong>5 atoms &middot; 9 vib. modes &middot; benchmark</div>
+            <div class="molecule-chip"><strong>MVKO</strong>12 atoms &middot; 30 vib. modes &middot; 4 conformers</div>
+            <div class="molecule-chip"><strong>Level of theory</strong>B3LYP &amp; wB97X-D / 6-31G* (PSI4 1.10)</div>
+            <div class="molecule-chip"><strong>CASSCF</strong>(2,2) syn &middot; (4,4) anti &middot; all grids complete</div>
+        </div>
+    </div>
+
+    <p class="section-title">Documentation</p>
+
+    <div class="card-grid">
+
+        <a class="doc-card" href="https://laserchemist.github.io/MD_MLPES/PSI4_ML_PES_Guide.html" target="_blank" rel="noopener">
+            <div class="card-banner banner-blue"></div>
+            <div class="card-body">
+                <div class="card-icon">&#x1F680;</div>
+                <div class="card-title">PSI4-MD ML-PES Guide</div>
+                <div class="card-subtitle">Framework documentation &amp; API reference</div>
+                <div class="card-description">
+                    Complete guide to the ML-PES framework: module architecture, PSI4 interface, KRR trainer, data formats, workflow scripts, visualization, and troubleshooting. Includes production command examples and performance benchmarks.
+                </div>
+                <div class="card-tags">
+                    <span class="tag">PSI4</span>
+                    <span class="tag">Coulomb matrix</span>
+                    <span class="tag">KRR</span>
+                    <span class="tag">ML-MD</span>
+                    <span class="tag">IR spectrum</span>
+                    <span class="tag">API reference</span>
+                </div>
+                <span class="card-link">Open Guide &rarr;</span>
+            </div>
+        </a>
+
+        <a class="doc-card" href="RESEARCH_LOG.html">
+            <div class="card-banner banner-green"></div>
+            <div class="card-body">
+                <div class="card-icon">&#x1F4D3;</div>
+                <div class="card-title">Research Log</div>
+                <div class="card-subtitle">Project history, results &amp; lessons learned</div>
+                <div class="card-description">
+                    Chronological record of all major results: CH&#8322;OO production model, MVKO molecule introduction, adaptive sampling lessons, CASSCF delta-ML conformer grids, MACE backend, ACF IR failure root cause, and harmonic dipole derivative approach for physically correct MVKO spectra.
+                </div>
+                <div class="card-tags">
+                    <span class="tag">CH&#8322;OO</span>
+                    <span class="tag">MVKO</span>
+                    <span class="tag">CASSCF</span>
+                    <span class="tag">MACE</span>
+                    <span class="tag">IR spectra</span>
+                    <span class="tag">hot emission</span>
+                </div>
+                <span class="card-link green">Open Log &rarr;</span>
+            </div>
+        </a>
+
+    </div>
+
+</main>
+
+<footer>
+    MD_MLPES &mdash; Smith Lab, Temple University &mdash; <a href="https://github.com/laserchemist/MD_MLPES" style="color:#9ca3af">GitHub</a>
+</footer>
+
+</body>
+</html>

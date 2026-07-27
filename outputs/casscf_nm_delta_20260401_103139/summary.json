@@ -1,0 +1,78 @@
+{
+  "timestamp": "20260401_103139",
+  "casscf_results_in": "outputs/casscf_surface_20260331_133413/surface_results.json",
+  "training_data": "outputs/mvko_20260319_081314/combined_training_data.npz",
+  "eq_coords": "outputs/mvko_20260319_081314/psi4_eq_coords.npy",
+  "hessian_source": "B3LYP/6-31G* (computed)",
+  "n_frames_total": 29,
+  "n_frames_filtered": 18,
+  "n_vib": 30,
+  "freqs_vib_min_cm1": 124.775729632579,
+  "freqs_vib_max_cm1": 3323.183561741524,
+  "n_imag_modes": 0,
+  "q_norm2_min": 0.0,
+  "q_norm2_max": 72.14570442874813,
+  "delta_min_kcal": -21.529808231512636,
+  "delta_max_kcal": 13.930004702313829,
+  "best_gamma": 0.01,
+  "best_alpha": 1e-08,
+  "loo_cv_rmse_kcal": 1.6073623698334432e-07,
+  "train_rmse_kcal": 0.053618294091568285,
+  "model_path": "outputs/casscf_nm_delta_20260401_103139/nm_delta_model.pkl",
+  "filter_max_energy_kcal": 50.0,
+  "fix_a_nm_points": 0,
+  "e_b3lyp_ref_ha": -306.3185840048427,
+  "e_cas_ref_ha": -304.52484969864724,
+  "grid_search": [
+    {
+      "gamma": 0.01,
+      "alpha": 1e-08,
+      "loo_rmse_kcal": 1.6073623698334432e-07
+    },
+    {
+      "gamma": 0.05,
+      "alpha": 1e-08,
+      "loo_rmse_kcal": 1.2763847913645104e-05
+    },
+    {
+      "gamma": 0.01,
+      "alpha": 1e-06,
+      "loo_rmse_kcal": 1.4711362013829506e-05
+    },
+    {
+      "gamma": 0.05,
+      "alpha": 1e-06,
+      "loo_rmse_kcal": 0.0012762186362404936
+    },
+    {
+      "gamma": 0.01,
+      "alpha": 0.0001,
+      "loo_rmse_kcal": 0.0013702168614094345
+    },
+    {
+      "gamma": 0.1,
+      "alpha": 1e-08,
+      "loo_rmse_kcal": 0.006110733345051571
+    },
+    {
+      "gamma": 0.05,
+      "alpha": 0.0001,
+      "loo_rmse_kcal": 0.13104643902875823
+    },
+    {
+      "gamma": 0.01,
+      "alpha": 0.01,
+      "loo_rmse_kcal": 0.14410251575371072
+    },
+    {
+      "gamma": 0.1,
+      "alpha": 1e-06,
+      "loo_rmse_kcal": 0.6940054977451011
+    },
+    {
+      "gamma": 0.1,
+      "alpha": 0.0001,
+      "loo_rmse_kcal": 5.520380168059366
+    }
+  ]
+}

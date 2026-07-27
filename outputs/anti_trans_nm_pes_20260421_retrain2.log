@@ -1,0 +1,100 @@
+INFO:numexpr.utils:NumExpr defaulting to 10 threads.
+
+Resuming from outputs/anti_trans_nm_pes_20260421/state.json
+Molecule: mvko_anti_trans  (12 atoms)
+PSI4 1.10 available
+
+  Normal modes (30 vibrational):
+    mode  1:    117.2 cm⁻¹
+    mode  2:    161.8 cm⁻¹
+    mode  3:    251.8 cm⁻¹
+    mode  4:    278.6 cm⁻¹
+    mode  5:    327.9 cm⁻¹
+    mode  6:    396.2 cm⁻¹
+    mode  7:    481.8 cm⁻¹
+    mode  8:    647.2 cm⁻¹
+    mode  9:    731.6 cm⁻¹
+    mode 10:    804.6 cm⁻¹
+    mode 11:    991.2 cm⁻¹
+    mode 12:   1007.4 cm⁻¹
+    mode 13:   1042.1 cm⁻¹
+    mode 14:   1058.8 cm⁻¹
+    mode 15:   1081.1 cm⁻¹
+    mode 16:   1108.3 cm⁻¹
+    mode 17:   1304.9 cm⁻¹
+    mode 18:   1384.8 cm⁻¹
+    mode 19:   1454.6 cm⁻¹
+    mode 20:   1481.0 cm⁻¹
+    mode 21:   1496.1 cm⁻¹
+    mode 22:   1499.4 cm⁻¹
+    mode 23:   1575.6 cm⁻¹
+    mode 24:   1721.8 cm⁻¹
+    mode 25:   3072.5 cm⁻¹
+    mode 26:   3139.7 cm⁻¹
+    mode 27:   3188.9 cm⁻¹
+    mode 28:   3189.9 cm⁻¹
+    mode 29:   3261.3 cm⁻¹
+    mode 30:   3280.7 cm⁻¹
+Loaded trajectory from outputs/anti_trans_nm_pes_20260421/nm_displacements_with_eq.npz (npz format)
+  Frames: 301, Atoms: 12
+Loaded NM data from outputs/anti_trans_nm_pes_20260421/nm_displacements_with_eq.npz  (301 frames)
+Saved trajectory to outputs/anti_trans_nm_pes_20260421/combined_training_data.npz (npz format)
+
+  Combined training data: 301 frames → outputs/anti_trans_nm_pes_20260421/combined_training_data.npz
+
+=== Step 5: NM-KRR training ===
+  Training: 291 / 301 frames (ΔE < 50.0 kcal/mol)
+  Fixed γ=0.1, α=1e-07, LOO-CV RMSE=1.315 kcal/mol
+  Saved NM-KRR model → outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+
+  NM frequencies:
+    mode  1:    117.2 cm⁻¹
+    mode  2:    161.8 cm⁻¹
+    mode  3:    251.8 cm⁻¹
+    mode  4:    278.6 cm⁻¹
+    mode  5:    327.9 cm⁻¹
+    mode  6:    396.2 cm⁻¹
+    mode  7:    481.8 cm⁻¹
+    mode  8:    647.2 cm⁻¹
+    mode  9:    731.6 cm⁻¹
+    mode 10:    804.6 cm⁻¹
+    mode 11:    991.2 cm⁻¹
+    mode 12:   1007.4 cm⁻¹
+    mode 13:   1042.1 cm⁻¹
+    mode 14:   1058.8 cm⁻¹
+    mode 15:   1081.1 cm⁻¹
+    mode 16:   1108.3 cm⁻¹
+    mode 17:   1304.9 cm⁻¹
+    mode 18:   1384.8 cm⁻¹
+    mode 19:   1454.6 cm⁻¹
+    mode 20:   1481.0 cm⁻¹
+    mode 21:   1496.1 cm⁻¹
+    mode 22:   1499.4 cm⁻¹
+    mode 23:   1575.6 cm⁻¹
+    mode 24:   1721.8 cm⁻¹
+    mode 25:   3072.5 cm⁻¹
+    mode 26:   3139.7 cm⁻¹
+    mode 27:   3188.9 cm⁻¹
+    mode 28:   3189.9 cm⁻¹
+    mode 29:   3261.3 cm⁻¹
+    mode 30:   3280.7 cm⁻¹
+
+=== Done ===
+NM-KRR model: outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+
+Run IR spectrum:
+  python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl \
+    --training-data outputs/mvko_dipoles_stretch_20260420/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 \
+    --nm-pes-bond-wall-factor 1.15 --nm-pes-bond-wall-stiffness 15.0 \
+    --max-bond-extension 1.35 \
+    --output-dir outputs/mvko_anti_trans_ir_300K
+
+Collect anti-trans dipoles (AFTER IR model validated):
+  python3 collect_ch_displaced_dipoles.py \
+    --nm-pes-model outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl \
+    --out-dir outputs/mvko_anti_trans_dipoles
+

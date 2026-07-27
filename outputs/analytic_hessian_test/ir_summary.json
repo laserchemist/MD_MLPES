@@ -1,0 +1,43 @@
+{
+  "date": "2026-03-19T06:20:22.790854",
+  "molecule_hill": "CH2O2",
+  "molecule_name": "Criegee intermediate (CH\u2082OO)",
+  "molecule_unicode": "CH\u2082O\u2082",
+  "model_path": "outputs/nm_training_20260308_203606/mlpes_model_nm.pkl",
+  "training_data": "outputs/clean_psi410_20260308_203552/training_data.npz",
+  "dipole_model": "outputs/analytic_hessian_test/dipole_surface.pkl",
+  "n_md_steps": 50,
+  "temperature_K": 300.0,
+  "timestep_fs": 0.5,
+  "save_every": 1,
+  "dt_eff_fs": 0.5,
+  "zpe_floor_init": true,
+  "zpe_min_freq_cm-1": 50.0,
+  "zpe_max_freq_cm-1": 4000.0,
+  "preminimized": true,
+  "n_frames_ir": 50,
+  "trajectory_xyz": "outputs/analytic_hessian_test/CH2O2_md_trajectory.xyz",
+  "spectrum_csv": "outputs/analytic_hessian_test/ir_spectrum.csv",
+  "figure_spectrum": "outputs/analytic_hessian_test/ir_spectrum_clean.png",
+  "figure_diagnostic": "outputs/analytic_hessian_test/ir_spectrum_figure.png",
+  "dipole_surface_train_rmse_D": 3.1636933936673264e-05,
+  "dipole_surface_test_rmse_D": 8.564453554304044e-05,
+  "dipole_surface_r2_test": 0.9999998711568888,
+  "top_peaks_cm-1": [
+    {
+      "frequency_cm-1": 530.883734052961,
+      "intensity": 1.0
+    }
+  ],
+  "nm_frequencies_cm-1": [
+    1847.9967350825261,
+    2512.394342539694,
+    3162.4415394540547,
+    3638.9370452760886,
+    4753.176740203811,
+    5500.350587556272,
+    5889.57979740476,
+    11207.465701399818,
+    12680.172673205598
+  ]
+}

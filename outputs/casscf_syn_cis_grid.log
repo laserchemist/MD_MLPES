@@ -1,0 +1,1293 @@
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:148: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(eigenvalues_all),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/normal_modes.py:149: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-eigenvalues_all),   # imaginary → negative
+Equilibrium reference loaded from: outputs/syn_cis_casscf22_eq_ref.json
+  E_CASSCF_S0(eq) = -304.4953481204 Ha
+  E_wB97X(eq)     = -306.2075680217 Ha
+  Gap_S1(eq)      = 21.643 kcal/mol
+  Gap_T1(eq)      = 19.025 kcal/mol
+Hessian: outputs/syn_cis_nm_pes_20260513v2/hessian.npy  (shape (36, 36))
+NM modes: 30  (1 imaginary)
+Freq range: 100.5 – 3294.1 cm⁻¹
+
+NM grid: 232 frames  (29 modes × 4 amplitudes × 2 signs)
+
+  [  1/232] m01_+_f0.50  (mode  1,    100 cm⁻¹, f=0.5+)
+    wB97X:   -306.20715606 Ha  (26s)
+    CASSCF S0: -304.49389775 Ha  δ_S0=+0.652 kcal/mol  gap_S1=21.6 kcal/mol  OK  (20s)
+    Triplet T1:  -304.46371894 Ha  gap_T1=18.9 kcal/mol  (20s)
+    [1 ok / 0 fail | ETA 4.2 h]
+  [  2/232] m01_+_f1.00  (mode  1,    100 cm⁻¹, f=1.0+)
+    wB97X:   -306.20332370 Ha  (21s)
+    CASSCF S0: -304.48683474 Ha  δ_S0=+2.679 kcal/mol  gap_S1=21.3 kcal/mol  OK  (19s)
+    Triplet T1:  -304.45714391 Ha  gap_T1=18.6 kcal/mol  (171s)
+    [2 ok / 0 fail | ETA 8.9 h]
+  [  3/232] m01_+_f1.50  (mode  1,    100 cm⁻¹, f=1.5+)
+    wB97X:   -306.18983532 Ha  (28s)
+    CASSCF S0: -304.46780311 Ha  δ_S0=+6.157 kcal/mol  gap_S1=20.6 kcal/mol  OK  (55s)
+    Triplet T1:  -304.43911548 Ha  gap_T1=18.0 kcal/mol  (63s)
+    [3 ok / 0 fail | ETA 9.0 h]
+  [  4/232] m01_+_f2.00  (mode  1,    100 cm⁻¹, f=2.0+)
+    wB97X:   -306.16063112 Ha  (36s)
+    CASSCF S0: -304.43062104 Ha  δ_S0=+11.164 kcal/mol  gap_S1=19.5 kcal/mol  OK  (37s)
+    Triplet T1:  -304.40361412 Ha  gap_T1=16.9 kcal/mol  (63s)
+    [4 ok / 0 fail | ETA 8.9 h]
+  [  5/232] m01_-_f0.50  (mode  1,    100 cm⁻¹, f=0.5-)
+    wB97X:   -306.20715607 Ha  (38s)
+    CASSCF S0: -304.49389775 Ha  δ_S0=+0.652 kcal/mol  gap_S1=21.6 kcal/mol  OK  (53s)
+    Triplet T1:  -304.46371894 Ha  gap_T1=18.9 kcal/mol  (75s)
+    [5 ok / 0 fail | ETA 9.2 h]
+  [  6/232] m01_-_f1.00  (mode  1,    100 cm⁻¹, f=1.0-)
+    wB97X:   -306.20332369 Ha  (35s)
+    CASSCF S0: -304.48683474 Ha  δ_S0=+2.679 kcal/mol  gap_S1=21.3 kcal/mol  OK  (54s)
+    Triplet T1:  -304.45714391 Ha  gap_T1=18.6 kcal/mol  (724s)
+    [6 ok / 0 fail | ETA 16.1 h]
+  [  7/232] m01_-_f1.50  (mode  1,    100 cm⁻¹, f=1.5-)
+    wB97X:   -306.18983532 Ha  (37s)
+    CASSCF S0: -304.46780311 Ha  δ_S0=+6.157 kcal/mol  gap_S1=20.6 kcal/mol  OK  (96s)
+    Triplet T1:  -304.43911548 Ha  gap_T1=18.0 kcal/mol  (125s)
+    [7 ok / 0 fail | ETA 16.0 h]
+  [  8/232] m01_-_f2.00  (mode  1,    100 cm⁻¹, f=2.0-)
+    wB97X:   -306.16063113 Ha  (28s)
+    CASSCF S0: -304.43062104 Ha  δ_S0=+11.164 kcal/mol  gap_S1=19.5 kcal/mol  OK  (75s)
+    Triplet T1:  -304.40361412 Ha  gap_T1=16.9 kcal/mol  (74s)
+    [8 ok / 0 fail | ETA 15.4 h]
+  [  9/232] m02_+_f0.50  (mode  2,    228 cm⁻¹, f=0.5+)
+    wB97X:   -306.20727057 Ha  (39s)
+    CASSCF S0: -304.49451611 Ha  δ_S0=+0.335 kcal/mol  gap_S1=21.3 kcal/mol  OK  (36s)
+    Triplet T1:  -304.46466994 Ha  gap_T1=18.7 kcal/mol  (64s)
+    [9 ok / 0 fail | ETA 14.5 h]
+  [ 10/232] m02_+_f1.00  (mode  2,    228 cm⁻¹, f=1.0+)
+    wB97X:   -306.20652273 Ha  (32s)
+    CASSCF S0: -304.49296559 Ha  δ_S0=+0.839 kcal/mol  gap_S1=20.9 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46375672 Ha  gap_T1=18.3 kcal/mol  (83s)
+    [10 ok / 0 fail | ETA 14.1 h]
+  [ 11/232] m02_+_f1.50  (mode  2,    228 cm⁻¹, f=1.5+)
+    wB97X:   -306.20525566 Ha  (44s)
+    CASSCF S0: -304.49065574 Ha  δ_S0=+1.493 kcal/mol  gap_S1=20.4 kcal/mol  OK  (52s)
+    Triplet T1:  -304.46223834 Ha  gap_T1=17.8 kcal/mol  (59s)
+    [11 ok / 0 fail | ETA 13.7 h]
+  [ 12/232] m02_+_f2.00  (mode  2,    228 cm⁻¹, f=2.0+)
+    wB97X:   -306.20337722 Ha  (25s)
+    CASSCF S0: -304.48749481 Ha  δ_S0=+2.298 kcal/mol  gap_S1=19.7 kcal/mol  OK  (44s)
+    Triplet T1:  -304.46001103 Ha  gap_T1=17.2 kcal/mol  (61s)
+    [12 ok / 0 fail | ETA 13.1 h]
+  [ 13/232] m02_-_f0.50  (mode  2,    228 cm⁻¹, f=0.5-)
+    wB97X:   -306.20734244 Ha  (36s)
+    CASSCF S0: -304.49544459 Ha  δ_S0=-0.202 kcal/mol  gap_S1=21.8 kcal/mol  OK  (55s)
+    Triplet T1:  -304.46482851 Ha  gap_T1=19.2 kcal/mol  (59s)
+    [13 ok / 0 fail | ETA 12.8 h]
+  [ 14/232] m02_-_f1.00  (mode  2,    228 cm⁻¹, f=1.0-)
+    wB97X:   -306.20657372 Ha  (29s)
+    CASSCF S0: -304.49472765 Ha  δ_S0=-0.235 kcal/mol  gap_S1=21.9 kcal/mol  OK  (34s)
+    Triplet T1:  -304.46399743 Ha  gap_T1=19.3 kcal/mol  (59s)
+    [14 ok / 0 fail | ETA 12.3 h]
+  [ 15/232] m02_-_f1.50  (mode  2,    228 cm⁻¹, f=1.5-)
+    wB97X:   -306.20510881 Ha  (35s)
+    CASSCF S0: -304.49305811 Ha  δ_S0=-0.106 kcal/mol  gap_S1=21.8 kcal/mol  OK  (53s)
+    Triplet T1:  -304.46240435 Ha  gap_T1=19.2 kcal/mol  (50s)
+    [15 ok / 0 fail | ETA 12.0 h]
+  [ 16/232] m02_-_f2.00  (mode  2,    228 cm⁻¹, f=2.0-)
+    wB97X:   -306.20276495 Ha  (25s)
+    CASSCF S0: -304.49023894 Ha  δ_S0=+0.192 kcal/mol  gap_S1=21.6 kcal/mol  OK  (54s)
+    Triplet T1:  -304.45985744 Ha  gap_T1=19.1 kcal/mol  (70s)
+    [16 ok / 0 fail | ETA 11.8 h]
+  [ 17/232] m03_+_f0.50  (mode  3,    279 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731609 Ha  (36s)
+    CASSCF S0: -304.49493573 Ha  δ_S0=+0.101 kcal/mol  gap_S1=21.5 kcal/mol  OK  (59s)
+    Triplet T1:  -304.46489799 Ha  gap_T1=18.8 kcal/mol  (77s)
+    [17 ok / 0 fail | ETA 11.6 h]
+  [ 18/232] m03_+_f1.00  (mode  3,    279 cm⁻¹, f=1.0+)
+    wB97X:   -306.20656646 Ha  (35s)
+    CASSCF S0: -304.49364962 Ha  δ_S0=+0.437 kcal/mol  gap_S1=20.9 kcal/mol  OK  (38s)
+    Triplet T1:  -304.46444670 Ha  gap_T1=18.3 kcal/mol  (39s)
+    [18 ok / 0 fail | ETA 11.3 h]
+  [ 19/232] m03_+_f1.50  (mode  3,    279 cm⁻¹, f=1.5+)
+    wB97X:   -306.20514633 Ha  (38s)
+    CASSCF S0: -304.49135036 Ha  δ_S0=+0.989 kcal/mol  gap_S1=20.0 kcal/mol  OK  (55s)
+    Triplet T1:  -304.46351254 Ha  gap_T1=17.5 kcal/mol  (78s)
+    [19 ok / 0 fail | ETA 11.2 h]
+  [ 20/232] m03_+_f2.00  (mode  3,    279 cm⁻¹, f=2.0+)
+    wB97X:   -306.20282420 Ha  (41s)
+    CASSCF S0: -304.48782731 Ha  δ_S0=+1.743 kcal/mol  gap_S1=18.8 kcal/mol  OK  (58s)
+    Triplet T1:  -304.46184437 Ha  gap_T1=16.3 kcal/mol  (70s)
+    [20 ok / 0 fail | ETA 11.1 h]
+  [ 21/232] m03_-_f0.50  (mode  3,    279 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731610 Ha  (38s)
+    CASSCF S0: -304.49493573 Ha  δ_S0=+0.101 kcal/mol  gap_S1=21.5 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46489799 Ha  gap_T1=18.8 kcal/mol  (75s)
+    [21 ok / 0 fail | ETA 11.0 h]
+  [ 22/232] m03_-_f1.00  (mode  3,    279 cm⁻¹, f=1.0-)
+    wB97X:   -306.20656647 Ha  (40s)
+    CASSCF S0: -304.49364962 Ha  δ_S0=+0.437 kcal/mol  gap_S1=20.9 kcal/mol  OK  (54s)
+    Triplet T1:  -304.46444670 Ha  gap_T1=18.3 kcal/mol  (64s)
+    [22 ok / 0 fail | ETA 10.8 h]
+  [ 23/232] m03_-_f1.50  (mode  3,    279 cm⁻¹, f=1.5-)
+    wB97X:   -306.20514634 Ha  (23s)
+    CASSCF S0: -304.49135036 Ha  δ_S0=+0.989 kcal/mol  gap_S1=20.0 kcal/mol  OK  (54s)
+    Triplet T1:  -304.46351254 Ha  gap_T1=17.5 kcal/mol  (73s)
+    [23 ok / 0 fail | ETA 10.7 h]
+  [ 24/232] m03_-_f2.00  (mode  3,    279 cm⁻¹, f=2.0-)
+    wB97X:   -306.20282418 Ha  (40s)
+    CASSCF S0: -304.48782731 Ha  δ_S0=+1.743 kcal/mol  gap_S1=18.8 kcal/mol  OK  (49s)
+    Triplet T1:  -304.46184437 Ha  gap_T1=16.3 kcal/mol  (190s)
+    [24 ok / 0 fail | ETA 10.9 h]
+  [ 25/232] m04_+_f0.50  (mode  4,    354 cm⁻¹, f=0.5+)
+    wB97X:   -306.20734033 Ha  (55s)
+    CASSCF S0: -304.49436710 Ha  δ_S0=+0.473 kcal/mol  gap_S1=21.3 kcal/mol  OK  (122s)
+    Triplet T1:  -304.46454607 Ha  gap_T1=18.7 kcal/mol  (125s)
+    [25 ok / 0 fail | ETA 11.1 h]
+  [ 26/232] m04_+_f1.00  (mode  4,    354 cm⁻¹, f=1.0+)
+    wB97X:   -306.20658440 Ha  (57s)
+    CASSCF S0: -304.49260368 Ha  δ_S0=+1.105 kcal/mol  gap_S1=21.0 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46328787 Ha  gap_T1=18.4 kcal/mol  (63s)
+    [26 ok / 0 fail | ETA 11.0 h]
+  [ 27/232] m04_+_f1.50  (mode  4,    354 cm⁻¹, f=1.5+)
+    wB97X:   -306.20518169 Ha  (21s)
+    CASSCF S0: -304.48992017 Ha  δ_S0=+1.909 kcal/mol  gap_S1=20.7 kcal/mol  OK  (49s)
+    Triplet T1:  -304.46110535 Ha  gap_T1=18.1 kcal/mol  (63s)
+    [27 ok / 0 fail | ETA 10.8 h]
+  [ 28/232] m04_+_f2.00  (mode  4,    354 cm⁻¹, f=2.0+)
+    wB97X:   -306.20300171 Ha  (43s)
+    CASSCF S0: -304.48613951 Ha  δ_S0=+2.913 kcal/mol  gap_S1=20.4 kcal/mol  OK  (52s)
+    Triplet T1:  -304.45780618 Ha  gap_T1=17.8 kcal/mol  (63s)
+    [28 ok / 0 fail | ETA 10.7 h]
+  [ 29/232] m04_-_f0.50  (mode  4,    354 cm⁻¹, f=0.5-)
+    wB97X:   -306.20728471 Ha  (39s)
+    CASSCF S0: -304.49564924 Ha  δ_S0=-0.367 kcal/mol  gap_S1=22.0 kcal/mol  OK  (52s)
+    Triplet T1:  -304.46485026 Ha  gap_T1=19.3 kcal/mol  (61s)
+    [29 ok / 0 fail | ETA 10.6 h]
+  [ 30/232] m04_-_f1.00  (mode  4,    354 cm⁻¹, f=1.0-)
+    wB97X:   -306.20660185 Ha  (38s)
+    CASSCF S0: -304.49534175 Ha  δ_S0=-0.602 kcal/mol  gap_S1=22.3 kcal/mol  OK  (55s)
+    Triplet T1:  -304.46408709 Ha  gap_T1=19.6 kcal/mol  (61s)
+    [30 ok / 0 fail | ETA 10.5 h]
+  [ 31/232] m04_-_f1.50  (mode  4,    354 cm⁻¹, f=1.5-)
+    wB97X:   -306.20552613 Ha  (27s)
+    CASSCF S0: -304.49447024 Ha  δ_S0=-0.730 kcal/mol  gap_S1=22.5 kcal/mol  OK  (43s)
+    Triplet T1:  -304.46279069 Ha  gap_T1=19.9 kcal/mol  (62s)
+    [31 ok / 0 fail | ETA 10.3 h]
+  [ 32/232] m04_-_f2.00  (mode  4,    354 cm⁻¹, f=2.0-)
+    wB97X:   -306.20406627 Ha  (36s)
+    CASSCF S0: -304.49305624 Ha  δ_S0=-0.759 kcal/mol  gap_S1=22.8 kcal/mol  OK  (57s)
+    Triplet T1:  -304.46098751 Ha  gap_T1=20.1 kcal/mol  (61s)
+    [32 ok / 0 fail | ETA 10.2 h]
+  [ 33/232] m05_+_f0.50  (mode  5,    441 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731088 Ha  (35s)
+    CASSCF S0: -304.49515487 Ha  δ_S0=-0.040 kcal/mol  gap_S1=21.5 kcal/mol  OK  (48s)
+    Triplet T1:  -304.46504467 Ha  gap_T1=18.9 kcal/mol  (44s)
+    [33 ok / 0 fail | ETA 10.1 h]
+  [ 34/232] m05_+_f1.00  (mode  5,    441 cm⁻¹, f=1.0+)
+    wB97X:   -306.20658264 Ha  (28s)
+    CASSCF S0: -304.49456163 Ha  δ_S0=-0.125 kcal/mol  gap_S1=21.0 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46506970 Ha  gap_T1=18.5 kcal/mol  (78s)
+    [34 ok / 0 fail | ETA 10.0 h]
+  [ 35/232] m05_+_f1.50  (mode  5,    441 cm⁻¹, f=1.5+)
+    wB97X:   -306.20531184 Ha  (38s)
+    CASSCF S0: -304.49352863 Ha  δ_S0=-0.274 kcal/mol  gap_S1=20.3 kcal/mol  OK  (50s)
+    Triplet T1:  -304.46504453 Ha  gap_T1=17.9 kcal/mol  (76s)
+    [35 ok / 0 fail | ETA 9.9 h]
+  [ 36/232] m05_+_f2.00  (mode  5,    441 cm⁻¹, f=2.0+)
+    wB97X:   -306.20341427 Ha  (40s)
+    CASSCF S0: -304.49199183 Ha  δ_S0=-0.500 kcal/mol  gap_S1=19.3 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46487116 Ha  gap_T1=17.0 kcal/mol  (74s)
+    [36 ok / 0 fail | ETA 9.8 h]
+  [ 37/232] m05_-_f0.50  (mode  5,    441 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731089 Ha  (41s)
+    CASSCF S0: -304.49515487 Ha  δ_S0=-0.040 kcal/mol  gap_S1=21.5 kcal/mol  OK  (44s)
+    Triplet T1:  -304.46504467 Ha  gap_T1=18.9 kcal/mol  (104s)
+    [37 ok / 0 fail | ETA 9.8 h]
+  [ 38/232] m05_-_f1.00  (mode  5,    441 cm⁻¹, f=1.0-)
+    wB97X:   -306.20658265 Ha  (38s)
+    CASSCF S0: -304.49456163 Ha  δ_S0=-0.125 kcal/mol  gap_S1=21.0 kcal/mol  OK  (43s)
+    Triplet T1:  -304.46506970 Ha  gap_T1=18.5 kcal/mol  (164s)
+    [38 ok / 0 fail | ETA 9.9 h]
+  [ 39/232] m05_-_f1.50  (mode  5,    441 cm⁻¹, f=1.5-)
+    wB97X:   -306.20531184 Ha  (37s)
+    CASSCF S0: -304.49352863 Ha  δ_S0=-0.274 kcal/mol  gap_S1=20.3 kcal/mol  OK  (122s)
+    Triplet T1:  -304.46504453 Ha  gap_T1=17.9 kcal/mol  (156s)
+    [39 ok / 0 fail | ETA 10.0 h]
+  [ 40/232] m05_-_f2.00  (mode  5,    441 cm⁻¹, f=2.0-)
+    wB97X:   -306.20341428 Ha  (41s)
+    CASSCF S0: -304.49199183 Ha  δ_S0=-0.500 kcal/mol  gap_S1=19.3 kcal/mol  OK  (64s)
+    Triplet T1:  -304.46487116 Ha  gap_T1=17.0 kcal/mol  (85s)
+    [40 ok / 0 fail | ETA 9.9 h]
+  [ 41/232] m06_+_f0.50  (mode  6,    482 cm⁻¹, f=0.5+)
+    wB97X:   -306.20732300 Ha  (38s)
+    CASSCF S0: -304.49568993 Ha  δ_S0=-0.368 kcal/mol  gap_S1=22.2 kcal/mol  OK  (57s)
+    Triplet T1:  -304.46449601 Ha  gap_T1=19.6 kcal/mol  (73s)
+    [41 ok / 0 fail | ETA 9.9 h]
+  [ 42/232] m06_+_f1.00  (mode  6,    482 cm⁻¹, f=1.0+)
+    wB97X:   -306.20663004 Ha  (39s)
+    CASSCF S0: -304.49543458 Ha  δ_S0=-0.643 kcal/mol  gap_S1=22.8 kcal/mol  OK  (58s)
+    Triplet T1:  -304.46339276 Ha  gap_T1=20.1 kcal/mol  (35s)
+    [42 ok / 0 fail | ETA 9.7 h]
+  [ 43/232] m06_+_f1.50  (mode  6,    482 cm⁻¹, f=1.5+)
+    wB97X:   -306.20547271 Ha  (33s)
+    CASSCF S0: -304.49459097 Ha  δ_S0=-0.840 kcal/mol  gap_S1=23.3 kcal/mol  OK  (59s)
+    Triplet T1:  -304.46173075 Ha  gap_T1=20.6 kcal/mol  (67s)
+    [43 ok / 0 fail | ETA 9.7 h]
+  [ 44/232] m06_+_f2.00  (mode  6,    482 cm⁻¹, f=2.0+)
+    wB97X:   -306.20385433 Ha  (38s)
+    CASSCF S0: -304.49316580 Ha  δ_S0=-0.961 kcal/mol  gap_S1=23.8 kcal/mol  OK  (63s)
+    Triplet T1:  -304.45951868 Ha  gap_T1=21.1 kcal/mol  (80s)
+    [44 ok / 0 fail | ETA 9.6 h]
+  [ 45/232] m06_-_f0.50  (mode  6,    482 cm⁻¹, f=0.5-)
+    wB97X:   -306.20729851 Ha  (37s)
+    CASSCF S0: -304.49439772 Ha  δ_S0=+0.427 kcal/mol  gap_S1=21.1 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46498010 Ha  gap_T1=18.5 kcal/mol  (78s)
+    [45 ok / 0 fail | ETA 9.6 h]
+  [ 46/232] m06_-_f1.00  (mode  6,    482 cm⁻¹, f=1.0-)
+    wB97X:   -306.20656552 Ha  (40s)
+    CASSCF S0: -304.49282474 Ha  δ_S0=+0.954 kcal/mol  gap_S1=20.5 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46433164 Ha  gap_T1=17.9 kcal/mol  (70s)
+    [46 ok / 0 fail | ETA 9.5 h]
+  [ 47/232] m06_-_f1.50  (mode  6,    482 cm⁻¹, f=1.5-)
+    wB97X:   -306.20533710 Ha  (21s)
+    CASSCF S0: -304.49061213 Ha  δ_S0=+1.572 kcal/mol  gap_S1=19.8 kcal/mol  OK  (60s)
+    Triplet T1:  -304.46306545 Ha  gap_T1=17.3 kcal/mol  (74s)
+    [47 ok / 0 fail | ETA 9.4 h]
+  [ 48/232] m06_-_f2.00  (mode  6,    482 cm⁻¹, f=2.0-)
+    wB97X:   -306.20359911 Ha  (35s)
+    CASSCF S0: -304.48774000 Ha  δ_S0=+2.284 kcal/mol  gap_S1=19.2 kcal/mol  OK  (40s)
+    Triplet T1:  -304.46115987 Ha  gap_T1=16.7 kcal/mol  (50s)
+    [48 ok / 0 fail | ETA 9.3 h]
+  [ 49/232] m07_+_f0.50  (mode  7,    625 cm⁻¹, f=0.5+)
+    wB97X:   -306.20729828 Ha  (37s)
+    CASSCF S0: -304.49625849 Ha  δ_S0=-0.741 kcal/mol  gap_S1=21.4 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46625440 Ha  gap_T1=18.8 kcal/mol  (63s)
+    [49 ok / 0 fail | ETA 9.2 h]
+  [ 50/232] m07_+_f1.00  (mode  7,    625 cm⁻¹, f=1.0+)
+    wB97X:   -306.20655863 Ha  (23s)
+    CASSCF S0: -304.49660346 Ha  δ_S0=-1.421 kcal/mol  gap_S1=21.1 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46696486 Ha  gap_T1=18.6 kcal/mol  (73s)
+    [50 ok / 0 fail | ETA 9.1 h]
+  [ 51/232] m07_+_f1.50  (mode  7,    625 cm⁻¹, f=1.5+)
+    wB97X:   -306.20531090 Ha  (38s)
+    CASSCF S0: -304.49636522 Ha  δ_S0=-2.055 kcal/mol  gap_S1=20.8 kcal/mol  OK  (35s)
+    Triplet T1:  -304.46714410 Ha  gap_T1=18.3 kcal/mol  (41s)
+    [51 ok / 0 fail | ETA 9.0 h]
+  [ 52/232] m07_+_f2.00  (mode  7,    625 cm⁻¹, f=2.0+)
+    wB97X:   -306.20353434 Ha  (37s)
+    CASSCF S0: -304.49552310 Ha  δ_S0=-2.641 kcal/mol  gap_S1=20.4 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46677220 Ha  gap_T1=18.0 kcal/mol  (71s)
+    [52 ok / 0 fail | ETA 9.0 h]
+  [ 53/232] m07_-_f0.50  (mode  7,    625 cm⁻¹, f=0.5-)
+    wB97X:   -306.20732231 Ha  (24s)
+    CASSCF S0: -304.49388740 Ha  δ_S0=+0.762 kcal/mol  gap_S1=21.9 kcal/mol  OK  (54s)
+    Triplet T1:  -304.46330396 Ha  gap_T1=19.2 kcal/mol  (68s)
+    [53 ok / 0 fail | ETA 8.9 h]
+  [ 54/232] m07_-_f1.00  (mode  7,    625 cm⁻¹, f=1.0-)
+    wB97X:   -306.20663354 Ha  (37s)
+    CASSCF S0: -304.49188764 Ha  δ_S0=+1.585 kcal/mol  gap_S1=22.0 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46108793 Ha  gap_T1=19.3 kcal/mol  (70s)
+    [54 ok / 0 fail | ETA 8.8 h]
+  [ 55/232] m07_-_f1.50  (mode  7,    625 cm⁻¹, f=1.5-)
+    wB97X:   -306.20548891 Ha  (23s)
+    CASSCF S0: -304.48935695 Ha  δ_S0=+2.455 kcal/mol  gap_S1=22.2 kcal/mol  OK  (62s)
+    Triplet T1:  -304.45838859 Ha  gap_T1=19.4 kcal/mol  (72s)
+    [55 ok / 0 fail | ETA 8.8 h]
+  [ 56/232] m07_-_f2.00  (mode  7,    625 cm⁻¹, f=2.0-)
+    wB97X:   -306.20389297 Ha  (35s)
+    CASSCF S0: -304.48630316 Ha  δ_S0=+3.370 kcal/mol  gap_S1=22.3 kcal/mol  OK  (69s)
+    Triplet T1:  -304.45520989 Ha  gap_T1=19.5 kcal/mol  (73s)
+    [56 ok / 0 fail | ETA 8.7 h]
+  [ 57/232] m08_+_f0.50  (mode  8,    683 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731100 Ha  (39s)
+    CASSCF S0: -304.49507130 Ha  δ_S0=+0.012 kcal/mol  gap_S1=21.6 kcal/mol  OK  (70s)
+    Triplet T1:  -304.46477664 Ha  gap_T1=19.0 kcal/mol  (90s)
+    [57 ok / 0 fail | ETA 8.7 h]
+  [ 58/232] m08_+_f1.00  (mode  8,    683 cm⁻¹, f=1.0+)
+    wB97X:   -306.20659111 Ha  (38s)
+    CASSCF S0: -304.49423135 Ha  δ_S0=+0.088 kcal/mol  gap_S1=21.6 kcal/mol  OK  (67s)
+    Triplet T1:  -304.46400797 Ha  gap_T1=19.0 kcal/mol  (92s)
+    [58 ok / 0 fail | ETA 8.6 h]
+  [ 59/232] m08_+_f1.50  (mode  8,    683 cm⁻¹, f=1.5+)
+    wB97X:   -306.20536068 Ha  (37s)
+    CASSCF S0: -304.49280037 Ha  δ_S0=+0.214 kcal/mol  gap_S1=21.5 kcal/mol  OK  (64s)
+    Triplet T1:  -304.46269463 Ha  gap_T1=18.9 kcal/mol  (98s)
+    [59 ok / 0 fail | ETA 8.6 h]
+  [ 60/232] m08_+_f2.00  (mode  8,    683 cm⁻¹, f=2.0+)
+    wB97X:   -306.20357511 Ha  (38s)
+    CASSCF S0: -304.49073424 Ha  δ_S0=+0.390 kcal/mol  gap_S1=21.4 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46079069 Ha  gap_T1=18.8 kcal/mol  (94s)
+    [60 ok / 0 fail | ETA 8.6 h]
+  [ 61/232] m08_-_f0.50  (mode  8,    683 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731100 Ha  (34s)
+    CASSCF S0: -304.49507130 Ha  δ_S0=+0.012 kcal/mol  gap_S1=21.6 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46477664 Ha  gap_T1=19.0 kcal/mol  (95s)
+    [61 ok / 0 fail | ETA 8.5 h]
+  [ 62/232] m08_-_f1.00  (mode  8,    683 cm⁻¹, f=1.0-)
+    wB97X:   -306.20659112 Ha  (37s)
+    CASSCF S0: -304.49423135 Ha  δ_S0=+0.088 kcal/mol  gap_S1=21.6 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46400797 Ha  gap_T1=19.0 kcal/mol  (93s)
+    [62 ok / 0 fail | ETA 8.5 h]
+  [ 63/232] m08_-_f1.50  (mode  8,    683 cm⁻¹, f=1.5-)
+    wB97X:   -306.20536068 Ha  (37s)
+    CASSCF S0: -304.49280037 Ha  δ_S0=+0.214 kcal/mol  gap_S1=21.5 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46269463 Ha  gap_T1=18.9 kcal/mol  (95s)
+    [63 ok / 0 fail | ETA 8.5 h]
+  [ 64/232] m08_-_f2.00  (mode  8,    683 cm⁻¹, f=2.0-)
+    wB97X:   -306.20357510 Ha  (37s)
+    CASSCF S0: -304.49073424 Ha  δ_S0=+0.390 kcal/mol  gap_S1=21.4 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46079069 Ha  gap_T1=18.8 kcal/mol  (96s)
+    [64 ok / 0 fail | ETA 8.4 h]
+  [ 65/232] m09_+_f0.50  (mode  9,    824 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731187 Ha  (35s)
+    CASSCF S0: -304.49513888 Ha  δ_S0=-0.029 kcal/mol  gap_S1=22.4 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46373148 Ha  gap_T1=19.7 kcal/mol  (78s)
+    [65 ok / 0 fail | ETA 8.4 h]
+  [ 66/232] m09_+_f1.00  (mode  9,    824 cm⁻¹, f=1.0+)
+    wB97X:   -306.20658046 Ha  (35s)
+    CASSCF S0: -304.49437905 Ha  δ_S0=-0.012 kcal/mol  gap_S1=23.1 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46190072 Ha  gap_T1=20.4 kcal/mol  (76s)
+    [66 ok / 0 fail | ETA 8.3 h]
+  [ 67/232] m09_+_f1.50  (mode  9,    824 cm⁻¹, f=1.5+)
+    wB97X:   -306.20533182 Ha  (34s)
+    CASSCF S0: -304.49304303 Ha  δ_S0=+0.043 kcal/mol  gap_S1=23.9 kcal/mol  OK  (64s)
+    Triplet T1:  -304.45951559 Ha  gap_T1=21.0 kcal/mol  (79s)
+    [67 ok / 0 fail | ETA 8.3 h]
+  [ 68/232] m09_+_f2.00  (mode  9,    824 cm⁻¹, f=2.0+)
+    wB97X:   -306.20354222 Ha  (36s)
+    CASSCF S0: -304.49110359 Ha  δ_S0=+0.137 kcal/mol  gap_S1=24.6 kcal/mol  OK  (65s)
+    Triplet T1:  -304.45655253 Ha  gap_T1=21.7 kcal/mol  (78s)
+    [68 ok / 0 fail | ETA 8.2 h]
+  [ 69/232] m09_-_f0.50  (mode  9,    824 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731264 Ha  (37s)
+    CASSCF S0: -304.49502975 Ha  δ_S0=+0.040 kcal/mol  gap_S1=20.9 kcal/mol  OK  (52s)
+    Triplet T1:  -304.46581488 Ha  gap_T1=18.3 kcal/mol  (37s)
+    [69 ok / 0 fail | ETA 8.1 h]
+  [ 70/232] m09_-_f1.00  (mode  9,    824 cm⁻¹, f=1.0-)
+    wB97X:   -306.20662698 Ha  (33s)
+    CASSCF S0: -304.49420510 Ha  δ_S0=+0.127 kcal/mol  gap_S1=20.1 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46610560 Ha  gap_T1=17.6 kcal/mol  (68s)
+    [70 ok / 0 fail | ETA 8.1 h]
+  [ 71/232] m09_-_f1.50  (mode  9,    824 cm⁻¹, f=1.5-)
+    wB97X:   -306.20550600 Ha  (34s)
+    CASSCF S0: -304.49289378 Ha  δ_S0=+0.246 kcal/mol  gap_S1=19.3 kcal/mol  OK  (60s)
+    Triplet T1:  -304.46591824 Ha  gap_T1=16.9 kcal/mol  (76s)
+    [71 ok / 0 fail | ETA 8.0 h]
+  [ 72/232] m09_-_f2.00  (mode  9,    824 cm⁻¹, f=2.0-)
+    wB97X:   -306.20396452 Ha  (32s)
+    CASSCF S0: -304.49111341 Ha  δ_S0=+0.396 kcal/mol  gap_S1=18.5 kcal/mol  OK  (64s)
+    Triplet T1:  -304.46526778 Ha  gap_T1=16.2 kcal/mol  (44s)
+    [72 ok / 0 fail | ETA 7.9 h]
+  [ 73/232] m10_+_f0.50  (mode 10,    995 cm⁻¹, f=0.5+)
+    wB97X:   -306.20729883 Ha  (29s)
+    CASSCF S0: -304.49600400 Ha  δ_S0=-0.580 kcal/mol  gap_S1=23.0 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46370066 Ha  gap_T1=20.3 kcal/mol  (74s)
+    [73 ok / 0 fail | ETA 7.9 h]
+  [ 74/232] m10_+_f1.00  (mode 10,    995 cm⁻¹, f=1.0+)
+    wB97X:   -306.20656697 Ha  (34s)
+    CASSCF S0: -304.49610643 Ha  δ_S0=-1.104 kcal/mol  gap_S1=24.5 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46175355 Ha  gap_T1=21.6 kcal/mol  (79s)
+    [74 ok / 0 fail | ETA 7.8 h]
+  [ 75/232] m10_+_f1.50  (mode 10,    995 cm⁻¹, f=1.5+)
+    wB97X:   -306.20533688 Ha  (38s)
+    CASSCF S0: -304.49564125 Ha  δ_S0=-1.584 kcal/mol  gap_S1=25.9 kcal/mol  OK  (61s)
+    Triplet T1:  -304.45917728 Ha  gap_T1=22.9 kcal/mol  (74s)
+    [75 ok / 0 fail | ETA 7.8 h]
+  [ 76/232] m10_+_f2.00  (mode 10,    995 cm⁻¹, f=2.0+)
+    wB97X:   -306.20359756 Ha  (38s)
+    CASSCF S0: -304.49459104 Ha  δ_S0=-2.016 kcal/mol  gap_S1=27.4 kcal/mol  OK  (61s)
+    Triplet T1:  -304.45595815 Ha  gap_T1=24.2 kcal/mol  (81s)
+    [76 ok / 0 fail | ETA 7.7 h]
+  [ 77/232] m10_-_f0.50  (mode 10,    995 cm⁻¹, f=0.5-)
+    wB97X:   -306.20732212 Ha  (39s)
+    CASSCF S0: -304.49414998 Ha  δ_S0=+0.598 kcal/mol  gap_S1=20.3 kcal/mol  OK  (59s)
+    Triplet T1:  -304.46574847 Ha  gap_T1=17.8 kcal/mol  (70s)
+    [77 ok / 0 fail | ETA 7.7 h]
+  [ 78/232] m10_-_f1.00  (mode 10,    995 cm⁻¹, f=1.0-)
+    wB97X:   -306.20662419 Ha  (39s)
+    CASSCF S0: -304.49241786 Ha  δ_S0=+1.247 kcal/mol  gap_S1=19.0 kcal/mol  OK  (60s)
+    Triplet T1:  -304.46586283 Ha  gap_T1=16.7 kcal/mol  (74s)
+    [78 ok / 0 fail | ETA 7.6 h]
+  [ 79/232] m10_-_f1.50  (mode 10,    995 cm⁻¹, f=1.5-)
+    wB97X:   -306.20546077 Ha  (29s)
+    CASSCF S0: -304.49015670 Ha  δ_S0=+1.935 kcal/mol  gap_S1=17.7 kcal/mol  OK  (40s)
+    Triplet T1:  -304.46537545 Ha  gap_T1=15.6 kcal/mol  (74s)
+    [79 ok / 0 fail | ETA 7.6 h]
+  [ 80/232] m10_-_f2.00  (mode 10,    995 cm⁻¹, f=2.0-)
+    wB97X:   -306.20383084 Ha  (35s)
+    CASSCF S0: -304.48736832 Ha  δ_S0=+2.662 kcal/mol  gap_S1=16.5 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46428669 Ha  gap_T1=14.5 kcal/mol  (34s)
+    [80 ok / 0 fail | ETA 7.5 h]
+  [ 81/232] m11_+_f0.50  (mode 11,   1001 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731176 Ha  (35s)
+    CASSCF S0: -304.49506078 Ha  δ_S0=+0.019 kcal/mol  gap_S1=21.6 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46476483 Ha  gap_T1=19.0 kcal/mol  (92s)
+    [81 ok / 0 fail | ETA 7.4 h]
+  [ 82/232] m11_+_f1.00  (mode 11,   1001 cm⁻¹, f=1.0+)
+    wB97X:   -306.20659460 Ha  (34s)
+    CASSCF S0: -304.49419091 Ha  δ_S0=+0.115 kcal/mol  gap_S1=21.6 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46396253 Ha  gap_T1=19.0 kcal/mol  (94s)
+    [82 ok / 0 fail | ETA 7.4 h]
+  [ 83/232] m11_+_f1.50  (mode 11,   1001 cm⁻¹, f=1.5+)
+    wB97X:   -306.20537095 Ha  (31s)
+    CASSCF S0: -304.49271574 Ha  δ_S0=+0.273 kcal/mol  gap_S1=21.5 kcal/mol  OK  (34s)
+    Triplet T1:  -304.46259911 Ha  gap_T1=18.9 kcal/mol  (94s)
+    [83 ok / 0 fail | ETA 7.3 h]
+  [ 84/232] m11_+_f2.00  (mode 11,   1001 cm⁻¹, f=2.0+)
+    wB97X:   -306.20360141 Ha  (37s)
+    CASSCF S0: -304.49059941 Ha  δ_S0=+0.491 kcal/mol  gap_S1=21.4 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46063774 Ha  gap_T1=18.8 kcal/mol  (91s)
+    [84 ok / 0 fail | ETA 7.3 h]
+  [ 85/232] m11_-_f0.50  (mode 11,   1001 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731176 Ha  (25s)
+    CASSCF S0: -304.49506078 Ha  δ_S0=+0.019 kcal/mol  gap_S1=21.6 kcal/mol  OK  (43s)
+    Triplet T1:  -304.46476483 Ha  gap_T1=19.0 kcal/mol  (86s)
+    [85 ok / 0 fail | ETA 7.2 h]
+  [ 86/232] m11_-_f1.00  (mode 11,   1001 cm⁻¹, f=1.0-)
+    wB97X:   -306.20659460 Ha  (37s)
+    CASSCF S0: -304.49419091 Ha  δ_S0=+0.115 kcal/mol  gap_S1=21.6 kcal/mol  OK  (36s)
+    Triplet T1:  -304.46396253 Ha  gap_T1=19.0 kcal/mol  (64s)
+    [86 ok / 0 fail | ETA 7.2 h]
+  [ 87/232] m11_-_f1.50  (mode 11,   1001 cm⁻¹, f=1.5-)
+    wB97X:   -306.20537093 Ha  (36s)
+    CASSCF S0: -304.49271574 Ha  δ_S0=+0.273 kcal/mol  gap_S1=21.5 kcal/mol  OK  (48s)
+    Triplet T1:  -304.46259911 Ha  gap_T1=18.9 kcal/mol  (66s)
+    [87 ok / 0 fail | ETA 7.1 h]
+  [ 88/232] m11_-_f2.00  (mode 11,   1001 cm⁻¹, f=2.0-)
+    wB97X:   -306.20360141 Ha  (27s)
+    CASSCF S0: -304.49059941 Ha  δ_S0=+0.491 kcal/mol  gap_S1=21.4 kcal/mol  OK  (66s)
+    Triplet T1:  -304.46063774 Ha  gap_T1=18.8 kcal/mol  (103s)
+    [88 ok / 0 fail | ETA 7.1 h]
+  [ 89/232] m12_+_f0.50  (mode 12,   1027 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730544 Ha  (35s)
+    CASSCF S0: -304.49310810 Ha  δ_S0=+1.241 kcal/mol  gap_S1=21.0 kcal/mol  OK  (66s)
+    Triplet T1:  -304.46384963 Ha  gap_T1=18.4 kcal/mol  (71s)
+    [89 ok / 0 fail | ETA 7.0 h]
+  [ 90/232] m12_+_f1.00  (mode 12,   1027 cm⁻¹, f=1.0+)
+    wB97X:   -306.20660126 Ha  (34s)
+    CASSCF S0: -304.49029104 Ha  δ_S0=+2.567 kcal/mol  gap_S1=20.3 kcal/mol  OK  (38s)
+    Triplet T1:  -304.46209199 Ha  gap_T1=17.7 kcal/mol  (80s)
+    [90 ok / 0 fail | ETA 7.0 h]
+  [ 91/232] m12_+_f1.50  (mode 12,   1027 cm⁻¹, f=1.5+)
+    wB97X:   -306.20544393 Ha  (37s)
+    CASSCF S0: -304.48691078 Ha  δ_S0=+3.962 kcal/mol  gap_S1=19.6 kcal/mol  OK  (64s)
+    Triplet T1:  -304.45976629 Ha  gap_T1=17.0 kcal/mol  (69s)
+    [91 ok / 0 fail | ETA 6.9 h]
+  [ 92/232] m12_+_f2.00  (mode 12,   1027 cm⁻¹, f=2.0+)
+    wB97X:   -306.20383946 Ha  (31s)
+    CASSCF S0: -304.48297464 Ha  δ_S0=+5.425 kcal/mol  gap_S1=18.9 kcal/mol  OK  (44s)
+    Triplet T1:  -304.45687949 Ha  gap_T1=16.4 kcal/mol  (78s)
+    [92 ok / 0 fail | ETA 6.8 h]
+  [ 93/232] m12_-_f0.50  (mode 12,   1027 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731496 Ha  (36s)
+    CASSCF S0: -304.49699752 Ha  δ_S0=-1.194 kcal/mol  gap_S1=22.3 kcal/mol  OK  (43s)
+    Triplet T1:  -304.46561929 Ha  gap_T1=19.7 kcal/mol  (45s)
+    [93 ok / 0 fail | ETA 6.8 h]
+  [ 94/232] m12_-_f1.00  (mode 12,   1027 cm⁻¹, f=1.0-)
+    wB97X:   -306.20658942 Ha  (35s)
+    CASSCF S0: -304.49804004 Ha  δ_S0=-2.303 kcal/mol  gap_S1=23.0 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46560341 Ha  gap_T1=20.4 kcal/mol  (78s)
+    [94 ok / 0 fail | ETA 6.7 h]
+  [ 95/232] m12_-_f1.50  (mode 12,   1027 cm⁻¹, f=1.5-)
+    wB97X:   -306.20535353 Ha  (36s)
+    CASSCF S0: -304.49845350 Ha  δ_S0=-3.338 kcal/mol  gap_S1=23.6 kcal/mol  OK  (34s)
+    Triplet T1:  -304.46496355 Ha  gap_T1=21.0 kcal/mol  (80s)
+    [95 ok / 0 fail | ETA 6.7 h]
+  [ 96/232] m12_-_f2.00  (mode 12,   1027 cm⁻¹, f=2.0-)
+    wB97X:   -306.20358768 Ha  (33s)
+    CASSCF S0: -304.49821624 Ha  δ_S0=-4.297 kcal/mol  gap_S1=24.3 kcal/mol  OK  (60s)
+    Triplet T1:  -304.46367833 Ha  gap_T1=21.7 kcal/mol  (73s)
+    [96 ok / 0 fail | ETA 6.6 h]
+  [ 97/232] m13_+_f0.50  (mode 13,   1039 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731294 Ha  (21s)
+    CASSCF S0: -304.49505401 Ha  δ_S0=+0.024 kcal/mol  gap_S1=21.6 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46474048 Ha  gap_T1=19.0 kcal/mol  (93s)
+    [97 ok / 0 fail | ETA 6.6 h]
+  [ 98/232] m13_+_f1.00  (mode 13,   1039 cm⁻¹, f=1.0+)
+    wB97X:   -306.20660116 Ha  (33s)
+    CASSCF S0: -304.49416556 Ha  δ_S0=+0.135 kcal/mol  gap_S1=21.6 kcal/mol  OK  (50s)
+    Triplet T1:  -304.46386711 Ha  gap_T1=19.0 kcal/mol  (50s)
+    [98 ok / 0 fail | ETA 6.5 h]
+  [ 99/232] m13_+_f1.50  (mode 13,   1039 cm⁻¹, f=1.5+)
+    wB97X:   -306.20539301 Ha  (33s)
+    CASSCF S0: -304.49266484 Ha  δ_S0=+0.319 kcal/mol  gap_S1=21.6 kcal/mol  OK  (64s)
+    Triplet T1:  -304.46239188 Ha  gap_T1=19.0 kcal/mol  (89s)
+    [99 ok / 0 fail | ETA 6.5 h]
+  [100/232] m13_+_f2.00  (mode 13,   1039 cm⁻¹, f=2.0+)
+    wB97X:   -306.20365924 Ha  (22s)
+    CASSCF S0: -304.49052436 Ha  δ_S0=+0.574 kcal/mol  gap_S1=21.6 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46028780 Ha  gap_T1=19.0 kcal/mol  (97s)
+    [100 ok / 0 fail | ETA 6.4 h]
+  [101/232] m13_-_f0.50  (mode 13,   1039 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731295 Ha  (36s)
+    CASSCF S0: -304.49505401 Ha  δ_S0=+0.024 kcal/mol  gap_S1=21.6 kcal/mol  OK  (46s)
+    Triplet T1:  -304.46474048 Ha  gap_T1=19.0 kcal/mol  (52s)
+    [101 ok / 0 fail | ETA 6.4 h]
+  [102/232] m13_-_f1.00  (mode 13,   1039 cm⁻¹, f=1.0-)
+    wB97X:   -306.20660116 Ha  (36s)
+    CASSCF S0: -304.49416556 Ha  δ_S0=+0.135 kcal/mol  gap_S1=21.6 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46386711 Ha  gap_T1=19.0 kcal/mol  (94s)
+    [102 ok / 0 fail | ETA 6.3 h]
+  [103/232] m13_-_f1.50  (mode 13,   1039 cm⁻¹, f=1.5-)
+    wB97X:   -306.20539301 Ha  (35s)
+    CASSCF S0: -304.49266484 Ha  δ_S0=+0.319 kcal/mol  gap_S1=21.6 kcal/mol  OK  (64s)
+    Triplet T1:  -304.46239188 Ha  gap_T1=19.0 kcal/mol  (89s)
+    [103 ok / 0 fail | ETA 6.3 h]
+  [104/232] m13_-_f2.00  (mode 13,   1039 cm⁻¹, f=2.0-)
+    wB97X:   -306.20365923 Ha  (37s)
+    CASSCF S0: -304.49052436 Ha  δ_S0=+0.574 kcal/mol  gap_S1=21.6 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46028780 Ha  gap_T1=19.0 kcal/mol  (96s)
+    [104 ok / 0 fail | ETA 6.2 h]
+  [105/232] m14_+_f0.50  (mode 14,   1067 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730990 Ha  (35s)
+    CASSCF S0: -304.49508942 Ha  δ_S0=+0.000 kcal/mol  gap_S1=21.6 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46479449 Ha  gap_T1=19.0 kcal/mol  (76s)
+    [105 ok / 0 fail | ETA 6.2 h]
+  [106/232] m14_+_f1.00  (mode 14,   1067 cm⁻¹, f=1.0+)
+    wB97X:   -306.20659476 Ha  (34s)
+    CASSCF S0: -304.49431176 Ha  δ_S0=+0.040 kcal/mol  gap_S1=21.6 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46408757 Ha  gap_T1=19.0 kcal/mol  (41s)
+    [106 ok / 0 fail | ETA 6.1 h]
+  [107/232] m14_+_f1.50  (mode 14,   1067 cm⁻¹, f=1.5+)
+    wB97X:   -306.20539880 Ha  (29s)
+    CASSCF S0: -304.49301065 Ha  δ_S0=+0.106 kcal/mol  gap_S1=21.5 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46290381 Ha  gap_T1=18.9 kcal/mol  (64s)
+    [107 ok / 0 fail | ETA 6.1 h]
+  [108/232] m14_+_f2.00  (mode 14,   1067 cm⁻¹, f=2.0+)
+    wB97X:   -306.20371577 Ha  (38s)
+    CASSCF S0: -304.49117887 Ha  δ_S0=+0.199 kcal/mol  gap_S1=21.4 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46123517 Ha  gap_T1=18.8 kcal/mol  (71s)
+    [108 ok / 0 fail | ETA 6.0 h]
+  [109/232] m14_-_f0.50  (mode 14,   1067 cm⁻¹, f=0.5-)
+    wB97X:   -306.20730990 Ha  (39s)
+    CASSCF S0: -304.49508942 Ha  δ_S0=+0.000 kcal/mol  gap_S1=21.6 kcal/mol  OK  (50s)
+    Triplet T1:  -304.46479449 Ha  gap_T1=19.0 kcal/mol  (59s)
+    [109 ok / 0 fail | ETA 6.0 h]
+  [110/232] m14_-_f1.00  (mode 14,   1067 cm⁻¹, f=1.0-)
+    wB97X:   -306.20659476 Ha  (34s)
+    CASSCF S0: -304.49431176 Ha  δ_S0=+0.040 kcal/mol  gap_S1=21.6 kcal/mol  OK  (32s)
+    Triplet T1:  -304.46408757 Ha  gap_T1=19.0 kcal/mol  (68s)
+    [110 ok / 0 fail | ETA 5.9 h]
+  [111/232] m14_-_f1.50  (mode 14,   1067 cm⁻¹, f=1.5-)
+    wB97X:   -306.20539878 Ha  (36s)
+    CASSCF S0: -304.49301065 Ha  δ_S0=+0.106 kcal/mol  gap_S1=21.5 kcal/mol  OK  (52s)
+    Triplet T1:  -304.46290381 Ha  gap_T1=18.9 kcal/mol  (62s)
+    [111 ok / 0 fail | ETA 5.8 h]
+  [112/232] m14_-_f2.00  (mode 14,   1067 cm⁻¹, f=2.0-)
+    wB97X:   -306.20371578 Ha  (38s)
+    CASSCF S0: -304.49117887 Ha  δ_S0=+0.199 kcal/mol  gap_S1=21.4 kcal/mol  OK  (77s)
+    Triplet T1:  -304.46123517 Ha  gap_T1=18.8 kcal/mol  (120s)
+    [112 ok / 0 fail | ETA 5.8 h]
+  [113/232] m15_+_f0.50  (mode 15,   1145 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730701 Ha  (35s)
+    CASSCF S0: -304.49725573 Ha  δ_S0=-1.361 kcal/mol  gap_S1=22.3 kcal/mol  OK  (40s)
+    Triplet T1:  -304.46591257 Ha  gap_T1=19.7 kcal/mol  (105s)
+    [113 ok / 0 fail | ETA 5.8 h]
+  [114/232] m15_+_f1.00  (mode 15,   1145 cm⁻¹, f=1.0+)
+    wB97X:   -306.20657939 Ha  (35s)
+    CASSCF S0: -304.49859517 Ha  δ_S0=-2.658 kcal/mol  gap_S1=22.9 kcal/mol  OK  (77s)
+    Triplet T1:  -304.46624628 Ha  gap_T1=20.3 kcal/mol  (91s)
+    [114 ok / 0 fail | ETA 5.7 h]
+  [115/232] m15_+_f1.50  (mode 15,   1145 cm⁻¹, f=1.5+)
+    wB97X:   -306.20535190 Ha  (36s)
+    CASSCF S0: -304.49934824 Ha  δ_S0=-3.901 kcal/mol  gap_S1=23.5 kcal/mol  OK  (71s)
+    Triplet T1:  -304.46601542 Ha  gap_T1=20.9 kcal/mol  (73s)
+    [115 ok / 0 fail | ETA 5.7 h]
+  [116/232] m15_+_f2.00  (mode 15,   1145 cm⁻¹, f=2.0+)
+    wB97X:   -306.20360967 Ha  (23s)
+    CASSCF S0: -304.49949789 Ha  δ_S0=-5.088 kcal/mol  gap_S1=24.1 kcal/mol  OK  (72s)
+    Triplet T1:  -304.46520300 Ha  gap_T1=21.5 kcal/mol  (84s)
+    [116 ok / 0 fail | ETA 5.6 h]
+  [117/232] m15_-_f0.50  (mode 15,   1145 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731364 Ha  (37s)
+    CASSCF S0: -304.49288671 Ha  δ_S0=+1.385 kcal/mol  gap_S1=21.0 kcal/mol  OK  (72s)
+    Triplet T1:  -304.46361095 Ha  gap_T1=18.4 kcal/mol  (49s)
+    [117 ok / 0 fail | ETA 5.6 h]
+  [118/232] m15_-_f1.00  (mode 15,   1145 cm⁻¹, f=1.0-)
+    wB97X:   -306.20661440 Ha  (26s)
+    CASSCF S0: -304.48988579 Ha  δ_S0=+2.829 kcal/mol  gap_S1=20.3 kcal/mol  OK  (75s)
+    Triplet T1:  -304.46166885 Ha  gap_T1=17.7 kcal/mol  (85s)
+    [118 ok / 0 fail | ETA 5.5 h]
+  [119/232] m15_-_f1.50  (mode 15,   1145 cm⁻¹, f=1.5-)
+    wB97X:   -306.20545871 Ha  (33s)
+    CASSCF S0: -304.48635706 Ha  δ_S0=+4.318 kcal/mol  gap_S1=19.6 kcal/mol  OK  (46s)
+    Triplet T1:  -304.45921398 Ha  gap_T1=17.0 kcal/mol  (152s)
+    [119 ok / 0 fail | ETA 5.5 h]
+  [120/232] m15_-_f2.00  (mode 15,   1145 cm⁻¹, f=2.0-)
+    wB97X:   -306.20385360 Ha  (39s)
+    CASSCF S0: -304.48230811 Ha  δ_S0=+5.852 kcal/mol  gap_S1=18.9 kcal/mol  OK  (119s)
+    Triplet T1:  -304.45625569 Ha  gap_T1=16.3 kcal/mol  (60s)
+    [120 ok / 0 fail | ETA 5.5 h]
+  [121/232] m16_+_f0.50  (mode 16,   1304 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730354 Ha  (35s)
+    CASSCF S0: -304.49517511 Ha  δ_S0=-0.057 kcal/mol  gap_S1=21.9 kcal/mol  OK  (114s)
+    Triplet T1:  -304.46453387 Ha  gap_T1=19.2 kcal/mol  (113s)
+    [121 ok / 0 fail | ETA 5.4 h]
+  [122/232] m16_+_f1.00  (mode 16,   1304 cm⁻¹, f=1.0+)
+    wB97X:   -306.20658874 Ha  (38s)
+    CASSCF S0: -304.49446244 Ha  δ_S0=-0.059 kcal/mol  gap_S1=22.1 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46353094 Ha  gap_T1=19.4 kcal/mol  (78s)
+    [122 ok / 0 fail | ETA 5.4 h]
+  [123/232] m16_+_f1.50  (mode 16,   1304 cm⁻¹, f=1.5+)
+    wB97X:   -306.20540420 Ha  (36s)
+    CASSCF S0: -304.49321230 Ha  δ_S0=-0.018 kcal/mol  gap_S1=22.2 kcal/mol  OK  (35s)
+    Triplet T1:  -304.46202531 Ha  gap_T1=19.6 kcal/mol  (62s)
+    [123 ok / 0 fail | ETA 5.3 h]
+  [124/232] m16_+_f2.00  (mode 16,   1304 cm⁻¹, f=2.0+)
+    wB97X:   -306.20374935 Ha  (37s)
+    CASSCF S0: -304.49142638 Ha  δ_S0=+0.065 kcal/mol  gap_S1=22.4 kcal/mol  OK  (74s)
+    Triplet T1:  -304.46002113 Ha  gap_T1=19.7 kcal/mol  (53s)
+    [124 ok / 0 fail | ETA 5.3 h]
+  [125/232] m16_-_f0.50  (mode 16,   1304 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731839 Ha  (30s)
+    CASSCF S0: -304.49497860 Ha  δ_S0=+0.075 kcal/mol  gap_S1=21.4 kcal/mol  OK  (35s)
+    Triplet T1:  -304.46501305 Ha  gap_T1=18.8 kcal/mol  (65s)
+    [125 ok / 0 fail | ETA 5.2 h]
+  [126/232] m16_-_f1.00  (mode 16,   1304 cm⁻¹, f=1.0-)
+    wB97X:   -306.20661018 Ha  (39s)
+    CASSCF S0: -304.49406300 Ha  δ_S0=+0.205 kcal/mol  gap_S1=21.1 kcal/mol  OK  (43s)
+    Triplet T1:  -304.46447883 Ha  gap_T1=18.6 kcal/mol  (32s)
+    [126 ok / 0 fail | ETA 5.2 h]
+  [127/232] m16_-_f1.50  (mode 16,   1304 cm⁻¹, f=1.5-)
+    wB97X:   -306.20541935 Ha  (37s)
+    CASSCF S0: -304.49259716 Ha  δ_S0=+0.378 kcal/mol  gap_S1=20.9 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46342088 Ha  gap_T1=18.3 kcal/mol  (60s)
+    [127 ok / 0 fail | ETA 5.1 h]
+  [128/232] m16_-_f2.00  (mode 16,   1304 cm⁻¹, f=2.0-)
+    wB97X:   -306.20374271 Ha  (24s)
+    CASSCF S0: -304.49057629 Ha  δ_S0=+0.594 kcal/mol  gap_S1=20.6 kcal/mol  OK  (46s)
+    Triplet T1:  -304.46183275 Ha  gap_T1=18.0 kcal/mol  (63s)
+    [128 ok / 0 fail | ETA 5.0 h]
+  [129/232] m17_+_f0.50  (mode 17,   1362 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731457 Ha  (37s)
+    CASSCF S0: -304.49556762 Ha  δ_S0=-0.297 kcal/mol  gap_S1=21.7 kcal/mol  OK  (39s)
+    Triplet T1:  -304.46520504 Ha  gap_T1=19.1 kcal/mol  (33s)
+    [129 ok / 0 fail | ETA 5.0 h]
+  [130/232] m17_+_f1.00  (mode 17,   1362 cm⁻¹, f=1.0+)
+    wB97X:   -306.20659858 Ha  (38s)
+    CASSCF S0: -304.49523927 Ha  δ_S0=-0.540 kcal/mol  gap_S1=21.7 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46483564 Ha  gap_T1=19.1 kcal/mol  (57s)
+    [130 ok / 0 fail | ETA 4.9 h]
+  [131/232] m17_+_f1.50  (mode 17,   1362 cm⁻¹, f=1.5+)
+    wB97X:   -306.20539000 Ha  (36s)
+    CASSCF S0: -304.49435249 Ha  δ_S0=-0.742 kcal/mol  gap_S1=21.7 kcal/mol  OK  (54s)
+    Triplet T1:  -304.46391139 Ha  gap_T1=19.1 kcal/mol  (59s)
+    [131 ok / 0 fail | ETA 4.9 h]
+  [132/232] m17_+_f2.00  (mode 17,   1362 cm⁻¹, f=2.0+)
+    wB97X:   -306.20367770 Ha  (36s)
+    CASSCF S0: -304.49289721 Ha  δ_S0=-0.903 kcal/mol  gap_S1=21.7 kcal/mol  OK  (55s)
+    Triplet T1:  -304.46242164 Ha  gap_T1=19.1 kcal/mol  (58s)
+    [132 ok / 0 fail | ETA 4.8 h]
+  [133/232] m17_-_f0.50  (mode 17,   1362 cm⁻¹, f=0.5-)
+    wB97X:   -306.20730711 Ha  (38s)
+    CASSCF S0: -304.49459010 Ha  δ_S0=+0.312 kcal/mol  gap_S1=21.6 kcal/mol  OK  (85s)
+    Triplet T1:  -304.46431851 Ha  gap_T1=19.0 kcal/mol  (178s)
+    [133 ok / 0 fail | ETA 4.8 h]
+  [134/232] m17_-_f1.00  (mode 17,   1362 cm⁻¹, f=1.0-)
+    wB97X:   -306.20660021 Ha  (39s)
+    CASSCF S0: -304.49330185 Ha  δ_S0=+0.677 kcal/mol  gap_S1=21.6 kcal/mol  OK  (128s)
+    Triplet T1:  -304.46308045 Ha  gap_T1=19.0 kcal/mol  (166s)
+    [134 ok / 0 fail | ETA 4.8 h]
+  [135/232] m17_-_f1.50  (mode 17,   1362 cm⁻¹, f=1.5-)
+    wB97X:   -306.20543457 Ha  (29s)
+    CASSCF S0: -304.49149181 Ha  δ_S0=+1.081 kcal/mol  gap_S1=21.6 kcal/mol  OK  (53s)
+    Triplet T1:  -304.46132328 Ha  gap_T1=18.9 kcal/mol  (91s)
+    [135 ok / 0 fail | ETA 4.7 h]
+  [136/232] m17_-_f2.00  (mode 17,   1362 cm⁻¹, f=2.0-)
+    wB97X:   -306.20381699 Ha  (34s)
+    CASSCF S0: -304.48916735 Ha  δ_S0=+1.525 kcal/mol  gap_S1=21.6 kcal/mol  OK  (69s)
+    Triplet T1:  -304.45905420 Ha  gap_T1=18.9 kcal/mol  (160s)
+    [136 ok / 0 fail | ETA 4.7 h]
+  [137/232] m18_+_f0.50  (mode 18,   1418 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731133 Ha  (37s)
+    CASSCF S0: -304.49495258 Ha  δ_S0=+0.087 kcal/mol  gap_S1=21.9 kcal/mol  OK  (73s)
+    Triplet T1:  -304.46422111 Ha  gap_T1=19.3 kcal/mol  (66s)
+    [137 ok / 0 fail | ETA 4.7 h]
+  [138/232] m18_+_f1.00  (mode 18,   1418 cm⁻¹, f=1.0+)
+    wB97X:   -306.20660824 Ha  (33s)
+    CASSCF S0: -304.49398883 Ha  δ_S0=+0.251 kcal/mol  gap_S1=22.2 kcal/mol  OK  (53s)
+    Triplet T1:  -304.46284011 Ha  gap_T1=19.5 kcal/mol  (52s)
+    [138 ok / 0 fail | ETA 4.6 h]
+  [139/232] m18_+_f1.50  (mode 18,   1418 cm⁻¹, f=1.5+)
+    wB97X:   -306.20545166 Ha  (23s)
+    CASSCF S0: -304.49246571 Ha  δ_S0=+0.481 kcal/mol  gap_S1=22.6 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46089525 Ha  gap_T1=19.8 kcal/mol  (60s)
+    [139 ok / 0 fail | ETA 4.5 h]
+  [140/232] m18_+_f2.00  (mode 18,   1418 cm⁻¹, f=2.0+)
+    wB97X:   -306.20384912 Ha  (35s)
+    CASSCF S0: -304.49039112 Ha  δ_S0=+0.777 kcal/mol  gap_S1=22.9 kcal/mol  OK  (57s)
+    Triplet T1:  -304.45839426 Ha  gap_T1=20.1 kcal/mol  (65s)
+    [140 ok / 0 fail | ETA 4.5 h]
+  [141/232] m18_-_f0.50  (mode 18,   1418 cm⁻¹, f=0.5-)
+    wB97X:   -306.20730981 Ha  (35s)
+    CASSCF S0: -304.49516567 Ha  δ_S0=-0.048 kcal/mol  gap_S1=21.3 kcal/mol  OK  (54s)
+    Triplet T1:  -304.46525585 Ha  gap_T1=18.8 kcal/mol  (63s)
+    [141 ok / 0 fail | ETA 4.4 h]
+  [142/232] m18_-_f1.00  (mode 18,   1418 cm⁻¹, f=1.0-)
+    wB97X:   -306.20658664 Ha  (33s)
+    CASSCF S0: -304.49439450 Ha  δ_S0=-0.017 kcal/mol  gap_S1=21.1 kcal/mol  OK  (41s)
+    Triplet T1:  -304.46488939 Ha  gap_T1=18.5 kcal/mol  (33s)
+    [142 ok / 0 fail | ETA 4.4 h]
+  [143/232] m18_-_f1.50  (mode 18,   1418 cm⁻¹, f=1.5-)
+    wB97X:   -306.20536232 Ha  (38s)
+    CASSCF S0: -304.49302306 Ha  δ_S0=+0.075 kcal/mol  gap_S1=20.8 kcal/mol  OK  (56s)
+    Triplet T1:  -304.46391882 Ha  gap_T1=18.3 kcal/mol  (56s)
+    [143 ok / 0 fail | ETA 4.3 h]
+  [144/232] m18_-_f2.00  (mode 18,   1418 cm⁻¹, f=2.0-)
+    wB97X:   -306.20362529 Ha  (22s)
+    CASSCF S0: -304.49103904 Ha  δ_S0=+0.230 kcal/mol  gap_S1=20.5 kcal/mol  OK  (51s)
+    Triplet T1:  -304.46233206 Ha  gap_T1=18.0 kcal/mol  (60s)
+    [144 ok / 0 fail | ETA 4.3 h]
+  [145/232] m19_+_f0.50  (mode 19,   1474 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730699 Ha  (36s)
+    CASSCF S0: -304.49459924 Ha  δ_S0=+0.306 kcal/mol  gap_S1=22.1 kcal/mol  OK  (44s)
+    Triplet T1:  -304.46364270 Ha  gap_T1=19.4 kcal/mol  (35s)
+    [145 ok / 0 fail | ETA 4.2 h]
+  [146/232] m19_+_f1.00  (mode 19,   1474 cm⁻¹, f=1.0+)
+    wB97X:   -306.20659615 Ha  (37s)
+    CASSCF S0: -304.49329039 Ha  δ_S0=+0.681 kcal/mol  gap_S1=22.6 kcal/mol  OK  (52s)
+    Triplet T1:  -304.46167651 Ha  gap_T1=19.8 kcal/mol  (60s)
+    [146 ok / 0 fail | ETA 4.2 h]
+  [147/232] m19_+_f1.50  (mode 19,   1474 cm⁻¹, f=1.5+)
+    wB97X:   -306.20541822 Ha  (38s)
+    CASSCF S0: -304.49142598 Ha  δ_S0=+1.112 kcal/mol  gap_S1=23.2 kcal/mol  OK  (106s)
+    Triplet T1:  -304.45913365 Ha  gap_T1=20.3 kcal/mol  (169s)
+    [147 ok / 0 fail | ETA 4.1 h]
+  [148/232] m19_+_f2.00  (mode 19,   1474 cm⁻¹, f=2.0+)
+    wB97X:   -306.20377472 Ha  (40s)
+    CASSCF S0: -304.48901049 Ha  δ_S0=+1.597 kcal/mol  gap_S1=23.7 kcal/mol  OK  (121s)
+    Triplet T1:  -304.45601676 Ha  gap_T1=20.7 kcal/mol  (126s)
+    [148 ok / 0 fail | ETA 4.1 h]
+  [149/232] m19_-_f0.50  (mode 19,   1474 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731478 Ha  (23s)
+    CASSCF S0: -304.49553282 Ha  δ_S0=-0.275 kcal/mol  gap_S1=21.2 kcal/mol  OK  (83s)
+    Triplet T1:  -304.46583438 Ha  gap_T1=18.6 kcal/mol  (80s)
+    [149 ok / 0 fail | ETA 4.1 h]
+  [150/232] m19_-_f1.00  (mode 19,   1474 cm⁻¹, f=1.0-)
+    wB97X:   -306.20660307 Ha  (39s)
+    CASSCF S0: -304.49514908 Ha  δ_S0=-0.481 kcal/mol  gap_S1=20.7 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46605445 Ha  gap_T1=18.3 kcal/mol  (77s)
+    [150 ok / 0 fail | ETA 4.0 h]
+  [151/232] m19_-_f1.50  (mode 19,   1474 cm⁻¹, f=1.5-)
+    wB97X:   -306.20540906 Ha  (327s)
+    CASSCF S0: -304.49419265 Ha  δ_S0=-0.630 kcal/mol  gap_S1=20.3 kcal/mol  OK  (968s)
+    Triplet T1:  -304.46568712 Ha  gap_T1=17.9 kcal/mol  (1093s)
+    [151 ok / 0 fail | ETA 4.3 h]
+  [152/232] m19_-_f2.00  (mode 19,   1474 cm⁻¹, f=2.0-)
+    wB97X:   -306.20373026 Ha  (2052s)
+    CASSCF S0: -304.49266032 Ha  δ_S0=-0.722 kcal/mol  gap_S1=19.8 kcal/mol  OK  (164s)
+    Triplet T1:  -304.46472989 Ha  gap_T1=17.5 kcal/mol  (149s)
+    [152 ok / 0 fail | ETA 4.6 h]
+  [153/232] m20_+_f0.50  (mode 20,   1494 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731012 Ha  (68s)
+    CASSCF S0: -304.49499317 Ha  δ_S0=+0.061 kcal/mol  gap_S1=21.5 kcal/mol  OK  (87s)
+    Triplet T1:  -304.46481937 Ha  gap_T1=18.9 kcal/mol  (1004s)
+    [153 ok / 0 fail | ETA 4.6 h]
+  [154/232] m20_+_f1.00  (mode 20,   1494 cm⁻¹, f=1.0+)
+    wB97X:   -306.20660169 Ha  (543s)
+    CASSCF S0: -304.49408891 Ha  δ_S0=+0.184 kcal/mol  gap_S1=21.4 kcal/mol  OK  (51s)
+    Triplet T1:  -304.46407679 Ha  gap_T1=18.8 kcal/mol  (47s)
+    [154 ok / 0 fail | ETA 4.6 h]
+  [155/232] m20_+_f1.50  (mode 20,   1494 cm⁻¹, f=1.5+)
+    wB97X:   -306.20542616 Ha  (24s)
+    CASSCF S0: -304.49263860 Ha  δ_S0=+0.356 kcal/mol  gap_S1=21.3 kcal/mol  OK  (57s)
+    Triplet T1:  -304.46280350 Ha  gap_T1=18.7 kcal/mol  (137s)
+    [155 ok / 0 fail | ETA 4.6 h]
+  [156/232] m20_+_f2.00  (mode 20,   1494 cm⁻¹, f=2.0+)
+    wB97X:   -306.20378621 Ha  (42s)
+    CASSCF S0: -304.49064501 Ha  δ_S0=+0.578 kcal/mol  gap_S1=21.2 kcal/mol  OK  (51s)
+    Triplet T1:  -304.46100097 Ha  gap_T1=18.6 kcal/mol  (118s)
+    [156 ok / 0 fail | ETA 4.5 h]
+  [157/232] m20_-_f0.50  (mode 20,   1494 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731069 Ha  (38s)
+    CASSCF S0: -304.49515014 Ha  δ_S0=-0.037 kcal/mol  gap_S1=21.7 kcal/mol  OK  (98s)
+    Triplet T1:  -304.46470549 Ha  gap_T1=19.1 kcal/mol  (78s)
+    [157 ok / 0 fail | ETA 4.5 h]
+  [158/232] m20_-_f1.00  (mode 20,   1494 cm⁻¹, f=1.0-)
+    wB97X:   -306.20659410 Ha  (35s)
+    CASSCF S0: -304.49439524 Ha  δ_S0=-0.013 kcal/mol  gap_S1=21.8 kcal/mol  OK  (79s)
+    Triplet T1:  -304.46384514 Ha  gap_T1=19.2 kcal/mol  (106s)
+    [158 ok / 0 fail | ETA 4.4 h]
+  [159/232] m20_-_f1.50  (mode 20,   1494 cm⁻¹, f=1.5-)
+    wB97X:   -306.20539329 Ha  (34s)
+    CASSCF S0: -304.49307905 Ha  δ_S0=+0.059 kcal/mol  gap_S1=21.8 kcal/mol  OK  (41s)
+    Triplet T1:  -304.46244643 Ha  gap_T1=19.2 kcal/mol  (82s)
+    [159 ok / 0 fail | ETA 4.3 h]
+  [160/232] m20_-_f2.00  (mode 20,   1494 cm⁻¹, f=2.0-)
+    wB97X:   -306.20370277 Ha  (36s)
+    CASSCF S0: -304.49119686 Ha  δ_S0=+0.179 kcal/mol  gap_S1=21.9 kcal/mol  OK  (75s)
+    Triplet T1:  -304.46050739 Ha  gap_T1=19.3 kcal/mol  (97s)
+    [160 ok / 0 fail | ETA 4.3 h]
+  [161/232] m21_+_f0.50  (mode 21,   1519 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731030 Ha  (29s)
+    CASSCF S0: -304.49507218 Ha  δ_S0=+0.011 kcal/mol  gap_S1=21.6 kcal/mol  OK  (48s)
+    Triplet T1:  -304.46475645 Ha  gap_T1=19.0 kcal/mol  (104s)
+    [161 ok / 0 fail | ETA 4.2 h]
+  [162/232] m21_+_f1.00  (mode 21,   1519 cm⁻¹, f=1.0+)
+    wB97X:   -306.20659737 Ha  (38s)
+    CASSCF S0: -304.49424429 Ha  δ_S0=+0.084 kcal/mol  gap_S1=21.6 kcal/mol  OK  (49s)
+    Triplet T1:  -304.46393707 Ha  gap_T1=19.0 kcal/mol  (53s)
+    [162 ok / 0 fail | ETA 4.1 h]
+  [163/232] m21_+_f1.50  (mode 21,   1519 cm⁻¹, f=1.5+)
+    wB97X:   -306.20540860 Ha  (36s)
+    CASSCF S0: -304.49286434 Ha  δ_S0=+0.204 kcal/mol  gap_S1=21.6 kcal/mol  OK  (71s)
+    Triplet T1:  -304.46257131 Ha  gap_T1=19.0 kcal/mol  (90s)
+    [163 ok / 0 fail | ETA 4.1 h]
+  [164/232] m21_+_f2.00  (mode 21,   1519 cm⁻¹, f=2.0+)
+    wB97X:   -306.20374331 Ha  (24s)
+    CASSCF S0: -304.49093226 Ha  δ_S0=+0.371 kcal/mol  gap_S1=21.6 kcal/mol  OK  (106s)
+    Triplet T1:  -304.46065912 Ha  gap_T1=19.0 kcal/mol  (155s)
+    [164 ok / 0 fail | ETA 4.0 h]
+  [165/232] m21_-_f0.50  (mode 21,   1519 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731032 Ha  (37s)
+    CASSCF S0: -304.49507218 Ha  δ_S0=+0.011 kcal/mol  gap_S1=21.6 kcal/mol  OK  (61s)
+    Triplet T1:  -304.46475645 Ha  gap_T1=19.0 kcal/mol  (108s)
+    [165 ok / 0 fail | ETA 4.0 h]
+  [166/232] m21_-_f1.00  (mode 21,   1519 cm⁻¹, f=1.0-)
+    wB97X:   -306.20659739 Ha  (38s)
+    CASSCF S0: -304.49424429 Ha  δ_S0=+0.084 kcal/mol  gap_S1=21.6 kcal/mol  OK  (105s)
+    Triplet T1:  -304.46393707 Ha  gap_T1=19.0 kcal/mol  (75s)
+    [166 ok / 0 fail | ETA 3.9 h]
+  [167/232] m21_-_f1.50  (mode 21,   1519 cm⁻¹, f=1.5-)
+    wB97X:   -306.20540860 Ha  (24s)
+    CASSCF S0: -304.49286434 Ha  δ_S0=+0.204 kcal/mol  gap_S1=21.6 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46257131 Ha  gap_T1=19.0 kcal/mol  (86s)
+    [167 ok / 0 fail | ETA 3.8 h]
+  [168/232] m21_-_f2.00  (mode 21,   1519 cm⁻¹, f=2.0-)
+    wB97X:   -306.20374332 Ha  (37s)
+    CASSCF S0: -304.49093226 Ha  δ_S0=+0.371 kcal/mol  gap_S1=21.6 kcal/mol  OK  (69s)
+    Triplet T1:  -304.46065912 Ha  gap_T1=19.0 kcal/mol  (86s)
+    [168 ok / 0 fail | ETA 3.8 h]
+  [169/232] m22_+_f0.50  (mode 22,   1574 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730534 Ha  (36s)
+    CASSCF S0: -304.49361025 Ha  δ_S0=+0.926 kcal/mol  gap_S1=23.1 kcal/mol  OK  (45s)
+    Triplet T1:  -304.46144870 Ha  gap_T1=20.2 kcal/mol  (51s)
+    [169 ok / 0 fail | ETA 3.7 h]
+  [170/232] m22_+_f1.00  (mode 22,   1574 cm⁻¹, f=1.0+)
+    wB97X:   -306.20655850 Ha  (38s)
+    CASSCF S0: -304.49136596 Ha  δ_S0=+1.865 kcal/mol  gap_S1=24.6 kcal/mol  OK  (68s)
+    Triplet T1:  -304.45721784 Ha  gap_T1=21.4 kcal/mol  (81s)
+    [170 ok / 0 fail | ETA 3.7 h]
+  [171/232] m22_+_f1.50  (mode 22,   1574 cm⁻¹, f=1.5+)
+    wB97X:   -306.20527850 Ha  (34s)
+    CASSCF S0: -304.48859874 Ha  δ_S0=+2.799 kcal/mol  gap_S1=26.3 kcal/mol  OK  (72s)
+    Triplet T1:  -304.45230516 Ha  gap_T1=22.8 kcal/mol  (85s)
+    [171 ok / 0 fail | ETA 3.6 h]
+  [172/232] m22_+_f2.00  (mode 22,   1574 cm⁻¹, f=2.0+)
+    wB97X:   -306.20343487 Ha  (36s)
+    CASSCF S0: -304.48531102 Ha  δ_S0=+3.705 kcal/mol  gap_S1=28.2 kcal/mol  OK  (70s)
+    Triplet T1:  -304.44667687 Ha  gap_T1=24.2 kcal/mol  (80s)
+    [172 ok / 0 fail | ETA 3.5 h]
+  [173/232] m22_-_f0.50  (mode 22,   1574 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731370 Ha  (35s)
+    CASSCF S0: -304.49659148 Ha  δ_S0=-0.940 kcal/mol  gap_S1=20.3 kcal/mol  OK  (69s)
+    Triplet T1:  -304.46799042 Ha  gap_T1=17.9 kcal/mol  (40s)
+    [173 ok / 0 fail | ETA 3.5 h]
+  [174/232] m22_-_f1.00  (mode 22,   1574 cm⁻¹, f=1.0-)
+    wB97X:   -306.20662857 Ha  (28s)
+    CASSCF S0: -304.49735496 Ha  δ_S0=-1.849 kcal/mol  gap_S1=19.1 kcal/mol  OK  (66s)
+    Triplet T1:  -304.47035960 Ha  gap_T1=16.9 kcal/mol  (82s)
+    [174 ok / 0 fail | ETA 3.4 h]
+  [175/232] m22_-_f1.50  (mode 22,   1574 cm⁻¹, f=1.5-)
+    wB97X:   -306.20551603 Ha  (34s)
+    CASSCF S0: -304.49765171 Ha  δ_S0=-2.733 kcal/mol  gap_S1=18.0 kcal/mol  OK  (64s)
+    Triplet T1:  -304.47216389 Ha  gap_T1=16.0 kcal/mol  (91s)
+    [175 ok / 0 fail | ETA 3.3 h]
+  [176/232] m22_-_f2.00  (mode 22,   1574 cm⁻¹, f=2.0-)
+    wB97X:   -306.20399750 Ha  (38s)
+    CASSCF S0: -304.49749754 Ha  δ_S0=-3.589 kcal/mol  gap_S1=16.9 kcal/mol  OK  (45s)
+    Triplet T1:  -304.47342873 Ha  gap_T1=15.1 kcal/mol  (43s)
+    [176 ok / 0 fail | ETA 3.3 h]
+  [177/232] m23_+_f0.50  (mode 23,   1729 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730494 Ha  (36s)
+    CASSCF S0: -304.49570834 Ha  δ_S0=-0.391 kcal/mol  gap_S1=21.6 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46548661 Ha  gap_T1=19.0 kcal/mol  (117s)
+    [177 ok / 0 fail | ETA 3.2 h]
+  [178/232] m23_+_f1.00  (mode 23,   1729 cm⁻¹, f=1.0+)
+    wB97X:   -306.20656539 Ha  (39s)
+    CASSCF S0: -304.49553223 Ha  δ_S0=-0.745 kcal/mol  gap_S1=21.5 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46543849 Ha  gap_T1=18.9 kcal/mol  (72s)
+    [178 ok / 0 fail | ETA 3.2 h]
+  [179/232] m23_+_f1.50  (mode 23,   1729 cm⁻¹, f=1.5+)
+    wB97X:   -306.20530655 Ha  (31s)
+    CASSCF S0: -304.49479630 Ha  δ_S0=-1.073 kcal/mol  gap_S1=21.3 kcal/mol  OK  (36s)
+    Triplet T1:  -304.46485614 Ha  gap_T1=18.8 kcal/mol  (99s)
+    [179 ok / 0 fail | ETA 3.1 h]
+  [180/232] m23_+_f2.00  (mode 23,   1729 cm⁻¹, f=2.0+)
+    wB97X:   -306.20350425 Ha  (40s)
+    CASSCF S0: -304.49347560 Ha  δ_S0=-1.375 kcal/mol  gap_S1=21.2 kcal/mol  OK  (67s)
+    Triplet T1:  -304.46371035 Ha  gap_T1=18.7 kcal/mol  (79s)
+    [180 ok / 0 fail | ETA 3.0 h]
+  [181/232] m23_-_f0.50  (mode 23,   1729 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731508 Ha  (39s)
+    CASSCF S0: -304.49447285 Ha  δ_S0=+0.391 kcal/mol  gap_S1=21.7 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46409685 Ha  gap_T1=19.1 kcal/mol  (41s)
+    [181 ok / 0 fail | ETA 3.0 h]
+  [182/232] m23_-_f1.00  (mode 23,   1729 cm⁻¹, f=1.0-)
+    wB97X:   -306.20662585 Ha  (36s)
+    CASSCF S0: -304.49310313 Ha  δ_S0=+0.818 kcal/mol  gap_S1=21.7 kcal/mol  OK  (71s)
+    Triplet T1:  -304.46271944 Ha  gap_T1=19.1 kcal/mol  (119s)
+    [182 ok / 0 fail | ETA 2.9 h]
+  [183/232] m23_-_f1.50  (mode 23,   1729 cm⁻¹, f=1.5-)
+    wB97X:   -306.20549867 Ha  (40s)
+    CASSCF S0: -304.49125735 Ha  δ_S0=+1.268 kcal/mol  gap_S1=21.7 kcal/mol  OK  (71s)
+    Triplet T1:  -304.46093180 Ha  gap_T1=19.0 kcal/mol  (350s)
+    [183 ok / 0 fail | ETA 2.9 h]
+  [184/232] m23_-_f2.00  (mode 23,   1729 cm⁻¹, f=2.0-)
+    wB97X:   -306.20395144 Ha  (37s)
+    CASSCF S0: -304.48895119 Ha  δ_S0=+1.745 kcal/mol  gap_S1=21.6 kcal/mol  OK  (38s)
+    Triplet T1:  -304.45877650 Ha  gap_T1=18.9 kcal/mol  (829s)
+    [184 ok / 0 fail | ETA 2.9 h]
+  [185/232] m24_+_f0.50  (mode 24,   3071 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731584 Ha  (37s)
+    CASSCF S0: -304.49465951 Ha  δ_S0=+0.274 kcal/mol  gap_S1=21.6 kcal/mol  OK  (70s)
+    Triplet T1:  -304.46436482 Ha  gap_T1=19.0 kcal/mol  (80s)
+    [185 ok / 0 fail | ETA 2.8 h]
+  [186/232] m24_+_f1.00  (mode 24,   3071 cm⁻¹, f=1.0+)
+    wB97X:   -306.20664010 Ha  (40s)
+    CASSCF S0: -304.49351440 Ha  δ_S0=+0.568 kcal/mol  gap_S1=21.6 kcal/mol  OK  (36s)
+    Triplet T1:  -304.46324619 Ha  gap_T1=19.0 kcal/mol  (71s)
+    [186 ok / 0 fail | ETA 2.7 h]
+  [187/232] m24_+_f1.50  (mode 24,   3071 cm⁻¹, f=1.5+)
+    wB97X:   -306.20555030 Ha  (37s)
+    CASSCF S0: -304.49194299 Ha  δ_S0=+0.871 kcal/mol  gap_S1=21.6 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46170394 Ha  gap_T1=19.0 kcal/mol  (65s)
+    [187 ok / 0 fail | ETA 2.7 h]
+  [188/232] m24_+_f2.00  (mode 24,   3071 cm⁻¹, f=2.0+)
+    wB97X:   -306.20407406 Ha  (26s)
+    CASSCF S0: -304.48997365 Ha  δ_S0=+1.180 kcal/mol  gap_S1=21.6 kcal/mol  OK  (71s)
+    Triplet T1:  -304.45976652 Ha  gap_T1=19.0 kcal/mol  (75s)
+    [188 ok / 0 fail | ETA 2.6 h]
+  [189/232] m24_-_f0.50  (mode 24,   3071 cm⁻¹, f=0.5-)
+    wB97X:   -306.20730474 Ha  (31s)
+    CASSCF S0: -304.49554806 Ha  δ_S0=-0.291 kcal/mol  gap_S1=21.7 kcal/mol  OK  (48s)
+    Triplet T1:  -304.46520817 Ha  gap_T1=19.0 kcal/mol  (88s)
+    [189 ok / 0 fail | ETA 2.6 h]
+  [190/232] m24_-_f1.00  (mode 24,   3071 cm⁻¹, f=1.0-)
+    wB97X:   -306.20655274 Ha  (38s)
+    CASSCF S0: -304.49522504 Ha  δ_S0=-0.560 kcal/mol  gap_S1=21.7 kcal/mol  OK  (54s)
+    Triplet T1:  -304.46486627 Ha  gap_T1=19.1 kcal/mol  (41s)
+    [190 ok / 0 fail | ETA 2.5 h]
+  [191/232] m24_-_f1.50  (mode 24,   3071 cm⁻¹, f=1.5-)
+    wB97X:   -306.20525584 Ha  (37s)
+    CASSCF S0: -304.49434254 Ha  δ_S0=-0.820 kcal/mol  gap_S1=21.7 kcal/mol  OK  (70s)
+    Triplet T1:  -304.46396726 Ha  gap_T1=19.1 kcal/mol  (80s)
+    [191 ok / 0 fail | ETA 2.4 h]
+  [192/232] m24_-_f2.00  (mode 24,   3071 cm⁻¹, f=2.0-)
+    wB97X:   -306.20337568 Ha  (21s)
+    CASSCF S0: -304.49286160 Ha  δ_S0=-1.070 kcal/mol  gap_S1=21.7 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46247209 Ha  gap_T1=19.1 kcal/mol  (83s)
+    [192 ok / 0 fail | ETA 2.4 h]
+  [193/232] m25_+_f0.50  (mode 25,   3136 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731023 Ha  (39s)
+    CASSCF S0: -304.49510755 Ha  δ_S0=-0.011 kcal/mol  gap_S1=21.6 kcal/mol  OK  (73s)
+    Triplet T1:  -304.46479091 Ha  gap_T1=19.0 kcal/mol  (90s)
+    [193 ok / 0 fail | ETA 2.3 h]
+  [194/232] m25_+_f1.00  (mode 25,   3136 cm⁻¹, f=1.0+)
+    wB97X:   -306.20659578 Ha  (35s)
+    CASSCF S0: -304.49438432 Ha  δ_S0=-0.005 kcal/mol  gap_S1=21.6 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46407344 Ha  gap_T1=19.0 kcal/mol  (85s)
+    [194 ok / 0 fail | ETA 2.3 h]
+  [195/232] m25_+_f1.50  (mode 25,   3136 cm⁻¹, f=1.5+)
+    wB97X:   -306.20540005 Ha  (35s)
+    CASSCF S0: -304.49317395 Ha  δ_S0=+0.004 kcal/mol  gap_S1=21.6 kcal/mol  OK  (73s)
+    Triplet T1:  -304.46287266 Ha  gap_T1=19.0 kcal/mol  (85s)
+    [195 ok / 0 fail | ETA 2.2 h]
+  [196/232] m25_+_f2.00  (mode 25,   3136 cm⁻¹, f=2.0+)
+    wB97X:   -306.20371551 Ha  (35s)
+    CASSCF S0: -304.49146894 Ha  δ_S0=+0.017 kcal/mol  gap_S1=21.6 kcal/mol  OK  (69s)
+    Triplet T1:  -304.46118107 Ha  gap_T1=19.0 kcal/mol  (68s)
+    [196 ok / 0 fail | ETA 2.1 h]
+  [197/232] m25_-_f0.50  (mode 25,   3136 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731024 Ha  (24s)
+    CASSCF S0: -304.49510755 Ha  δ_S0=-0.011 kcal/mol  gap_S1=21.6 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46479091 Ha  gap_T1=19.0 kcal/mol  (78s)
+    [197 ok / 0 fail | ETA 2.1 h]
+  [198/232] m25_-_f1.00  (mode 25,   3136 cm⁻¹, f=1.0-)
+    wB97X:   -306.20659577 Ha  (38s)
+    CASSCF S0: -304.49438432 Ha  δ_S0=-0.005 kcal/mol  gap_S1=21.6 kcal/mol  OK  (67s)
+    Triplet T1:  -304.46407344 Ha  gap_T1=19.0 kcal/mol  (83s)
+    [198 ok / 0 fail | ETA 2.0 h]
+  [199/232] m25_-_f1.50  (mode 25,   3136 cm⁻¹, f=1.5-)
+    wB97X:   -306.20540006 Ha  (38s)
+    CASSCF S0: -304.49317395 Ha  δ_S0=+0.004 kcal/mol  gap_S1=21.6 kcal/mol  OK  (66s)
+    Triplet T1:  -304.46287266 Ha  gap_T1=19.0 kcal/mol  (90s)
+    [199 ok / 0 fail | ETA 1.9 h]
+  [200/232] m25_-_f2.00  (mode 25,   3136 cm⁻¹, f=2.0-)
+    wB97X:   -306.20371552 Ha  (40s)
+    CASSCF S0: -304.49146894 Ha  δ_S0=+0.017 kcal/mol  gap_S1=21.6 kcal/mol  OK  (50s)
+    Triplet T1:  -304.46118107 Ha  gap_T1=19.0 kcal/mol  (51s)
+    [200 ok / 0 fail | ETA 1.9 h]
+  [201/232] m26_+_f0.50  (mode 26,   3199 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731517 Ha  (37s)
+    CASSCF S0: -304.49485412 Ha  δ_S0=+0.151 kcal/mol  gap_S1=21.7 kcal/mol  OK  (69s)
+    Triplet T1:  -304.46451196 Ha  gap_T1=19.0 kcal/mol  (79s)
+    [201 ok / 0 fail | ETA 1.8 h]
+  [202/232] m26_+_f1.00  (mode 26,   3199 cm⁻¹, f=1.0+)
+    wB97X:   -306.20663147 Ha  (38s)
+    CASSCF S0: -304.49389559 Ha  δ_S0=+0.324 kcal/mol  gap_S1=21.7 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46353059 Ha  gap_T1=19.1 kcal/mol  (77s)
+    [202 ok / 0 fail | ETA 1.8 h]
+  [203/232] m26_+_f1.50  (mode 26,   3199 cm⁻¹, f=1.5+)
+    wB97X:   -306.20551919 Ha  (35s)
+    CASSCF S0: -304.49249545 Ha  δ_S0=+0.504 kcal/mol  gap_S1=21.7 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46210836 Ha  gap_T1=19.1 kcal/mol  (81s)
+    [203 ok / 0 fail | ETA 1.7 h]
+  [204/232] m26_+_f2.00  (mode 26,   3199 cm⁻¹, f=2.0+)
+    wB97X:   -306.20399896 Ha  (39s)
+    CASSCF S0: -304.49067494 Ha  δ_S0=+0.693 kcal/mol  gap_S1=21.7 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46026643 Ha  gap_T1=19.1 kcal/mol  (77s)
+    [204 ok / 0 fail | ETA 1.6 h]
+  [205/232] m26_-_f0.50  (mode 26,   3199 cm⁻¹, f=0.5-)
+    wB97X:   -306.20730541 Ha  (39s)
+    CASSCF S0: -304.49535290 Ha  δ_S0=-0.168 kcal/mol  gap_S1=21.6 kcal/mol  OK  (64s)
+    Triplet T1:  -304.46505874 Ha  gap_T1=19.0 kcal/mol  (80s)
+    [205 ok / 0 fail | ETA 1.6 h]
+  [206/232] m26_-_f1.00  (mode 26,   3199 cm⁻¹, f=1.0-)
+    wB97X:   -306.20656168 Ha  (39s)
+    CASSCF S0: -304.49484192 Ha  δ_S0=-0.314 kcal/mol  gap_S1=21.6 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46457290 Ha  gap_T1=19.0 kcal/mol  (79s)
+    [206 ok / 0 fail | ETA 1.5 h]
+  [207/232] m26_-_f1.50  (mode 26,   3199 cm⁻¹, f=1.5-)
+    wB97X:   -306.20528841 Ha  (37s)
+    CASSCF S0: -304.49378644 Ha  δ_S0=-0.451 kcal/mol  gap_S1=21.6 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46354342 Ha  gap_T1=19.0 kcal/mol  (85s)
+    [207 ok / 0 fail | ETA 1.5 h]
+  [208/232] m26_-_f2.00  (mode 26,   3199 cm⁻¹, f=2.0-)
+    wB97X:   -306.20345532 Ha  (31s)
+    CASSCF S0: -304.49215573 Ha  δ_S0=-0.577 kcal/mol  gap_S1=21.6 kcal/mol  OK  (41s)
+    Triplet T1:  -304.46193957 Ha  gap_T1=19.0 kcal/mol  (91s)
+    [208 ok / 0 fail | ETA 1.4 h]
+  [209/232] m27_+_f0.50  (mode 27,   3214 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730212 Ha  (38s)
+    CASSCF S0: -304.49548211 Ha  δ_S0=-0.251 kcal/mol  gap_S1=21.6 kcal/mol  OK  (69s)
+    Triplet T1:  -304.46516043 Ha  gap_T1=19.0 kcal/mol  (86s)
+    [209 ok / 0 fail | ETA 1.3 h]
+  [210/232] m27_+_f1.00  (mode 27,   3214 cm⁻¹, f=1.0+)
+    wB97X:   -306.20653589 Ha  (34s)
+    CASSCF S0: -304.49508077 Ha  δ_S0=-0.480 kcal/mol  gap_S1=21.7 kcal/mol  OK  (65s)
+    Triplet T1:  -304.46475606 Ha  gap_T1=19.0 kcal/mol  (85s)
+    [210 ok / 0 fail | ETA 1.3 h]
+  [211/232] m27_+_f1.50  (mode 27,   3214 cm⁻¹, f=1.5+)
+    wB97X:   -306.20519995 Ha  (38s)
+    CASSCF S0: -304.49409374 Ha  δ_S0=-0.699 kcal/mol  gap_S1=21.7 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46376621 Ha  gap_T1=19.0 kcal/mol  (86s)
+    [211 ok / 0 fail | ETA 1.2 h]
+  [212/232] m27_+_f2.00  (mode 27,   3214 cm⁻¹, f=2.0+)
+    wB97X:   -306.20324033 Ha  (38s)
+    CASSCF S0: -304.49246622 Ha  δ_S0=-0.907 kcal/mol  gap_S1=21.7 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46213602 Ha  gap_T1=19.0 kcal/mol  (81s)
+    [212 ok / 0 fail | ETA 1.2 h]
+  [213/232] m27_-_f0.50  (mode 27,   3214 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731834 Ha  (39s)
+    CASSCF S0: -304.49472473 Ha  δ_S0=+0.235 kcal/mol  gap_S1=21.6 kcal/mol  OK  (66s)
+    Triplet T1:  -304.46440950 Ha  gap_T1=19.0 kcal/mol  (78s)
+    [213 ok / 0 fail | ETA 1.1 h]
+  [214/232] m27_-_f1.00  (mode 27,   3214 cm⁻¹, f=1.0-)
+    wB97X:   -306.20665464 Ha  (40s)
+    CASSCF S0: -304.49365414 Ha  δ_S0=+0.490 kcal/mol  gap_S1=21.6 kcal/mol  OK  (63s)
+    Triplet T1:  -304.46334242 Ha  gap_T1=19.0 kcal/mol  (60s)
+    [214 ok / 0 fail | ETA 1.1 h]
+  [215/232] m27_-_f1.50  (mode 27,   3214 cm⁻¹, f=1.5-)
+    wB97X:   -306.20559455 Ha  (28s)
+    CASSCF S0: -304.49217507 Ha  δ_S0=+0.753 kcal/mol  gap_S1=21.6 kcal/mol  OK  (71s)
+    Triplet T1:  -304.46186701 Ha  gap_T1=19.0 kcal/mol  (83s)
+    [215 ok / 0 fail | ETA 1.0 h]
+  [216/232] m27_-_f2.00  (mode 27,   3214 cm⁻¹, f=2.0-)
+    wB97X:   -306.20417247 Ha  (39s)
+    CASSCF S0: -304.49032284 Ha  δ_S0=+1.023 kcal/mol  gap_S1=21.6 kcal/mol  OK  (49s)
+    Triplet T1:  -304.46001878 Ha  gap_T1=19.0 kcal/mol  (41s)
+    [216 ok / 0 fail | ETA 0.9 h]
+  [217/232] m28_+_f0.50  (mode 28,   3217 cm⁻¹, f=0.5+)
+    wB97X:   -306.20731658 Ha  (35s)
+    CASSCF S0: -304.49492416 Ha  δ_S0=+0.108 kcal/mol  gap_S1=21.6 kcal/mol  OK  (66s)
+    Triplet T1:  -304.46463528 Ha  gap_T1=19.0 kcal/mol  (84s)
+    [217 ok / 0 fail | ETA 0.9 h]
+  [218/232] m28_+_f1.00  (mode 28,   3217 cm⁻¹, f=1.0+)
+    wB97X:   -306.20664945 Ha  (37s)
+    CASSCF S0: -304.49405546 Ha  δ_S0=+0.235 kcal/mol  gap_S1=21.6 kcal/mol  OK  (57s)
+    Triplet T1:  -304.46379817 Ha  gap_T1=19.0 kcal/mol  (37s)
+    [218 ok / 0 fail | ETA 0.8 h]
+  [219/232] m28_+_f1.50  (mode 28,   3217 cm⁻¹, f=1.5+)
+    wB97X:   -306.20558238 Ha  (34s)
+    CASSCF S0: -304.49277905 Ha  δ_S0=+0.366 kcal/mol  gap_S1=21.6 kcal/mol  OK  (66s)
+    Triplet T1:  -304.46255522 Ha  gap_T1=19.0 kcal/mol  (85s)
+    [219 ok / 0 fail | ETA 0.8 h]
+  [220/232] m28_+_f2.00  (mode 28,   3217 cm⁻¹, f=2.0+)
+    wB97X:   -306.20414833 Ha  (36s)
+    CASSCF S0: -304.49112842 Ha  δ_S0=+0.502 kcal/mol  gap_S1=21.5 kcal/mol  OK  (62s)
+    Triplet T1:  -304.46093988 Ha  gap_T1=18.9 kcal/mol  (48s)
+    [220 ok / 0 fail | ETA 0.7 h]
+  [221/232] m28_-_f0.50  (mode 28,   3217 cm⁻¹, f=0.5-)
+    wB97X:   -306.20730393 Ha  (27s)
+    CASSCF S0: -304.49528649 Ha  δ_S0=-0.127 kcal/mol  gap_S1=21.7 kcal/mol  OK  (67s)
+    Triplet T1:  -304.46494021 Ha  gap_T1=19.0 kcal/mol  (81s)
+    [221 ok / 0 fail | ETA 0.6 h]
+  [222/232] m28_-_f1.00  (mode 28,   3217 cm⁻¹, f=1.0-)
+    wB97X:   -306.20654088 Ha  (35s)
+    CASSCF S0: -304.49469418 Ha  δ_S0=-0.234 kcal/mol  gap_S1=21.7 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46432216 Ha  gap_T1=19.1 kcal/mol  (80s)
+    [222 ok / 0 fail | ETA 0.6 h]
+  [223/232] m28_-_f1.50  (mode 28,   3217 cm⁻¹, f=1.5-)
+    wB97X:   -306.20520972 Ha  (23s)
+    CASSCF S0: -304.49352143 Ha  δ_S0=-0.334 kcal/mol  gap_S1=21.7 kcal/mol  OK  (68s)
+    Triplet T1:  -304.46312569 Ha  gap_T1=19.1 kcal/mol  (86s)
+    [223 ok / 0 fail | ETA 0.5 h]
+  [224/232] m28_-_f2.00  (mode 28,   3217 cm⁻¹, f=2.0-)
+    wB97X:   -306.20325589 Ha  (32s)
+    CASSCF S0: -304.49171337 Ha  δ_S0=-0.425 kcal/mol  gap_S1=21.7 kcal/mol  OK  (41s)
+    Triplet T1:  -304.46129599 Ha  gap_T1=19.1 kcal/mol  (52s)
+    [224 ok / 0 fail | ETA 0.5 h]
+  [225/232] m29_+_f0.50  (mode 29,   3294 cm⁻¹, f=0.5+)
+    wB97X:   -306.20730979 Ha  (36s)
+    CASSCF S0: -304.49508457 Ha  δ_S0=+0.003 kcal/mol  gap_S1=21.6 kcal/mol  OK  (70s)
+    Triplet T1:  -304.46477424 Ha  gap_T1=19.0 kcal/mol  (86s)
+    [225 ok / 0 fail | ETA 0.4 h]
+  [226/232] m29_+_f1.00  (mode 29,   3294 cm⁻¹, f=1.0+)
+    wB97X:   -306.20659614 Ha  (36s)
+    CASSCF S0: -304.49433465 Ha  δ_S0=+0.026 kcal/mol  gap_S1=21.6 kcal/mol  OK  (67s)
+    Triplet T1:  -304.46403379 Ha  gap_T1=19.0 kcal/mol  (83s)
+    [226 ok / 0 fail | ETA 0.3 h]
+  [227/232] m29_+_f1.50  (mode 29,   3294 cm⁻¹, f=1.5+)
+    wB97X:   -306.20540419 Ha  (35s)
+    CASSCF S0: -304.49309554 Ha  δ_S0=+0.056 kcal/mol  gap_S1=21.6 kcal/mol  OK  (57s)
+    Triplet T1:  -304.46280541 Ha  gap_T1=19.0 kcal/mol  (41s)
+    [227 ok / 0 fail | ETA 0.3 h]
+  [228/232] m29_+_f2.00  (mode 29,   3294 cm⁻¹, f=2.0+)
+    wB97X:   -306.20372842 Ha  (36s)
+    CASSCF S0: -304.49136181 Ha  δ_S0=+0.092 kcal/mol  gap_S1=21.6 kcal/mol  OK  (67s)
+    Triplet T1:  -304.46108365 Ha  gap_T1=19.0 kcal/mol  (80s)
+    [228 ok / 0 fail | ETA 0.2 h]
+  [229/232] m29_-_f0.50  (mode 29,   3294 cm⁻¹, f=0.5-)
+    wB97X:   -306.20731076 Ha  (36s)
+    CASSCF S0: -304.49512552 Ha  δ_S0=-0.022 kcal/mol  gap_S1=21.6 kcal/mol  OK  (70s)
+    Triplet T1:  -304.46480000 Ha  gap_T1=19.0 kcal/mol  (83s)
+    [229 ok / 0 fail | ETA 0.2 h]
+  [230/232] m29_-_f1.00  (mode 29,   3294 cm⁻¹, f=1.0-)
+    wB97X:   -306.20659598 Ha  (37s)
+    CASSCF S0: -304.49441438 Ha  δ_S0=-0.024 kcal/mol  gap_S1=21.7 kcal/mol  OK  (40s)
+    Triplet T1:  -304.46408317 Ha  gap_T1=19.0 kcal/mol  (64s)
+    [230 ok / 0 fail | ETA 0.1 h]
+  [231/232] m29_-_f1.50  (mode 29,   3294 cm⁻¹, f=1.5-)
+    wB97X:   -306.20539856 Ha  (35s)
+    CASSCF S0: -304.49320970 Ha  δ_S0=-0.019 kcal/mol  gap_S1=21.7 kcal/mol  OK  (67s)
+    Triplet T1:  -304.46287407 Ha  gap_T1=19.0 kcal/mol  (87s)
+    [231 ok / 0 fail | ETA 0.1 h]
+  [232/232] m29_-_f2.00  (mode 29,   3294 cm⁻¹, f=2.0-)
+    wB97X:   -306.20371083 Ha  (36s)
+    CASSCF S0: -304.49150385 Ha  δ_S0=-0.008 kcal/mol  gap_S1=21.7 kcal/mol  OK  (69s)
+    Triplet T1:  -304.46116505 Ha  gap_T1=19.0 kcal/mol  (86s)
+    [232 ok / 0 fail | ETA 0.0 h]
+
+Calculations complete: 232 ok, 0 failed
+
+Assembling training arrays ...
+
+  Clean frames: 232  (excluded: 0 state-switched, 0 not computed)
+
+  δ_S0 stats (kcal/mol):  mean=+0.344  std=1.738  range=[-5.088, +11.164]
+  Δgap_S1 stats (kcal/mol): mean=21.50  std=1.349  range=[16.53, 28.17]
+  Δgap_T1 stats (kcal/mol): mean=18.89  std=1.202  range=[14.48, 24.24]
+
+Training KRR models ...
+
+  [δ_S0] LOO-CV grid search  (M=232 frames):
+    γ=1.0e-01  α=1.0e-06  LOO-CV=0.170 kcal/mol ← best
+    γ=1.0e-01  α=1.0e-05  LOO-CV=0.175 kcal/mol
+    γ=1.0e-01  α=1.0e-04  LOO-CV=0.191 kcal/mol
+    γ=1.0e-01  α=1.0e-03  LOO-CV=0.282 kcal/mol
+    γ=3.0e-01  α=1.0e-06  LOO-CV=0.570 kcal/mol
+    γ=3.0e-01  α=1.0e-05  LOO-CV=0.570 kcal/mol
+    γ=3.0e-01  α=1.0e-04  LOO-CV=0.572 kcal/mol
+    γ=3.0e-01  α=1.0e-03  LOO-CV=0.578 kcal/mol
+    γ=1.0e+00  α=1.0e-06  LOO-CV=0.914 kcal/mol
+    γ=1.0e+00  α=1.0e-05  LOO-CV=0.914 kcal/mol
+    γ=1.0e+00  α=1.0e-04  LOO-CV=0.914 kcal/mol
+    γ=1.0e+00  α=1.0e-03  LOO-CV=0.917 kcal/mol
+    γ=3.0e+00  α=1.0e-06  LOO-CV=1.194 kcal/mol
+    γ=3.0e+00  α=1.0e-05  LOO-CV=1.194 kcal/mol
+    γ=3.0e+00  α=1.0e-04  LOO-CV=1.194 kcal/mol
+    γ=3.0e+00  α=1.0e-03  LOO-CV=1.196 kcal/mol
+    γ=1.0e+01  α=1.0e-06  LOO-CV=1.252 kcal/mol
+    γ=1.0e+01  α=1.0e-05  LOO-CV=1.253 kcal/mol
+    γ=1.0e+01  α=1.0e-04  LOO-CV=1.254 kcal/mol
+    γ=1.0e+01  α=1.0e-03  LOO-CV=1.256 kcal/mol
+    γ=3.0e+01  α=1.0e-06  LOO-CV=1.323 kcal/mol
+    γ=3.0e+01  α=1.0e-05  LOO-CV=1.323 kcal/mol
+    γ=3.0e+01  α=1.0e-04  LOO-CV=1.323 kcal/mol
+    γ=3.0e+01  α=1.0e-03  LOO-CV=1.325 kcal/mol
+  [δ_S0] Best: γ=1.0e-01  α=1.0e-06  LOO-CV=0.170 kcal/mol
+  NMKRRDeltaModel saved: outputs/casscf_wB97X_nm_grid_20260519_132602/nm_delta_s0_model.pkl
+
+  [Δgap_S1] LOO-CV grid search  (M=232 frames):
+    γ=1.0e-01  α=1.0e-06  LOO-CV=0.079 kcal/mol ← best
+    γ=1.0e-01  α=1.0e-05  LOO-CV=0.085 kcal/mol
+    γ=1.0e-01  α=1.0e-04  LOO-CV=0.117 kcal/mol
+    γ=1.0e-01  α=1.0e-03  LOO-CV=0.215 kcal/mol
+    γ=3.0e-01  α=1.0e-06  LOO-CV=0.600 kcal/mol
+    γ=3.0e-01  α=1.0e-05  LOO-CV=0.602 kcal/mol
+    γ=3.0e-01  α=1.0e-04  LOO-CV=0.608 kcal/mol
+    γ=3.0e-01  α=1.0e-03  LOO-CV=0.635 kcal/mol
+    γ=1.0e+00  α=1.0e-06  LOO-CV=2.233 kcal/mol
+    γ=1.0e+00  α=1.0e-05  LOO-CV=2.233 kcal/mol
+    γ=1.0e+00  α=1.0e-04  LOO-CV=2.236 kcal/mol
+    γ=1.0e+00  α=1.0e-03  LOO-CV=2.253 kcal/mol
+    γ=3.0e+00  α=1.0e-06  LOO-CV=4.049 kcal/mol
+    γ=3.0e+00  α=1.0e-05  LOO-CV=4.049 kcal/mol
+    γ=3.0e+00  α=1.0e-04  LOO-CV=4.052 kcal/mol
+    γ=3.0e+00  α=1.0e-03  LOO-CV=4.065 kcal/mol
+    γ=1.0e+01  α=1.0e-06  LOO-CV=6.286 kcal/mol
+    γ=1.0e+01  α=1.0e-05  LOO-CV=6.286 kcal/mol
+    γ=1.0e+01  α=1.0e-04  LOO-CV=6.290 kcal/mol
+    γ=1.0e+01  α=1.0e-03  LOO-CV=6.308 kcal/mol
+    γ=3.0e+01  α=1.0e-06  LOO-CV=9.183 kcal/mol
+    γ=3.0e+01  α=1.0e-05  LOO-CV=9.184 kcal/mol
+    γ=3.0e+01  α=1.0e-04  LOO-CV=9.184 kcal/mol
+    γ=3.0e+01  α=1.0e-03  LOO-CV=9.192 kcal/mol
+  [Δgap_S1] Best: γ=1.0e-01  α=1.0e-06  LOO-CV=0.079 kcal/mol
+  NMKRRDeltaModel saved: outputs/casscf_wB97X_nm_grid_20260519_132602/nm_gap_s1_model.pkl
+
+  [Δgap_T1] LOO-CV grid search  (M=232 frames):
+    γ=1.0e-01  α=1.0e-06  LOO-CV=0.067 kcal/mol ← best
+    γ=1.0e-01  α=1.0e-05  LOO-CV=0.072 kcal/mol
+    γ=1.0e-01  α=1.0e-04  LOO-CV=0.098 kcal/mol
+    γ=1.0e-01  α=1.0e-03  LOO-CV=0.179 kcal/mol
+    γ=3.0e-01  α=1.0e-06  LOO-CV=0.520 kcal/mol
+    γ=3.0e-01  α=1.0e-05  LOO-CV=0.521 kcal/mol
+    γ=3.0e-01  α=1.0e-04  LOO-CV=0.526 kcal/mol
+    γ=3.0e-01  α=1.0e-03  LOO-CV=0.549 kcal/mol
+    γ=1.0e+00  α=1.0e-06  LOO-CV=1.951 kcal/mol
+    γ=1.0e+00  α=1.0e-05  LOO-CV=1.951 kcal/mol
+    γ=1.0e+00  α=1.0e-04  LOO-CV=1.954 kcal/mol
+    γ=1.0e+00  α=1.0e-03  LOO-CV=1.968 kcal/mol
+    γ=3.0e+00  α=1.0e-06  LOO-CV=3.542 kcal/mol
+    γ=3.0e+00  α=1.0e-05  LOO-CV=3.542 kcal/mol
+    γ=3.0e+00  α=1.0e-04  LOO-CV=3.544 kcal/mol
+    γ=3.0e+00  α=1.0e-03  LOO-CV=3.557 kcal/mol
+    γ=1.0e+01  α=1.0e-06  LOO-CV=5.510 kcal/mol
+    γ=1.0e+01  α=1.0e-05  LOO-CV=5.510 kcal/mol
+    γ=1.0e+01  α=1.0e-04  LOO-CV=5.513 kcal/mol
+    γ=1.0e+01  α=1.0e-03  LOO-CV=5.529 kcal/mol
+    γ=3.0e+01  α=1.0e-06  LOO-CV=8.059 kcal/mol
+    γ=3.0e+01  α=1.0e-05  LOO-CV=8.060 kcal/mol
+    γ=3.0e+01  α=1.0e-04  LOO-CV=8.060 kcal/mol
+    γ=3.0e+01  α=1.0e-03  LOO-CV=8.067 kcal/mol
+  [Δgap_T1] Best: γ=1.0e-01  α=1.0e-06  LOO-CV=0.067 kcal/mol
+  NMKRRDeltaModel saved: outputs/casscf_wB97X_nm_grid_20260519_132602/nm_gap_t1_model.pkl
+  Diagnostics plot: outputs/casscf_wB97X_nm_grid_20260519_132602/diagnostics.png
+
+============================================================
+COMPLETE — outputs in outputs/casscf_wB97X_nm_grid_20260519_132602
+============================================================
+  Clean frames:     232 / 232
+  δ_S0  LOO-CV:     0.170 kcal/mol  ✓ < 0.5
+  Δgap_S1 LOO-CV:   0.079 kcal/mol
+  Δgap_T1 LOO-CV:   0.067 kcal/mol
+
+Models:
+  nm_delta_s0_model.pkl  → use with --nm-delta-model in ir_md_spectrum.py
+  nm_gap_s1_model.pkl    → S0→S1 gap surface
+  nm_gap_t1_model.pkl    → S0→T1 gap surface (ISC)
+
+Next steps:
+  1. Check diagnostics.png — δ_S0 should be smooth, range ±5 kcal/mol near eq
+  2. Run IR spectrum with δ_S0 correction:
+     python3 ir_md_spectrum.py --nm-delta-model outputs/casscf_wB97X_nm_grid_20260519_132602/nm_delta_s0_model.pkl \
+       --model outputs/wB97X_surface_20260406_223155/mlpes_wB97X.pkl \
+       --training-data outputs/wB97X_surface_20260406_223155/training_data_wB97X.npz \
+       --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000

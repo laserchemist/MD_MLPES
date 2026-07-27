@@ -1,0 +1,47 @@
+PSI4 1.10 available
+Bond targets: (1,2)+(0,1)+(3,4)  (3 pairs)
+
+Loading existing dipoles from outputs/mvko_dipoles_ch_v2_20260420/training_with_dipoles.npz
+  270 existing frames  |μ| 4.687 D mean
+
+Reading 5 trajectories (stride=30)…
+  traj_01.xyz: 1000 frames after stride
+  traj_02.xyz: 1000 frames after stride
+  traj_03.xyz: 1000 frames after stride
+  traj_04.xyz: 1000 frames after stride
+  traj_05.xyz: 1000 frames after stride
+  Pool total: 5000 frames
+
+Selecting 90 new frames (biased toward large |Δr| for (1,2)+(0,1)+(3,4))…
+  |Δr| range [(1,2)+(0,1)+(3,4)]: 0.0033–0.1679 Å  q25=0.0357 q75=0.0847
+  Tier counts after dedup — large: 40  middle: 17  near: 18
+  Total selected: 75
+  atom1-atom2 bond: 1.3484–1.5728 Å  mean=1.4319  eq≈1.4149
+  atom0-atom1 bond: 1.2785–1.4873 Å  mean=1.3828  eq≈1.3237
+  atom3-atom4 bond: 1.3472–1.5626 Å  mean=1.4163  eq≈1.4071
+
+Computing PSI4 b3lyp/6-31G* dipoles for 75 frames…
+  10/75  |μ|=4.6549 D  [90s  9.0s/frame]
+  20/75  |μ|=4.5819 D  [175s  8.8s/frame]
+  30/75  |μ|=4.5512 D  [262s  8.7s/frame]
+  40/75  |μ|=4.4857 D  [345s  8.6s/frame]
+  50/75  |μ|=4.5916 D  [429s  8.6s/frame]
+  60/75  |μ|=4.5524 D  [516s  8.6s/frame]
+  70/75  |μ|=4.6035 D  [601s  8.6s/frame]
+  75/75  |μ|=4.3831 D  [647s  8.6s/frame]
+
+  75/75 frames with valid dipoles
+
+Saved 345 frames → outputs/mvko_dipoles_backbone_20260420/training_with_dipoles.npz
+  |μ| range: 2.971–5.609 D  mean=4.688
+
+Run IR spectrum with the new dipole data:
+  python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v2/nm_pes_model.pkl \
+    --training-data outputs/mvko_dipoles_backbone_20260420/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 \
+    --nm-pes-bond-wall-factor 1.15 --nm-pes-bond-wall-stiffness 15.0 \
+    --max-bond-extension 1.35 \
+    --output-dir outputs/ir_spectrum_NM_PES_ch_dipoles_300K

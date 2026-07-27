@@ -1,0 +1,2091 @@
+
+======================================================================
+  ML-PES IR SPECTRUM WORKFLOW
+======================================================================
+  ML-PES model       : outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl
+  Training data      : outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz
+  Dipole model       : (will train now)
+  MD steps           : 30000  (dt=0.5 fs, save every 1)
+  Temperature        : 300.0 K
+  ZPE floor init     : yes  (filter: [50, 4000] cm⁻¹)
+  bakken pre-min     : yes  (max_steps=300, tol=0.005 Ha/Å)
+  Trajectories       : 5
+  Bond dissoc guard  : 2.0× initial length
+  Output dir         : outputs/ir_spectrum_NM_PES_delta_300K
+Loaded trajectory from outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz (npz format)
+  Frames: 150, Atoms: 12
+  NMPESDriver loaded: outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl
+    n_atoms=12  n_vib=30  γ=0.2  α=1e-05
+    LOO-CV RMSE: 1.2066 kcal/mol
+    Bond wall: 5 heavy-atom bonds, cutoff=1.60×d_eq, k=1.0 Ha/Å²
+      C0-O1: d_eq=1.289Å, d_cut=2.062Å
+      C0-C3: d_eq=1.438Å, d_cut=2.300Å
+      C0-C5: d_eq=1.500Å, d_cut=2.401Å
+      O1-O2: d_eq=1.361Å, d_cut=2.177Å
+      C3-C4: d_eq=1.352Å, d_cut=2.163Å
+  Molecule           : C₄H₆O₂  –  methyl vinyl ketone oxide (MVKO)  (12 atoms)
+
+======================================================================
+  TRAINING ML DIPOLE SURFACE
+======================================================================
+  Training frames    : 150
+  Valid dipoles      : 150 (|μ| > 1e-6 D)
+  Dipole range (D)   : μx [-5.445, -1.687]  μy [-1.923, 2.510]  μz [-0.659, 0.793]
+
+================================================================================
+  TRAINING DIPOLE MOMENT SURFACE
+================================================================================
+
+📊 Computing descriptors for 150 configurations...
+   Descriptor shape: (150, 78)
+   Dipole shape: (150, 3)
+
+📂 Data split:
+   Training: 120 samples
+   Testing: 30 samples
+
+⚙️  Scaling data...
+
+🔍 Hyperparameter optimization...
+   Best parameters: {'alpha': 0.0001, 'gamma': 0.001, 'kernel': 'rbf'}
+
+📊 Training Results:
+   Training RMSE (μx, μy, μz): 0.0029, 0.0033, 0.0094 Debye
+   Testing RMSE (μx, μy, μz):  0.0095, 0.0209, 0.0347 Debye
+   Training RMSE (total): 0.0060 Debye
+   Testing RMSE (total):  0.0240 Debye
+   R² (train): 0.999254
+   R² (test):  0.981179
+✅ Dipole surface saved: outputs/ir_spectrum_NM_PES_delta_300K/dipole_surface.pkl
+
+  Dipole model saved : outputs/ir_spectrum_NM_PES_delta_300K/dipole_surface.pkl
+
+  Starting geometry  : frame 0  (E = -192217.81 kcal/mol)
+
+--- Using stored PSI4 NM data for ZPE init (NM-PES model) ---
+  n_vib=30  freq range [124.8, 3323.2] cm⁻¹
+
+======================================================================
+  MULTI-TRAJECTORY MD  (5 trajectories)
+======================================================================
+  Starting frames (lowest energy): [0, 64, 65, 96, 9]
+  Steps per trajectory           : 30000
+  Temperature                    : 300 K
+  Dissociation limit             : 2.0× initial bond
+
+  --- Trajectory 1/5  (frame 0, E=-192217.81 kcal/mol, seed=42) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.21001624          +0.0000          0.028176     0.01000
+      17     -306.21035033          -0.2096          0.004298     0.15000
+
+  Converged in 17 steps  ΔE = -0.2096 kcal/mol  |F|_max = 0.004298 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.2096 kcal/mol from starting frame
+  ZPE floor applied  : 27/30 modes boosted, 0 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2011 K  (target: 300 K, τ=200 fs)
+    Completed — 30000 frames
+
+  Trajectory XYZ     : outputs/ir_spectrum_NM_PES_delta_300K/traj_01.xyz  (30000 frames, 22350 KB)
+
+  Predicting dipoles for 30000 frames...
+    Dipole |μ|: 3.804–4.616 D  (mean 4.285 D)
+
+  --- Trajectory 2/5  (frame 64, E=-192217.81 kcal/mol, seed=43) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.21001624          +0.0000          0.028176     0.01000
+      17     -306.21035033          -0.2096          0.004298     0.15000
+
+  Converged in 17 steps  ΔE = -0.2096 kcal/mol  |F|_max = 0.004298 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.2096 kcal/mol from starting frame
+  ZPE floor applied  : 29/30 modes boosted, 0 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 1977 K  (target: 300 K, τ=200 fs)
+    Completed — 30000 frames
+
+  Trajectory XYZ     : outputs/ir_spectrum_NM_PES_delta_300K/traj_02.xyz  (30000 frames, 22350 KB)
+
+  Predicting dipoles for 30000 frames...
+    Dipole |μ|: 3.770–4.606 D  (mean 4.238 D)
+
+  --- Trajectory 3/5  (frame 65, E=-192217.65 kcal/mol, seed=44) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20965408          +0.0000          0.031444     0.01000
+      18     -306.21032598          -0.4216          0.004622     0.15000
+
+  Converged in 18 steps  ΔE = -0.4216 kcal/mol  |F|_max = 0.004622 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.4216 kcal/mol from starting frame
+  ZPE floor applied  : 28/30 modes boosted, 0 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 1977 K  (target: 300 K, τ=200 fs)
+    Completed — 30000 frames
+
+  Trajectory XYZ     : outputs/ir_spectrum_NM_PES_delta_300K/traj_03.xyz  (30000 frames, 22350 KB)
+
+  Predicting dipoles for 30000 frames...
+    Dipole |μ|: 3.745–4.620 D  (mean 4.252 D)
+
+  --- Trajectory 4/5  (frame 96, E=-192217.27 kcal/mol, seed=45) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20896913          +0.0000          0.032318     0.01000
+      19     -306.21027207          -0.8176          0.004890     0.15000
+
+  Converged in 19 steps  ΔE = -0.8176 kcal/mol  |F|_max = 0.004890 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.8176 kcal/mol from starting frame
+  ZPE floor applied  : 30/30 modes boosted, 0 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 2002 K  (target: 300 K, τ=200 fs)
+    Completed — 30000 frames
+
+  Trajectory XYZ     : outputs/ir_spectrum_NM_PES_delta_300K/traj_04.xyz  (30000 frames, 22350 KB)
+
+  Predicting dipoles for 30000 frames...
+    Dipole |μ|: 3.747–4.586 D  (mean 4.229 D)
+
+  --- Trajectory 5/5  (frame 9, E=-192217.16 kcal/mol, seed=46) ---
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=300)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.20871738          +0.0000          0.020937     0.01000
+      20     -306.20922266          -0.3171          0.010182     0.15000
+      40     -306.20969631          -0.6143          0.005891     0.15000
+      47     -306.20980077          -0.6798          0.004986     0.15000
+
+  Converged in 47 steps  ΔE = -0.6798 kcal/mol  |F|_max = 0.004986 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.6798 kcal/mol from starting frame
+  ZPE floor applied  : 28/30 modes boosted, 0 skipped (outside [50, 4000] cm⁻¹)
+  ZPE init T_eff     : 1987 K  (target: 300 K, τ=200 fs)
+    Completed — 30000 frames
+
+  Trajectory XYZ     : outputs/ir_spectrum_NM_PES_delta_300K/traj_05.xyz  (30000 frames, 22350 KB)
+
+  Predicting dipoles for 30000 frames...
+    Dipole |μ|: 3.760–4.618 D  (mean 4.197 D)
+
+  Trajectories collected: 5
+
+--- Averaging IR spectra across 5 trajectories ---
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 30000
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 15000 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 15000 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 15000
+   Padded points: 60000
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.9 cm⁻¹
+   Frequency resolution: 0.18 cm⁻¹
+   Number of points: 25429
+
+🎯 Found 6 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2.5                  1.000           Torsion/bending     
+   8.0                  0.231           Torsion/bending     
+   4.8                  0.177           Torsion/bending     
+   403.1                0.076           Torsion/bending     
+   439.9                0.069           Torsion/bending     
+   442.6                0.062           Torsion/bending     
+  Trajectory 1/5 spectrum computed  (30000 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 30000
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 15000 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 15000 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 15000
+   Padded points: 60000
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.9 cm⁻¹
+   Frequency resolution: 0.18 cm⁻¹
+   Number of points: 25429
+
+🎯 Found 2 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   1.1                  1.000           Torsion/bending     
+   128.7                0.085           Torsion/bending     
+  Trajectory 2/5 spectrum computed  (30000 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 30000
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 15000 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 15000 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 15000
+   Padded points: 60000
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.9 cm⁻¹
+   Frequency resolution: 0.18 cm⁻¹
+   Number of points: 25429
+
+🎯 Found 8 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   1.4                  1.000           Torsion/bending     
+   4.1                  0.313           Torsion/bending     
+   6.5                  0.137           Torsion/bending     
+   121.6                0.125           Torsion/bending     
+   143.9                0.084           Torsion/bending     
+   526.8                0.067           C-O, C-N stretch    
+   445.9                0.059           Torsion/bending     
+   129.9                0.059           Torsion/bending     
+  Trajectory 3/5 spectrum computed  (30000 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 30000
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 15000 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 15000 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 15000
+   Padded points: 60000
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.9 cm⁻¹
+   Frequency resolution: 0.18 cm⁻¹
+   Number of points: 25429
+
+🎯 Found 3 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2.8                  1.000           Torsion/bending     
+   5.5                  0.602           Torsion/bending     
+   7.3                  0.245           Torsion/bending     
+  Trajectory 4/5 spectrum computed  (30000 frames)
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 30000
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 15000 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 15000 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 15000
+   Padded points: 60000
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.9 cm⁻¹
+   Frequency resolution: 0.18 cm⁻¹
+   Number of points: 25429
+
+🎯 Found 8 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2.7                  1.000           Torsion/bending     
+   6.9                  0.838           Torsion/bending     
+   531.8                0.124           C-O, C-N stretch    
+   128.1                0.097           Torsion/bending     
+   438.7                0.093           Torsion/bending     
+   609.5                0.078           C-O, C-N stretch    
+   119.4                0.074           Torsion/bending     
+   159.1                0.053           Torsion/bending     
+  Trajectory 5/5 spectrum computed  (30000 frames)
+
+🎯 Found 4 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2.7                  1.000           Torsion/bending     
+   7.1                  0.375           Torsion/bending     
+   5.3                  0.234           Torsion/bending     
+   128.3                0.052           Torsion/bending     
+
+======================================================================
+  IR SPECTRUM via DIPOLE ACF + FFT
+======================================================================
+  Frames used       : 30000
+  Effective Δt      : 0.50 fs
+  Total trajectory  : 15000 fs
+  Nyquist frequency : 33356 cm⁻¹
+
+================================================================================
+  IR SPECTRUM CALCULATION
+================================================================================
+
+📊 Computing dipole autocorrelation function...
+   Computed for 15000 lag times
+   C(0) = 1.000000 (normalized to 1)
+
+🪟 Applying hann window function...
+
+📏 Zero padding:
+   Original points: 15000
+   Padded points: 60000
+
+🔄 Computing Fourier transform...
+   Frequency range: 0 - 4499.9 cm⁻¹
+   Frequency resolution: 0.18 cm⁻¹
+   Number of points: 25429
+
+🎯 Found 8 peaks above threshold 0.05:
+
+   Frequency (cm⁻¹)     Intensity       Assignment          
+   ------------------------------------------------------------
+   2.7                  1.000           Torsion/bending     
+   6.9                  0.838           Torsion/bending     
+   531.8                0.124           C-O, C-N stretch    
+   128.1                0.097           Torsion/bending     
+   438.7                0.093           Torsion/bending     
+   609.5                0.078           C-O, C-N stretch    
+   119.4                0.074           Torsion/bending     
+   159.1                0.053           Torsion/bending     
+
+  Spectrum CSV saved : outputs/ir_spectrum_NM_PES_delta_300K/ir_spectrum.csv
+  Points             : 25429
+  Frequency range    : 0.2 – 4499.9 cm⁻¹
+
+  IR spectrum figure  : outputs/ir_spectrum_NM_PES_delta_300K/ir_spectrum_clean.png
+
+  Diagnostic figure  : skipped (multi-trajectory mode — see traj_*.xyz)
+
+======================================================================
+  IR WORKFLOW COMPLETE
+======================================================================
+  Molecule           : C₄H₆O₂  –  methyl vinyl ketone oxide (MVKO)
+  Trajectory XYZ     : outputs/ir_spectrum_NM_PES_delta_300K/traj_01.xyz
+  Spectrum CSV       : outputs/ir_spectrum_NM_PES_delta_300K/ir_spectrum.csv
+  Spectrum figure    : outputs/ir_spectrum_NM_PES_delta_300K/ir_spectrum_clean.png
+  Diagnostic figure  : outputs/ir_spectrum_NM_PES_delta_300K/ir_spectrum_figure.png
+  Summary JSON       : outputs/ir_spectrum_NM_PES_delta_300K/ir_summary.json
+
+  ML-PES harmonic frequencies (cm⁻¹):
+    Mode  1:    124.8 cm⁻¹   ZPE = 0.178 kcal/mol
+    Mode  2:    167.6 cm⁻¹   ZPE = 0.240 kcal/mol
+    Mode  3:    281.0 cm⁻¹   ZPE = 0.402 kcal/mol
+    Mode  4:    306.1 cm⁻¹   ZPE = 0.438 kcal/mol
+    Mode  5:    338.5 cm⁻¹   ZPE = 0.484 kcal/mol
+    Mode  6:    381.2 cm⁻¹   ZPE = 0.545 kcal/mol
+    Mode  7:    406.9 cm⁻¹   ZPE = 0.582 kcal/mol
+    Mode  8:    635.7 cm⁻¹   ZPE = 0.909 kcal/mol
+    Mode  9:    711.3 cm⁻¹   ZPE = 1.017 kcal/mol
+    Mode 10:    821.3 cm⁻¹   ZPE = 1.174 kcal/mol
+    Mode 11:    985.3 cm⁻¹   ZPE = 1.409 kcal/mol
+    Mode 12:    997.8 cm⁻¹   ZPE = 1.426 kcal/mol
+    Mode 13:   1023.4 cm⁻¹   ZPE = 1.463 kcal/mol
+    Mode 14:   1059.6 cm⁻¹   ZPE = 1.515 kcal/mol
+    Mode 15:   1060.7 cm⁻¹   ZPE = 1.516 kcal/mol
+    Mode 16:   1107.9 cm⁻¹   ZPE = 1.584 kcal/mol
+    Mode 17:   1270.6 cm⁻¹   ZPE = 1.816 kcal/mol
+    Mode 18:   1344.6 cm⁻¹   ZPE = 1.922 kcal/mol
+    Mode 19:   1437.1 cm⁻¹   ZPE = 2.054 kcal/mol
+    Mode 20:   1464.3 cm⁻¹   ZPE = 2.093 kcal/mol
+    Mode 21:   1476.6 cm⁻¹   ZPE = 2.111 kcal/mol
+    Mode 22:   1501.2 cm⁻¹   ZPE = 2.146 kcal/mol
+    Mode 23:   1534.1 cm⁻¹   ZPE = 2.193 kcal/mol
+    Mode 24:   1657.4 cm⁻¹   ZPE = 2.369 kcal/mol
+    Mode 25:   3048.7 cm⁻¹   ZPE = 4.358 kcal/mol
+    Mode 26:   3100.0 cm⁻¹   ZPE = 4.432 kcal/mol
+    Mode 27:   3162.5 cm⁻¹   ZPE = 4.521 kcal/mol
+    Mode 28:   3164.5 cm⁻¹   ZPE = 4.524 kcal/mol
+    Mode 29:   3179.3 cm⁻¹   ZPE = 4.545 kcal/mol
+    Mode 30:   3323.2 cm⁻¹   ZPE = 4.751 kcal/mol
+
+  Top IR peaks (from ACF):
+     Freq (cm⁻¹)   Intensity
+  ──────────────  ──────────
+             2.7      1.0000
+             5.3      0.2338
+             7.1      0.3747
+           128.3      0.0525
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   2%|▏         | 567/30000 [00:00<00:05, 5668.45step/s]
+bakken MD:   4%|▍         | 1152/30000 [00:00<00:04, 5771.63step/s]
+bakken MD:   4%|▍         | 1152/30000 [00:00<00:04, 5771.63step/s, E=-192145.2 kcal/mol, T=284 K]
+bakken MD:   6%|▌         | 1736/30000 [00:00<00:04, 5800.83step/s, E=-192145.2 kcal/mol, T=284 K]
+bakken MD:   8%|▊         | 2320/30000 [00:00<00:04, 5814.93step/s, E=-192145.2 kcal/mol, T=284 K]
+bakken MD:  10%|▉         | 2905/30000 [00:00<00:04, 5825.05step/s, E=-192145.2 kcal/mol, T=284 K]
+bakken MD:  10%|▉         | 2905/30000 [00:00<00:04, 5825.05step/s, E=-192147.6 kcal/mol, T=338 K]
+bakken MD:  12%|█▏        | 3496/30000 [00:00<00:04, 5851.63step/s, E=-192147.6 kcal/mol, T=338 K]
+bakken MD:  14%|█▎        | 4082/30000 [00:00<00:04, 5853.20step/s, E=-192147.6 kcal/mol, T=338 K]
+bakken MD:  14%|█▎        | 4082/30000 [00:00<00:04, 5853.20step/s, E=-192147.0 kcal/mol, T=236 K]
+bakken MD:  16%|█▌        | 4668/30000 [00:00<00:04, 5829.43step/s, E=-192147.0 kcal/mol, T=236 K]
+bakken MD:  18%|█▊        | 5254/30000 [00:00<00:04, 5838.05step/s, E=-192147.0 kcal/mol, T=236 K]
+bakken MD:  19%|█▉        | 5842/30000 [00:01<00:04, 5850.56step/s, E=-192147.0 kcal/mol, T=236 K]
+bakken MD:  19%|█▉        | 5842/30000 [00:01<00:04, 5850.56step/s, E=-192147.2 kcal/mol, T=252 K]
+bakken MD:  21%|██▏       | 6430/30000 [00:01<00:04, 5856.75step/s, E=-192147.2 kcal/mol, T=252 K]
+bakken MD:  23%|██▎       | 7016/30000 [00:01<00:03, 5825.37step/s, E=-192147.2 kcal/mol, T=252 K]
+bakken MD:  23%|██▎       | 7016/30000 [00:01<00:03, 5825.37step/s, E=-192148.0 kcal/mol, T=347 K]
+bakken MD:  25%|██▌       | 7602/30000 [00:01<00:03, 5833.18step/s, E=-192148.0 kcal/mol, T=347 K]
+bakken MD:  27%|██▋       | 8189/30000 [00:01<00:03, 5844.13step/s, E=-192148.0 kcal/mol, T=347 K]
+bakken MD:  29%|██▉       | 8774/30000 [00:01<00:03, 5845.65step/s, E=-192148.0 kcal/mol, T=347 K]
+bakken MD:  29%|██▉       | 8774/30000 [00:01<00:03, 5845.65step/s, E=-192147.7 kcal/mol, T=308 K]
+bakken MD:  31%|███       | 9359/30000 [00:01<00:03, 5830.79step/s, E=-192147.7 kcal/mol, T=308 K]
+bakken MD:  33%|███▎      | 9944/30000 [00:01<00:03, 5836.14step/s, E=-192147.7 kcal/mol, T=308 K]
+bakken MD:  33%|███▎      | 9944/30000 [00:01<00:03, 5836.14step/s, E=-192146.7 kcal/mol, T=201 K]
+bakken MD:  35%|███▌      | 10528/30000 [00:01<00:03, 5835.59step/s, E=-192146.7 kcal/mol, T=201 K]
+bakken MD:  37%|███▋      | 11115/30000 [00:01<00:03, 5844.45step/s, E=-192146.7 kcal/mol, T=201 K]
+bakken MD:  39%|███▉      | 11703/30000 [00:02<00:03, 5854.72step/s, E=-192146.7 kcal/mol, T=201 K]
+bakken MD:  39%|███▉      | 11703/30000 [00:02<00:03, 5854.72step/s, E=-192147.5 kcal/mol, T=280 K]
+bakken MD:  41%|████      | 12289/30000 [00:02<00:03, 5848.15step/s, E=-192147.5 kcal/mol, T=280 K]
+bakken MD:  43%|████▎     | 12874/30000 [00:02<00:02, 5839.13step/s, E=-192147.5 kcal/mol, T=280 K]
+bakken MD:  45%|████▍     | 13459/30000 [00:02<00:02, 5840.52step/s, E=-192147.5 kcal/mol, T=280 K]
+bakken MD:  45%|████▍     | 13459/30000 [00:02<00:02, 5840.52step/s, E=-192147.6 kcal/mol, T=292 K]
+bakken MD:  47%|████▋     | 14044/30000 [00:02<00:02, 5842.65step/s, E=-192147.6 kcal/mol, T=292 K]
+bakken MD:  49%|████▉     | 14632/30000 [00:02<00:02, 5851.56step/s, E=-192147.6 kcal/mol, T=292 K]
+bakken MD:  49%|████▉     | 14632/30000 [00:02<00:02, 5851.56step/s, E=-192147.5 kcal/mol, T=277 K]
+bakken MD:  51%|█████     | 15219/30000 [00:02<00:02, 5856.14step/s, E=-192147.5 kcal/mol, T=277 K]
+bakken MD:  53%|█████▎    | 15807/30000 [00:02<00:02, 5862.66step/s, E=-192147.5 kcal/mol, T=277 K]
+bakken MD:  55%|█████▍    | 16395/30000 [00:02<00:02, 5867.38step/s, E=-192147.5 kcal/mol, T=277 K]
+bakken MD:  55%|█████▍    | 16395/30000 [00:02<00:02, 5867.38step/s, E=-192147.9 kcal/mol, T=328 K]
+bakken MD:  57%|█████▋    | 16982/30000 [00:02<00:02, 5860.52step/s, E=-192147.9 kcal/mol, T=328 K]
+bakken MD:  59%|█████▊    | 17570/30000 [00:03<00:02, 5864.14step/s, E=-192147.9 kcal/mol, T=328 K]
+bakken MD:  59%|█████▊    | 17570/30000 [00:03<00:02, 5864.14step/s, E=-192147.8 kcal/mol, T=310 K]
+bakken MD:  61%|██████    | 18157/30000 [00:03<00:02, 5848.88step/s, E=-192147.8 kcal/mol, T=310 K]
+bakken MD:  62%|██████▏   | 18742/30000 [00:03<00:01, 5843.99step/s, E=-192147.8 kcal/mol, T=310 K]
+bakken MD:  64%|██████▍   | 19327/30000 [00:03<00:01, 5831.99step/s, E=-192147.8 kcal/mol, T=310 K]
+bakken MD:  64%|██████▍   | 19327/30000 [00:03<00:01, 5831.99step/s, E=-192148.3 kcal/mol, T=363 K]
+bakken MD:  66%|██████▋   | 19915/30000 [00:03<00:01, 5844.35step/s, E=-192148.3 kcal/mol, T=363 K]
+bakken MD:  68%|██████▊   | 20500/30000 [00:03<00:01, 5832.55step/s, E=-192148.3 kcal/mol, T=363 K]
+bakken MD:  68%|██████▊   | 20500/30000 [00:03<00:01, 5832.55step/s, E=-192147.6 kcal/mol, T=285 K]
+bakken MD:  70%|███████   | 21084/30000 [00:03<00:01, 5822.91step/s, E=-192147.6 kcal/mol, T=285 K]
+bakken MD:  72%|███████▏  | 21668/30000 [00:03<00:01, 5826.88step/s, E=-192147.6 kcal/mol, T=285 K]
+bakken MD:  74%|███████▍  | 22257/30000 [00:03<00:01, 5843.21step/s, E=-192147.6 kcal/mol, T=285 K]
+bakken MD:  74%|███████▍  | 22257/30000 [00:03<00:01, 5843.21step/s, E=-192147.9 kcal/mol, T=326 K]
+bakken MD:  76%|███████▌  | 22842/30000 [00:03<00:01, 5843.80step/s, E=-192147.9 kcal/mol, T=326 K]
+bakken MD:  78%|███████▊  | 23427/30000 [00:04<00:01, 5838.19step/s, E=-192147.9 kcal/mol, T=326 K]
+bakken MD:  78%|███████▊  | 23427/30000 [00:04<00:01, 5838.19step/s, E=-192147.7 kcal/mol, T=304 K]
+bakken MD:  80%|████████  | 24011/30000 [00:04<00:01, 5829.34step/s, E=-192147.7 kcal/mol, T=304 K]
+bakken MD:  82%|████████▏ | 24598/30000 [00:04<00:00, 5838.59step/s, E=-192147.7 kcal/mol, T=304 K]
+bakken MD:  84%|████████▍ | 25182/30000 [00:04<00:00, 5833.57step/s, E=-192147.7 kcal/mol, T=304 K]
+bakken MD:  84%|████████▍ | 25182/30000 [00:04<00:00, 5833.57step/s, E=-192147.6 kcal/mol, T=287 K]
+bakken MD:  86%|████████▌ | 25769/30000 [00:04<00:00, 5843.56step/s, E=-192147.6 kcal/mol, T=287 K]
+bakken MD:  88%|████████▊ | 26355/30000 [00:04<00:00, 5847.35step/s, E=-192147.6 kcal/mol, T=287 K]
+bakken MD:  90%|████████▉ | 26946/30000 [00:04<00:00, 5865.40step/s, E=-192147.6 kcal/mol, T=287 K]
+bakken MD:  90%|████████▉ | 26946/30000 [00:04<00:00, 5865.40step/s, E=-192147.8 kcal/mol, T=313 K]
+bakken MD:  92%|█████████▏| 27533/30000 [00:04<00:00, 5857.93step/s, E=-192147.8 kcal/mol, T=313 K]
+bakken MD:  94%|█████████▎| 28119/30000 [00:04<00:00, 5856.51step/s, E=-192147.8 kcal/mol, T=313 K]
+bakken MD:  94%|█████████▎| 28119/30000 [00:04<00:00, 5856.51step/s, E=-192148.5 kcal/mol, T=390 K]
+bakken MD:  96%|█████████▌| 28707/30000 [00:04<00:00, 5860.74step/s, E=-192148.5 kcal/mol, T=390 K]
+bakken MD:  98%|█████████▊| 29294/30000 [00:05<00:00, 5846.42step/s, E=-192148.5 kcal/mol, T=390 K]
+bakken MD: 100%|█████████▉| 29879/30000 [00:05<00:00, 5836.28step/s, E=-192148.5 kcal/mol, T=390 K]
+bakken MD: 100%|█████████▉| 29879/30000 [00:05<00:00, 5836.28step/s, E=-192147.9 kcal/mol, T=316 K]
+bakken MD: 100%|██████████| 30000/30000 [00:05<00:00, 5840.56step/s, E=-192147.9 kcal/mol, T=316 K]
+
+Dipole prediction:   0%|          | 0/30000 [00:00<?, ?it/s]
+Dipole prediction:   0%|          | 133/30000 [00:00<00:22, 1327.40it/s]
+Dipole prediction:   1%|          | 266/30000 [00:00<00:27, 1067.83it/s]
+Dipole prediction:   1%|▏         | 402/30000 [00:00<00:25, 1182.24it/s]
+Dipole prediction:   2%|▏         | 564/30000 [00:00<00:21, 1340.91it/s]
+Dipole prediction:   2%|▏         | 702/30000 [00:00<00:22, 1285.48it/s]
+Dipole prediction:   3%|▎         | 838/30000 [00:00<00:22, 1307.65it/s]
+Dipole prediction:   3%|▎         | 971/30000 [00:00<00:23, 1225.59it/s]
+Dipole prediction:   4%|▎         | 1096/30000 [00:00<00:24, 1189.34it/s]
+Dipole prediction:   4%|▍         | 1217/30000 [00:01<00:26, 1079.51it/s]
+Dipole prediction:   4%|▍         | 1328/30000 [00:01<00:26, 1066.48it/s]
+Dipole prediction:   5%|▍         | 1437/30000 [00:01<00:27, 1029.50it/s]
+Dipole prediction:   5%|▌         | 1541/30000 [00:01<00:28, 1016.09it/s]
+Dipole prediction:   5%|▌         | 1644/30000 [00:01<00:28, 1001.77it/s]
+Dipole prediction:   6%|▌         | 1750/30000 [00:01<00:27, 1017.95it/s]
+Dipole prediction:   6%|▌         | 1869/30000 [00:01<00:26, 1067.12it/s]
+Dipole prediction:   7%|▋         | 1991/30000 [00:01<00:25, 1110.58it/s]
+Dipole prediction:   7%|▋         | 2129/30000 [00:01<00:23, 1186.23it/s]
+Dipole prediction:   7%|▋         | 2249/30000 [00:01<00:23, 1188.19it/s]
+Dipole prediction:   8%|▊         | 2386/30000 [00:02<00:22, 1241.75it/s]
+Dipole prediction:   8%|▊         | 2513/30000 [00:02<00:22, 1248.44it/s]
+Dipole prediction:   9%|▉         | 2639/30000 [00:02<00:22, 1220.90it/s]
+Dipole prediction:   9%|▉         | 2762/30000 [00:02<00:22, 1187.03it/s]
+Dipole prediction:  10%|▉         | 2883/30000 [00:02<00:22, 1190.41it/s]
+Dipole prediction:  10%|█         | 3013/30000 [00:02<00:22, 1219.52it/s]
+Dipole prediction:  10%|█         | 3136/30000 [00:02<00:25, 1065.11it/s]
+Dipole prediction:  11%|█         | 3249/30000 [00:02<00:24, 1081.70it/s]
+Dipole prediction:  11%|█         | 3360/30000 [00:02<00:28, 949.58it/s] 
+Dipole prediction:  12%|█▏        | 3460/30000 [00:03<00:29, 912.52it/s]
+Dipole prediction:  12%|█▏        | 3555/30000 [00:03<00:28, 913.38it/s]
+Dipole prediction:  12%|█▏        | 3675/30000 [00:03<00:26, 989.76it/s]
+Dipole prediction:  13%|█▎        | 3777/30000 [00:03<00:26, 983.04it/s]
+Dipole prediction:  13%|█▎        | 3878/30000 [00:03<00:26, 989.34it/s]
+Dipole prediction:  13%|█▎        | 3979/30000 [00:03<00:26, 994.20it/s]
+Dipole prediction:  14%|█▎        | 4080/30000 [00:03<00:26, 986.90it/s]
+Dipole prediction:  14%|█▍        | 4189/30000 [00:03<00:25, 1015.43it/s]
+Dipole prediction:  14%|█▍        | 4302/30000 [00:03<00:24, 1047.90it/s]
+Dipole prediction:  15%|█▍        | 4408/30000 [00:04<00:24, 1046.21it/s]
+Dipole prediction:  15%|█▌        | 4539/30000 [00:04<00:22, 1123.22it/s]
+Dipole prediction:  16%|█▌        | 4664/30000 [00:04<00:21, 1160.75it/s]
+Dipole prediction:  16%|█▌        | 4781/30000 [00:04<00:22, 1142.64it/s]
+Dipole prediction:  16%|█▋        | 4897/30000 [00:04<00:21, 1146.24it/s]
+Dipole prediction:  17%|█▋        | 5012/30000 [00:04<00:22, 1093.46it/s]
+Dipole prediction:  17%|█▋        | 5130/30000 [00:04<00:22, 1116.24it/s]
+Dipole prediction:  18%|█▊        | 5269/30000 [00:04<00:20, 1195.40it/s]
+Dipole prediction:  18%|█▊        | 5391/30000 [00:04<00:20, 1195.39it/s]
+Dipole prediction:  18%|█▊        | 5511/30000 [00:04<00:22, 1067.05it/s]
+Dipole prediction:  19%|█▉        | 5633/30000 [00:05<00:22, 1106.67it/s]
+Dipole prediction:  19%|█▉        | 5746/30000 [00:05<00:24, 989.18it/s] 
+Dipole prediction:  20%|█▉        | 5873/30000 [00:05<00:22, 1062.09it/s]
+Dipole prediction:  20%|█▉        | 5985/30000 [00:05<00:22, 1077.84it/s]
+Dipole prediction:  20%|██        | 6098/30000 [00:05<00:21, 1091.52it/s]
+Dipole prediction:  21%|██        | 6221/30000 [00:05<00:21, 1128.99it/s]
+Dipole prediction:  21%|██        | 6336/30000 [00:05<00:21, 1113.44it/s]
+Dipole prediction:  22%|██▏       | 6468/30000 [00:05<00:20, 1166.65it/s]
+Dipole prediction:  22%|██▏       | 6586/30000 [00:05<00:21, 1109.48it/s]
+Dipole prediction:  22%|██▏       | 6699/30000 [00:06<00:21, 1105.21it/s]
+Dipole prediction:  23%|██▎       | 6816/30000 [00:06<00:20, 1122.77it/s]
+Dipole prediction:  23%|██▎       | 6944/30000 [00:06<00:19, 1164.16it/s]
+Dipole prediction:  24%|██▎       | 7061/30000 [00:06<00:19, 1156.33it/s]
+Dipole prediction:  24%|██▍       | 7192/30000 [00:06<00:19, 1198.07it/s]
+Dipole prediction:  24%|██▍       | 7322/30000 [00:06<00:18, 1226.21it/s]
+Dipole prediction:  25%|██▍       | 7460/30000 [00:06<00:17, 1267.67it/s]
+Dipole prediction:  25%|██▌       | 7587/30000 [00:06<00:17, 1251.01it/s]
+Dipole prediction:  26%|██▌       | 7713/30000 [00:06<00:18, 1193.39it/s]
+Dipole prediction:  26%|██▌       | 7844/30000 [00:07<00:18, 1226.05it/s]
+Dipole prediction:  27%|██▋       | 7980/30000 [00:07<00:17, 1263.99it/s]
+Dipole prediction:  27%|██▋       | 8111/30000 [00:07<00:17, 1276.15it/s]
+Dipole prediction:  27%|██▋       | 8240/30000 [00:07<00:18, 1149.93it/s]
+Dipole prediction:  28%|██▊       | 8378/30000 [00:07<00:17, 1212.22it/s]
+Dipole prediction:  28%|██▊       | 8502/30000 [00:07<00:17, 1199.32it/s]
+Dipole prediction:  29%|██▉       | 8628/30000 [00:07<00:17, 1216.16it/s]
+Dipole prediction:  29%|██▉       | 8751/30000 [00:07<00:18, 1164.67it/s]
+Dipole prediction:  30%|██▉       | 8869/30000 [00:07<00:20, 1023.82it/s]
+Dipole prediction:  30%|██▉       | 8975/30000 [00:08<00:21, 962.22it/s] 
+Dipole prediction:  30%|███       | 9074/30000 [00:08<00:24, 866.39it/s]
+Dipole prediction:  31%|███       | 9217/30000 [00:08<00:20, 1004.78it/s]
+Dipole prediction:  31%|███       | 9355/30000 [00:08<00:18, 1101.91it/s]
+Dipole prediction:  32%|███▏      | 9481/30000 [00:08<00:18, 1133.85it/s]
+Dipole prediction:  32%|███▏      | 9606/30000 [00:08<00:17, 1163.56it/s]
+Dipole prediction:  32%|███▏      | 9729/30000 [00:08<00:17, 1182.12it/s]
+Dipole prediction:  33%|███▎      | 9859/30000 [00:08<00:16, 1212.12it/s]
+Dipole prediction:  33%|███▎      | 10010/30000 [00:08<00:15, 1297.48it/s]
+Dipole prediction:  34%|███▍      | 10142/30000 [00:09<00:15, 1288.92it/s]
+Dipole prediction:  34%|███▍      | 10272/30000 [00:09<00:15, 1291.63it/s]
+Dipole prediction:  35%|███▍      | 10413/30000 [00:09<00:14, 1314.32it/s]
+Dipole prediction:  35%|███▌      | 10554/30000 [00:09<00:14, 1341.68it/s]
+Dipole prediction:  36%|███▌      | 10695/30000 [00:09<00:14, 1360.11it/s]
+Dipole prediction:  36%|███▌      | 10832/30000 [00:09<00:14, 1336.43it/s]
+Dipole prediction:  37%|███▋      | 10966/30000 [00:09<00:14, 1322.80it/s]
+Dipole prediction:  37%|███▋      | 11115/30000 [00:09<00:13, 1370.35it/s]
+Dipole prediction:  38%|███▊      | 11253/30000 [00:09<00:14, 1286.69it/s]
+Dipole prediction:  38%|███▊      | 11383/30000 [00:09<00:15, 1195.13it/s]
+Dipole prediction:  38%|███▊      | 11532/30000 [00:10<00:14, 1273.27it/s]
+Dipole prediction:  39%|███▉      | 11662/30000 [00:10<00:14, 1247.53it/s]
+Dipole prediction:  39%|███▉      | 11800/30000 [00:10<00:14, 1283.37it/s]
+Dipole prediction:  40%|███▉      | 11930/30000 [00:10<00:14, 1251.00it/s]
+Dipole prediction:  40%|████      | 12057/30000 [00:10<00:16, 1111.02it/s]
+Dipole prediction:  41%|████      | 12172/30000 [00:10<00:16, 1065.85it/s]
+Dipole prediction:  41%|████      | 12281/30000 [00:10<00:19, 908.11it/s] 
+Dipole prediction:  41%|████▏     | 12377/30000 [00:10<00:19, 913.19it/s]
+Dipole prediction:  42%|████▏     | 12472/30000 [00:11<00:32, 540.44it/s]
+Dipole prediction:  42%|████▏     | 12608/30000 [00:11<00:25, 681.15it/s]
+Dipole prediction:  42%|████▏     | 12716/30000 [00:11<00:22, 760.49it/s]
+Dipole prediction:  43%|████▎     | 12855/30000 [00:11<00:19, 899.59it/s]
+Dipole prediction:  43%|████▎     | 12979/30000 [00:11<00:17, 980.78it/s]
+Dipole prediction:  44%|████▎     | 13105/30000 [00:11<00:16, 1052.11it/s]
+Dipole prediction:  44%|████▍     | 13223/30000 [00:11<00:15, 1078.60it/s]
+Dipole prediction:  44%|████▍     | 13342/30000 [00:12<00:15, 1098.43it/s]
+Dipole prediction:  45%|████▍     | 13458/30000 [00:12<00:15, 1091.06it/s]
+Dipole prediction:  45%|████▌     | 13572/30000 [00:12<00:15, 1078.67it/s]
+Dipole prediction:  46%|████▌     | 13686/30000 [00:12<00:14, 1095.51it/s]
+Dipole prediction:  46%|████▌     | 13798/30000 [00:12<00:16, 966.72it/s] 
+Dipole prediction:  46%|████▋     | 13941/30000 [00:12<00:14, 1088.00it/s]
+Dipole prediction:  47%|████▋     | 14055/30000 [00:12<00:14, 1101.60it/s]
+Dipole prediction:  47%|████▋     | 14169/30000 [00:12<00:14, 1068.44it/s]
+Dipole prediction:  48%|████▊     | 14279/30000 [00:12<00:14, 1066.45it/s]
+Dipole prediction:  48%|████▊     | 14412/30000 [00:13<00:13, 1140.63it/s]
+Dipole prediction:  48%|████▊     | 14528/30000 [00:13<00:14, 1099.07it/s]
+Dipole prediction:  49%|████▉     | 14640/30000 [00:13<00:13, 1100.85it/s]
+Dipole prediction:  49%|████▉     | 14752/30000 [00:13<00:14, 1087.95it/s]
+Dipole prediction:  50%|████▉     | 14877/30000 [00:13<00:13, 1133.40it/s]
+Dipole prediction:  50%|████▉     | 14991/30000 [00:13<00:13, 1108.33it/s]
+Dipole prediction:  50%|█████     | 15103/30000 [00:13<00:13, 1098.40it/s]
+Dipole prediction:  51%|█████     | 15214/30000 [00:13<00:13, 1088.27it/s]
+Dipole prediction:  51%|█████     | 15352/30000 [00:13<00:12, 1170.87it/s]
+Dipole prediction:  52%|█████▏    | 15470/30000 [00:13<00:12, 1171.54it/s]
+Dipole prediction:  52%|█████▏    | 15605/30000 [00:14<00:11, 1222.58it/s]
+Dipole prediction:  52%|█████▏    | 15728/30000 [00:14<00:19, 734.15it/s] 
+Dipole prediction:  53%|█████▎    | 15826/30000 [00:14<00:18, 766.73it/s]
+Dipole prediction:  53%|█████▎    | 15961/30000 [00:14<00:15, 894.23it/s]
+Dipole prediction:  54%|█████▎    | 16078/30000 [00:14<00:14, 959.30it/s]
+Dipole prediction:  54%|█████▍    | 16192/30000 [00:14<00:13, 1005.05it/s]
+Dipole prediction:  54%|█████▍    | 16303/30000 [00:14<00:13, 981.52it/s] 
+Dipole prediction:  55%|█████▍    | 16422/30000 [00:14<00:13, 1035.90it/s]
+Dipole prediction:  55%|█████▌    | 16537/30000 [00:15<00:12, 1063.54it/s]
+Dipole prediction:  56%|█████▌    | 16665/30000 [00:15<00:11, 1120.89it/s]
+Dipole prediction:  56%|█████▌    | 16786/30000 [00:15<00:11, 1145.37it/s]
+Dipole prediction:  56%|█████▋    | 16903/30000 [00:15<00:11, 1142.20it/s]
+Dipole prediction:  57%|█████▋    | 17041/30000 [00:15<00:10, 1211.10it/s]
+Dipole prediction:  57%|█████▋    | 17165/30000 [00:15<00:10, 1218.02it/s]
+Dipole prediction:  58%|█████▊    | 17288/30000 [00:15<00:10, 1199.80it/s]
+Dipole prediction:  58%|█████▊    | 17417/30000 [00:15<00:10, 1224.61it/s]
+Dipole prediction:  58%|█████▊    | 17541/30000 [00:15<00:10, 1160.52it/s]
+Dipole prediction:  59%|█████▉    | 17661/30000 [00:16<00:10, 1170.12it/s]
+Dipole prediction:  59%|█████▉    | 17782/30000 [00:16<00:10, 1181.41it/s]
+Dipole prediction:  60%|█████▉    | 17901/30000 [00:16<00:10, 1164.97it/s]
+Dipole prediction:  60%|██████    | 18018/30000 [00:16<00:10, 1134.64it/s]
+Dipole prediction:  60%|██████    | 18133/30000 [00:16<00:10, 1138.26it/s]
+Dipole prediction:  61%|██████    | 18248/30000 [00:16<00:10, 1133.43it/s]
+Dipole prediction:  61%|██████    | 18362/30000 [00:16<00:10, 1089.86it/s]
+Dipole prediction:  62%|██████▏   | 18486/30000 [00:16<00:10, 1129.78it/s]
+Dipole prediction:  62%|██████▏   | 18607/30000 [00:16<00:09, 1140.59it/s]
+Dipole prediction:  62%|██████▏   | 18722/30000 [00:16<00:10, 1112.56it/s]
+Dipole prediction:  63%|██████▎   | 18855/30000 [00:17<00:09, 1156.95it/s]
+Dipole prediction:  63%|██████▎   | 18971/30000 [00:17<00:09, 1103.67it/s]
+Dipole prediction:  64%|██████▎   | 19084/30000 [00:17<00:09, 1110.32it/s]
+Dipole prediction:  64%|██████▍   | 19212/30000 [00:17<00:09, 1157.22it/s]
+Dipole prediction:  64%|██████▍   | 19339/30000 [00:17<00:08, 1189.53it/s]
+Dipole prediction:  65%|██████▍   | 19459/30000 [00:17<00:09, 1148.33it/s]
+Dipole prediction:  65%|██████▌   | 19587/30000 [00:17<00:08, 1184.53it/s]
+Dipole prediction:  66%|██████▌   | 19706/30000 [00:17<00:08, 1156.99it/s]
+Dipole prediction:  66%|██████▌   | 19830/30000 [00:17<00:08, 1180.16it/s]
+Dipole prediction:  66%|██████▋   | 19949/30000 [00:18<00:08, 1132.75it/s]
+Dipole prediction:  67%|██████▋   | 20090/30000 [00:18<00:08, 1196.16it/s]
+Dipole prediction:  67%|██████▋   | 20211/30000 [00:18<00:10, 894.75it/s] 
+Dipole prediction:  68%|██████▊   | 20356/30000 [00:18<00:09, 1023.40it/s]
+Dipole prediction:  68%|██████▊   | 20494/30000 [00:18<00:08, 1111.77it/s]
+Dipole prediction:  69%|██████▊   | 20615/30000 [00:18<00:08, 1119.23it/s]
+Dipole prediction:  69%|██████▉   | 20749/30000 [00:18<00:07, 1178.22it/s]
+Dipole prediction:  70%|██████▉   | 20873/30000 [00:18<00:07, 1194.93it/s]
+Dipole prediction:  70%|██████▉   | 20997/30000 [00:18<00:07, 1194.52it/s]
+Dipole prediction:  70%|███████   | 21128/30000 [00:19<00:07, 1227.00it/s]
+Dipole prediction:  71%|███████   | 21253/30000 [00:19<00:07, 1213.99it/s]
+Dipole prediction:  71%|███████▏  | 21380/30000 [00:19<00:07, 1228.34it/s]
+Dipole prediction:  72%|███████▏  | 21504/30000 [00:19<00:06, 1224.84it/s]
+Dipole prediction:  72%|███████▏  | 21635/30000 [00:19<00:06, 1248.38it/s]
+Dipole prediction:  73%|███████▎  | 21761/30000 [00:19<00:06, 1217.60it/s]
+Dipole prediction:  73%|███████▎  | 21890/30000 [00:19<00:06, 1235.06it/s]
+Dipole prediction:  73%|███████▎  | 22020/30000 [00:19<00:06, 1251.30it/s]
+Dipole prediction:  74%|███████▍  | 22146/30000 [00:19<00:06, 1147.14it/s]
+Dipole prediction:  74%|███████▍  | 22263/30000 [00:20<00:06, 1116.70it/s]
+Dipole prediction:  75%|███████▍  | 22383/30000 [00:20<00:06, 1138.27it/s]
+Dipole prediction:  75%|███████▍  | 22498/30000 [00:20<00:06, 1116.50it/s]
+Dipole prediction:  75%|███████▌  | 22623/30000 [00:20<00:06, 1150.01it/s]
+Dipole prediction:  76%|███████▌  | 22739/30000 [00:20<00:06, 1101.00it/s]
+Dipole prediction:  76%|███████▋  | 22880/30000 [00:20<00:05, 1187.26it/s]
+Dipole prediction:  77%|███████▋  | 23011/30000 [00:20<00:05, 1220.31it/s]
+Dipole prediction:  77%|███████▋  | 23134/30000 [00:20<00:05, 1190.57it/s]
+Dipole prediction:  78%|███████▊  | 23254/30000 [00:20<00:06, 1080.87it/s]
+Dipole prediction:  78%|███████▊  | 23381/30000 [00:21<00:05, 1130.80it/s]
+Dipole prediction:  78%|███████▊  | 23498/30000 [00:21<00:05, 1138.28it/s]
+Dipole prediction:  79%|███████▊  | 23620/30000 [00:21<00:05, 1160.47it/s]
+Dipole prediction:  79%|███████▉  | 23738/30000 [00:21<00:05, 1146.97it/s]
+Dipole prediction:  80%|███████▉  | 23854/30000 [00:21<00:05, 1147.05it/s]
+Dipole prediction:  80%|███████▉  | 23972/30000 [00:21<00:05, 1153.32it/s]
+Dipole prediction:  80%|████████  | 24101/30000 [00:21<00:04, 1188.58it/s]
+Dipole prediction:  81%|████████  | 24225/30000 [00:21<00:04, 1199.56it/s]
+Dipole prediction:  81%|████████  | 24346/30000 [00:21<00:04, 1186.70it/s]
+Dipole prediction:  82%|████████▏ | 24465/30000 [00:21<00:04, 1137.24it/s]
+Dipole prediction:  82%|████████▏ | 24580/30000 [00:22<00:04, 1131.94it/s]
+Dipole prediction:  82%|████████▏ | 24694/30000 [00:22<00:04, 1100.51it/s]
+Dipole prediction:  83%|████████▎ | 24822/30000 [00:22<00:04, 1151.20it/s]
+Dipole prediction:  83%|████████▎ | 24951/30000 [00:22<00:04, 1188.64it/s]
+Dipole prediction:  84%|████████▎ | 25071/30000 [00:22<00:04, 1144.22it/s]
+Dipole prediction:  84%|████████▍ | 25188/30000 [00:22<00:04, 1150.01it/s]
+Dipole prediction:  84%|████████▍ | 25311/30000 [00:22<00:03, 1172.90it/s]
+Dipole prediction:  85%|████████▍ | 25429/30000 [00:22<00:03, 1162.91it/s]
+Dipole prediction:  85%|████████▌ | 25546/30000 [00:22<00:04, 1109.76it/s]
+Dipole prediction:  86%|████████▌ | 25658/30000 [00:22<00:03, 1097.11it/s]
+Dipole prediction:  86%|████████▌ | 25769/30000 [00:23<00:03, 1098.25it/s]
+Dipole prediction:  86%|████████▋ | 25899/30000 [00:23<00:03, 1156.26it/s]
+Dipole prediction:  87%|████████▋ | 26027/30000 [00:23<00:03, 1190.67it/s]
+Dipole prediction:  87%|████████▋ | 26147/30000 [00:23<00:03, 1117.44it/s]
+Dipole prediction:  88%|████████▊ | 26260/30000 [00:23<00:03, 1089.26it/s]
+Dipole prediction:  88%|████████▊ | 26373/30000 [00:23<00:03, 1093.23it/s]
+Dipole prediction:  88%|████████▊ | 26496/30000 [00:23<00:03, 1131.97it/s]
+Dipole prediction:  89%|████████▉ | 26628/30000 [00:23<00:02, 1186.25it/s]
+Dipole prediction:  89%|████████▉ | 26748/30000 [00:23<00:02, 1153.40it/s]
+Dipole prediction:  90%|████████▉ | 26896/30000 [00:24<00:02, 1246.96it/s]
+Dipole prediction:  90%|█████████ | 27027/30000 [00:24<00:02, 1264.26it/s]
+Dipole prediction:  91%|█████████ | 27155/30000 [00:24<00:02, 1161.51it/s]
+Dipole prediction:  91%|█████████ | 27274/30000 [00:24<00:02, 1073.33it/s]
+Dipole prediction:  91%|█████████▏| 27384/30000 [00:24<00:02, 1075.66it/s]
+Dipole prediction:  92%|█████████▏| 27518/30000 [00:24<00:02, 1147.76it/s]
+Dipole prediction:  92%|█████████▏| 27649/30000 [00:24<00:01, 1192.60it/s]
+Dipole prediction:  93%|█████████▎| 27770/30000 [00:24<00:01, 1194.01it/s]
+Dipole prediction:  93%|█████████▎| 27891/30000 [00:24<00:01, 1169.49it/s]
+Dipole prediction:  93%|█████████▎| 28030/30000 [00:25<00:01, 1232.59it/s]
+Dipole prediction:  94%|█████████▍| 28155/30000 [00:25<00:01, 1181.40it/s]
+Dipole prediction:  94%|█████████▍| 28289/30000 [00:25<00:01, 1225.14it/s]
+Dipole prediction:  95%|█████████▍| 28413/30000 [00:25<00:01, 1165.37it/s]
+Dipole prediction:  95%|█████████▌| 28538/30000 [00:25<00:01, 1188.24it/s]
+Dipole prediction:  96%|█████████▌| 28664/30000 [00:25<00:01, 1207.24it/s]
+Dipole prediction:  96%|█████████▌| 28786/30000 [00:25<00:01, 1173.30it/s]
+Dipole prediction:  96%|█████████▋| 28904/30000 [00:25<00:00, 1171.61it/s]
+Dipole prediction:  97%|█████████▋| 29022/30000 [00:25<00:00, 1082.20it/s]
+Dipole prediction:  97%|█████████▋| 29132/30000 [00:26<00:00, 1046.72it/s]
+Dipole prediction:  97%|█████████▋| 29238/30000 [00:26<00:00, 1019.81it/s]
+Dipole prediction:  98%|█████████▊| 29355/30000 [00:26<00:00, 1059.70it/s]
+Dipole prediction:  98%|█████████▊| 29471/30000 [00:26<00:00, 1087.32it/s]
+Dipole prediction:  99%|█████████▊| 29600/30000 [00:26<00:00, 1144.41it/s]
+Dipole prediction:  99%|█████████▉| 29716/30000 [00:26<00:00, 1101.61it/s]
+Dipole prediction:  99%|█████████▉| 29849/30000 [00:26<00:00, 1164.28it/s]
+Dipole prediction: 100%|█████████▉| 29967/30000 [00:26<00:00, 1044.51it/s]
+Dipole prediction: 100%|██████████| 30000/30000 [00:26<00:00, 1118.76it/s]
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   2%|▏         | 539/30000 [00:00<00:05, 5383.06step/s]
+bakken MD:   4%|▎         | 1078/30000 [00:00<00:05, 4975.83step/s]
+bakken MD:   4%|▎         | 1078/30000 [00:00<00:05, 4975.83step/s, E=-192147.8 kcal/mol, T=553 K]
+bakken MD:   5%|▌         | 1648/30000 [00:00<00:05, 5289.51step/s, E=-192147.8 kcal/mol, T=553 K]
+bakken MD:   7%|▋         | 2237/30000 [00:00<00:05, 5518.13step/s, E=-192147.8 kcal/mol, T=553 K]
+bakken MD:   9%|▉         | 2825/30000 [00:00<00:04, 5644.54step/s, E=-192147.8 kcal/mol, T=553 K]
+bakken MD:   9%|▉         | 2825/30000 [00:00<00:04, 5644.54step/s, E=-192147.4 kcal/mol, T=318 K]
+bakken MD:  11%|█▏        | 3409/30000 [00:00<00:04, 5707.73step/s, E=-192147.4 kcal/mol, T=318 K]
+bakken MD:  13%|█▎        | 3998/30000 [00:00<00:04, 5764.43step/s, E=-192147.4 kcal/mol, T=318 K]
+bakken MD:  13%|█▎        | 3998/30000 [00:00<00:04, 5764.43step/s, E=-192147.9 kcal/mol, T=338 K]
+bakken MD:  15%|█▌        | 4584/30000 [00:00<00:04, 5793.75step/s, E=-192147.9 kcal/mol, T=338 K]
+bakken MD:  17%|█▋        | 5166/30000 [00:00<00:04, 5800.57step/s, E=-192147.9 kcal/mol, T=338 K]
+bakken MD:  19%|█▉        | 5747/30000 [00:01<00:04, 5800.28step/s, E=-192147.9 kcal/mol, T=338 K]
+bakken MD:  19%|█▉        | 5747/30000 [00:01<00:04, 5800.28step/s, E=-192147.6 kcal/mol, T=308 K]
+bakken MD:  21%|██        | 6337/30000 [00:01<00:04, 5829.25step/s, E=-192147.6 kcal/mol, T=308 K]
+bakken MD:  23%|██▎       | 6926/30000 [00:01<00:03, 5847.41step/s, E=-192147.6 kcal/mol, T=308 K]
+bakken MD:  23%|██▎       | 6926/30000 [00:01<00:03, 5847.41step/s, E=-192147.8 kcal/mol, T=330 K]
+bakken MD:  25%|██▌       | 7511/30000 [00:01<00:03, 5835.14step/s, E=-192147.8 kcal/mol, T=330 K]
+bakken MD:  27%|██▋       | 8095/30000 [00:01<00:03, 5761.24step/s, E=-192147.8 kcal/mol, T=330 K]
+bakken MD:  29%|██▉       | 8672/30000 [00:01<00:03, 5570.58step/s, E=-192147.8 kcal/mol, T=330 K]
+bakken MD:  29%|██▉       | 8672/30000 [00:01<00:03, 5570.58step/s, E=-192148.4 kcal/mol, T=401 K]
+bakken MD:  31%|███       | 9266/30000 [00:01<00:03, 5677.53step/s, E=-192148.4 kcal/mol, T=401 K]
+bakken MD:  33%|███▎      | 9836/30000 [00:01<00:03, 5615.53step/s, E=-192148.4 kcal/mol, T=401 K]
+bakken MD:  35%|███▍      | 10399/30000 [00:01<00:03, 5527.70step/s, E=-192148.4 kcal/mol, T=401 K]
+bakken MD:  35%|███▍      | 10399/30000 [00:01<00:03, 5527.70step/s, E=-192147.7 kcal/mol, T=324 K]
+bakken MD:  37%|███▋      | 10976/30000 [00:01<00:03, 5596.17step/s, E=-192147.7 kcal/mol, T=324 K]
+bakken MD:  38%|███▊      | 11537/30000 [00:02<00:03, 5570.13step/s, E=-192147.7 kcal/mol, T=324 K]
+bakken MD:  38%|███▊      | 11537/30000 [00:02<00:03, 5570.13step/s, E=-192147.5 kcal/mol, T=288 K]
+bakken MD:  40%|████      | 12095/30000 [00:02<00:03, 5559.03step/s, E=-192147.5 kcal/mol, T=288 K]
+bakken MD:  42%|████▏     | 12670/30000 [00:02<00:03, 5614.19step/s, E=-192147.5 kcal/mol, T=288 K]
+bakken MD:  44%|████▍     | 13241/30000 [00:02<00:02, 5641.11step/s, E=-192147.5 kcal/mol, T=288 K]
+bakken MD:  44%|████▍     | 13241/30000 [00:02<00:02, 5641.11step/s, E=-192148.2 kcal/mol, T=374 K]
+bakken MD:  46%|████▌     | 13806/30000 [00:02<00:02, 5592.84step/s, E=-192148.2 kcal/mol, T=374 K]
+bakken MD:  48%|████▊     | 14375/30000 [00:02<00:02, 5620.22step/s, E=-192148.2 kcal/mol, T=374 K]
+bakken MD:  50%|████▉     | 14966/30000 [00:02<00:02, 5705.01step/s, E=-192148.2 kcal/mol, T=374 K]
+bakken MD:  50%|████▉     | 14966/30000 [00:02<00:02, 5705.01step/s, E=-192147.9 kcal/mol, T=329 K]
+bakken MD:  52%|█████▏    | 15537/30000 [00:02<00:02, 5684.32step/s, E=-192147.9 kcal/mol, T=329 K]
+bakken MD:  54%|█████▎    | 16106/30000 [00:02<00:02, 5631.88step/s, E=-192147.9 kcal/mol, T=329 K]
+bakken MD:  54%|█████▎    | 16106/30000 [00:02<00:02, 5631.88step/s, E=-192147.4 kcal/mol, T=273 K]
+bakken MD:  56%|█████▌    | 16670/30000 [00:02<00:02, 5595.98step/s, E=-192147.4 kcal/mol, T=273 K]
+bakken MD:  57%|█████▋    | 17230/30000 [00:03<00:02, 5571.58step/s, E=-192147.4 kcal/mol, T=273 K]
+bakken MD:  59%|█████▉    | 17788/30000 [00:03<00:02, 5518.52step/s, E=-192147.4 kcal/mol, T=273 K]
+bakken MD:  59%|█████▉    | 17788/30000 [00:03<00:02, 5518.52step/s, E=-192148.0 kcal/mol, T=347 K]
+bakken MD:  61%|██████    | 18340/30000 [00:03<00:02, 5509.55step/s, E=-192148.0 kcal/mol, T=347 K]
+bakken MD:  63%|██████▎   | 18892/30000 [00:03<00:02, 5400.98step/s, E=-192148.0 kcal/mol, T=347 K]
+bakken MD:  65%|██████▍   | 19481/30000 [00:03<00:01, 5543.80step/s, E=-192148.0 kcal/mol, T=347 K]
+bakken MD:  65%|██████▍   | 19481/30000 [00:03<00:01, 5543.80step/s, E=-192147.1 kcal/mol, T=240 K]
+bakken MD:  67%|██████▋   | 20049/30000 [00:03<00:01, 5581.96step/s, E=-192147.1 kcal/mol, T=240 K]
+bakken MD:  69%|██████▊   | 20608/30000 [00:03<00:01, 5574.25step/s, E=-192147.1 kcal/mol, T=240 K]
+bakken MD:  69%|██████▊   | 20608/30000 [00:03<00:01, 5574.25step/s, E=-192148.1 kcal/mol, T=353 K]
+bakken MD:  71%|███████   | 21197/30000 [00:03<00:01, 5667.86step/s, E=-192148.1 kcal/mol, T=353 K]
+bakken MD:  73%|███████▎  | 21765/30000 [00:03<00:01, 5617.52step/s, E=-192148.1 kcal/mol, T=353 K]
+bakken MD:  74%|███████▍  | 22328/30000 [00:03<00:01, 5589.68step/s, E=-192148.1 kcal/mol, T=353 K]
+bakken MD:  74%|███████▍  | 22328/30000 [00:04<00:01, 5589.68step/s, E=-192147.2 kcal/mol, T=257 K]
+bakken MD:  76%|███████▋  | 22913/30000 [00:04<00:01, 5664.32step/s, E=-192147.2 kcal/mol, T=257 K]
+bakken MD:  78%|███████▊  | 23480/30000 [00:04<00:01, 5610.68step/s, E=-192147.2 kcal/mol, T=257 K]
+bakken MD:  78%|███████▊  | 23480/30000 [00:04<00:01, 5610.68step/s, E=-192147.7 kcal/mol, T=309 K]
+bakken MD:  80%|████████  | 24050/30000 [00:04<00:01, 5634.03step/s, E=-192147.7 kcal/mol, T=309 K]
+bakken MD:  82%|████████▏ | 24614/30000 [00:04<00:00, 5587.66step/s, E=-192147.7 kcal/mol, T=309 K]
+bakken MD:  84%|████████▍ | 25193/30000 [00:04<00:00, 5647.53step/s, E=-192147.7 kcal/mol, T=309 K]
+bakken MD:  84%|████████▍ | 25193/30000 [00:04<00:00, 5647.53step/s, E=-192146.7 kcal/mol, T=195 K]
+bakken MD:  86%|████████▌ | 25762/30000 [00:04<00:00, 5659.92step/s, E=-192146.7 kcal/mol, T=195 K]
+bakken MD:  88%|████████▊ | 26329/30000 [00:04<00:00, 5641.90step/s, E=-192146.7 kcal/mol, T=195 K]
+bakken MD:  90%|████████▉ | 26894/30000 [00:04<00:00, 5566.18step/s, E=-192146.7 kcal/mol, T=195 K]
+bakken MD:  90%|████████▉ | 26894/30000 [00:04<00:00, 5566.18step/s, E=-192147.8 kcal/mol, T=325 K]
+bakken MD:  92%|█████████▏| 27470/30000 [00:04<00:00, 5621.51step/s, E=-192147.8 kcal/mol, T=325 K]
+bakken MD:  93%|█████████▎| 28034/30000 [00:04<00:00, 5624.93step/s, E=-192147.8 kcal/mol, T=325 K]
+bakken MD:  93%|█████████▎| 28034/30000 [00:05<00:00, 5624.93step/s, E=-192147.8 kcal/mol, T=326 K]
+bakken MD:  95%|█████████▌| 28604/30000 [00:05<00:00, 5645.11step/s, E=-192147.8 kcal/mol, T=326 K]
+bakken MD:  97%|█████████▋| 29196/30000 [00:05<00:00, 5727.01step/s, E=-192147.8 kcal/mol, T=326 K]
+bakken MD:  99%|█████████▉| 29789/30000 [00:05<00:00, 5786.39step/s, E=-192147.8 kcal/mol, T=326 K]
+bakken MD:  99%|█████████▉| 29789/30000 [00:05<00:00, 5786.39step/s, E=-192146.9 kcal/mol, T=221 K]
+bakken MD: 100%|██████████| 30000/30000 [00:05<00:00, 5630.37step/s, E=-192146.9 kcal/mol, T=221 K]
+
+Dipole prediction:   0%|          | 0/30000 [00:00<?, ?it/s]
+Dipole prediction:   0%|          | 139/30000 [00:00<00:21, 1364.06it/s]
+Dipole prediction:   1%|          | 297/30000 [00:00<00:20, 1473.96it/s]
+Dipole prediction:   1%|▏         | 445/30000 [00:00<00:20, 1457.02it/s]
+Dipole prediction:   2%|▏         | 591/30000 [00:00<00:20, 1433.64it/s]
+Dipole prediction:   2%|▏         | 735/30000 [00:00<00:22, 1273.84it/s]
+Dipole prediction:   3%|▎         | 865/30000 [00:00<00:23, 1219.49it/s]
+Dipole prediction:   3%|▎         | 1003/30000 [00:00<00:22, 1266.05it/s]
+Dipole prediction:   4%|▍         | 1141/30000 [00:00<00:22, 1297.75it/s]
+Dipole prediction:   4%|▍         | 1283/30000 [00:00<00:21, 1333.12it/s]
+Dipole prediction:   5%|▍         | 1418/30000 [00:01<00:21, 1333.23it/s]
+Dipole prediction:   5%|▌         | 1553/30000 [00:01<00:21, 1295.74it/s]
+Dipole prediction:   6%|▌         | 1684/30000 [00:01<00:22, 1284.54it/s]
+Dipole prediction:   6%|▌         | 1813/30000 [00:01<00:29, 957.77it/s] 
+Dipole prediction:   6%|▋         | 1921/30000 [00:01<00:35, 797.63it/s]
+Dipole prediction:   7%|▋         | 2013/30000 [00:01<00:34, 811.45it/s]
+Dipole prediction:   7%|▋         | 2129/30000 [00:01<00:31, 892.12it/s]
+Dipole prediction:   8%|▊         | 2259/30000 [00:02<00:28, 988.89it/s]
+Dipole prediction:   8%|▊         | 2366/30000 [00:02<00:32, 843.13it/s]
+Dipole prediction:   8%|▊         | 2499/30000 [00:02<00:28, 958.57it/s]
+Dipole prediction:   9%|▊         | 2622/30000 [00:02<00:26, 1027.10it/s]
+Dipole prediction:   9%|▉         | 2733/30000 [00:02<00:26, 1014.87it/s]
+Dipole prediction:   9%|▉         | 2840/30000 [00:02<00:26, 1010.78it/s]
+Dipole prediction:  10%|▉         | 2945/30000 [00:03<01:40, 268.26it/s] 
+Dipole prediction:  10%|█         | 3022/30000 [00:04<02:45, 162.57it/s]
+Dipole prediction:  10%|█         | 3078/30000 [00:05<03:04, 145.82it/s]
+Dipole prediction:  11%|█         | 3163/30000 [00:05<02:19, 192.51it/s]
+Dipole prediction:  11%|█         | 3295/30000 [00:05<01:32, 289.42it/s]
+Dipole prediction:  11%|█▏        | 3386/30000 [00:05<01:14, 356.73it/s]
+Dipole prediction:  12%|█▏        | 3485/30000 [00:05<00:59, 442.41it/s]
+Dipole prediction:  12%|█▏        | 3589/30000 [00:05<00:48, 539.11it/s]
+Dipole prediction:  12%|█▏        | 3713/30000 [00:05<00:39, 666.21it/s]
+Dipole prediction:  13%|█▎        | 3819/30000 [00:06<00:34, 748.58it/s]
+Dipole prediction:  13%|█▎        | 3921/30000 [00:06<00:32, 805.66it/s]
+Dipole prediction:  13%|█▎        | 4022/30000 [00:06<00:33, 768.34it/s]
+Dipole prediction:  14%|█▎        | 4114/30000 [00:06<00:34, 745.67it/s]
+Dipole prediction:  14%|█▍        | 4212/30000 [00:06<00:32, 801.70it/s]
+Dipole prediction:  14%|█▍        | 4309/30000 [00:06<00:30, 843.16it/s]
+Dipole prediction:  15%|█▍        | 4400/30000 [00:06<00:30, 844.79it/s]
+Dipole prediction:  15%|█▍        | 4494/30000 [00:06<00:29, 867.54it/s]
+Dipole prediction:  15%|█▌        | 4593/30000 [00:06<00:28, 901.33it/s]
+Dipole prediction:  16%|█▌        | 4687/30000 [00:07<00:27, 905.92it/s]
+Dipole prediction:  16%|█▌        | 4817/30000 [00:07<00:24, 1018.47it/s]
+Dipole prediction:  16%|█▋        | 4938/30000 [00:07<00:23, 1072.23it/s]
+Dipole prediction:  17%|█▋        | 5047/30000 [00:07<00:23, 1068.55it/s]
+Dipole prediction:  17%|█▋        | 5177/30000 [00:07<00:21, 1134.75it/s]
+Dipole prediction:  18%|█▊        | 5313/30000 [00:07<00:20, 1200.60it/s]
+Dipole prediction:  18%|█▊        | 5434/30000 [00:07<00:21, 1158.23it/s]
+Dipole prediction:  19%|█▊        | 5551/30000 [00:07<00:21, 1125.73it/s]
+Dipole prediction:  19%|█▉        | 5683/30000 [00:07<00:20, 1180.10it/s]
+Dipole prediction:  19%|█▉        | 5802/30000 [00:08<00:22, 1059.16it/s]
+Dipole prediction:  20%|█▉        | 5911/30000 [00:08<00:23, 1023.48it/s]
+Dipole prediction:  20%|██        | 6031/30000 [00:08<00:22, 1070.07it/s]
+Dipole prediction:  20%|██        | 6140/30000 [00:08<00:23, 1034.12it/s]
+Dipole prediction:  21%|██        | 6253/30000 [00:08<00:22, 1059.96it/s]
+Dipole prediction:  21%|██        | 6370/30000 [00:08<00:21, 1085.73it/s]
+Dipole prediction:  22%|██▏       | 6483/30000 [00:08<00:21, 1096.92it/s]
+Dipole prediction:  22%|██▏       | 6619/30000 [00:08<00:19, 1171.23it/s]
+Dipole prediction:  22%|██▏       | 6741/30000 [00:08<00:19, 1184.43it/s]
+Dipole prediction:  23%|██▎       | 6865/30000 [00:08<00:19, 1190.87it/s]
+Dipole prediction:  23%|██▎       | 7005/30000 [00:09<00:18, 1252.25it/s]
+Dipole prediction:  24%|██▍       | 7131/30000 [00:09<00:18, 1227.16it/s]
+Dipole prediction:  24%|██▍       | 7265/30000 [00:09<00:18, 1252.40it/s]
+Dipole prediction:  25%|██▍       | 7391/30000 [00:09<00:18, 1220.98it/s]
+Dipole prediction:  25%|██▌       | 7514/30000 [00:09<00:18, 1222.22it/s]
+Dipole prediction:  25%|██▌       | 7637/30000 [00:09<00:18, 1206.04it/s]
+Dipole prediction:  26%|██▌       | 7759/30000 [00:09<00:18, 1209.91it/s]
+Dipole prediction:  26%|██▋       | 7881/30000 [00:09<00:19, 1151.27it/s]
+Dipole prediction:  27%|██▋       | 7997/30000 [00:09<00:21, 1041.77it/s]
+Dipole prediction:  27%|██▋       | 8117/30000 [00:10<00:20, 1079.65it/s]
+Dipole prediction:  27%|██▋       | 8227/30000 [00:10<00:20, 1078.95it/s]
+Dipole prediction:  28%|██▊       | 8337/30000 [00:10<00:20, 1064.69it/s]
+Dipole prediction:  28%|██▊       | 8458/30000 [00:10<00:19, 1103.78it/s]
+Dipole prediction:  29%|██▊       | 8578/30000 [00:10<00:18, 1131.32it/s]
+Dipole prediction:  29%|██▉       | 8693/30000 [00:10<00:18, 1128.92it/s]
+Dipole prediction:  29%|██▉       | 8807/30000 [00:10<00:19, 1088.10it/s]
+Dipole prediction:  30%|██▉       | 8926/30000 [00:10<00:18, 1116.97it/s]
+Dipole prediction:  30%|███       | 9039/30000 [00:10<00:20, 998.84it/s] 
+Dipole prediction:  30%|███       | 9148/30000 [00:11<00:20, 1021.91it/s]
+Dipole prediction:  31%|███       | 9253/30000 [00:11<00:20, 1013.50it/s]
+Dipole prediction:  31%|███       | 9356/30000 [00:11<00:20, 1008.12it/s]
+Dipole prediction:  32%|███▏      | 9458/30000 [00:11<00:21, 972.92it/s] 
+Dipole prediction:  32%|███▏      | 9576/30000 [00:11<00:19, 1029.53it/s]
+Dipole prediction:  32%|███▏      | 9683/30000 [00:11<00:19, 1038.84it/s]
+Dipole prediction:  33%|███▎      | 9793/30000 [00:11<00:19, 1056.41it/s]
+Dipole prediction:  33%|███▎      | 9915/30000 [00:11<00:18, 1100.12it/s]
+Dipole prediction:  33%|███▎      | 10026/30000 [00:11<00:19, 1037.18it/s]
+Dipole prediction:  34%|███▍      | 10131/30000 [00:11<00:19, 1038.32it/s]
+Dipole prediction:  34%|███▍      | 10258/30000 [00:12<00:17, 1104.65it/s]
+Dipole prediction:  35%|███▍      | 10390/30000 [00:12<00:16, 1166.25it/s]
+Dipole prediction:  35%|███▌      | 10536/30000 [00:12<00:15, 1252.29it/s]
+Dipole prediction:  36%|███▌      | 10663/30000 [00:12<00:15, 1256.25it/s]
+Dipole prediction:  36%|███▌      | 10790/30000 [00:12<00:15, 1221.71it/s]
+Dipole prediction:  36%|███▋      | 10936/30000 [00:12<00:14, 1290.99it/s]
+Dipole prediction:  37%|███▋      | 11076/30000 [00:12<00:14, 1321.64it/s]
+Dipole prediction:  37%|███▋      | 11215/30000 [00:12<00:14, 1340.58it/s]
+Dipole prediction:  38%|███▊      | 11350/30000 [00:12<00:15, 1206.76it/s]
+Dipole prediction:  38%|███▊      | 11474/30000 [00:13<00:15, 1205.64it/s]
+Dipole prediction:  39%|███▊      | 11597/30000 [00:13<00:16, 1137.48it/s]
+Dipole prediction:  39%|███▉      | 11714/30000 [00:13<00:15, 1146.21it/s]
+Dipole prediction:  39%|███▉      | 11831/30000 [00:13<00:15, 1143.84it/s]
+Dipole prediction:  40%|███▉      | 11963/30000 [00:13<00:15, 1191.33it/s]
+Dipole prediction:  40%|████      | 12107/30000 [00:13<00:14, 1260.28it/s]
+Dipole prediction:  41%|████      | 12246/30000 [00:13<00:13, 1294.54it/s]
+Dipole prediction:  41%|████▏     | 12377/30000 [00:13<00:13, 1291.75it/s]
+Dipole prediction:  42%|████▏     | 12507/30000 [00:13<00:13, 1265.82it/s]
+Dipole prediction:  42%|████▏     | 12634/30000 [00:14<00:14, 1187.74it/s]
+Dipole prediction:  43%|████▎     | 12780/30000 [00:14<00:13, 1263.90it/s]
+Dipole prediction:  43%|████▎     | 12924/30000 [00:14<00:13, 1306.86it/s]
+Dipole prediction:  44%|████▎     | 13060/30000 [00:14<00:12, 1321.34it/s]
+Dipole prediction:  44%|████▍     | 13193/30000 [00:14<00:12, 1302.19it/s]
+Dipole prediction:  44%|████▍     | 13324/30000 [00:14<00:13, 1247.80it/s]
+Dipole prediction:  45%|████▍     | 13450/30000 [00:14<00:13, 1247.15it/s]
+Dipole prediction:  45%|████▌     | 13576/30000 [00:14<00:13, 1214.03it/s]
+Dipole prediction:  46%|████▌     | 13698/30000 [00:14<00:13, 1195.86it/s]
+Dipole prediction:  46%|████▌     | 13818/30000 [00:14<00:13, 1194.22it/s]
+Dipole prediction:  46%|████▋     | 13938/30000 [00:15<00:13, 1185.36it/s]
+Dipole prediction:  47%|████▋     | 14057/30000 [00:15<00:14, 1116.87it/s]
+Dipole prediction:  47%|████▋     | 14170/30000 [00:15<00:17, 910.33it/s] 
+Dipole prediction:  48%|████▊     | 14273/30000 [00:15<00:16, 939.68it/s]
+Dipole prediction:  48%|████▊     | 14382/30000 [00:15<00:16, 976.06it/s]
+Dipole prediction:  48%|████▊     | 14507/30000 [00:15<00:14, 1048.61it/s]
+Dipole prediction:  49%|████▊     | 14616/30000 [00:15<00:15, 1020.65it/s]
+Dipole prediction:  49%|████▉     | 14724/30000 [00:15<00:14, 1036.36it/s]
+Dipole prediction:  49%|████▉     | 14836/30000 [00:15<00:14, 1058.35it/s]
+Dipole prediction:  50%|████▉     | 14944/30000 [00:16<00:14, 1063.78it/s]
+Dipole prediction:  50%|█████     | 15067/30000 [00:16<00:13, 1111.46it/s]
+Dipole prediction:  51%|█████     | 15196/30000 [00:16<00:12, 1159.99it/s]
+Dipole prediction:  51%|█████     | 15330/30000 [00:16<00:12, 1203.82it/s]
+Dipole prediction:  52%|█████▏    | 15451/30000 [00:16<00:12, 1124.72it/s]
+Dipole prediction:  52%|█████▏    | 15577/30000 [00:16<00:12, 1161.27it/s]
+Dipole prediction:  52%|█████▏    | 15695/30000 [00:16<00:12, 1139.52it/s]
+Dipole prediction:  53%|█████▎    | 15810/30000 [00:16<00:12, 1122.49it/s]
+Dipole prediction:  53%|█████▎    | 15923/30000 [00:16<00:13, 1032.74it/s]
+Dipole prediction:  53%|█████▎    | 16047/30000 [00:17<00:12, 1088.83it/s]
+Dipole prediction:  54%|█████▍    | 16167/30000 [00:17<00:12, 1118.54it/s]
+Dipole prediction:  54%|█████▍    | 16311/30000 [00:17<00:11, 1209.45it/s]
+Dipole prediction:  55%|█████▍    | 16444/30000 [00:17<00:10, 1243.06it/s]
+Dipole prediction:  55%|█████▌    | 16570/30000 [00:17<00:10, 1223.28it/s]
+Dipole prediction:  56%|█████▌    | 16694/30000 [00:17<00:11, 1147.48it/s]
+Dipole prediction:  56%|█████▌    | 16811/30000 [00:17<00:13, 971.46it/s] 
+Dipole prediction:  56%|█████▋    | 16914/30000 [00:17<00:14, 895.82it/s]
+Dipole prediction:  57%|█████▋    | 17008/30000 [00:18<00:15, 834.50it/s]
+Dipole prediction:  57%|█████▋    | 17102/30000 [00:18<00:15, 859.68it/s]
+Dipole prediction:  57%|█████▋    | 17217/30000 [00:18<00:13, 933.73it/s]
+Dipole prediction:  58%|█████▊    | 17314/30000 [00:18<00:13, 918.46it/s]
+Dipole prediction:  58%|█████▊    | 17434/30000 [00:18<00:12, 993.81it/s]
+Dipole prediction:  58%|█████▊    | 17536/30000 [00:18<00:12, 964.32it/s]
+Dipole prediction:  59%|█████▉    | 17635/30000 [00:18<00:13, 930.13it/s]
+Dipole prediction:  59%|█████▉    | 17764/30000 [00:18<00:11, 1028.38it/s]
+Dipole prediction:  60%|█████▉    | 17871/30000 [00:18<00:11, 1039.07it/s]
+Dipole prediction:  60%|█████▉    | 17989/30000 [00:18<00:11, 1077.14it/s]
+Dipole prediction:  60%|██████    | 18112/30000 [00:19<00:10, 1120.63it/s]
+Dipole prediction:  61%|██████    | 18225/30000 [00:19<00:11, 1001.19it/s]
+Dipole prediction:  61%|██████    | 18351/30000 [00:19<00:10, 1070.83it/s]
+Dipole prediction:  62%|██████▏   | 18461/30000 [00:19<00:10, 1073.92it/s]
+Dipole prediction:  62%|██████▏   | 18590/30000 [00:19<00:10, 1134.89it/s]
+Dipole prediction:  62%|██████▏   | 18706/30000 [00:19<00:10, 1129.05it/s]
+Dipole prediction:  63%|██████▎   | 18821/30000 [00:19<00:09, 1121.75it/s]
+Dipole prediction:  63%|██████▎   | 18934/30000 [00:19<00:10, 1097.06it/s]
+Dipole prediction:  64%|██████▎   | 19067/30000 [00:19<00:09, 1160.20it/s]
+Dipole prediction:  64%|██████▍   | 19184/30000 [00:20<00:09, 1138.04it/s]
+Dipole prediction:  64%|██████▍   | 19310/30000 [00:20<00:09, 1172.72it/s]
+Dipole prediction:  65%|██████▍   | 19428/30000 [00:20<00:09, 1098.30it/s]
+Dipole prediction:  65%|██████▌   | 19540/30000 [00:20<00:09, 1102.76it/s]
+Dipole prediction:  66%|██████▌   | 19656/30000 [00:20<00:09, 1118.40it/s]
+Dipole prediction:  66%|██████▌   | 19769/30000 [00:20<00:09, 1106.12it/s]
+Dipole prediction:  66%|██████▋   | 19903/30000 [00:20<00:08, 1172.91it/s]
+Dipole prediction:  67%|██████▋   | 20022/30000 [00:20<00:08, 1176.54it/s]
+Dipole prediction:  67%|██████▋   | 20147/30000 [00:20<00:08, 1196.62it/s]
+Dipole prediction:  68%|██████▊   | 20267/30000 [00:20<00:08, 1193.43it/s]
+Dipole prediction:  68%|██████▊   | 20396/30000 [00:21<00:07, 1220.34it/s]
+Dipole prediction:  68%|██████▊   | 20538/30000 [00:21<00:07, 1279.59it/s]
+Dipole prediction:  69%|██████▉   | 20675/30000 [00:21<00:07, 1306.31it/s]
+Dipole prediction:  69%|██████▉   | 20811/30000 [00:21<00:06, 1320.82it/s]
+Dipole prediction:  70%|██████▉   | 20944/30000 [00:21<00:07, 1276.98it/s]
+Dipole prediction:  70%|███████   | 21075/30000 [00:21<00:06, 1285.29it/s]
+Dipole prediction:  71%|███████   | 21204/30000 [00:21<00:06, 1279.85it/s]
+Dipole prediction:  71%|███████   | 21338/30000 [00:21<00:06, 1295.62it/s]
+Dipole prediction:  72%|███████▏  | 21468/30000 [00:21<00:06, 1223.29it/s]
+Dipole prediction:  72%|███████▏  | 21619/30000 [00:22<00:06, 1300.39it/s]
+Dipole prediction:  72%|███████▎  | 21750/30000 [00:22<00:07, 1159.03it/s]
+Dipole prediction:  73%|███████▎  | 21870/30000 [00:22<00:07, 1153.53it/s]
+Dipole prediction:  73%|███████▎  | 21988/30000 [00:22<00:07, 1117.68it/s]
+Dipole prediction:  74%|███████▎  | 22109/30000 [00:22<00:06, 1141.51it/s]
+Dipole prediction:  74%|███████▍  | 22233/30000 [00:22<00:06, 1168.72it/s]
+Dipole prediction:  75%|███████▍  | 22370/30000 [00:22<00:06, 1224.96it/s]
+Dipole prediction:  75%|███████▍  | 22494/30000 [00:22<00:06, 1226.85it/s]
+Dipole prediction:  75%|███████▌  | 22618/30000 [00:22<00:06, 1225.42it/s]
+Dipole prediction:  76%|███████▌  | 22742/30000 [00:23<00:06, 1098.56it/s]
+Dipole prediction:  76%|███████▌  | 22862/30000 [00:23<00:06, 1125.94it/s]
+Dipole prediction:  77%|███████▋  | 22986/30000 [00:23<00:06, 1143.65it/s]
+Dipole prediction:  77%|███████▋  | 23102/30000 [00:23<00:06, 1133.32it/s]
+Dipole prediction:  77%|███████▋  | 23217/30000 [00:23<00:06, 1104.93it/s]
+Dipole prediction:  78%|███████▊  | 23329/30000 [00:23<00:06, 1023.56it/s]
+Dipole prediction:  78%|███████▊  | 23438/30000 [00:23<00:06, 1040.85it/s]
+Dipole prediction:  79%|███████▊  | 23561/30000 [00:23<00:05, 1092.96it/s]
+Dipole prediction:  79%|███████▉  | 23697/30000 [00:23<00:05, 1167.42it/s]
+Dipole prediction:  79%|███████▉  | 23829/30000 [00:23<00:05, 1210.09it/s]
+Dipole prediction:  80%|███████▉  | 23952/30000 [00:24<00:04, 1215.89it/s]
+Dipole prediction:  80%|████████  | 24090/30000 [00:24<00:04, 1257.67it/s]
+Dipole prediction:  81%|████████  | 24223/30000 [00:24<00:04, 1276.03it/s]
+Dipole prediction:  81%|████████  | 24351/30000 [00:24<00:04, 1216.33it/s]
+Dipole prediction:  82%|████████▏ | 24474/30000 [00:24<00:04, 1127.25it/s]
+Dipole prediction:  82%|████████▏ | 24589/30000 [00:24<00:04, 1094.87it/s]
+Dipole prediction:  82%|████████▏ | 24727/30000 [00:24<00:04, 1173.17it/s]
+Dipole prediction:  83%|████████▎ | 24849/30000 [00:24<00:04, 1185.62it/s]
+Dipole prediction:  83%|████████▎ | 24969/30000 [00:24<00:05, 997.19it/s] 
+Dipole prediction:  84%|████████▎ | 25075/30000 [00:25<00:04, 1010.37it/s]
+Dipole prediction:  84%|████████▍ | 25211/30000 [00:25<00:04, 1102.74it/s]
+Dipole prediction:  84%|████████▍ | 25341/30000 [00:25<00:04, 1153.86it/s]
+Dipole prediction:  85%|████████▍ | 25460/30000 [00:25<00:03, 1143.27it/s]
+Dipole prediction:  85%|████████▌ | 25592/30000 [00:25<00:03, 1192.29it/s]
+Dipole prediction:  86%|████████▌ | 25720/30000 [00:25<00:03, 1211.74it/s]
+Dipole prediction:  86%|████████▌ | 25843/30000 [00:25<00:03, 1192.58it/s]
+Dipole prediction:  87%|████████▋ | 25964/30000 [00:25<00:03, 1196.56it/s]
+Dipole prediction:  87%|████████▋ | 26085/30000 [00:25<00:03, 1161.00it/s]
+Dipole prediction:  87%|████████▋ | 26202/30000 [00:26<00:03, 1137.73it/s]
+Dipole prediction:  88%|████████▊ | 26317/30000 [00:26<00:03, 1101.00it/s]
+Dipole prediction:  88%|████████▊ | 26440/30000 [00:26<00:03, 1124.96it/s]
+Dipole prediction:  89%|████████▊ | 26553/30000 [00:26<00:03, 1083.08it/s]
+Dipole prediction:  89%|████████▉ | 26662/30000 [00:26<00:03, 959.90it/s] 
+Dipole prediction:  89%|████████▉ | 26785/30000 [00:26<00:03, 1030.48it/s]
+Dipole prediction:  90%|████████▉ | 26910/30000 [00:26<00:02, 1088.83it/s]
+Dipole prediction:  90%|█████████ | 27022/30000 [00:26<00:02, 1093.67it/s]
+Dipole prediction:  91%|█████████ | 27154/30000 [00:26<00:02, 1149.18it/s]
+Dipole prediction:  91%|█████████ | 27271/30000 [00:27<00:02, 1026.90it/s]
+Dipole prediction:  91%|█████████▏| 27396/30000 [00:27<00:02, 1078.26it/s]
+Dipole prediction:  92%|█████████▏| 27507/30000 [00:27<00:02, 1078.65it/s]
+Dipole prediction:  92%|█████████▏| 27627/30000 [00:27<00:02, 1108.02it/s]
+Dipole prediction:  92%|█████████▏| 27742/30000 [00:27<00:02, 1118.37it/s]
+Dipole prediction:  93%|█████████▎| 27856/30000 [00:27<00:01, 1123.84it/s]
+Dipole prediction:  93%|█████████▎| 27998/30000 [00:27<00:01, 1209.03it/s]
+Dipole prediction:  94%|█████████▎| 28120/30000 [00:27<00:01, 1112.67it/s]
+Dipole prediction:  94%|█████████▍| 28234/30000 [00:27<00:01, 1068.10it/s]
+Dipole prediction:  94%|█████████▍| 28345/30000 [00:28<00:01, 1079.03it/s]
+Dipole prediction:  95%|█████████▍| 28461/30000 [00:28<00:01, 1097.23it/s]
+Dipole prediction:  95%|█████████▌| 28572/30000 [00:28<00:01, 984.88it/s] 
+Dipole prediction:  96%|█████████▌| 28679/30000 [00:28<00:01, 1007.35it/s]
+Dipole prediction:  96%|█████████▌| 28797/30000 [00:28<00:01, 1053.56it/s]
+Dipole prediction:  96%|█████████▋| 28922/30000 [00:28<00:00, 1109.00it/s]
+Dipole prediction:  97%|█████████▋| 29035/30000 [00:28<00:00, 1076.66it/s]
+Dipole prediction:  97%|█████████▋| 29144/30000 [00:28<00:00, 1030.80it/s]
+Dipole prediction:  98%|█████████▊| 29259/30000 [00:28<00:00, 1062.66it/s]
+Dipole prediction:  98%|█████████▊| 29403/30000 [00:28<00:00, 1168.99it/s]
+Dipole prediction:  98%|█████████▊| 29522/30000 [00:29<00:00, 1170.59it/s]
+Dipole prediction:  99%|█████████▉| 29640/30000 [00:29<00:00, 1100.19it/s]
+Dipole prediction:  99%|█████████▉| 29767/30000 [00:29<00:00, 1145.54it/s]
+Dipole prediction: 100%|█████████▉| 29883/30000 [00:29<00:00, 1125.03it/s]
+Dipole prediction: 100%|██████████| 30000/30000 [00:29<00:00, 1016.62it/s]
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   2%|▏         | 480/30000 [00:00<00:06, 4778.49step/s]
+bakken MD:   3%|▎         | 958/30000 [00:00<00:06, 4675.39step/s]
+bakken MD:   5%|▍         | 1447/30000 [00:00<00:05, 4770.31step/s]
+bakken MD:   5%|▍         | 1447/30000 [00:00<00:05, 4770.31step/s, E=-192147.3 kcal/mol, T=503 K]
+bakken MD:   7%|▋         | 2026/30000 [00:00<00:05, 5168.07step/s, E=-192147.3 kcal/mol, T=503 K]
+bakken MD:   9%|▊         | 2609/30000 [00:00<00:05, 5403.35step/s, E=-192147.3 kcal/mol, T=503 K]
+bakken MD:   9%|▊         | 2609/30000 [00:00<00:05, 5403.35step/s, E=-192147.7 kcal/mol, T=352 K]
+bakken MD:  11%|█         | 3193/30000 [00:00<00:04, 5549.36step/s, E=-192147.7 kcal/mol, T=352 K]
+bakken MD:  13%|█▎        | 3769/30000 [00:00<00:04, 5614.96step/s, E=-192147.7 kcal/mol, T=352 K]
+bakken MD:  14%|█▍        | 4344/30000 [00:00<00:04, 5655.84step/s, E=-192147.7 kcal/mol, T=352 K]
+bakken MD:  14%|█▍        | 4344/30000 [00:00<00:04, 5655.84step/s, E=-192146.6 kcal/mol, T=206 K]
+bakken MD:  16%|█▋        | 4924/30000 [00:00<00:04, 5698.86step/s, E=-192146.6 kcal/mol, T=206 K]
+bakken MD:  18%|█▊        | 5497/30000 [00:01<00:04, 5705.39step/s, E=-192146.6 kcal/mol, T=206 K]
+bakken MD:  18%|█▊        | 5497/30000 [00:01<00:04, 5705.39step/s, E=-192147.3 kcal/mol, T=283 K]
+bakken MD:  20%|██        | 6068/30000 [00:01<00:04, 5677.85step/s, E=-192147.3 kcal/mol, T=283 K]
+bakken MD:  22%|██▏       | 6636/30000 [00:01<00:04, 5676.77step/s, E=-192147.3 kcal/mol, T=283 K]
+bakken MD:  24%|██▍       | 7204/30000 [00:01<00:04, 5632.43step/s, E=-192147.3 kcal/mol, T=283 K]
+bakken MD:  24%|██▍       | 7204/30000 [00:01<00:04, 5632.43step/s, E=-192147.7 kcal/mol, T=312 K]
+bakken MD:  26%|██▌       | 7775/30000 [00:01<00:03, 5653.82step/s, E=-192147.7 kcal/mol, T=312 K]
+bakken MD:  28%|██▊       | 8345/30000 [00:01<00:03, 5666.03step/s, E=-192147.7 kcal/mol, T=312 K]
+bakken MD:  30%|██▉       | 8912/30000 [00:01<00:03, 5649.32step/s, E=-192147.7 kcal/mol, T=312 K]
+bakken MD:  30%|██▉       | 8912/30000 [00:01<00:03, 5649.32step/s, E=-192147.6 kcal/mol, T=300 K]
+bakken MD:  32%|███▏      | 9480/30000 [00:01<00:03, 5655.53step/s, E=-192147.6 kcal/mol, T=300 K]
+bakken MD:  34%|███▎      | 10052/30000 [00:01<00:03, 5672.00step/s, E=-192147.6 kcal/mol, T=300 K]
+bakken MD:  34%|███▎      | 10052/30000 [00:01<00:03, 5672.00step/s, E=-192147.2 kcal/mol, T=254 K]
+bakken MD:  35%|███▌      | 10627/30000 [00:01<00:03, 5695.05step/s, E=-192147.2 kcal/mol, T=254 K]
+bakken MD:  37%|███▋      | 11197/30000 [00:02<00:03, 5671.41step/s, E=-192147.2 kcal/mol, T=254 K]
+bakken MD:  39%|███▉      | 11765/30000 [00:02<00:03, 5672.31step/s, E=-192147.2 kcal/mol, T=254 K]
+bakken MD:  39%|███▉      | 11765/30000 [00:02<00:03, 5672.31step/s, E=-192148.2 kcal/mol, T=373 K]
+bakken MD:  41%|████      | 12333/30000 [00:02<00:03, 5652.38step/s, E=-192148.2 kcal/mol, T=373 K]
+bakken MD:  43%|████▎     | 12907/30000 [00:02<00:03, 5677.24step/s, E=-192148.2 kcal/mol, T=373 K]
+bakken MD:  45%|████▍     | 13485/30000 [00:02<00:02, 5706.98step/s, E=-192148.2 kcal/mol, T=373 K]
+bakken MD:  45%|████▍     | 13485/30000 [00:02<00:02, 5706.98step/s, E=-192147.2 kcal/mol, T=257 K]
+bakken MD:  47%|████▋     | 14060/30000 [00:02<00:02, 5716.98step/s, E=-192147.2 kcal/mol, T=257 K]
+bakken MD:  49%|████▉     | 14632/30000 [00:02<00:02, 5707.09step/s, E=-192147.2 kcal/mol, T=257 K]
+bakken MD:  49%|████▉     | 14632/30000 [00:02<00:02, 5707.09step/s, E=-192146.4 kcal/mol, T=177 K]
+bakken MD:  51%|█████     | 15203/30000 [00:02<00:02, 5686.25step/s, E=-192146.4 kcal/mol, T=177 K]
+bakken MD:  53%|█████▎    | 15777/30000 [00:02<00:02, 5701.84step/s, E=-192146.4 kcal/mol, T=177 K]
+bakken MD:  54%|█████▍    | 16348/30000 [00:02<00:02, 5643.03step/s, E=-192146.4 kcal/mol, T=177 K]
+bakken MD:  54%|█████▍    | 16348/30000 [00:02<00:02, 5643.03step/s, E=-192147.2 kcal/mol, T=263 K]
+bakken MD:  56%|█████▋    | 16914/30000 [00:03<00:02, 5646.66step/s, E=-192147.2 kcal/mol, T=263 K]
+bakken MD:  58%|█████▊    | 17479/30000 [00:03<00:02, 5610.14step/s, E=-192147.2 kcal/mol, T=263 K]
+bakken MD:  58%|█████▊    | 17479/30000 [00:03<00:02, 5610.14step/s, E=-192147.4 kcal/mol, T=279 K]
+bakken MD:  60%|██████    | 18041/30000 [00:03<00:02, 5525.48step/s, E=-192147.4 kcal/mol, T=279 K]
+bakken MD:  62%|██████▏   | 18594/30000 [00:03<00:02, 5492.84step/s, E=-192147.4 kcal/mol, T=279 K]
+bakken MD:  64%|██████▍   | 19155/30000 [00:03<00:01, 5524.83step/s, E=-192147.4 kcal/mol, T=279 K]
+bakken MD:  64%|██████▍   | 19155/30000 [00:03<00:01, 5524.83step/s, E=-192147.5 kcal/mol, T=286 K]
+bakken MD:  66%|██████▌   | 19708/30000 [00:03<00:01, 5467.68step/s, E=-192147.5 kcal/mol, T=286 K]
+bakken MD:  68%|██████▊   | 20279/30000 [00:03<00:01, 5537.63step/s, E=-192147.5 kcal/mol, T=286 K]
+bakken MD:  69%|██████▉   | 20842/30000 [00:03<00:01, 5562.14step/s, E=-192147.5 kcal/mol, T=286 K]
+bakken MD:  69%|██████▉   | 20842/30000 [00:03<00:01, 5562.14step/s, E=-192148.4 kcal/mol, T=394 K]
+bakken MD:  71%|███████▏  | 21404/30000 [00:03<00:01, 5577.39step/s, E=-192148.4 kcal/mol, T=394 K]
+bakken MD:  73%|███████▎  | 21967/30000 [00:03<00:01, 5592.49step/s, E=-192148.4 kcal/mol, T=394 K]
+bakken MD:  73%|███████▎  | 21967/30000 [00:04<00:01, 5592.49step/s, E=-192147.8 kcal/mol, T=312 K]
+bakken MD:  75%|███████▌  | 22548/30000 [00:04<00:01, 5654.74step/s, E=-192147.8 kcal/mol, T=312 K]
+bakken MD:  77%|███████▋  | 23123/30000 [00:04<00:01, 5681.14step/s, E=-192147.8 kcal/mol, T=312 K]
+bakken MD:  79%|███████▉  | 23692/30000 [00:04<00:01, 5641.01step/s, E=-192147.8 kcal/mol, T=312 K]
+bakken MD:  79%|███████▉  | 23692/30000 [00:04<00:01, 5641.01step/s, E=-192148.0 kcal/mol, T=335 K]
+bakken MD:  81%|████████  | 24259/30000 [00:04<00:01, 5646.77step/s, E=-192148.0 kcal/mol, T=335 K]
+bakken MD:  83%|████████▎ | 24824/30000 [00:04<00:00, 5645.48step/s, E=-192148.0 kcal/mol, T=335 K]
+bakken MD:  85%|████████▍ | 25400/30000 [00:04<00:00, 5679.51step/s, E=-192148.0 kcal/mol, T=335 K]
+bakken MD:  85%|████████▍ | 25400/30000 [00:04<00:00, 5679.51step/s, E=-192148.2 kcal/mol, T=354 K]
+bakken MD:  87%|████████▋ | 25972/30000 [00:04<00:00, 5690.00step/s, E=-192148.2 kcal/mol, T=354 K]
+bakken MD:  89%|████████▊ | 26553/30000 [00:04<00:00, 5725.51step/s, E=-192148.2 kcal/mol, T=354 K]
+bakken MD:  89%|████████▊ | 26553/30000 [00:04<00:00, 5725.51step/s, E=-192147.2 kcal/mol, T=241 K]
+bakken MD:  90%|█████████ | 27126/30000 [00:04<00:00, 5703.23step/s, E=-192147.2 kcal/mol, T=241 K]
+bakken MD:  92%|█████████▏| 27697/30000 [00:04<00:00, 5688.92step/s, E=-192147.2 kcal/mol, T=241 K]
+bakken MD:  94%|█████████▍| 28266/30000 [00:05<00:00, 5662.19step/s, E=-192147.2 kcal/mol, T=241 K]
+bakken MD:  94%|█████████▍| 28266/30000 [00:05<00:00, 5662.19step/s, E=-192148.2 kcal/mol, T=359 K]
+bakken MD:  96%|█████████▌| 28844/30000 [00:05<00:00, 5695.73step/s, E=-192148.2 kcal/mol, T=359 K]
+bakken MD:  98%|█████████▊| 29414/30000 [00:05<00:00, 5683.48step/s, E=-192148.2 kcal/mol, T=359 K]
+bakken MD: 100%|█████████▉| 29983/30000 [00:05<00:00, 5670.74step/s, E=-192148.2 kcal/mol, T=359 K]
+bakken MD: 100%|█████████▉| 29983/30000 [00:05<00:00, 5670.74step/s, E=-192147.2 kcal/mol, T=246 K]
+bakken MD: 100%|██████████| 30000/30000 [00:05<00:00, 5611.69step/s, E=-192147.2 kcal/mol, T=246 K]
+
+Dipole prediction:   0%|          | 0/30000 [00:00<?, ?it/s]
+Dipole prediction:   0%|          | 135/30000 [00:00<00:22, 1334.10it/s]
+Dipole prediction:   1%|          | 269/30000 [00:00<00:26, 1108.78it/s]
+Dipole prediction:   1%|▏         | 404/30000 [00:00<00:24, 1207.42it/s]
+Dipole prediction:   2%|▏         | 558/30000 [00:00<00:22, 1326.99it/s]
+Dipole prediction:   2%|▏         | 693/30000 [00:00<00:23, 1254.91it/s]
+Dipole prediction:   3%|▎         | 821/30000 [00:00<00:24, 1214.32it/s]
+Dipole prediction:   3%|▎         | 949/30000 [00:00<00:23, 1230.32it/s]
+Dipole prediction:   4%|▎         | 1073/30000 [00:00<00:26, 1095.62it/s]
+Dipole prediction:   4%|▍         | 1216/30000 [00:01<00:24, 1186.28it/s]
+Dipole prediction:   4%|▍         | 1338/30000 [00:01<00:24, 1160.61it/s]
+Dipole prediction:   5%|▍         | 1457/30000 [00:01<00:25, 1123.98it/s]
+Dipole prediction:   5%|▌         | 1575/30000 [00:01<00:24, 1137.33it/s]
+Dipole prediction:   6%|▌         | 1699/30000 [00:01<00:24, 1152.32it/s]
+Dipole prediction:   6%|▌         | 1816/30000 [00:01<00:24, 1134.48it/s]
+Dipole prediction:   6%|▋         | 1931/30000 [00:01<00:25, 1082.11it/s]
+Dipole prediction:   7%|▋         | 2040/30000 [00:01<00:26, 1071.77it/s]
+Dipole prediction:   7%|▋         | 2153/30000 [00:01<00:25, 1087.52it/s]
+Dipole prediction:   8%|▊         | 2263/30000 [00:01<00:25, 1082.46it/s]
+Dipole prediction:   8%|▊         | 2372/30000 [00:02<00:26, 1040.35it/s]
+Dipole prediction:   8%|▊         | 2504/30000 [00:02<00:24, 1118.11it/s]
+Dipole prediction:   9%|▉         | 2628/30000 [00:02<00:23, 1152.05it/s]
+Dipole prediction:   9%|▉         | 2770/30000 [00:02<00:22, 1223.24it/s]
+Dipole prediction:  10%|▉         | 2893/30000 [00:02<00:22, 1183.45it/s]
+Dipole prediction:  10%|█         | 3045/30000 [00:02<00:21, 1278.14it/s]
+Dipole prediction:  11%|█         | 3174/30000 [00:02<00:21, 1272.20it/s]
+Dipole prediction:  11%|█         | 3316/30000 [00:02<00:20, 1313.24it/s]
+Dipole prediction:  11%|█▏        | 3448/30000 [00:02<00:20, 1294.29it/s]
+Dipole prediction:  12%|█▏        | 3578/30000 [00:03<00:20, 1279.88it/s]
+Dipole prediction:  12%|█▏        | 3707/30000 [00:03<00:22, 1173.35it/s]
+Dipole prediction:  13%|█▎        | 3829/30000 [00:03<00:22, 1185.76it/s]
+Dipole prediction:  13%|█▎        | 3959/30000 [00:03<00:21, 1216.96it/s]
+Dipole prediction:  14%|█▎        | 4091/30000 [00:03<00:20, 1245.07it/s]
+Dipole prediction:  14%|█▍        | 4235/30000 [00:03<00:19, 1300.20it/s]
+Dipole prediction:  15%|█▍        | 4366/30000 [00:03<00:21, 1194.66it/s]
+Dipole prediction:  15%|█▍        | 4488/30000 [00:03<00:21, 1179.08it/s]
+Dipole prediction:  15%|█▌        | 4620/30000 [00:03<00:20, 1217.21it/s]
+Dipole prediction:  16%|█▌        | 4743/30000 [00:03<00:20, 1217.20it/s]
+Dipole prediction:  16%|█▌        | 4867/30000 [00:04<00:20, 1222.07it/s]
+Dipole prediction:  17%|█▋        | 4990/30000 [00:04<00:20, 1219.31it/s]
+Dipole prediction:  17%|█▋        | 5130/30000 [00:04<00:19, 1271.67it/s]
+Dipole prediction:  18%|█▊        | 5258/30000 [00:04<00:19, 1244.90it/s]
+Dipole prediction:  18%|█▊        | 5385/30000 [00:04<00:19, 1250.65it/s]
+Dipole prediction:  18%|█▊        | 5511/30000 [00:04<00:19, 1235.33it/s]
+Dipole prediction:  19%|█▉        | 5649/30000 [00:04<00:19, 1277.16it/s]
+Dipole prediction:  19%|█▉        | 5777/30000 [00:04<00:19, 1252.98it/s]
+Dipole prediction:  20%|█▉        | 5909/30000 [00:04<00:18, 1272.09it/s]
+Dipole prediction:  20%|██        | 6037/30000 [00:05<00:18, 1264.34it/s]
+Dipole prediction:  21%|██        | 6177/30000 [00:05<00:18, 1303.23it/s]
+Dipole prediction:  21%|██        | 6308/30000 [00:05<00:18, 1273.89it/s]
+Dipole prediction:  21%|██▏       | 6439/30000 [00:05<00:18, 1283.36it/s]
+Dipole prediction:  22%|██▏       | 6568/30000 [00:05<00:18, 1279.11it/s]
+Dipole prediction:  22%|██▏       | 6697/30000 [00:05<00:18, 1241.78it/s]
+Dipole prediction:  23%|██▎       | 6822/30000 [00:05<00:20, 1151.42it/s]
+Dipole prediction:  23%|██▎       | 6940/30000 [00:05<00:19, 1159.10it/s]
+Dipole prediction:  24%|██▎       | 7057/30000 [00:05<00:19, 1159.49it/s]
+Dipole prediction:  24%|██▍       | 7174/30000 [00:06<00:21, 1042.85it/s]
+Dipole prediction:  24%|██▍       | 7293/30000 [00:06<00:21, 1074.75it/s]
+Dipole prediction:  25%|██▍       | 7430/30000 [00:06<00:19, 1156.08it/s]
+Dipole prediction:  25%|██▌       | 7566/30000 [00:06<00:18, 1210.27it/s]
+Dipole prediction:  26%|██▌       | 7713/30000 [00:06<00:17, 1281.15it/s]
+Dipole prediction:  26%|██▌       | 7843/30000 [00:06<00:17, 1270.16it/s]
+Dipole prediction:  27%|██▋       | 7977/30000 [00:06<00:17, 1285.19it/s]
+Dipole prediction:  27%|██▋       | 8107/30000 [00:06<00:17, 1255.15it/s]
+Dipole prediction:  27%|██▋       | 8234/30000 [00:06<00:17, 1221.63it/s]
+Dipole prediction:  28%|██▊       | 8357/30000 [00:06<00:18, 1171.57it/s]
+Dipole prediction:  28%|██▊       | 8492/30000 [00:07<00:17, 1220.72it/s]
+Dipole prediction:  29%|██▊       | 8615/30000 [00:07<00:17, 1189.81it/s]
+Dipole prediction:  29%|██▉       | 8741/30000 [00:07<00:17, 1208.50it/s]
+Dipole prediction:  30%|██▉       | 8863/30000 [00:07<00:17, 1193.03it/s]
+Dipole prediction:  30%|██▉       | 8983/30000 [00:07<00:18, 1119.12it/s]
+Dipole prediction:  30%|███       | 9117/30000 [00:07<00:17, 1179.93it/s]
+Dipole prediction:  31%|███       | 9237/30000 [00:07<00:17, 1175.53it/s]
+Dipole prediction:  31%|███       | 9361/30000 [00:07<00:17, 1193.73it/s]
+Dipole prediction:  32%|███▏      | 9482/30000 [00:07<00:17, 1196.82it/s]
+Dipole prediction:  32%|███▏      | 9619/30000 [00:07<00:16, 1247.18it/s]
+Dipole prediction:  32%|███▏      | 9747/30000 [00:08<00:16, 1255.18it/s]
+Dipole prediction:  33%|███▎      | 9873/30000 [00:08<00:16, 1193.48it/s]
+Dipole prediction:  33%|███▎      | 9999/30000 [00:08<00:16, 1209.47it/s]
+Dipole prediction:  34%|███▍      | 10137/30000 [00:08<00:15, 1257.29it/s]
+Dipole prediction:  34%|███▍      | 10269/30000 [00:08<00:15, 1269.37it/s]
+Dipole prediction:  35%|███▍      | 10397/30000 [00:08<00:15, 1243.91it/s]
+Dipole prediction:  35%|███▌      | 10527/30000 [00:08<00:15, 1259.18it/s]
+Dipole prediction:  36%|███▌      | 10654/30000 [00:08<00:15, 1229.96it/s]
+Dipole prediction:  36%|███▌      | 10793/30000 [00:08<00:15, 1274.81it/s]
+Dipole prediction:  36%|███▋      | 10921/30000 [00:09<00:15, 1242.83it/s]
+Dipole prediction:  37%|███▋      | 11057/30000 [00:09<00:14, 1275.78it/s]
+Dipole prediction:  37%|███▋      | 11185/30000 [00:09<00:14, 1268.94it/s]
+Dipole prediction:  38%|███▊      | 11313/30000 [00:09<00:14, 1257.69it/s]
+Dipole prediction:  38%|███▊      | 11439/30000 [00:09<00:16, 1149.13it/s]
+Dipole prediction:  39%|███▊      | 11558/30000 [00:09<00:15, 1158.99it/s]
+Dipole prediction:  39%|███▉      | 11676/30000 [00:09<00:16, 1078.34it/s]
+Dipole prediction:  39%|███▉      | 11786/30000 [00:09<00:19, 941.22it/s] 
+Dipole prediction:  40%|███▉      | 11921/30000 [00:09<00:17, 1042.05it/s]
+Dipole prediction:  40%|████      | 12036/30000 [00:10<00:17, 1044.96it/s]
+Dipole prediction:  40%|████      | 12150/30000 [00:10<00:16, 1070.04it/s]
+Dipole prediction:  41%|████      | 12264/30000 [00:10<00:16, 1084.21it/s]
+Dipole prediction:  41%|████▏     | 12404/30000 [00:10<00:15, 1172.83it/s]
+Dipole prediction:  42%|████▏     | 12531/30000 [00:10<00:14, 1195.65it/s]
+Dipole prediction:  42%|████▏     | 12652/30000 [00:10<00:15, 1134.79it/s]
+Dipole prediction:  43%|████▎     | 12800/30000 [00:10<00:13, 1230.57it/s]
+Dipole prediction:  43%|████▎     | 12925/30000 [00:10<00:14, 1218.81it/s]
+Dipole prediction:  44%|████▎     | 13061/30000 [00:10<00:13, 1257.42it/s]
+Dipole prediction:  44%|████▍     | 13188/30000 [00:11<00:14, 1191.85it/s]
+Dipole prediction:  44%|████▍     | 13309/30000 [00:11<00:13, 1195.62it/s]
+Dipole prediction:  45%|████▍     | 13454/30000 [00:11<00:13, 1267.18it/s]
+Dipole prediction:  45%|████▌     | 13588/30000 [00:11<00:12, 1288.32it/s]
+Dipole prediction:  46%|████▌     | 13718/30000 [00:11<00:13, 1248.27it/s]
+Dipole prediction:  46%|████▌     | 13857/30000 [00:11<00:12, 1287.31it/s]
+Dipole prediction:  47%|████▋     | 13987/30000 [00:11<00:12, 1253.65it/s]
+Dipole prediction:  47%|████▋     | 14113/30000 [00:11<00:12, 1255.13it/s]
+Dipole prediction:  48%|████▊     | 14256/30000 [00:11<00:12, 1304.79it/s]
+Dipole prediction:  48%|████▊     | 14387/30000 [00:11<00:12, 1231.69it/s]
+Dipole prediction:  48%|████▊     | 14512/30000 [00:12<00:12, 1196.24it/s]
+Dipole prediction:  49%|████▉     | 14634/30000 [00:12<00:12, 1202.78it/s]
+Dipole prediction:  49%|████▉     | 14759/30000 [00:12<00:12, 1214.38it/s]
+Dipole prediction:  50%|████▉     | 14881/30000 [00:12<00:12, 1182.97it/s]
+Dipole prediction:  50%|█████     | 15005/30000 [00:12<00:12, 1197.43it/s]
+Dipole prediction:  50%|█████     | 15127/30000 [00:12<00:12, 1203.50it/s]
+Dipole prediction:  51%|█████     | 15248/30000 [00:12<00:12, 1198.51it/s]
+Dipole prediction:  51%|█████     | 15373/30000 [00:12<00:12, 1212.16it/s]
+Dipole prediction:  52%|█████▏    | 15495/30000 [00:12<00:12, 1194.05it/s]
+Dipole prediction:  52%|█████▏    | 15615/30000 [00:13<00:12, 1155.16it/s]
+Dipole prediction:  52%|█████▏    | 15731/30000 [00:13<00:12, 1113.84it/s]
+Dipole prediction:  53%|█████▎    | 15859/30000 [00:13<00:12, 1159.98it/s]
+Dipole prediction:  53%|█████▎    | 15976/30000 [00:13<00:12, 1128.15it/s]
+Dipole prediction:  54%|█████▎    | 16103/30000 [00:13<00:11, 1167.38it/s]
+Dipole prediction:  54%|█████▍    | 16221/30000 [00:13<00:12, 1120.03it/s]
+Dipole prediction:  54%|█████▍    | 16336/30000 [00:13<00:12, 1117.67it/s]
+Dipole prediction:  55%|█████▍    | 16487/30000 [00:13<00:11, 1208.19it/s]
+Dipole prediction:  55%|█████▌    | 16609/30000 [00:13<00:11, 1180.49it/s]
+Dipole prediction:  56%|█████▌    | 16728/30000 [00:13<00:11, 1113.09it/s]
+Dipole prediction:  56%|█████▌    | 16867/30000 [00:14<00:11, 1188.43it/s]
+Dipole prediction:  57%|█████▋    | 16990/30000 [00:14<00:10, 1196.13it/s]
+Dipole prediction:  57%|█████▋    | 17125/30000 [00:14<00:10, 1239.24it/s]
+Dipole prediction:  57%|█████▊    | 17250/30000 [00:14<00:10, 1225.05it/s]
+Dipole prediction:  58%|█████▊    | 17378/30000 [00:14<00:10, 1240.40it/s]
+Dipole prediction:  58%|█████▊    | 17520/30000 [00:14<00:09, 1291.12it/s]
+Dipole prediction:  59%|█████▉    | 17650/30000 [00:14<00:09, 1270.28it/s]
+Dipole prediction:  59%|█████▉    | 17778/30000 [00:14<00:09, 1259.36it/s]
+Dipole prediction:  60%|█████▉    | 17922/30000 [00:14<00:09, 1308.12it/s]
+Dipole prediction:  60%|██████    | 18054/30000 [00:15<00:09, 1287.68it/s]
+Dipole prediction:  61%|██████    | 18187/30000 [00:15<00:09, 1298.77it/s]
+Dipole prediction:  61%|██████    | 18318/30000 [00:15<00:09, 1259.55it/s]
+Dipole prediction:  61%|██████▏   | 18445/30000 [00:15<00:09, 1213.28it/s]
+Dipole prediction:  62%|██████▏   | 18567/30000 [00:15<00:09, 1195.73it/s]
+Dipole prediction:  62%|██████▏   | 18700/30000 [00:15<00:09, 1232.72it/s]
+Dipole prediction:  63%|██████▎   | 18824/30000 [00:15<00:09, 1223.49it/s]
+Dipole prediction:  63%|██████▎   | 18947/30000 [00:15<00:09, 1124.12it/s]
+Dipole prediction:  64%|██████▎   | 19081/30000 [00:15<00:09, 1182.32it/s]
+Dipole prediction:  64%|██████▍   | 19201/30000 [00:15<00:09, 1176.77it/s]
+Dipole prediction:  64%|██████▍   | 19328/30000 [00:16<00:08, 1203.34it/s]
+Dipole prediction:  65%|██████▍   | 19463/30000 [00:16<00:08, 1244.86it/s]
+Dipole prediction:  65%|██████▌   | 19589/30000 [00:16<00:08, 1223.89it/s]
+Dipole prediction:  66%|██████▌   | 19729/30000 [00:16<00:08, 1265.93it/s]
+Dipole prediction:  66%|██████▌   | 19860/30000 [00:16<00:08, 1264.97it/s]
+Dipole prediction:  67%|██████▋   | 19987/30000 [00:16<00:09, 1089.94it/s]
+Dipole prediction:  67%|██████▋   | 20109/30000 [00:16<00:08, 1123.97it/s]
+Dipole prediction:  67%|██████▋   | 20231/30000 [00:16<00:08, 1149.57it/s]
+Dipole prediction:  68%|██████▊   | 20349/30000 [00:16<00:08, 1147.82it/s]
+Dipole prediction:  68%|██████▊   | 20466/30000 [00:17<00:08, 1140.93it/s]
+Dipole prediction:  69%|██████▊   | 20586/30000 [00:17<00:08, 1157.30it/s]
+Dipole prediction:  69%|██████▉   | 20703/30000 [00:17<00:08, 1120.05it/s]
+Dipole prediction:  69%|██████▉   | 20830/30000 [00:17<00:07, 1161.69it/s]
+Dipole prediction:  70%|██████▉   | 20951/30000 [00:17<00:07, 1174.14it/s]
+Dipole prediction:  70%|███████   | 21070/30000 [00:17<00:07, 1137.20it/s]
+Dipole prediction:  71%|███████   | 21205/30000 [00:17<00:07, 1196.98it/s]
+Dipole prediction:  71%|███████   | 21326/30000 [00:17<00:07, 1182.94it/s]
+Dipole prediction:  72%|███████▏  | 21464/30000 [00:17<00:06, 1239.30it/s]
+Dipole prediction:  72%|███████▏  | 21589/30000 [00:18<00:06, 1222.33it/s]
+Dipole prediction:  72%|███████▏  | 21733/30000 [00:18<00:06, 1285.75it/s]
+Dipole prediction:  73%|███████▎  | 21863/30000 [00:18<00:06, 1260.49it/s]
+Dipole prediction:  73%|███████▎  | 22003/30000 [00:18<00:06, 1300.77it/s]
+Dipole prediction:  74%|███████▍  | 22134/30000 [00:18<00:06, 1278.97it/s]
+Dipole prediction:  74%|███████▍  | 22264/30000 [00:18<00:06, 1283.63it/s]
+Dipole prediction:  75%|███████▍  | 22410/30000 [00:18<00:05, 1334.14it/s]
+Dipole prediction:  75%|███████▌  | 22544/30000 [00:18<00:05, 1330.36it/s]
+Dipole prediction:  76%|███████▌  | 22678/30000 [00:18<00:05, 1283.42it/s]
+Dipole prediction:  76%|███████▌  | 22807/30000 [00:18<00:06, 1142.18it/s]
+Dipole prediction:  76%|███████▋  | 22925/30000 [00:19<00:06, 1132.90it/s]
+Dipole prediction:  77%|███████▋  | 23048/30000 [00:19<00:05, 1158.81it/s]
+Dipole prediction:  77%|███████▋  | 23166/30000 [00:19<00:05, 1147.91it/s]
+Dipole prediction:  78%|███████▊  | 23282/30000 [00:19<00:06, 1025.82it/s]
+Dipole prediction:  78%|███████▊  | 23411/30000 [00:19<00:06, 1090.27it/s]
+Dipole prediction:  78%|███████▊  | 23534/30000 [00:19<00:05, 1119.15it/s]
+Dipole prediction:  79%|███████▉  | 23649/30000 [00:19<00:05, 1099.27it/s]
+Dipole prediction:  79%|███████▉  | 23761/30000 [00:19<00:05, 1095.96it/s]
+Dipole prediction:  80%|███████▉  | 23892/30000 [00:19<00:05, 1151.89it/s]
+Dipole prediction:  80%|████████  | 24036/30000 [00:20<00:04, 1234.42it/s]
+Dipole prediction:  81%|████████  | 24186/30000 [00:20<00:04, 1310.00it/s]
+Dipole prediction:  81%|████████  | 24318/30000 [00:20<00:04, 1262.89it/s]
+Dipole prediction:  82%|████████▏ | 24458/30000 [00:20<00:04, 1301.93it/s]
+Dipole prediction:  82%|████████▏ | 24590/30000 [00:20<00:04, 1279.89it/s]
+Dipole prediction:  82%|████████▏ | 24719/30000 [00:20<00:04, 1277.38it/s]
+Dipole prediction:  83%|████████▎ | 24848/30000 [00:20<00:04, 1262.97it/s]
+Dipole prediction:  83%|████████▎ | 24975/30000 [00:20<00:04, 1205.39it/s]
+Dipole prediction:  84%|████████▎ | 25112/30000 [00:20<00:03, 1250.68it/s]
+Dipole prediction:  84%|████████▍ | 25251/30000 [00:20<00:03, 1290.78it/s]
+Dipole prediction:  85%|████████▍ | 25381/30000 [00:21<00:03, 1252.08it/s]
+Dipole prediction:  85%|████████▌ | 25516/30000 [00:21<00:03, 1278.98it/s]
+Dipole prediction:  85%|████████▌ | 25645/30000 [00:21<00:03, 1251.25it/s]
+Dipole prediction:  86%|████████▌ | 25771/30000 [00:21<00:03, 1231.82it/s]
+Dipole prediction:  86%|████████▋ | 25895/30000 [00:21<00:03, 1131.30it/s]
+Dipole prediction:  87%|████████▋ | 26047/30000 [00:21<00:03, 1236.52it/s]
+Dipole prediction:  87%|████████▋ | 26184/30000 [00:21<00:02, 1273.31it/s]
+Dipole prediction:  88%|████████▊ | 26314/30000 [00:21<00:02, 1266.32it/s]
+Dipole prediction:  88%|████████▊ | 26442/30000 [00:21<00:02, 1255.86it/s]
+Dipole prediction:  89%|████████▊ | 26579/30000 [00:22<00:02, 1288.15it/s]
+Dipole prediction:  89%|████████▉ | 26711/30000 [00:22<00:02, 1295.44it/s]
+Dipole prediction:  90%|████████▉ | 26852/30000 [00:22<00:02, 1317.22it/s]
+Dipole prediction:  90%|████████▉ | 26985/30000 [00:22<00:02, 1276.82it/s]
+Dipole prediction:  90%|█████████ | 27122/30000 [00:22<00:02, 1293.52it/s]
+Dipole prediction:  91%|█████████ | 27252/30000 [00:22<00:02, 1271.35it/s]
+Dipole prediction:  91%|█████████▏| 27380/30000 [00:22<00:02, 1230.65it/s]
+Dipole prediction:  92%|█████████▏| 27504/30000 [00:22<00:02, 1192.78it/s]
+Dipole prediction:  92%|█████████▏| 27652/30000 [00:22<00:01, 1273.79it/s]
+Dipole prediction:  93%|█████████▎| 27781/30000 [00:23<00:01, 1264.86it/s]
+Dipole prediction:  93%|█████████▎| 27918/30000 [00:23<00:01, 1294.56it/s]
+Dipole prediction:  93%|█████████▎| 28048/30000 [00:23<00:01, 1280.15it/s]
+Dipole prediction:  94%|█████████▍| 28191/30000 [00:23<00:01, 1323.88it/s]
+Dipole prediction:  94%|█████████▍| 28324/30000 [00:23<00:01, 1298.88it/s]
+Dipole prediction:  95%|█████████▍| 28456/30000 [00:23<00:01, 1302.98it/s]
+Dipole prediction:  95%|█████████▌| 28590/30000 [00:23<00:01, 1307.12it/s]
+Dipole prediction:  96%|█████████▌| 28744/30000 [00:23<00:00, 1373.51it/s]
+Dipole prediction:  96%|█████████▋| 28882/30000 [00:23<00:00, 1337.32it/s]
+Dipole prediction:  97%|█████████▋| 29019/30000 [00:23<00:00, 1345.51it/s]
+Dipole prediction:  97%|█████████▋| 29154/30000 [00:24<00:00, 1285.75it/s]
+Dipole prediction:  98%|█████████▊| 29288/30000 [00:24<00:00, 1300.99it/s]
+Dipole prediction:  98%|█████████▊| 29419/30000 [00:24<00:00, 1302.33it/s]
+Dipole prediction:  98%|█████████▊| 29550/30000 [00:24<00:00, 1223.52it/s]
+Dipole prediction:  99%|█████████▉| 29674/30000 [00:24<00:00, 1203.11it/s]
+Dipole prediction:  99%|█████████▉| 29800/30000 [00:24<00:00, 1218.22it/s]
+Dipole prediction: 100%|█████████▉| 29945/30000 [00:24<00:00, 1280.88it/s]
+Dipole prediction: 100%|██████████| 30000/30000 [00:24<00:00, 1213.26it/s]
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   1%|▏         | 433/30000 [00:00<00:06, 4329.88step/s]
+bakken MD:   3%|▎         | 890/30000 [00:00<00:06, 4468.31step/s]
+bakken MD:   4%|▍         | 1337/30000 [00:00<00:06, 4384.80step/s]
+bakken MD:   4%|▍         | 1337/30000 [00:00<00:06, 4384.80step/s, E=-192147.0 kcal/mol, T=478 K]
+bakken MD:   6%|▋         | 1931/30000 [00:00<00:05, 4989.00step/s, E=-192147.0 kcal/mol, T=478 K]
+bakken MD:   8%|▊         | 2518/30000 [00:00<00:05, 5302.87step/s, E=-192147.0 kcal/mol, T=478 K]
+bakken MD:   8%|▊         | 2518/30000 [00:00<00:05, 5302.87step/s, E=-192148.0 kcal/mol, T=372 K]
+bakken MD:  10%|█         | 3110/30000 [00:00<00:04, 5511.39step/s, E=-192148.0 kcal/mol, T=372 K]
+bakken MD:  12%|█▏        | 3692/30000 [00:00<00:04, 5609.06step/s, E=-192148.0 kcal/mol, T=372 K]
+bakken MD:  14%|█▍        | 4254/30000 [00:00<00:04, 5562.14step/s, E=-192148.0 kcal/mol, T=372 K]
+bakken MD:  14%|█▍        | 4254/30000 [00:00<00:04, 5562.14step/s, E=-192147.8 kcal/mol, T=324 K]
+bakken MD:  16%|█▌        | 4826/30000 [00:00<00:04, 5610.31step/s, E=-192147.8 kcal/mol, T=324 K]
+bakken MD:  18%|█▊        | 5420/30000 [00:01<00:04, 5708.45step/s, E=-192147.8 kcal/mol, T=324 K]
+bakken MD:  18%|█▊        | 5420/30000 [00:01<00:04, 5708.45step/s, E=-192146.9 kcal/mol, T=225 K]
+bakken MD:  20%|██        | 6006/30000 [00:01<00:04, 5754.23step/s, E=-192146.9 kcal/mol, T=225 K]
+bakken MD:  22%|██▏       | 6582/30000 [00:01<00:04, 5712.93step/s, E=-192146.9 kcal/mol, T=225 K]
+bakken MD:  24%|██▍       | 7154/30000 [00:01<00:04, 5628.18step/s, E=-192146.9 kcal/mol, T=225 K]
+bakken MD:  24%|██▍       | 7154/30000 [00:01<00:04, 5628.18step/s, E=-192147.2 kcal/mol, T=262 K]
+bakken MD:  26%|██▌       | 7723/30000 [00:01<00:03, 5643.88step/s, E=-192147.2 kcal/mol, T=262 K]
+bakken MD:  28%|██▊       | 8288/30000 [00:01<00:03, 5616.46step/s, E=-192147.2 kcal/mol, T=262 K]
+bakken MD:  30%|██▉       | 8872/30000 [00:01<00:03, 5680.43step/s, E=-192147.2 kcal/mol, T=262 K]
+bakken MD:  30%|██▉       | 8872/30000 [00:01<00:03, 5680.43step/s, E=-192147.4 kcal/mol, T=273 K]
+bakken MD:  32%|███▏      | 9460/30000 [00:01<00:03, 5739.03step/s, E=-192147.4 kcal/mol, T=273 K]
+bakken MD:  34%|███▎      | 10051/30000 [00:01<00:03, 5789.87step/s, E=-192147.4 kcal/mol, T=273 K]
+bakken MD:  34%|███▎      | 10051/30000 [00:01<00:03, 5789.87step/s, E=-192147.8 kcal/mol, T=316 K]
+bakken MD:  35%|███▌      | 10631/30000 [00:01<00:03, 5756.25step/s, E=-192147.8 kcal/mol, T=316 K]
+bakken MD:  37%|███▋      | 11210/30000 [00:02<00:03, 5765.97step/s, E=-192147.8 kcal/mol, T=316 K]
+bakken MD:  39%|███▉      | 11795/30000 [00:02<00:03, 5789.38step/s, E=-192147.8 kcal/mol, T=316 K]
+bakken MD:  39%|███▉      | 11795/30000 [00:02<00:03, 5789.38step/s, E=-192147.5 kcal/mol, T=289 K]
+bakken MD:  41%|████▏     | 12375/30000 [00:02<00:03, 5695.28step/s, E=-192147.5 kcal/mol, T=289 K]
+bakken MD:  43%|████▎     | 12949/30000 [00:02<00:02, 5706.01step/s, E=-192147.5 kcal/mol, T=289 K]
+bakken MD:  43%|████▎     | 12949/30000 [00:02<00:02, 5706.01step/s, E=-192147.5 kcal/mol, T=281 K]
+bakken MD:  45%|████▌     | 13532/30000 [00:02<00:02, 5741.55step/s, E=-192147.5 kcal/mol, T=281 K]
+bakken MD:  47%|████▋     | 14107/30000 [00:02<00:02, 5731.66step/s, E=-192147.5 kcal/mol, T=281 K]
+bakken MD:  49%|████▉     | 14681/30000 [00:02<00:02, 5707.39step/s, E=-192147.5 kcal/mol, T=281 K]
+bakken MD:  49%|████▉     | 14681/30000 [00:02<00:02, 5707.39step/s, E=-192148.0 kcal/mol, T=333 K]
+bakken MD:  51%|█████     | 15252/30000 [00:02<00:02, 5706.21step/s, E=-192148.0 kcal/mol, T=333 K]
+bakken MD:  53%|█████▎    | 15823/30000 [00:02<00:02, 5685.60step/s, E=-192148.0 kcal/mol, T=333 K]
+bakken MD:  55%|█████▍    | 16405/30000 [00:02<00:02, 5723.24step/s, E=-192148.0 kcal/mol, T=333 K]
+bakken MD:  55%|█████▍    | 16405/30000 [00:02<00:02, 5723.24step/s, E=-192147.3 kcal/mol, T=259 K]
+bakken MD:  57%|█████▋    | 16978/30000 [00:03<00:02, 5700.00step/s, E=-192147.3 kcal/mol, T=259 K]
+bakken MD:  58%|█████▊    | 17549/30000 [00:03<00:02, 5666.02step/s, E=-192147.3 kcal/mol, T=259 K]
+bakken MD:  58%|█████▊    | 17549/30000 [00:03<00:02, 5666.02step/s, E=-192148.6 kcal/mol, T=399 K]
+bakken MD:  60%|██████    | 18116/30000 [00:03<00:02, 5582.23step/s, E=-192148.6 kcal/mol, T=399 K]
+bakken MD:  62%|██████▏   | 18675/30000 [00:03<00:02, 5549.14step/s, E=-192148.6 kcal/mol, T=399 K]
+bakken MD:  64%|██████▍   | 19235/30000 [00:03<00:01, 5563.34step/s, E=-192148.6 kcal/mol, T=399 K]
+bakken MD:  64%|██████▍   | 19235/30000 [00:03<00:01, 5563.34step/s, E=-192147.2 kcal/mol, T=246 K]
+bakken MD:  66%|██████▌   | 19792/30000 [00:03<00:01, 5538.47step/s, E=-192147.2 kcal/mol, T=246 K]
+bakken MD:  68%|██████▊   | 20380/30000 [00:03<00:01, 5637.51step/s, E=-192147.2 kcal/mol, T=246 K]
+bakken MD:  70%|██████▉   | 20944/30000 [00:03<00:01, 5638.02step/s, E=-192147.2 kcal/mol, T=246 K]
+bakken MD:  70%|██████▉   | 20944/30000 [00:03<00:01, 5638.02step/s, E=-192147.4 kcal/mol, T=264 K]
+bakken MD:  72%|███████▏  | 21516/30000 [00:03<00:01, 5659.76step/s, E=-192147.4 kcal/mol, T=264 K]
+bakken MD:  74%|███████▎  | 22107/30000 [00:03<00:01, 5734.38step/s, E=-192147.4 kcal/mol, T=264 K]
+bakken MD:  74%|███████▎  | 22107/30000 [00:04<00:01, 5734.38step/s, E=-192147.9 kcal/mol, T=319 K]
+bakken MD:  76%|███████▌  | 22681/30000 [00:04<00:01, 5727.14step/s, E=-192147.9 kcal/mol, T=319 K]
+bakken MD:  78%|███████▊  | 23267/30000 [00:04<00:01, 5765.61step/s, E=-192147.9 kcal/mol, T=319 K]
+bakken MD:  79%|███████▉  | 23844/30000 [00:04<00:01, 5702.21step/s, E=-192147.9 kcal/mol, T=319 K]
+bakken MD:  79%|███████▉  | 23844/30000 [00:04<00:01, 5702.21step/s, E=-192147.4 kcal/mol, T=254 K]
+bakken MD:  81%|████████▏ | 24415/30000 [00:04<00:00, 5692.79step/s, E=-192147.4 kcal/mol, T=254 K]
+bakken MD:  83%|████████▎ | 24985/30000 [00:04<00:00, 5655.64step/s, E=-192147.4 kcal/mol, T=254 K]
+bakken MD:  83%|████████▎ | 24985/30000 [00:04<00:00, 5655.64step/s, E=-192147.9 kcal/mol, T=309 K]
+bakken MD:  85%|████████▌ | 25560/30000 [00:04<00:00, 5681.71step/s, E=-192147.9 kcal/mol, T=309 K]
+bakken MD:  87%|████████▋ | 26141/30000 [00:04<00:00, 5717.50step/s, E=-192147.9 kcal/mol, T=309 K]
+bakken MD:  89%|████████▉ | 26713/30000 [00:04<00:00, 5669.10step/s, E=-192147.9 kcal/mol, T=309 K]
+bakken MD:  89%|████████▉ | 26713/30000 [00:04<00:00, 5669.10step/s, E=-192147.8 kcal/mol, T=284 K]
+bakken MD:  91%|█████████ | 27281/30000 [00:04<00:00, 5667.83step/s, E=-192147.8 kcal/mol, T=284 K]
+bakken MD:  93%|█████████▎| 27848/30000 [00:04<00:00, 5626.13step/s, E=-192147.8 kcal/mol, T=284 K]
+bakken MD:  95%|█████████▍| 28411/30000 [00:05<00:00, 5574.89step/s, E=-192147.8 kcal/mol, T=284 K]
+bakken MD:  95%|█████████▍| 28411/30000 [00:05<00:00, 5574.89step/s, E=-192148.3 kcal/mol, T=335 K]
+bakken MD:  97%|█████████▋| 28969/30000 [00:05<00:00, 5566.16step/s, E=-192148.3 kcal/mol, T=335 K]
+bakken MD:  98%|█████████▊| 29526/30000 [00:05<00:00, 5547.74step/s, E=-192148.3 kcal/mol, T=335 K]
+bakken MD:  98%|█████████▊| 29526/30000 [00:05<00:00, 5547.74step/s, E=-192148.1 kcal/mol, T=310 K]
+bakken MD: 100%|██████████| 30000/30000 [00:05<00:00, 5611.52step/s, E=-192148.1 kcal/mol, T=310 K]
+
+Dipole prediction:   0%|          | 0/30000 [00:00<?, ?it/s]
+Dipole prediction:   0%|          | 86/30000 [00:00<00:34, 859.77it/s]
+Dipole prediction:   1%|          | 212/30000 [00:00<00:27, 1093.83it/s]
+Dipole prediction:   1%|          | 348/30000 [00:00<00:24, 1202.40it/s]
+Dipole prediction:   2%|▏         | 469/30000 [00:00<00:25, 1150.18it/s]
+Dipole prediction:   2%|▏         | 596/30000 [00:00<00:24, 1189.76it/s]
+Dipole prediction:   2%|▏         | 716/30000 [00:00<00:25, 1135.66it/s]
+Dipole prediction:   3%|▎         | 831/30000 [00:00<00:29, 992.04it/s] 
+Dipole prediction:   3%|▎         | 936/30000 [00:00<00:28, 1004.09it/s]
+Dipole prediction:   3%|▎         | 1039/30000 [00:01<00:30, 945.22it/s]
+Dipole prediction:   4%|▍         | 1156/30000 [00:01<00:28, 1005.80it/s]
+Dipole prediction:   4%|▍         | 1282/30000 [00:01<00:26, 1076.34it/s]
+Dipole prediction:   5%|▍         | 1398/30000 [00:01<00:26, 1097.57it/s]
+Dipole prediction:   5%|▌         | 1510/30000 [00:01<00:26, 1095.64it/s]
+Dipole prediction:   5%|▌         | 1621/30000 [00:01<00:26, 1056.60it/s]
+Dipole prediction:   6%|▌         | 1739/30000 [00:01<00:25, 1091.54it/s]
+Dipole prediction:   6%|▌         | 1868/30000 [00:01<00:24, 1147.34it/s]
+Dipole prediction:   7%|▋         | 1997/30000 [00:01<00:23, 1187.82it/s]
+Dipole prediction:   7%|▋         | 2121/30000 [00:01<00:23, 1196.29it/s]
+Dipole prediction:   7%|▋         | 2242/30000 [00:02<00:24, 1152.27it/s]
+Dipole prediction:   8%|▊         | 2374/30000 [00:02<00:23, 1199.63it/s]
+Dipole prediction:   8%|▊         | 2495/30000 [00:02<00:23, 1174.12it/s]
+Dipole prediction:   9%|▊         | 2613/30000 [00:02<00:24, 1127.55it/s]
+Dipole prediction:   9%|▉         | 2740/30000 [00:02<00:23, 1167.84it/s]
+Dipole prediction:  10%|▉         | 2877/30000 [00:02<00:22, 1225.68it/s]
+Dipole prediction:  10%|█         | 3022/30000 [00:02<00:20, 1287.38it/s]
+Dipole prediction:  11%|█         | 3152/30000 [00:02<00:20, 1288.47it/s]
+Dipole prediction:  11%|█         | 3282/30000 [00:02<00:21, 1230.70it/s]
+Dipole prediction:  11%|█▏        | 3406/30000 [00:02<00:22, 1191.42it/s]
+Dipole prediction:  12%|█▏        | 3526/30000 [00:03<00:22, 1173.63it/s]
+Dipole prediction:  12%|█▏        | 3669/30000 [00:03<00:21, 1246.58it/s]
+Dipole prediction:  13%|█▎        | 3795/30000 [00:03<00:21, 1207.84it/s]
+Dipole prediction:  13%|█▎        | 3917/30000 [00:03<00:21, 1198.65it/s]
+Dipole prediction:  13%|█▎        | 4043/30000 [00:03<00:21, 1212.79it/s]
+Dipole prediction:  14%|█▍        | 4165/30000 [00:03<00:22, 1150.40it/s]
+Dipole prediction:  14%|█▍        | 4297/30000 [00:03<00:21, 1195.41it/s]
+Dipole prediction:  15%|█▍        | 4418/30000 [00:03<00:21, 1171.56it/s]
+Dipole prediction:  15%|█▌        | 4536/30000 [00:03<00:22, 1145.29it/s]
+Dipole prediction:  16%|█▌        | 4660/30000 [00:04<00:21, 1171.86it/s]
+Dipole prediction:  16%|█▌        | 4778/30000 [00:04<00:21, 1158.66it/s]
+Dipole prediction:  16%|█▋        | 4895/30000 [00:04<00:23, 1052.89it/s]
+Dipole prediction:  17%|█▋        | 5003/30000 [00:04<00:25, 986.88it/s] 
+Dipole prediction:  17%|█▋        | 5136/30000 [00:04<00:23, 1077.12it/s]
+Dipole prediction:  18%|█▊        | 5288/30000 [00:04<00:20, 1197.76it/s]
+Dipole prediction:  18%|█▊        | 5423/30000 [00:04<00:19, 1239.25it/s]
+Dipole prediction:  18%|█▊        | 5550/30000 [00:04<00:19, 1233.93it/s]
+Dipole prediction:  19%|█▉        | 5681/30000 [00:04<00:19, 1254.47it/s]
+Dipole prediction:  19%|█▉        | 5814/30000 [00:05<00:18, 1274.77it/s]
+Dipole prediction:  20%|█▉        | 5954/30000 [00:05<00:18, 1310.00it/s]
+Dipole prediction:  20%|██        | 6086/30000 [00:05<00:19, 1212.50it/s]
+Dipole prediction:  21%|██        | 6213/30000 [00:05<00:19, 1218.32it/s]
+Dipole prediction:  21%|██        | 6337/30000 [00:05<00:19, 1200.24it/s]
+Dipole prediction:  22%|██▏       | 6480/30000 [00:05<00:18, 1264.83it/s]
+Dipole prediction:  22%|██▏       | 6635/30000 [00:05<00:17, 1345.24it/s]
+Dipole prediction:  23%|██▎       | 6780/30000 [00:05<00:16, 1370.47it/s]
+Dipole prediction:  23%|██▎       | 6920/30000 [00:05<00:16, 1378.65it/s]
+Dipole prediction:  24%|██▎       | 7059/30000 [00:06<00:18, 1252.65it/s]
+Dipole prediction:  24%|██▍       | 7187/30000 [00:06<00:18, 1231.70it/s]
+Dipole prediction:  24%|██▍       | 7312/30000 [00:06<00:19, 1146.76it/s]
+Dipole prediction:  25%|██▍       | 7450/30000 [00:06<00:18, 1208.93it/s]
+Dipole prediction:  25%|██▌       | 7581/30000 [00:06<00:18, 1236.56it/s]
+Dipole prediction:  26%|██▌       | 7717/30000 [00:06<00:17, 1267.16it/s]
+Dipole prediction:  26%|██▌       | 7846/30000 [00:06<00:17, 1271.37it/s]
+Dipole prediction:  27%|██▋       | 7975/30000 [00:06<00:17, 1260.29it/s]
+Dipole prediction:  27%|██▋       | 8102/30000 [00:06<00:18, 1192.14it/s]
+Dipole prediction:  27%|██▋       | 8235/30000 [00:06<00:17, 1230.01it/s]
+Dipole prediction:  28%|██▊       | 8360/30000 [00:07<00:19, 1120.30it/s]
+Dipole prediction:  28%|██▊       | 8476/30000 [00:07<00:19, 1129.54it/s]
+Dipole prediction:  29%|██▊       | 8599/30000 [00:07<00:18, 1157.17it/s]
+Dipole prediction:  29%|██▉       | 8737/30000 [00:07<00:17, 1218.69it/s]
+Dipole prediction:  30%|██▉       | 8867/30000 [00:07<00:17, 1241.50it/s]
+Dipole prediction:  30%|██▉       | 8993/30000 [00:07<00:16, 1241.08it/s]
+Dipole prediction:  30%|███       | 9129/30000 [00:07<00:16, 1273.78it/s]
+Dipole prediction:  31%|███       | 9257/30000 [00:07<00:18, 1148.55it/s]
+Dipole prediction:  31%|███▏      | 9375/30000 [00:07<00:18, 1118.27it/s]
+Dipole prediction:  32%|███▏      | 9489/30000 [00:08<00:19, 1051.42it/s]
+Dipole prediction:  32%|███▏      | 9602/30000 [00:08<00:19, 1065.40it/s]
+Dipole prediction:  32%|███▏      | 9710/30000 [00:08<00:19, 1051.63it/s]
+Dipole prediction:  33%|███▎      | 9838/30000 [00:08<00:18, 1109.38it/s]
+Dipole prediction:  33%|███▎      | 9956/30000 [00:08<00:17, 1125.36it/s]
+Dipole prediction:  34%|███▎      | 10073/30000 [00:08<00:17, 1136.70it/s]
+Dipole prediction:  34%|███▍      | 10207/30000 [00:08<00:16, 1194.25it/s]
+Dipole prediction:  35%|███▍      | 10351/30000 [00:08<00:15, 1264.41it/s]
+Dipole prediction:  35%|███▍      | 10478/30000 [00:09<00:20, 960.41it/s] 
+Dipole prediction:  35%|███▌      | 10586/30000 [00:09<00:19, 985.85it/s]
+Dipole prediction:  36%|███▌      | 10701/30000 [00:09<00:18, 1027.01it/s]
+Dipole prediction:  36%|███▌      | 10811/30000 [00:09<00:19, 964.50it/s] 
+Dipole prediction:  36%|███▋      | 10934/30000 [00:09<00:18, 1032.65it/s]
+Dipole prediction:  37%|███▋      | 11084/30000 [00:09<00:16, 1158.15it/s]
+Dipole prediction:  37%|███▋      | 11205/30000 [00:09<00:17, 1093.16it/s]
+Dipole prediction:  38%|███▊      | 11327/30000 [00:09<00:16, 1125.97it/s]
+Dipole prediction:  38%|███▊      | 11453/30000 [00:09<00:15, 1161.83it/s]
+Dipole prediction:  39%|███▊      | 11577/30000 [00:09<00:15, 1182.44it/s]
+Dipole prediction:  39%|███▉      | 11702/30000 [00:10<00:15, 1201.29it/s]
+Dipole prediction:  39%|███▉      | 11829/30000 [00:10<00:14, 1219.21it/s]
+Dipole prediction:  40%|███▉      | 11961/30000 [00:10<00:14, 1247.55it/s]
+Dipole prediction:  40%|████      | 12087/30000 [00:10<00:14, 1215.51it/s]
+Dipole prediction:  41%|████      | 12210/30000 [00:10<00:15, 1183.06it/s]
+Dipole prediction:  41%|████      | 12342/30000 [00:10<00:14, 1221.90it/s]
+Dipole prediction:  42%|████▏     | 12465/30000 [00:10<00:14, 1222.34it/s]
+Dipole prediction:  42%|████▏     | 12588/30000 [00:10<00:14, 1220.49it/s]
+Dipole prediction:  42%|████▏     | 12721/30000 [00:10<00:13, 1252.61it/s]
+Dipole prediction:  43%|████▎     | 12847/30000 [00:11<00:14, 1182.35it/s]
+Dipole prediction:  43%|████▎     | 12982/30000 [00:11<00:13, 1229.70it/s]
+Dipole prediction:  44%|████▎     | 13112/30000 [00:11<00:13, 1248.23it/s]
+Dipole prediction:  44%|████▍     | 13249/30000 [00:11<00:13, 1281.75it/s]
+Dipole prediction:  45%|████▍     | 13378/30000 [00:11<00:13, 1255.71it/s]
+Dipole prediction:  45%|████▌     | 13505/30000 [00:11<00:13, 1231.80it/s]
+Dipole prediction:  45%|████▌     | 13641/30000 [00:11<00:12, 1268.38it/s]
+Dipole prediction:  46%|████▌     | 13792/30000 [00:11<00:12, 1338.25it/s]
+Dipole prediction:  46%|████▋     | 13927/30000 [00:11<00:12, 1326.79it/s]
+Dipole prediction:  47%|████▋     | 14061/30000 [00:11<00:13, 1200.70it/s]
+Dipole prediction:  47%|████▋     | 14187/30000 [00:12<00:12, 1216.96it/s]
+Dipole prediction:  48%|████▊     | 14311/30000 [00:12<00:13, 1161.50it/s]
+Dipole prediction:  48%|████▊     | 14452/30000 [00:12<00:12, 1229.71it/s]
+Dipole prediction:  49%|████▊     | 14580/30000 [00:12<00:12, 1241.94it/s]
+Dipole prediction:  49%|████▉     | 14706/30000 [00:12<00:12, 1228.14it/s]
+Dipole prediction:  49%|████▉     | 14837/30000 [00:12<00:12, 1251.63it/s]
+Dipole prediction:  50%|████▉     | 14963/30000 [00:12<00:12, 1243.52it/s]
+Dipole prediction:  50%|█████     | 15097/30000 [00:12<00:11, 1270.94it/s]
+Dipole prediction:  51%|█████     | 15225/30000 [00:12<00:11, 1253.19it/s]
+Dipole prediction:  51%|█████     | 15351/30000 [00:13<00:11, 1222.72it/s]
+Dipole prediction:  52%|█████▏    | 15474/30000 [00:13<00:12, 1197.44it/s]
+Dipole prediction:  52%|█████▏    | 15595/30000 [00:13<00:12, 1182.35it/s]
+Dipole prediction:  52%|█████▏    | 15733/30000 [00:13<00:11, 1238.06it/s]
+Dipole prediction:  53%|█████▎    | 15858/30000 [00:13<00:11, 1237.48it/s]
+Dipole prediction:  53%|█████▎    | 15982/30000 [00:13<00:11, 1225.08it/s]
+Dipole prediction:  54%|█████▎    | 16105/30000 [00:13<00:11, 1192.91it/s]
+Dipole prediction:  54%|█████▍    | 16230/30000 [00:13<00:11, 1207.66it/s]
+Dipole prediction:  55%|█████▍    | 16367/30000 [00:13<00:10, 1241.86it/s]
+Dipole prediction:  55%|█████▍    | 16498/30000 [00:13<00:10, 1259.99it/s]
+Dipole prediction:  55%|█████▌    | 16627/30000 [00:14<00:10, 1268.31it/s]
+Dipole prediction:  56%|█████▌    | 16754/30000 [00:14<00:11, 1177.26it/s]
+Dipole prediction:  56%|█████▋    | 16894/30000 [00:14<00:10, 1239.38it/s]
+Dipole prediction:  57%|█████▋    | 17036/30000 [00:14<00:10, 1289.63it/s]
+Dipole prediction:  57%|█████▋    | 17176/30000 [00:14<00:09, 1320.73it/s]
+Dipole prediction:  58%|█████▊    | 17309/30000 [00:14<00:09, 1292.78it/s]
+Dipole prediction:  58%|█████▊    | 17439/30000 [00:14<00:10, 1225.51it/s]
+Dipole prediction:  59%|█████▊    | 17568/30000 [00:14<00:10, 1242.63it/s]
+Dipole prediction:  59%|█████▉    | 17694/30000 [00:14<00:10, 1174.63it/s]
+Dipole prediction:  59%|█████▉    | 17813/30000 [00:15<00:10, 1161.27it/s]
+Dipole prediction:  60%|█████▉    | 17950/30000 [00:15<00:09, 1214.82it/s]
+Dipole prediction:  60%|██████    | 18073/30000 [00:15<00:10, 1186.75it/s]
+Dipole prediction:  61%|██████    | 18200/30000 [00:15<00:09, 1208.91it/s]
+Dipole prediction:  61%|██████    | 18330/30000 [00:15<00:09, 1232.64it/s]
+Dipole prediction:  62%|██████▏   | 18472/30000 [00:15<00:08, 1286.86it/s]
+Dipole prediction:  62%|██████▏   | 18602/30000 [00:15<00:09, 1217.31it/s]
+Dipole prediction:  62%|██████▏   | 18729/30000 [00:15<00:09, 1231.11it/s]
+Dipole prediction:  63%|██████▎   | 18860/30000 [00:15<00:08, 1252.95it/s]
+Dipole prediction:  63%|██████▎   | 18986/30000 [00:15<00:09, 1207.76it/s]
+Dipole prediction:  64%|██████▎   | 19115/30000 [00:16<00:08, 1231.21it/s]
+Dipole prediction:  64%|██████▍   | 19239/30000 [00:16<00:09, 1191.38it/s]
+Dipole prediction:  65%|██████▍   | 19368/30000 [00:16<00:08, 1218.41it/s]
+Dipole prediction:  65%|██████▍   | 19498/30000 [00:16<00:08, 1241.58it/s]
+Dipole prediction:  65%|██████▌   | 19623/30000 [00:16<00:08, 1196.28it/s]
+Dipole prediction:  66%|██████▌   | 19744/30000 [00:16<00:08, 1183.49it/s]
+Dipole prediction:  66%|██████▌   | 19869/30000 [00:16<00:08, 1200.13it/s]
+Dipole prediction:  67%|██████▋   | 19990/30000 [00:16<00:08, 1198.21it/s]
+Dipole prediction:  67%|██████▋   | 20125/30000 [00:16<00:07, 1241.34it/s]
+Dipole prediction:  68%|██████▊   | 20250/30000 [00:17<00:08, 1095.90it/s]
+Dipole prediction:  68%|██████▊   | 20373/30000 [00:17<00:08, 1132.06it/s]
+Dipole prediction:  68%|██████▊   | 20507/30000 [00:17<00:07, 1188.76it/s]
+Dipole prediction:  69%|██████▉   | 20629/30000 [00:17<00:09, 1036.71it/s]
+Dipole prediction:  69%|██████▉   | 20739/30000 [00:17<00:08, 1053.13it/s]
+Dipole prediction:  70%|██████▉   | 20888/30000 [00:17<00:07, 1170.46it/s]
+Dipole prediction:  70%|███████   | 21009/30000 [00:17<00:07, 1166.06it/s]
+Dipole prediction:  71%|███████   | 21160/30000 [00:17<00:07, 1257.31it/s]
+Dipole prediction:  71%|███████   | 21289/30000 [00:17<00:07, 1135.77it/s]
+Dipole prediction:  71%|███████▏  | 21410/30000 [00:18<00:07, 1154.87it/s]
+Dipole prediction:  72%|███████▏  | 21548/30000 [00:18<00:06, 1216.11it/s]
+Dipole prediction:  72%|███████▏  | 21673/30000 [00:18<00:06, 1213.87it/s]
+Dipole prediction:  73%|███████▎  | 21801/30000 [00:18<00:06, 1231.64it/s]
+Dipole prediction:  73%|███████▎  | 21926/30000 [00:18<00:06, 1201.49it/s]
+Dipole prediction:  74%|███████▎  | 22075/30000 [00:18<00:06, 1283.02it/s]
+Dipole prediction:  74%|███████▍  | 22205/30000 [00:18<00:06, 1172.07it/s]
+Dipole prediction:  75%|███████▍  | 22360/30000 [00:18<00:05, 1274.35it/s]
+Dipole prediction:  75%|███████▍  | 22499/30000 [00:18<00:05, 1302.90it/s]
+Dipole prediction:  75%|███████▌  | 22632/30000 [00:19<00:06, 1219.93it/s]
+Dipole prediction:  76%|███████▌  | 22757/30000 [00:19<00:05, 1216.96it/s]
+Dipole prediction:  76%|███████▋  | 22888/30000 [00:19<00:05, 1241.43it/s]
+Dipole prediction:  77%|███████▋  | 23023/30000 [00:19<00:05, 1269.32it/s]
+Dipole prediction:  77%|███████▋  | 23156/30000 [00:19<00:05, 1286.72it/s]
+Dipole prediction:  78%|███████▊  | 23286/30000 [00:19<00:05, 1218.79it/s]
+Dipole prediction:  78%|███████▊  | 23425/30000 [00:19<00:05, 1266.86it/s]
+Dipole prediction:  79%|███████▊  | 23555/30000 [00:19<00:05, 1275.49it/s]
+Dipole prediction:  79%|███████▉  | 23684/30000 [00:19<00:05, 1172.66it/s]
+Dipole prediction:  79%|███████▉  | 23807/30000 [00:19<00:05, 1186.15it/s]
+Dipole prediction:  80%|███████▉  | 23928/30000 [00:20<00:05, 1184.11it/s]
+Dipole prediction:  80%|████████  | 24048/30000 [00:20<00:05, 1183.70it/s]
+Dipole prediction:  81%|████████  | 24168/30000 [00:20<00:05, 1102.36it/s]
+Dipole prediction:  81%|████████  | 24298/30000 [00:20<00:04, 1155.68it/s]
+Dipole prediction:  81%|████████▏ | 24416/30000 [00:20<00:04, 1160.64it/s]
+Dipole prediction:  82%|████████▏ | 24534/30000 [00:20<00:04, 1149.98it/s]
+Dipole prediction:  82%|████████▏ | 24661/30000 [00:20<00:04, 1183.23it/s]
+Dipole prediction:  83%|████████▎ | 24784/30000 [00:20<00:04, 1195.81it/s]
+Dipole prediction:  83%|████████▎ | 24905/30000 [00:20<00:04, 1078.18it/s]
+Dipole prediction:  83%|████████▎ | 25039/30000 [00:21<00:04, 1146.03it/s]
+Dipole prediction:  84%|████████▍ | 25160/30000 [00:21<00:04, 1163.67it/s]
+Dipole prediction:  84%|████████▍ | 25292/30000 [00:21<00:03, 1208.25it/s]
+Dipole prediction:  85%|████████▍ | 25419/30000 [00:21<00:03, 1224.09it/s]
+Dipole prediction:  85%|████████▌ | 25543/30000 [00:21<00:04, 1076.70it/s]
+Dipole prediction:  86%|████████▌ | 25655/30000 [00:21<00:04, 1052.11it/s]
+Dipole prediction:  86%|████████▌ | 25763/30000 [00:21<00:04, 1056.59it/s]
+Dipole prediction:  86%|████████▋ | 25879/30000 [00:21<00:03, 1084.94it/s]
+Dipole prediction:  87%|████████▋ | 25990/30000 [00:21<00:03, 1069.60it/s]
+Dipole prediction:  87%|████████▋ | 26099/30000 [00:22<00:03, 1044.97it/s]
+Dipole prediction:  87%|████████▋ | 26218/30000 [00:22<00:03, 1084.81it/s]
+Dipole prediction:  88%|████████▊ | 26328/30000 [00:22<00:03, 1069.28it/s]
+Dipole prediction:  88%|████████▊ | 26441/30000 [00:22<00:03, 1086.64it/s]
+Dipole prediction:  89%|████████▊ | 26565/30000 [00:22<00:03, 1130.08it/s]
+Dipole prediction:  89%|████████▉ | 26679/30000 [00:22<00:03, 892.75it/s] 
+Dipole prediction:  89%|████████▉ | 26777/30000 [00:22<00:03, 858.98it/s]
+Dipole prediction:  90%|████████▉ | 26869/30000 [00:22<00:03, 864.67it/s]
+Dipole prediction:  90%|████████▉ | 26970/30000 [00:22<00:03, 902.58it/s]
+Dipole prediction:  90%|█████████ | 27100/30000 [00:23<00:02, 1009.32it/s]
+Dipole prediction:  91%|█████████ | 27205/30000 [00:23<00:02, 986.44it/s] 
+Dipole prediction:  91%|█████████ | 27307/30000 [00:23<00:02, 981.67it/s]
+Dipole prediction:  91%|█████████▏| 27418/30000 [00:23<00:02, 1015.96it/s]
+Dipole prediction:  92%|█████████▏| 27521/30000 [00:23<00:02, 1018.25it/s]
+Dipole prediction:  92%|█████████▏| 27631/30000 [00:23<00:02, 1041.72it/s]
+Dipole prediction:  93%|█████████▎| 27755/30000 [00:23<00:02, 1099.78it/s]
+Dipole prediction:  93%|█████████▎| 27866/30000 [00:23<00:01, 1099.29it/s]
+Dipole prediction:  93%|█████████▎| 27977/30000 [00:23<00:01, 1073.12it/s]
+Dipole prediction:  94%|█████████▎| 28085/30000 [00:24<00:01, 1062.18it/s]
+Dipole prediction:  94%|█████████▍| 28198/30000 [00:24<00:01, 1078.14it/s]
+Dipole prediction:  94%|█████████▍| 28307/30000 [00:24<00:01, 1042.56it/s]
+Dipole prediction:  95%|█████████▍| 28423/30000 [00:24<00:01, 1076.14it/s]
+Dipole prediction:  95%|█████████▌| 28532/30000 [00:24<00:01, 1064.02it/s]
+Dipole prediction:  96%|█████████▌| 28652/30000 [00:24<00:01, 1093.03it/s]
+Dipole prediction:  96%|█████████▌| 28799/30000 [00:24<00:00, 1202.50it/s]
+Dipole prediction:  96%|█████████▋| 28922/30000 [00:24<00:00, 1209.56it/s]
+Dipole prediction:  97%|█████████▋| 29051/30000 [00:24<00:00, 1231.06it/s]
+Dipole prediction:  97%|█████████▋| 29175/30000 [00:24<00:00, 1218.75it/s]
+Dipole prediction:  98%|█████████▊| 29316/30000 [00:25<00:00, 1274.62it/s]
+Dipole prediction:  98%|█████████▊| 29451/30000 [00:25<00:00, 1296.87it/s]
+Dipole prediction:  99%|█████████▊| 29581/30000 [00:25<00:00, 1230.39it/s]
+Dipole prediction:  99%|█████████▉| 29705/30000 [00:25<00:00, 1213.78it/s]
+Dipole prediction:  99%|█████████▉| 29840/30000 [00:25<00:00, 1247.56it/s]
+Dipole prediction: 100%|█████████▉| 29973/30000 [00:25<00:00, 1270.70it/s]
+Dipole prediction: 100%|██████████| 30000/30000 [00:25<00:00, 1172.43it/s]
+
+bakken MD:   0%|          | 0/30000 [00:00<?, ?step/s]
+bakken MD:   2%|▏         | 452/30000 [00:00<00:06, 4519.01step/s]
+bakken MD:   3%|▎         | 964/30000 [00:00<00:05, 4867.54step/s]
+bakken MD:   5%|▍         | 1473/30000 [00:00<00:05, 4968.95step/s]
+bakken MD:   5%|▍         | 1473/30000 [00:00<00:05, 4968.95step/s, E=-192146.4 kcal/mol, T=426 K]
+bakken MD:   7%|▋         | 2008/30000 [00:00<00:05, 5116.74step/s, E=-192146.4 kcal/mol, T=426 K]
+bakken MD:   9%|▊         | 2564/30000 [00:00<00:05, 5272.33step/s, E=-192146.4 kcal/mol, T=426 K]
+bakken MD:   9%|▊         | 2564/30000 [00:00<00:05, 5272.33step/s, E=-192147.7 kcal/mol, T=359 K]
+bakken MD:  10%|█         | 3146/30000 [00:00<00:04, 5457.23step/s, E=-192147.7 kcal/mol, T=359 K]
+bakken MD:  12%|█▏        | 3692/30000 [00:00<00:04, 5416.81step/s, E=-192147.7 kcal/mol, T=359 K]
+bakken MD:  14%|█▍        | 4285/30000 [00:00<00:04, 5576.59step/s, E=-192147.7 kcal/mol, T=359 K]
+bakken MD:  14%|█▍        | 4285/30000 [00:00<00:04, 5576.59step/s, E=-192147.0 kcal/mol, T=249 K]
+bakken MD:  16%|█▌        | 4843/30000 [00:00<00:04, 5514.62step/s, E=-192147.0 kcal/mol, T=249 K]
+bakken MD:  18%|█▊        | 5395/30000 [00:01<00:04, 5317.93step/s, E=-192147.0 kcal/mol, T=249 K]
+bakken MD:  20%|█▉        | 5929/30000 [00:01<00:04, 5321.20step/s, E=-192147.0 kcal/mol, T=249 K]
+bakken MD:  20%|█▉        | 5929/30000 [00:01<00:04, 5321.20step/s, E=-192146.4 kcal/mol, T=163 K]
+bakken MD:  22%|██▏       | 6517/30000 [00:01<00:04, 5486.90step/s, E=-192146.4 kcal/mol, T=163 K]
+bakken MD:  24%|██▎       | 7106/30000 [00:01<00:04, 5604.37step/s, E=-192146.4 kcal/mol, T=163 K]
+bakken MD:  24%|██▎       | 7106/30000 [00:01<00:04, 5604.37step/s, E=-192147.4 kcal/mol, T=271 K]
+bakken MD:  26%|██▌       | 7691/30000 [00:01<00:03, 5676.27step/s, E=-192147.4 kcal/mol, T=271 K]
+bakken MD:  28%|██▊       | 8261/30000 [00:01<00:03, 5679.95step/s, E=-192147.4 kcal/mol, T=271 K]
+bakken MD:  29%|██▉       | 8830/30000 [00:01<00:03, 5636.16step/s, E=-192147.4 kcal/mol, T=271 K]
+bakken MD:  29%|██▉       | 8830/30000 [00:01<00:03, 5636.16step/s, E=-192147.1 kcal/mol, T=230 K]
+bakken MD:  31%|███▏      | 9414/30000 [00:01<00:03, 5695.42step/s, E=-192147.1 kcal/mol, T=230 K]
+bakken MD:  33%|███▎      | 9984/30000 [00:01<00:03, 5693.00step/s, E=-192147.1 kcal/mol, T=230 K]
+bakken MD:  33%|███▎      | 9984/30000 [00:01<00:03, 5693.00step/s, E=-192148.2 kcal/mol, T=365 K]
+bakken MD:  35%|███▌      | 10554/30000 [00:01<00:03, 5682.97step/s, E=-192148.2 kcal/mol, T=365 K]
+bakken MD:  37%|███▋      | 11123/30000 [00:02<00:03, 5570.35step/s, E=-192148.2 kcal/mol, T=365 K]
+bakken MD:  39%|███▉      | 11706/30000 [00:02<00:03, 5645.36step/s, E=-192148.2 kcal/mol, T=365 K]
+bakken MD:  39%|███▉      | 11706/30000 [00:02<00:03, 5645.36step/s, E=-192147.9 kcal/mol, T=324 K]
+bakken MD:  41%|████      | 12287/30000 [00:02<00:03, 5692.90step/s, E=-192147.9 kcal/mol, T=324 K]
+bakken MD:  43%|████▎     | 12857/30000 [00:02<00:03, 5621.06step/s, E=-192147.9 kcal/mol, T=324 K]
+bakken MD:  45%|████▍     | 13436/30000 [00:02<00:02, 5670.63step/s, E=-192147.9 kcal/mol, T=324 K]
+bakken MD:  45%|████▍     | 13436/30000 [00:02<00:02, 5670.63step/s, E=-192148.6 kcal/mol, T=409 K]
+bakken MD:  47%|████▋     | 14004/30000 [00:02<00:02, 5660.51step/s, E=-192148.6 kcal/mol, T=409 K]
+bakken MD:  49%|████▊     | 14571/30000 [00:02<00:02, 5613.82step/s, E=-192148.6 kcal/mol, T=409 K]
+bakken MD:  49%|████▊     | 14571/30000 [00:02<00:02, 5613.82step/s, E=-192147.7 kcal/mol, T=300 K]
+bakken MD:  50%|█████     | 15133/30000 [00:02<00:02, 5528.75step/s, E=-192147.7 kcal/mol, T=300 K]
+bakken MD:  52%|█████▏    | 15703/30000 [00:02<00:02, 5577.64step/s, E=-192147.7 kcal/mol, T=300 K]
+bakken MD:  54%|█████▍    | 16262/30000 [00:02<00:02, 5364.25step/s, E=-192147.7 kcal/mol, T=300 K]
+bakken MD:  54%|█████▍    | 16262/30000 [00:03<00:02, 5364.25step/s, E=-192148.3 kcal/mol, T=367 K]
+bakken MD:  56%|█████▌    | 16801/30000 [00:03<00:02, 5353.30step/s, E=-192148.3 kcal/mol, T=367 K]
+bakken MD:  58%|█████▊    | 17338/30000 [00:03<00:02, 5353.52step/s, E=-192148.3 kcal/mol, T=367 K]
+bakken MD:  60%|█████▉    | 17877/30000 [00:03<00:02, 5362.39step/s, E=-192148.3 kcal/mol, T=367 K]
+bakken MD:  60%|█████▉    | 17877/30000 [00:03<00:02, 5362.39step/s, E=-192148.5 kcal/mol, T=384 K]
+bakken MD:  61%|██████▏   | 18418/30000 [00:03<00:02, 5376.32step/s, E=-192148.5 kcal/mol, T=384 K]
+bakken MD:  63%|██████▎   | 18957/30000 [00:03<00:02, 5330.90step/s, E=-192148.5 kcal/mol, T=384 K]
+bakken MD:  63%|██████▎   | 18957/30000 [00:03<00:02, 5330.90step/s, E=-192147.9 kcal/mol, T=313 K]
+bakken MD:  65%|██████▌   | 19503/30000 [00:03<00:01, 5367.30step/s, E=-192147.9 kcal/mol, T=313 K]
+bakken MD:  67%|██████▋   | 20041/30000 [00:03<00:01, 5339.49step/s, E=-192147.9 kcal/mol, T=313 K]
+bakken MD:  69%|██████▊   | 20581/30000 [00:03<00:01, 5355.70step/s, E=-192147.9 kcal/mol, T=313 K]
+bakken MD:  69%|██████▊   | 20581/30000 [00:03<00:01, 5355.70step/s, E=-192147.0 kcal/mol, T=218 K]
+bakken MD:  70%|███████   | 21118/30000 [00:03<00:01, 5359.87step/s, E=-192147.0 kcal/mol, T=218 K]
+bakken MD:  72%|███████▏  | 21655/30000 [00:03<00:01, 5263.49step/s, E=-192147.0 kcal/mol, T=218 K]
+bakken MD:  74%|███████▍  | 22200/30000 [00:04<00:01, 5316.00step/s, E=-192147.0 kcal/mol, T=218 K]
+bakken MD:  74%|███████▍  | 22200/30000 [00:04<00:01, 5316.00step/s, E=-192148.1 kcal/mol, T=336 K]
+bakken MD:  76%|███████▌  | 22732/30000 [00:04<00:01, 5223.22step/s, E=-192148.1 kcal/mol, T=336 K]
+bakken MD:  78%|███████▊  | 23255/30000 [00:04<00:01, 5125.88step/s, E=-192148.1 kcal/mol, T=336 K]
+bakken MD:  79%|███████▉  | 23780/30000 [00:04<00:01, 5160.34step/s, E=-192148.1 kcal/mol, T=336 K]
+bakken MD:  79%|███████▉  | 23780/30000 [00:04<00:01, 5160.34step/s, E=-192148.5 kcal/mol, T=388 K]
+bakken MD:  81%|████████  | 24325/30000 [00:04<00:01, 5244.97step/s, E=-192148.5 kcal/mol, T=388 K]
+bakken MD:  83%|████████▎ | 24851/30000 [00:04<00:00, 5157.17step/s, E=-192148.5 kcal/mol, T=388 K]
+bakken MD:  85%|████████▍ | 25378/30000 [00:04<00:00, 5187.85step/s, E=-192148.5 kcal/mol, T=388 K]
+bakken MD:  85%|████████▍ | 25378/30000 [00:04<00:00, 5187.85step/s, E=-192147.1 kcal/mol, T=230 K]
+bakken MD:  86%|████████▋ | 25898/30000 [00:04<00:00, 5186.49step/s, E=-192147.1 kcal/mol, T=230 K]
+bakken MD:  88%|████████▊ | 26417/30000 [00:04<00:00, 5137.09step/s, E=-192147.1 kcal/mol, T=230 K]
+bakken MD:  90%|████████▉ | 26932/30000 [00:05<00:00, 5007.58step/s, E=-192147.1 kcal/mol, T=230 K]
+bakken MD:  90%|████████▉ | 26932/30000 [00:05<00:00, 5007.58step/s, E=-192147.8 kcal/mol, T=308 K]
+bakken MD:  91%|█████████▏| 27440/30000 [00:05<00:00, 5028.43step/s, E=-192147.8 kcal/mol, T=308 K]
+bakken MD:  93%|█████████▎| 27999/30000 [00:05<00:00, 5192.23step/s, E=-192147.8 kcal/mol, T=308 K]
+bakken MD:  93%|█████████▎| 27999/30000 [00:05<00:00, 5192.23step/s, E=-192147.6 kcal/mol, T=285 K]
+bakken MD:  95%|█████████▌| 28564/30000 [00:05<00:00, 5326.74step/s, E=-192147.6 kcal/mol, T=285 K]
+bakken MD:  97%|█████████▋| 29098/30000 [00:05<00:00, 5323.21step/s, E=-192147.6 kcal/mol, T=285 K]
+bakken MD:  99%|█████████▉| 29681/30000 [00:05<00:00, 5468.73step/s, E=-192147.6 kcal/mol, T=285 K]
+bakken MD:  99%|█████████▉| 29681/30000 [00:05<00:00, 5468.73step/s, E=-192147.5 kcal/mol, T=272 K]
+bakken MD: 100%|██████████| 30000/30000 [00:05<00:00, 5387.31step/s, E=-192147.5 kcal/mol, T=272 K]
+
+Dipole prediction:   0%|          | 0/30000 [00:00<?, ?it/s]
+Dipole prediction:   0%|          | 109/30000 [00:00<00:27, 1089.65it/s]
+Dipole prediction:   1%|          | 221/30000 [00:00<00:27, 1101.45it/s]
+Dipole prediction:   1%|          | 332/30000 [00:00<00:33, 894.59it/s] 
+Dipole prediction:   1%|▏         | 434/30000 [00:00<00:31, 936.32it/s]
+Dipole prediction:   2%|▏         | 577/30000 [00:00<00:26, 1097.97it/s]
+Dipole prediction:   2%|▏         | 691/30000 [00:00<00:26, 1089.78it/s]
+Dipole prediction:   3%|▎         | 803/30000 [00:00<00:28, 1034.33it/s]
+Dipole prediction:   3%|▎         | 917/30000 [00:00<00:27, 1063.38it/s]
+Dipole prediction:   3%|▎         | 1044/30000 [00:00<00:25, 1122.44it/s]
+Dipole prediction:   4%|▍         | 1179/30000 [00:01<00:24, 1189.07it/s]
+Dipole prediction:   4%|▍         | 1311/30000 [00:01<00:23, 1226.30it/s]
+Dipole prediction:   5%|▍         | 1435/30000 [00:01<00:24, 1144.68it/s]
+Dipole prediction:   5%|▌         | 1552/30000 [00:01<00:25, 1114.81it/s]
+Dipole prediction:   6%|▌         | 1665/30000 [00:01<00:26, 1088.93it/s]
+Dipole prediction:   6%|▌         | 1781/30000 [00:01<00:25, 1108.24it/s]
+Dipole prediction:   6%|▋         | 1912/30000 [00:01<00:24, 1163.87it/s]
+Dipole prediction:   7%|▋         | 2030/30000 [00:01<00:25, 1097.11it/s]
+Dipole prediction:   7%|▋         | 2141/30000 [00:01<00:25, 1083.40it/s]
+Dipole prediction:   8%|▊         | 2274/30000 [00:02<00:24, 1151.36it/s]
+Dipole prediction:   8%|▊         | 2411/30000 [00:02<00:22, 1212.41it/s]
+Dipole prediction:   8%|▊         | 2534/30000 [00:02<00:23, 1190.71it/s]
+Dipole prediction:   9%|▉         | 2672/30000 [00:02<00:22, 1236.47it/s]
+Dipole prediction:   9%|▉         | 2797/30000 [00:02<00:23, 1166.90it/s]
+Dipole prediction:  10%|▉         | 2915/30000 [00:02<00:23, 1159.41it/s]
+Dipole prediction:  10%|█         | 3032/30000 [00:02<00:23, 1127.20it/s]
+Dipole prediction:  10%|█         | 3146/30000 [00:02<00:25, 1063.59it/s]
+Dipole prediction:  11%|█         | 3254/30000 [00:02<00:25, 1057.07it/s]
+Dipole prediction:  11%|█         | 3367/30000 [00:03<00:24, 1076.66it/s]
+Dipole prediction:  12%|█▏        | 3503/30000 [00:03<00:22, 1156.50it/s]
+Dipole prediction:  12%|█▏        | 3620/30000 [00:03<00:24, 1089.12it/s]
+Dipole prediction:  12%|█▏        | 3733/30000 [00:03<00:23, 1095.99it/s]
+Dipole prediction:  13%|█▎        | 3859/30000 [00:03<00:22, 1140.87it/s]
+Dipole prediction:  13%|█▎        | 3974/30000 [00:03<00:22, 1134.56it/s]
+Dipole prediction:  14%|█▎        | 4111/30000 [00:03<00:21, 1202.66it/s]
+Dipole prediction:  14%|█▍        | 4232/30000 [00:03<00:21, 1188.85it/s]
+Dipole prediction:  15%|█▍        | 4371/30000 [00:03<00:20, 1246.34it/s]
+Dipole prediction:  15%|█▍        | 4498/30000 [00:03<00:20, 1253.17it/s]
+Dipole prediction:  15%|█▌        | 4624/30000 [00:04<00:20, 1254.84it/s]
+Dipole prediction:  16%|█▌        | 4754/30000 [00:04<00:19, 1266.35it/s]
+Dipole prediction:  16%|█▋        | 4881/30000 [00:04<00:28, 880.71it/s] 
+Dipole prediction:  17%|█▋        | 4987/30000 [00:04<00:27, 920.86it/s]
+Dipole prediction:  17%|█▋        | 5107/30000 [00:04<00:25, 989.35it/s]
+Dipole prediction:  17%|█▋        | 5225/30000 [00:04<00:23, 1038.52it/s]
+Dipole prediction:  18%|█▊        | 5337/30000 [00:04<00:23, 1034.80it/s]
+Dipole prediction:  18%|█▊        | 5451/30000 [00:04<00:23, 1062.18it/s]
+Dipole prediction:  19%|█▊        | 5566/30000 [00:05<00:22, 1086.79it/s]
+Dipole prediction:  19%|█▉        | 5678/30000 [00:05<00:22, 1094.59it/s]
+Dipole prediction:  19%|█▉        | 5818/30000 [00:05<00:20, 1183.10it/s]
+Dipole prediction:  20%|█▉        | 5939/30000 [00:05<00:20, 1173.50it/s]
+Dipole prediction:  20%|██        | 6058/30000 [00:05<00:23, 1021.42it/s]
+Dipole prediction:  21%|██        | 6165/30000 [00:05<00:25, 952.87it/s] 
+Dipole prediction:  21%|██        | 6280/30000 [00:05<00:23, 1002.80it/s]
+Dipole prediction:  21%|██▏       | 6395/30000 [00:05<00:22, 1041.46it/s]
+Dipole prediction:  22%|██▏       | 6524/30000 [00:05<00:21, 1110.12it/s]
+Dipole prediction:  22%|██▏       | 6684/30000 [00:06<00:18, 1247.43it/s]
+Dipole prediction:  23%|██▎       | 6812/30000 [00:06<00:18, 1241.97it/s]
+Dipole prediction:  23%|██▎       | 6938/30000 [00:06<00:19, 1185.72it/s]
+Dipole prediction:  24%|██▎       | 7062/30000 [00:06<00:19, 1199.63it/s]
+Dipole prediction:  24%|██▍       | 7184/30000 [00:06<00:19, 1157.10it/s]
+Dipole prediction:  24%|██▍       | 7301/30000 [00:06<00:19, 1150.72it/s]
+Dipole prediction:  25%|██▍       | 7417/30000 [00:06<00:20, 1128.27it/s]
+Dipole prediction:  25%|██▌       | 7541/30000 [00:06<00:19, 1158.57it/s]
+Dipole prediction:  26%|██▌       | 7675/30000 [00:06<00:18, 1201.55it/s]
+Dipole prediction:  26%|██▌       | 7802/30000 [00:06<00:18, 1219.98it/s]
+Dipole prediction:  26%|██▋       | 7936/30000 [00:07<00:17, 1242.11it/s]
+Dipole prediction:  27%|██▋       | 8061/30000 [00:07<00:22, 975.88it/s] 
+Dipole prediction:  27%|██▋       | 8182/30000 [00:07<00:21, 1032.73it/s]
+Dipole prediction:  28%|██▊       | 8293/30000 [00:07<00:21, 1033.25it/s]
+Dipole prediction:  28%|██▊       | 8415/30000 [00:07<00:19, 1082.63it/s]
+Dipole prediction:  28%|██▊       | 8545/30000 [00:07<00:18, 1139.49it/s]
+Dipole prediction:  29%|██▉       | 8663/30000 [00:07<00:19, 1070.50it/s]
+Dipole prediction:  29%|██▉       | 8788/30000 [00:07<00:18, 1118.74it/s]
+Dipole prediction:  30%|██▉       | 8936/30000 [00:07<00:17, 1219.18it/s]
+Dipole prediction:  30%|███       | 9061/30000 [00:08<00:17, 1191.31it/s]
+Dipole prediction:  31%|███       | 9182/30000 [00:08<00:17, 1173.45it/s]
+Dipole prediction:  31%|███       | 9313/30000 [00:08<00:17, 1211.00it/s]
+Dipole prediction:  31%|███▏      | 9442/30000 [00:08<00:16, 1229.76it/s]
+Dipole prediction:  32%|███▏      | 9566/30000 [00:08<00:17, 1185.74it/s]
+Dipole prediction:  32%|███▏      | 9700/30000 [00:08<00:16, 1222.10it/s]
+Dipole prediction:  33%|███▎      | 9861/30000 [00:08<00:15, 1330.65it/s]
+Dipole prediction:  33%|███▎      | 9995/30000 [00:08<00:15, 1277.30it/s]
+Dipole prediction:  34%|███▎      | 10124/30000 [00:08<00:16, 1183.67it/s]
+Dipole prediction:  34%|███▍      | 10269/30000 [00:09<00:15, 1251.42it/s]
+Dipole prediction:  35%|███▍      | 10405/30000 [00:09<00:15, 1281.82it/s]
+Dipole prediction:  35%|███▌      | 10543/30000 [00:09<00:14, 1301.46it/s]
+Dipole prediction:  36%|███▌      | 10675/30000 [00:09<00:14, 1289.00it/s]
+Dipole prediction:  36%|███▌      | 10805/30000 [00:09<00:15, 1261.06it/s]
+Dipole prediction:  36%|███▋      | 10947/30000 [00:09<00:14, 1306.53it/s]
+Dipole prediction:  37%|███▋      | 11079/30000 [00:09<00:14, 1271.65it/s]
+Dipole prediction:  37%|███▋      | 11207/30000 [00:09<00:15, 1196.76it/s]
+Dipole prediction:  38%|███▊      | 11340/30000 [00:09<00:15, 1230.52it/s]
+Dipole prediction:  38%|███▊      | 11465/30000 [00:10<00:15, 1230.24it/s]
+Dipole prediction:  39%|███▊      | 11589/30000 [00:10<00:14, 1230.06it/s]
+Dipole prediction:  39%|███▉      | 11726/30000 [00:10<00:14, 1270.02it/s]
+Dipole prediction:  40%|███▉      | 11854/30000 [00:10<00:15, 1170.89it/s]
+Dipole prediction:  40%|███▉      | 11973/30000 [00:10<00:15, 1138.01it/s]
+Dipole prediction:  40%|████      | 12092/30000 [00:10<00:15, 1141.43it/s]
+Dipole prediction:  41%|████      | 12223/30000 [00:10<00:14, 1186.68it/s]
+Dipole prediction:  41%|████      | 12351/30000 [00:10<00:14, 1212.22it/s]
+Dipole prediction:  42%|████▏     | 12473/30000 [00:10<00:14, 1191.58it/s]
+Dipole prediction:  42%|████▏     | 12620/30000 [00:10<00:13, 1270.38it/s]
+Dipole prediction:  42%|████▏     | 12748/30000 [00:11<00:13, 1240.60it/s]
+Dipole prediction:  43%|████▎     | 12873/30000 [00:11<00:14, 1199.62it/s]
+Dipole prediction:  43%|████▎     | 13003/30000 [00:11<00:13, 1227.74it/s]
+Dipole prediction:  44%|████▍     | 13127/30000 [00:11<00:14, 1182.20it/s]
+Dipole prediction:  44%|████▍     | 13246/30000 [00:11<00:14, 1157.57it/s]
+Dipole prediction:  45%|████▍     | 13363/30000 [00:11<00:14, 1122.35it/s]
+Dipole prediction:  45%|████▍     | 13491/30000 [00:11<00:14, 1166.46it/s]
+Dipole prediction:  45%|████▌     | 13609/30000 [00:11<00:14, 1109.94it/s]
+Dipole prediction:  46%|████▌     | 13721/30000 [00:11<00:15, 1049.59it/s]
+Dipole prediction:  46%|████▌     | 13827/30000 [00:12<00:15, 1027.94it/s]
+Dipole prediction:  46%|████▋     | 13931/30000 [00:12<00:16, 996.02it/s] 
+Dipole prediction:  47%|████▋     | 14044/30000 [00:12<00:15, 1031.61it/s]
+Dipole prediction:  47%|████▋     | 14160/30000 [00:12<00:14, 1066.75it/s]
+Dipole prediction:  48%|████▊     | 14288/30000 [00:12<00:14, 1121.75it/s]
+Dipole prediction:  48%|████▊     | 14415/30000 [00:12<00:13, 1159.61it/s]
+Dipole prediction:  48%|████▊     | 14532/30000 [00:12<00:13, 1158.55it/s]
+Dipole prediction:  49%|████▉     | 14649/30000 [00:12<00:13, 1128.94it/s]
+Dipole prediction:  49%|████▉     | 14763/30000 [00:12<00:14, 1083.42it/s]
+Dipole prediction:  50%|████▉     | 14872/30000 [00:13<00:14, 1063.70it/s]
+Dipole prediction:  50%|████▉     | 14979/30000 [00:13<00:14, 1040.66it/s]
+Dipole prediction:  50%|█████     | 15084/30000 [00:13<00:14, 1010.57it/s]
+Dipole prediction:  51%|█████     | 15197/30000 [00:13<00:14, 1042.52it/s]
+Dipole prediction:  51%|█████     | 15308/30000 [00:13<00:13, 1061.70it/s]
+Dipole prediction:  51%|█████▏    | 15426/30000 [00:13<00:13, 1090.53it/s]
+Dipole prediction:  52%|█████▏    | 15568/30000 [00:13<00:12, 1186.40it/s]
+Dipole prediction:  52%|█████▏    | 15688/30000 [00:13<00:12, 1146.93it/s]
+Dipole prediction:  53%|█████▎    | 15823/30000 [00:13<00:11, 1203.58it/s]
+Dipole prediction:  53%|█████▎    | 15944/30000 [00:13<00:11, 1195.90it/s]
+Dipole prediction:  54%|█████▎    | 16065/30000 [00:14<00:12, 1152.48it/s]
+Dipole prediction:  54%|█████▍    | 16181/30000 [00:14<00:12, 1077.14it/s]
+Dipole prediction:  54%|█████▍    | 16290/30000 [00:14<00:13, 1051.92it/s]
+Dipole prediction:  55%|█████▍    | 16421/30000 [00:14<00:12, 1122.75it/s]
+Dipole prediction:  55%|█████▌    | 16559/30000 [00:14<00:11, 1195.49it/s]
+Dipole prediction:  56%|█████▌    | 16680/30000 [00:14<00:11, 1141.01it/s]
+Dipole prediction:  56%|█████▌    | 16815/30000 [00:14<00:10, 1199.82it/s]
+Dipole prediction:  57%|█████▋    | 16953/30000 [00:14<00:10, 1250.15it/s]
+Dipole prediction:  57%|█████▋    | 17080/30000 [00:14<00:10, 1233.92it/s]
+Dipole prediction:  57%|█████▋    | 17205/30000 [00:15<00:12, 1061.49it/s]
+Dipole prediction:  58%|█████▊    | 17327/30000 [00:15<00:11, 1098.57it/s]
+Dipole prediction:  58%|█████▊    | 17456/30000 [00:15<00:10, 1145.67it/s]
+Dipole prediction:  59%|█████▊    | 17574/30000 [00:15<00:11, 1057.47it/s]
+Dipole prediction:  59%|█████▉    | 17683/30000 [00:15<00:12, 1010.50it/s]
+Dipole prediction:  59%|█████▉    | 17806/30000 [00:15<00:11, 1065.65it/s]
+Dipole prediction:  60%|█████▉    | 17915/30000 [00:15<00:11, 1023.64it/s]
+Dipole prediction:  60%|██████    | 18020/30000 [00:16<00:15, 787.06it/s] 
+Dipole prediction:  60%|██████    | 18108/30000 [00:16<00:14, 802.02it/s]
+Dipole prediction:  61%|██████    | 18206/30000 [00:16<00:13, 844.77it/s]
+Dipole prediction:  61%|██████    | 18320/30000 [00:16<00:12, 920.88it/s]
+Dipole prediction:  62%|██████▏   | 18460/30000 [00:16<00:10, 1049.18it/s]
+Dipole prediction:  62%|██████▏   | 18570/30000 [00:16<00:11, 1027.00it/s]
+Dipole prediction:  62%|██████▏   | 18692/30000 [00:16<00:10, 1080.34it/s]
+Dipole prediction:  63%|██████▎   | 18803/30000 [00:16<00:11, 970.70it/s] 
+Dipole prediction:  63%|██████▎   | 18934/30000 [00:16<00:10, 1060.06it/s]
+Dipole prediction:  64%|██████▎   | 19055/30000 [00:16<00:09, 1099.70it/s]
+Dipole prediction:  64%|██████▍   | 19169/30000 [00:17<00:10, 1077.22it/s]
+Dipole prediction:  64%|██████▍   | 19304/30000 [00:17<00:09, 1151.89it/s]
+Dipole prediction:  65%|██████▍   | 19422/30000 [00:17<00:09, 1111.48it/s]
+Dipole prediction:  65%|██████▌   | 19535/30000 [00:17<00:09, 1067.66it/s]
+Dipole prediction:  66%|██████▌   | 19662/30000 [00:17<00:09, 1116.99it/s]
+Dipole prediction:  66%|██████▌   | 19775/30000 [00:17<00:09, 1086.99it/s]
+Dipole prediction:  66%|██████▋   | 19903/30000 [00:17<00:08, 1140.95it/s]
+Dipole prediction:  67%|██████▋   | 20043/30000 [00:17<00:08, 1213.28it/s]
+Dipole prediction:  67%|██████▋   | 20168/30000 [00:17<00:08, 1222.00it/s]
+Dipole prediction:  68%|██████▊   | 20291/30000 [00:18<00:08, 1085.97it/s]
+Dipole prediction:  68%|██████▊   | 20412/30000 [00:18<00:08, 1119.05it/s]
+Dipole prediction:  68%|██████▊   | 20538/30000 [00:18<00:08, 1152.93it/s]
+Dipole prediction:  69%|██████▉   | 20656/30000 [00:18<00:08, 1059.78it/s]
+Dipole prediction:  69%|██████▉   | 20765/30000 [00:18<00:09, 1011.88it/s]
+Dipole prediction:  70%|██████▉   | 20909/30000 [00:18<00:08, 1125.30it/s]
+Dipole prediction:  70%|███████   | 21033/30000 [00:18<00:07, 1151.24it/s]
+Dipole prediction:  71%|███████   | 21151/30000 [00:18<00:08, 1025.12it/s]
+Dipole prediction:  71%|███████   | 21258/30000 [00:18<00:08, 1022.96it/s]
+Dipole prediction:  71%|███████   | 21363/30000 [00:19<00:08, 1016.92it/s]
+Dipole prediction:  72%|███████▏  | 21498/30000 [00:19<00:07, 1107.55it/s]
+Dipole prediction:  72%|███████▏  | 21615/30000 [00:19<00:07, 1124.19it/s]
+Dipole prediction:  72%|███████▎  | 21750/30000 [00:19<00:06, 1188.57it/s]
+Dipole prediction:  73%|███████▎  | 21875/30000 [00:19<00:06, 1205.27it/s]
+Dipole prediction:  73%|███████▎  | 21997/30000 [00:19<00:07, 1102.76it/s]
+Dipole prediction:  74%|███████▎  | 22122/30000 [00:19<00:06, 1143.38it/s]
+Dipole prediction:  74%|███████▍  | 22257/30000 [00:19<00:06, 1201.20it/s]
+Dipole prediction:  75%|███████▍  | 22379/30000 [00:19<00:06, 1116.82it/s]
+Dipole prediction:  75%|███████▌  | 22515/30000 [00:20<00:06, 1182.64it/s]
+Dipole prediction:  76%|███████▌  | 22653/30000 [00:20<00:05, 1237.13it/s]
+Dipole prediction:  76%|███████▌  | 22779/30000 [00:20<00:06, 1184.04it/s]
+Dipole prediction:  76%|███████▋  | 22900/30000 [00:20<00:06, 1018.89it/s]
+Dipole prediction:  77%|███████▋  | 23036/30000 [00:20<00:06, 1105.58it/s]
+Dipole prediction:  77%|███████▋  | 23169/30000 [00:20<00:05, 1164.35it/s]
+Dipole prediction:  78%|███████▊  | 23311/30000 [00:20<00:05, 1233.87it/s]
+Dipole prediction:  78%|███████▊  | 23454/30000 [00:20<00:05, 1281.55it/s]
+Dipole prediction:  79%|███████▊  | 23585/30000 [00:20<00:04, 1283.58it/s]
+Dipole prediction:  79%|███████▉  | 23716/30000 [00:21<00:05, 1202.22it/s]
+Dipole prediction:  79%|███████▉  | 23841/30000 [00:21<00:05, 1214.42it/s]
+Dipole prediction:  80%|███████▉  | 23965/30000 [00:21<00:05, 1197.41it/s]
+Dipole prediction:  80%|████████  | 24086/30000 [00:21<00:05, 1143.39it/s]
+Dipole prediction:  81%|████████  | 24204/30000 [00:21<00:05, 1153.08it/s]
+Dipole prediction:  81%|████████  | 24348/30000 [00:21<00:04, 1229.07it/s]
+Dipole prediction:  82%|████████▏ | 24484/30000 [00:21<00:04, 1266.44it/s]
+Dipole prediction:  82%|████████▏ | 24612/30000 [00:21<00:04, 1176.97it/s]
+Dipole prediction:  82%|████████▏ | 24732/30000 [00:21<00:04, 1110.52it/s]
+Dipole prediction:  83%|████████▎ | 24861/30000 [00:22<00:04, 1156.89it/s]
+Dipole prediction:  83%|████████▎ | 24979/30000 [00:22<00:04, 1119.22it/s]
+Dipole prediction:  84%|████████▎ | 25093/30000 [00:22<00:04, 1097.76it/s]
+Dipole prediction:  84%|████████▍ | 25207/30000 [00:22<00:04, 1108.42it/s]
+Dipole prediction:  84%|████████▍ | 25319/30000 [00:22<00:04, 1097.70it/s]
+Dipole prediction:  85%|████████▍ | 25444/30000 [00:22<00:03, 1140.84it/s]
+Dipole prediction:  85%|████████▌ | 25582/30000 [00:22<00:03, 1209.19it/s]
+Dipole prediction:  86%|████████▌ | 25705/30000 [00:22<00:03, 1210.37it/s]
+Dipole prediction:  86%|████████▌ | 25827/30000 [00:22<00:03, 1112.23it/s]
+Dipole prediction:  86%|████████▋ | 25940/30000 [00:22<00:03, 1112.21it/s]
+Dipole prediction:  87%|████████▋ | 26053/30000 [00:23<00:03, 1105.05it/s]
+Dipole prediction:  87%|████████▋ | 26165/30000 [00:23<00:03, 1104.23it/s]
+Dipole prediction:  88%|████████▊ | 26292/30000 [00:23<00:03, 1149.09it/s]
+Dipole prediction:  88%|████████▊ | 26408/30000 [00:23<00:03, 1099.08it/s]
+Dipole prediction:  88%|████████▊ | 26533/30000 [00:23<00:03, 1141.39it/s]
+Dipole prediction:  89%|████████▉ | 26648/30000 [00:23<00:03, 1058.70it/s]
+Dipole prediction:  89%|████████▉ | 26756/30000 [00:23<00:03, 1000.54it/s]
+Dipole prediction:  90%|████████▉ | 26893/30000 [00:23<00:02, 1099.93it/s]
+Dipole prediction:  90%|█████████ | 27006/30000 [00:23<00:02, 1070.43it/s]
+Dipole prediction:  90%|█████████ | 27145/30000 [00:24<00:02, 1158.90it/s]
+Dipole prediction:  91%|█████████ | 27268/30000 [00:24<00:02, 1177.66it/s]
+Dipole prediction:  91%|█████████▏| 27400/30000 [00:24<00:02, 1212.12it/s]
+Dipole prediction:  92%|█████████▏| 27523/30000 [00:24<00:02, 1110.55it/s]
+Dipole prediction:  92%|█████████▏| 27637/30000 [00:24<00:02, 1075.58it/s]
+Dipole prediction:  92%|█████████▏| 27749/30000 [00:24<00:02, 1084.37it/s]
+Dipole prediction:  93%|█████████▎| 27859/30000 [00:24<00:02, 900.35it/s] 
+Dipole prediction:  93%|█████████▎| 27977/30000 [00:24<00:02, 968.68it/s]
+Dipole prediction:  94%|█████████▎| 28096/30000 [00:25<00:01, 1026.52it/s]
+Dipole prediction:  94%|█████████▍| 28204/30000 [00:25<00:01, 1015.28it/s]
+Dipole prediction:  94%|█████████▍| 28319/30000 [00:25<00:01, 1051.08it/s]
+Dipole prediction:  95%|█████████▍| 28427/30000 [00:25<00:01, 1033.93it/s]
+Dipole prediction:  95%|█████████▌| 28551/30000 [00:25<00:01, 1091.99it/s]
+Dipole prediction:  96%|█████████▌| 28688/30000 [00:25<00:01, 1171.52it/s]
+Dipole prediction:  96%|█████████▌| 28807/30000 [00:25<00:01, 1135.04it/s]
+Dipole prediction:  96%|█████████▋| 28931/30000 [00:25<00:00, 1159.96it/s]
+Dipole prediction:  97%|█████████▋| 29048/30000 [00:25<00:00, 1022.02it/s]
+Dipole prediction:  97%|█████████▋| 29195/30000 [00:25<00:00, 1140.16it/s]
+Dipole prediction:  98%|█████████▊| 29323/30000 [00:26<00:00, 1172.98it/s]
+Dipole prediction:  98%|█████████▊| 29444/30000 [00:26<00:00, 1133.39it/s]
+Dipole prediction:  99%|█████████▊| 29560/30000 [00:26<00:00, 1121.20it/s]
+Dipole prediction:  99%|█████████▉| 29686/30000 [00:26<00:00, 1159.30it/s]
+Dipole prediction:  99%|█████████▉| 29804/30000 [00:26<00:00, 1118.86it/s]
+Dipole prediction: 100%|█████████▉| 29931/30000 [00:26<00:00, 1159.90it/s]
+Dipole prediction: 100%|██████████| 30000/30000 [00:26<00:00, 1123.69it/s]
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:835: UserWarning: Glyph 8315 (\N{SUPERSCRIPT MINUS}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:835: UserWarning: Glyph 8324 (\N{SUBSCRIPT FOUR}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:835: UserWarning: Glyph 8326 (\N{SUBSCRIPT SIX}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py:835: UserWarning: Glyph 8322 (\N{SUBSCRIPT TWO}) missing from font(s) Arial.
+  fig.savefig(output_path, dpi=200, bbox_inches='tight')
+
+

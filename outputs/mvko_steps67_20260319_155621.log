@@ -1,0 +1,478 @@
+PSI4 1.10 available
+  Resuming from outputs/mvko_20260319_081314/state.json
+
+======================================================================
+  MVKO ML-PES IR SPECTRUM WORKFLOW
+======================================================================
+  Steps to run : [6, 7]
+  Output dir   : outputs/mvko_20260319_155634
+  Molecule     : C4H6O2  (12 atoms)
+  Description  : Methyl vinyl ketone oxide (MVKO) — Criegee intermediate from MVK ozonolysis. Initial guess geometry; optimize with PSI4 before MD. B3LYP/6-31G*, singlet ground state.
+
+──────────────────────────────────────────────────────────────────────
+[Step 6] Adaptive refinement loop  (max 5 rounds, conv=0.5 kcal/mol)
+──────────────────────────────────────────────────────────────────────
+
+  ── Adaptive round 1/5 ──
+Loaded trajectory from outputs/mvko_20260319_081314/combined_training_data.npz (npz format)
+  Frames: 904, Atoms: 12
+
+  [Round 1] ML-MD exploration (300 steps, 500 K) ...
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=200)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.31864739          +0.0000          0.005400     0.01000
+       4     -306.31865185          -0.0028          0.004807     0.01728
+
+  Converged in 4 steps  ΔE = -0.0028 kcal/mol  |F|_max = 0.004807 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.0028 kcal/mol from starting frame
+bakken MD:   0%|          | 0/300 [00:00<?, ?step/s]bakken MD:   1%|          | 3/300 [00:00<00:13, 21.25step/s]bakken MD:   2%|▏         | 6/300 [00:00<00:13, 22.02step/s]bakken MD:   3%|▎         | 9/300 [00:00<00:12, 22.48step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.61step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.61step/s, E=-192215.9 kcal/mol, T=434 K]bakken MD:   5%|▌         | 15/300 [00:00<00:12, 22.69step/s, E=-192215.9 kcal/mol, T=434 K]bakken MD:   6%|▌         | 18/300 [00:00<00:12, 22.73step/s, E=-192215.9 kcal/mol, T=434 K]bakken MD:   7%|▋         | 21/300 [00:00<00:12, 22.69step/s, E=-192215.9 kcal/mol, T=434 K]bakken MD:   8%|▊         | 24/300 [00:01<00:12, 22.67step/s, E=-192215.9 kcal/mol, T=434 K]bakken MD:   9%|▉         | 27/300 [00:01<00:11, 22.79step/s, E=-192215.9 kcal/mol, T=434 K]bakken MD:   9%|▉         | 27/300 [00:01<00:11, 22.79step/s, E=-192228.6 kcal/mol, T=1925 K]bakken MD:  10%|█         | 30/300 [00:01<00:11, 22.73step/s, E=-192228.6 kcal/mol, T=1925 K]bakken MD:  11%|█         | 33/300 [00:01<00:11, 22.64step/s, E=-192228.6 kcal/mol, T=1925 K]bakken MD:  12%|█▏        | 36/300 [00:01<00:11, 22.62step/s, E=-192228.6 kcal/mol, T=1925 K]bakken MD:  13%|█▎        | 39/300 [00:01<00:11, 22.54step/s, E=-192228.6 kcal/mol, T=1925 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.58step/s, E=-192228.6 kcal/mol, T=1925 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.58step/s, E=-192307.4 kcal/mol, T=10947 K]bakken MD:  15%|█▌        | 45/300 [00:01<00:11, 22.62step/s, E=-192307.4 kcal/mol, T=10947 K]bakken MD:  16%|█▌        | 48/300 [00:02<00:11, 22.67step/s, E=-192307.4 kcal/mol, T=10947 K]bakken MD:  17%|█▋        | 51/300 [00:02<00:10, 22.72step/s, E=-192307.4 kcal/mol, T=10947 K]bakken MD:  18%|█▊        | 54/300 [00:02<00:10, 22.75step/s, E=-192307.4 kcal/mol, T=10947 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 22.78step/s, E=-192307.4 kcal/mol, T=10947 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 22.78step/s, E=-192300.1 kcal/mol, T=9309 K] bakken MD:  20%|██        | 60/300 [00:02<00:10, 22.63step/s, E=-192300.1 kcal/mol, T=9309 K]bakken MD:  21%|██        | 63/300 [00:02<00:10, 22.54step/s, E=-192300.1 kcal/mol, T=9309 K]bakken MD:  22%|██▏       | 66/300 [00:02<00:10, 22.66step/s, E=-192300.1 kcal/mol, T=9309 K]bakken MD:  23%|██▎       | 69/300 [00:03<00:10, 22.61step/s, E=-192300.1 kcal/mol, T=9309 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:10, 22.70step/s, E=-192300.1 kcal/mol, T=9309 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:10, 22.70step/s, E=-192280.1 kcal/mol, T=6347 K]bakken MD:  25%|██▌       | 75/300 [00:03<00:09, 22.90step/s, E=-192280.1 kcal/mol, T=6347 K]bakken MD:  26%|██▌       | 78/300 [00:03<00:09, 22.85step/s, E=-192280.1 kcal/mol, T=6347 K]bakken MD:  27%|██▋       | 81/300 [00:03<00:09, 22.92step/s, E=-192280.1 kcal/mol, T=6347 K]bakken MD:  28%|██▊       | 84/300 [00:03<00:09, 22.85step/s, E=-192280.1 kcal/mol, T=6347 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.74step/s, E=-192280.1 kcal/mol, T=6347 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.74step/s, E=-192272.2 kcal/mol, T=5025 K]bakken MD:  30%|███       | 90/300 [00:03<00:09, 22.67step/s, E=-192272.2 kcal/mol, T=5025 K]bakken MD:  31%|███       | 93/300 [00:04<00:09, 22.75step/s, E=-192272.2 kcal/mol, T=5025 K]bakken MD:  32%|███▏      | 96/300 [00:04<00:08, 22.86step/s, E=-192272.2 kcal/mol, T=5025 K]bakken MD:  33%|███▎      | 99/300 [00:04<00:08, 22.83step/s, E=-192272.2 kcal/mol, T=5025 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 22.81step/s, E=-192272.2 kcal/mol, T=5025 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 22.81step/s, E=-192295.7 kcal/mol, T=7431 K]bakken MD:  35%|███▌      | 105/300 [00:04<00:08, 22.78step/s, E=-192295.7 kcal/mol, T=7431 K]bakken MD:  36%|███▌      | 108/300 [00:04<00:08, 22.75step/s, E=-192295.7 kcal/mol, T=7431 K]bakken MD:  37%|███▋      | 111/300 [00:04<00:08, 22.68step/s, E=-192295.7 kcal/mol, T=7431 K]bakken MD:  38%|███▊      | 114/300 [00:05<00:08, 21.80step/s, E=-192295.7 kcal/mol, T=7431 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:08, 22.17step/s, E=-192295.7 kcal/mol, T=7431 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:08, 22.17step/s, E=-192295.3 kcal/mol, T=6884 K]bakken MD:  40%|████      | 120/300 [00:05<00:08, 22.43step/s, E=-192295.3 kcal/mol, T=6884 K]bakken MD:  41%|████      | 123/300 [00:05<00:07, 22.54step/s, E=-192295.3 kcal/mol, T=6884 K]bakken MD:  42%|████▏     | 126/300 [00:05<00:07, 22.59step/s, E=-192295.3 kcal/mol, T=6884 K]bakken MD:  43%|████▎     | 129/300 [00:05<00:07, 22.70step/s, E=-192295.3 kcal/mol, T=6884 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.69step/s, E=-192295.3 kcal/mol, T=6884 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.69step/s, E=-192321.0 kcal/mol, T=9366 K]bakken MD:  45%|████▌     | 135/300 [00:05<00:07, 22.63step/s, E=-192321.0 kcal/mol, T=9366 K]bakken MD:  46%|████▌     | 138/300 [00:06<00:07, 22.75step/s, E=-192321.0 kcal/mol, T=9366 K]bakken MD:  47%|████▋     | 141/300 [00:06<00:06, 22.87step/s, E=-192321.0 kcal/mol, T=9366 K]bakken MD:  48%|████▊     | 144/300 [00:06<00:06, 22.90step/s, E=-192321.0 kcal/mol, T=9366 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 22.83step/s, E=-192321.0 kcal/mol, T=9366 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 22.83step/s, E=-192307.3 kcal/mol, T=7146 K]bakken MD:  50%|█████     | 150/300 [00:06<00:06, 22.86step/s, E=-192307.3 kcal/mol, T=7146 K]bakken MD:  51%|█████     | 153/300 [00:06<00:06, 22.80step/s, E=-192307.3 kcal/mol, T=7146 K]bakken MD:  52%|█████▏    | 156/300 [00:06<00:06, 22.66step/s, E=-192307.3 kcal/mol, T=7146 K]bakken MD:  53%|█████▎    | 159/300 [00:07<00:06, 22.68step/s, E=-192307.3 kcal/mol, T=7146 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:06, 22.66step/s, E=-192307.3 kcal/mol, T=7146 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:06, 22.66step/s, E=-192307.5 kcal/mol, T=6632 K]bakken MD:  55%|█████▌    | 165/300 [00:07<00:05, 22.78step/s, E=-192307.5 kcal/mol, T=6632 K]bakken MD:  56%|█████▌    | 168/300 [00:07<00:05, 22.74step/s, E=-192307.5 kcal/mol, T=6632 K]bakken MD:  57%|█████▋    | 171/300 [00:07<00:05, 22.74step/s, E=-192307.5 kcal/mol, T=6632 K]bakken MD:  58%|█████▊    | 174/300 [00:07<00:05, 22.84step/s, E=-192307.5 kcal/mol, T=6632 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 22.80step/s, E=-192307.5 kcal/mol, T=6632 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 22.80step/s, E=-192303.8 kcal/mol, T=5789 K]bakken MD:  60%|██████    | 180/300 [00:07<00:05, 22.90step/s, E=-192303.8 kcal/mol, T=5789 K]bakken MD:  61%|██████    | 183/300 [00:08<00:05, 22.86step/s, E=-192303.8 kcal/mol, T=5789 K]bakken MD:  62%|██████▏   | 186/300 [00:08<00:04, 22.95step/s, E=-192303.8 kcal/mol, T=5789 K]bakken MD:  63%|██████▎   | 189/300 [00:08<00:04, 22.97step/s, E=-192303.8 kcal/mol, T=5789 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.85step/s, E=-192303.8 kcal/mol, T=5789 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.85step/s, E=-192337.8 kcal/mol, T=9223 K]bakken MD:  65%|██████▌   | 195/300 [00:08<00:04, 22.72step/s, E=-192337.8 kcal/mol, T=9223 K]bakken MD:  66%|██████▌   | 198/300 [00:08<00:04, 22.80step/s, E=-192337.8 kcal/mol, T=9223 K]bakken MD:  67%|██████▋   | 201/300 [00:08<00:04, 22.82step/s, E=-192337.8 kcal/mol, T=9223 K]bakken MD:  68%|██████▊   | 204/300 [00:08<00:04, 22.73step/s, E=-192337.8 kcal/mol, T=9223 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 22.81step/s, E=-192337.8 kcal/mol, T=9223 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 22.81step/s, E=-192320.1 kcal/mol, T=6562 K]bakken MD:  70%|███████   | 210/300 [00:09<00:03, 22.98step/s, E=-192320.1 kcal/mol, T=6562 K]bakken MD:  71%|███████   | 213/300 [00:09<00:03, 22.95step/s, E=-192320.1 kcal/mol, T=6562 K]bakken MD:  72%|███████▏  | 216/300 [00:09<00:03, 22.87step/s, E=-192320.1 kcal/mol, T=6562 K]bakken MD:  73%|███████▎  | 219/300 [00:09<00:03, 22.89step/s, E=-192320.1 kcal/mol, T=6562 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:03, 22.92step/s, E=-192320.1 kcal/mol, T=6562 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:03, 22.92step/s, E=-192327.5 kcal/mol, T=7001 K]bakken MD:  75%|███████▌  | 225/300 [00:09<00:03, 22.84step/s, E=-192327.5 kcal/mol, T=7001 K]bakken MD:  76%|███████▌  | 228/300 [00:10<00:03, 22.70step/s, E=-192327.5 kcal/mol, T=7001 K]bakken MD:  77%|███████▋  | 231/300 [00:10<00:03, 22.87step/s, E=-192327.5 kcal/mol, T=7001 K]bakken MD:  78%|███████▊  | 234/300 [00:10<00:02, 22.98step/s, E=-192327.5 kcal/mol, T=7001 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 22.91step/s, E=-192327.5 kcal/mol, T=7001 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 22.91step/s, E=-192317.8 kcal/mol, T=5299 K]bakken MD:  80%|████████  | 240/300 [00:10<00:02, 22.93step/s, E=-192317.8 kcal/mol, T=5299 K]bakken MD:  81%|████████  | 243/300 [00:10<00:02, 22.86step/s, E=-192317.8 kcal/mol, T=5299 K]bakken MD:  82%|████████▏ | 246/300 [00:10<00:02, 22.87step/s, E=-192317.8 kcal/mol, T=5299 K]bakken MD:  83%|████████▎ | 249/300 [00:10<00:02, 22.74step/s, E=-192317.8 kcal/mol, T=5299 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 22.78step/s, E=-192317.8 kcal/mol, T=5299 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 22.78step/s, E=-192312.0 kcal/mol, T=4262 K]bakken MD:  85%|████████▌ | 255/300 [00:11<00:01, 22.94step/s, E=-192312.0 kcal/mol, T=4262 K]bakken MD:  86%|████████▌ | 258/300 [00:11<00:01, 22.88step/s, E=-192312.0 kcal/mol, T=4262 K]bakken MD:  87%|████████▋ | 261/300 [00:11<00:01, 22.76step/s, E=-192312.0 kcal/mol, T=4262 K]bakken MD:  88%|████████▊ | 264/300 [00:11<00:01, 22.81step/s, E=-192312.0 kcal/mol, T=4262 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.88step/s, E=-192312.0 kcal/mol, T=4262 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.88step/s, E=-192339.8 kcal/mol, T=7170 K]bakken MD:  90%|█████████ | 270/300 [00:11<00:01, 22.87step/s, E=-192339.8 kcal/mol, T=7170 K]bakken MD:  91%|█████████ | 273/300 [00:12<00:01, 22.68step/s, E=-192339.8 kcal/mol, T=7170 K]bakken MD:  92%|█████████▏| 276/300 [00:12<00:01, 22.84step/s, E=-192339.8 kcal/mol, T=7170 K]bakken MD:  93%|█████████▎| 279/300 [00:12<00:00, 22.99step/s, E=-192339.8 kcal/mol, T=7170 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 22.98step/s, E=-192339.8 kcal/mol, T=7170 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 22.98step/s, E=-192331.3 kcal/mol, T=5800 K]bakken MD:  95%|█████████▌| 285/300 [00:12<00:00, 22.86step/s, E=-192331.3 kcal/mol, T=5800 K]bakken MD:  96%|█████████▌| 288/300 [00:12<00:00, 22.78step/s, E=-192331.3 kcal/mol, T=5800 K]bakken MD:  97%|█████████▋| 291/300 [00:12<00:00, 22.78step/s, E=-192331.3 kcal/mol, T=5800 K]bakken MD:  98%|█████████▊| 294/300 [00:12<00:00, 22.74step/s, E=-192331.3 kcal/mol, T=5800 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 22.00step/s, E=-192331.3 kcal/mol, T=5800 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 22.00step/s, E=-192340.8 kcal/mol, T=6507 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.30step/s, E=-192340.8 kcal/mol, T=6507 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.72step/s, E=-192340.8 kcal/mol, T=6507 K]
+  [Round 1] PSI4 single-points on 20 frames (ML energy range = 132.82 kcal/mol) ...
+    frame    2  E_ML=-192216.23  E_PSI4=-192216.15  err=0.079 kcal/mol
+    frame    3  E_ML=-192216.06  E_PSI4=-192215.71  err=0.350 kcal/mol
+    frame    4  E_ML=-192216.04  E_PSI4=-192215.35  err=0.699 kcal/mol
+    frame    5  E_ML=-192215.97  E_PSI4=-192214.89  err=1.078 kcal/mol
+    frame    6  E_ML=-192215.89  E_PSI4=-192214.37  err=1.512 kcal/mol
+    frame    7  E_ML=-192216.00  E_PSI4=-192213.97  err=2.035 kcal/mol
+    frame    8  E_ML=-192216.31  E_PSI4=-192213.68  err=2.628 kcal/mol
+    frame    9  E_ML=-192216.57  E_PSI4=-192213.30  err=3.263 kcal/mol
+    frame   10  E_ML=-192216.53  E_PSI4=-192212.59  err=3.937 kcal/mol
+    frame   11  E_ML=-192216.20  E_PSI4=-192211.52  err=4.674 kcal/mol
+    frame   12  E_ML=-192215.86  E_PSI4=-192210.36  err=5.490 kcal/mol
+    frame   13  E_ML=-192215.79  E_PSI4=-192209.42  err=6.377 kcal/mol
+    frame   14  E_ML=-192215.95  E_PSI4=-192208.65  err=7.294 kcal/mol
+    frame   15  E_ML=-192216.12  E_PSI4=-192207.90  err=8.212 kcal/mol
+    frame   16  E_ML=-192216.36  E_PSI4=-192207.19  err=9.164 kcal/mol
+    frame  203  E_ML=-192325.64  E_PSI4=-191905.60  err=420.039 kcal/mol
+    frame  252  E_ML=-192313.83  E_PSI4=-191918.15  err=395.678 kcal/mol
+    frame  263  E_ML=-192334.46  E_PSI4=-191950.05  err=384.413 kcal/mol
+    frame  280  E_ML=-192323.58  E_PSI4=-191948.72  err=374.862 kcal/mol
+    frame  283  E_ML=-192329.36  E_PSI4=-191940.81  err=388.552 kcal/mol
+  [Round 1] mean |ΔE| = 101.017 kcal/mol  (20 PSI4 frames)
+Saved trajectory to outputs/mvko_20260319_155634/adapt_round1.npz (npz format)
+Loaded trajectory from outputs/mvko_20260319_081314/combined_training_data.npz (npz format)
+  Frames: 904, Atoms: 12
+Saved trajectory to outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/924 [00:00<?, ?it/s]Computing descriptors:  39%|███▉      | 360/924 [00:00<00:00, 3599.10it/s]Computing descriptors:  78%|███████▊  | 722/924 [00:00<00:00, 3610.31it/s]Computing descriptors: 100%|██████████| 924/924 [00:00<00:00, 3611.37it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/20 [00:00<?, ?it/s]Grid search:  20%|██        | 4/20 [00:00<00:00, 39.43it/s]Grid search:  40%|████      | 8/20 [00:00<00:00, 35.86it/s]Grid search:  70%|███████   | 14/20 [00:00<00:00, 45.12it/s]Grid search:  95%|█████████▌| 19/20 [00:00<00:00, 46.61it/s]Grid search: 100%|██████████| 20/20 [00:00<00:00, 44.49it/s]
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0002   0.00         4.3298
+      0.0005   0.00         4.4715
+      0.0005   0.00         4.6594
+      0.0005   0.00         4.7270
+      0.0010   0.00         4.7479
+      0.0010   0.00         4.9430
+      0.0010   0.00         5.2416
+      0.0002   0.00         5.2855
+      0.0002   0.00         5.5691
+      0.0005   0.01         5.8507
+      0.0010   0.01         5.9484
+      0.0020   0.00         6.8038
+      0.0020   0.00         6.8737
+      0.0020   0.00         7.0452
+      0.0002   0.01         7.4637
+      0.0020   0.01         7.5636
+      0.0050   0.00        12.9809
+      0.0050   0.00        13.0023
+      0.0050   0.00        13.0367
+      0.0050   0.01        13.2444
+  ML-PES trained  γ=0.0002  α=0.0001  RMSE=4.3298 kcal/mol  (924 frames)
+  Round 1 complete  mean|ΔE|=101.017 kcal/mol  total frames=924
+
+  ── Adaptive round 2/5 ──
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 924, Atoms: 12
+
+  [Round 2] ML-MD exploration (300 steps, 500 K) ...
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=200)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.31569768          +0.0000          0.046945     0.01000
+      20     -306.32211731          -4.0284          0.047623     0.15000
+      40     -306.33866327         -14.4111          0.044736     0.15000
+      60     -306.35051090         -21.8456          0.028758     0.15000
+      80     -306.35716988         -26.0242          0.021885     0.15000
+     100     -306.36196394         -29.0325          0.017432     0.15000
+     120     -306.36612411         -31.6431          0.015242     0.15000
+     140     -306.37020710         -34.2052          0.016512     0.15000
+     160     -306.37455399         -36.9329          0.018037     0.15000
+     180     -306.37945535         -40.0085          0.019900     0.15000
+     200     -306.38523587         -43.6359          0.022247     0.15000
+
+  Did not converge in 200 steps  ΔE = -43.8362 kcal/mol  |F|_max = 0.022381 Ha/Å  (continuing anyway)
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -43.8362 kcal/mol from starting frame
+bakken MD:   0%|          | 0/300 [00:00<?, ?step/s]bakken MD:   1%|          | 3/300 [00:00<00:13, 22.55step/s]bakken MD:   2%|▏         | 6/300 [00:00<00:13, 22.45step/s]bakken MD:   3%|▎         | 9/300 [00:00<00:12, 22.56step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.45step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.45step/s, E=-192272.5 kcal/mol, T=2037 K]bakken MD:   5%|▌         | 15/300 [00:00<00:12, 22.42step/s, E=-192272.5 kcal/mol, T=2037 K]bakken MD:   6%|▌         | 18/300 [00:00<00:12, 22.71step/s, E=-192272.5 kcal/mol, T=2037 K]bakken MD:   7%|▋         | 21/300 [00:00<00:12, 22.88step/s, E=-192272.5 kcal/mol, T=2037 K]bakken MD:   8%|▊         | 24/300 [00:01<00:12, 22.74step/s, E=-192272.5 kcal/mol, T=2037 K]bakken MD:   9%|▉         | 27/300 [00:01<00:12, 22.73step/s, E=-192272.5 kcal/mol, T=2037 K]bakken MD:   9%|▉         | 27/300 [00:01<00:12, 22.73step/s, E=-192308.1 kcal/mol, T=6008 K]bakken MD:  10%|█         | 30/300 [00:01<00:11, 22.65step/s, E=-192308.1 kcal/mol, T=6008 K]bakken MD:  11%|█         | 33/300 [00:01<00:11, 22.48step/s, E=-192308.1 kcal/mol, T=6008 K]bakken MD:  12%|█▏        | 36/300 [00:01<00:11, 22.30step/s, E=-192308.1 kcal/mol, T=6008 K]bakken MD:  13%|█▎        | 39/300 [00:01<00:11, 22.42step/s, E=-192308.1 kcal/mol, T=6008 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.57step/s, E=-192308.1 kcal/mol, T=6008 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.57step/s, E=-192313.5 kcal/mol, T=6244 K]bakken MD:  15%|█▌        | 45/300 [00:01<00:11, 22.56step/s, E=-192313.5 kcal/mol, T=6244 K]bakken MD:  16%|█▌        | 48/300 [00:02<00:11, 22.56step/s, E=-192313.5 kcal/mol, T=6244 K]bakken MD:  17%|█▋        | 51/300 [00:02<00:11, 22.56step/s, E=-192313.5 kcal/mol, T=6244 K]bakken MD:  18%|█▊        | 54/300 [00:02<00:10, 22.51step/s, E=-192313.5 kcal/mol, T=6244 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 22.44step/s, E=-192313.5 kcal/mol, T=6244 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 22.44step/s, E=-192305.6 kcal/mol, T=4895 K]bakken MD:  20%|██        | 60/300 [00:02<00:10, 22.46step/s, E=-192305.6 kcal/mol, T=4895 K]bakken MD:  21%|██        | 63/300 [00:02<00:10, 22.57step/s, E=-192305.6 kcal/mol, T=4895 K]bakken MD:  22%|██▏       | 66/300 [00:02<00:10, 22.73step/s, E=-192305.6 kcal/mol, T=4895 K]bakken MD:  23%|██▎       | 69/300 [00:03<00:10, 22.63step/s, E=-192305.6 kcal/mol, T=4895 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:10, 22.43step/s, E=-192305.6 kcal/mol, T=4895 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:10, 22.43step/s, E=-192288.3 kcal/mol, T=2578 K]bakken MD:  25%|██▌       | 75/300 [00:03<00:10, 22.40step/s, E=-192288.3 kcal/mol, T=2578 K]bakken MD:  26%|██▌       | 78/300 [00:03<00:09, 22.32step/s, E=-192288.3 kcal/mol, T=2578 K]bakken MD:  27%|██▋       | 81/300 [00:03<00:09, 22.09step/s, E=-192288.3 kcal/mol, T=2578 K]bakken MD:  28%|██▊       | 84/300 [00:03<00:09, 22.23step/s, E=-192288.3 kcal/mol, T=2578 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.42step/s, E=-192288.3 kcal/mol, T=2578 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.42step/s, E=-192278.4 kcal/mol, T=1287 K]bakken MD:  30%|███       | 90/300 [00:03<00:09, 22.50step/s, E=-192278.4 kcal/mol, T=1287 K]bakken MD:  31%|███       | 93/300 [00:04<00:09, 22.47step/s, E=-192278.4 kcal/mol, T=1287 K]bakken MD:  32%|███▏      | 96/300 [00:04<00:09, 22.52step/s, E=-192278.4 kcal/mol, T=1287 K]bakken MD:  33%|███▎      | 99/300 [00:04<00:08, 22.44step/s, E=-192278.4 kcal/mol, T=1287 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 22.34step/s, E=-192278.4 kcal/mol, T=1287 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 22.34step/s, E=-192285.4 kcal/mol, T=2062 K]bakken MD:  35%|███▌      | 105/300 [00:04<00:08, 22.28step/s, E=-192285.4 kcal/mol, T=2062 K]bakken MD:  36%|███▌      | 108/300 [00:04<00:08, 22.51step/s, E=-192285.4 kcal/mol, T=2062 K]bakken MD:  37%|███▋      | 111/300 [00:04<00:08, 22.64step/s, E=-192285.4 kcal/mol, T=2062 K]bakken MD:  38%|███▊      | 114/300 [00:05<00:08, 22.60step/s, E=-192285.4 kcal/mol, T=2062 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:08, 22.60step/s, E=-192285.4 kcal/mol, T=2062 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:08, 22.60step/s, E=-192291.9 kcal/mol, T=2730 K]bakken MD:  40%|████      | 120/300 [00:05<00:08, 22.46step/s, E=-192291.9 kcal/mol, T=2730 K]bakken MD:  41%|████      | 123/300 [00:05<00:08, 21.81step/s, E=-192291.9 kcal/mol, T=2730 K]bakken MD:  42%|████▏     | 126/300 [00:05<00:07, 21.85step/s, E=-192291.9 kcal/mol, T=2730 K]bakken MD:  43%|████▎     | 129/300 [00:05<00:07, 22.19step/s, E=-192291.9 kcal/mol, T=2730 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.45step/s, E=-192291.9 kcal/mol, T=2730 K]bakken MD:  44%|████▍     | 132/300 [00:06<00:07, 22.45step/s, E=-192308.7 kcal/mol, T=4516 K]bakken MD:  45%|████▌     | 135/300 [00:06<00:07, 22.55step/s, E=-192308.7 kcal/mol, T=4516 K]bakken MD:  46%|████▌     | 138/300 [00:06<00:07, 22.52step/s, E=-192308.7 kcal/mol, T=4516 K]bakken MD:  47%|████▋     | 141/300 [00:06<00:07, 22.49step/s, E=-192308.7 kcal/mol, T=4516 K]bakken MD:  48%|████▊     | 144/300 [00:06<00:06, 22.45step/s, E=-192308.7 kcal/mol, T=4516 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 22.50step/s, E=-192308.7 kcal/mol, T=4516 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 22.50step/s, E=-192310.4 kcal/mol, T=4422 K]bakken MD:  50%|█████     | 150/300 [00:06<00:06, 22.36step/s, E=-192310.4 kcal/mol, T=4422 K]bakken MD:  51%|█████     | 153/300 [00:06<00:06, 22.58step/s, E=-192310.4 kcal/mol, T=4422 K]bakken MD:  52%|█████▏    | 156/300 [00:06<00:06, 22.75step/s, E=-192310.4 kcal/mol, T=4422 K]bakken MD:  53%|█████▎    | 159/300 [00:07<00:06, 22.74step/s, E=-192310.4 kcal/mol, T=4422 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:06, 22.67step/s, E=-192310.4 kcal/mol, T=4422 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:06, 22.67step/s, E=-192302.7 kcal/mol, T=3220 K]bakken MD:  55%|█████▌    | 165/300 [00:07<00:05, 22.65step/s, E=-192302.7 kcal/mol, T=3220 K]bakken MD:  56%|█████▌    | 168/300 [00:07<00:06, 21.77step/s, E=-192302.7 kcal/mol, T=3220 K]bakken MD:  57%|█████▋    | 171/300 [00:07<00:05, 21.86step/s, E=-192302.7 kcal/mol, T=3220 K]bakken MD:  58%|█████▊    | 174/300 [00:07<00:05, 22.09step/s, E=-192302.7 kcal/mol, T=3220 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 22.36step/s, E=-192302.7 kcal/mol, T=3220 K]bakken MD:  59%|█████▉    | 177/300 [00:08<00:05, 22.36step/s, E=-192295.9 kcal/mol, T=2283 K]bakken MD:  60%|██████    | 180/300 [00:08<00:05, 22.36step/s, E=-192295.9 kcal/mol, T=2283 K]bakken MD:  61%|██████    | 183/300 [00:08<00:05, 22.31step/s, E=-192295.9 kcal/mol, T=2283 K]bakken MD:  62%|██████▏   | 186/300 [00:08<00:05, 22.32step/s, E=-192295.9 kcal/mol, T=2283 K]bakken MD:  63%|██████▎   | 189/300 [00:08<00:04, 22.27step/s, E=-192295.9 kcal/mol, T=2283 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.32step/s, E=-192295.9 kcal/mol, T=2283 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.32step/s, E=-192304.7 kcal/mol, T=3161 K]bakken MD:  65%|██████▌   | 195/300 [00:08<00:04, 22.32step/s, E=-192304.7 kcal/mol, T=3161 K]bakken MD:  66%|██████▌   | 198/300 [00:08<00:04, 22.55step/s, E=-192304.7 kcal/mol, T=3161 K]bakken MD:  67%|██████▋   | 201/300 [00:08<00:04, 22.60step/s, E=-192304.7 kcal/mol, T=3161 K]bakken MD:  68%|██████▊   | 204/300 [00:09<00:04, 22.43step/s, E=-192304.7 kcal/mol, T=3161 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 22.38step/s, E=-192304.7 kcal/mol, T=3161 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 22.38step/s, E=-192314.6 kcal/mol, T=4083 K]bakken MD:  70%|███████   | 210/300 [00:09<00:04, 22.31step/s, E=-192314.6 kcal/mol, T=4083 K]bakken MD:  71%|███████   | 213/300 [00:09<00:03, 22.19step/s, E=-192314.6 kcal/mol, T=4083 K]bakken MD:  72%|███████▏  | 216/300 [00:09<00:03, 22.14step/s, E=-192314.6 kcal/mol, T=4083 K]bakken MD:  73%|███████▎  | 219/300 [00:09<00:03, 22.33step/s, E=-192314.6 kcal/mol, T=4083 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:03, 22.47step/s, E=-192314.6 kcal/mol, T=4083 K]bakken MD:  74%|███████▍  | 222/300 [00:10<00:03, 22.47step/s, E=-192309.9 kcal/mol, T=3279 K]bakken MD:  75%|███████▌  | 225/300 [00:10<00:03, 22.35step/s, E=-192309.9 kcal/mol, T=3279 K]bakken MD:  76%|███████▌  | 228/300 [00:10<00:03, 22.25step/s, E=-192309.9 kcal/mol, T=3279 K]bakken MD:  77%|███████▋  | 231/300 [00:10<00:03, 22.28step/s, E=-192309.9 kcal/mol, T=3279 K]bakken MD:  78%|███████▊  | 234/300 [00:10<00:02, 22.30step/s, E=-192309.9 kcal/mol, T=3279 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 22.33step/s, E=-192309.9 kcal/mol, T=3279 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 22.33step/s, E=-192306.0 kcal/mol, T=2616 K]bakken MD:  80%|████████  | 240/300 [00:10<00:02, 22.35step/s, E=-192306.0 kcal/mol, T=2616 K]bakken MD:  81%|████████  | 243/300 [00:10<00:02, 22.52step/s, E=-192306.0 kcal/mol, T=2616 K]bakken MD:  82%|████████▏ | 246/300 [00:10<00:02, 22.53step/s, E=-192306.0 kcal/mol, T=2616 K]bakken MD:  83%|████████▎ | 249/300 [00:11<00:02, 22.43step/s, E=-192306.0 kcal/mol, T=2616 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 22.50step/s, E=-192306.0 kcal/mol, T=2616 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 22.50step/s, E=-192296.6 kcal/mol, T=1411 K]bakken MD:  85%|████████▌ | 255/300 [00:11<00:02, 22.35step/s, E=-192296.6 kcal/mol, T=1411 K]bakken MD:  86%|████████▌ | 258/300 [00:11<00:01, 22.30step/s, E=-192296.6 kcal/mol, T=1411 K]bakken MD:  87%|████████▋ | 261/300 [00:11<00:01, 22.20step/s, E=-192296.6 kcal/mol, T=1411 K]bakken MD:  88%|████████▊ | 264/300 [00:11<00:01, 22.41step/s, E=-192296.6 kcal/mol, T=1411 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.63step/s, E=-192296.6 kcal/mol, T=1411 K]bakken MD:  89%|████████▉ | 267/300 [00:12<00:01, 22.63step/s, E=-192304.7 kcal/mol, T=2257 K]bakken MD:  90%|█████████ | 270/300 [00:12<00:01, 22.57step/s, E=-192304.7 kcal/mol, T=2257 K]bakken MD:  91%|█████████ | 273/300 [00:12<00:01, 22.57step/s, E=-192304.7 kcal/mol, T=2257 K]bakken MD:  92%|█████████▏| 276/300 [00:12<00:01, 22.50step/s, E=-192304.7 kcal/mol, T=2257 K]bakken MD:  93%|█████████▎| 279/300 [00:12<00:00, 22.34step/s, E=-192304.7 kcal/mol, T=2257 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 22.42step/s, E=-192304.7 kcal/mol, T=2257 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 22.42step/s, E=-192308.2 kcal/mol, T=2544 K]bakken MD:  95%|█████████▌| 285/300 [00:12<00:00, 22.39step/s, E=-192308.2 kcal/mol, T=2544 K]bakken MD:  96%|█████████▌| 288/300 [00:12<00:00, 22.62step/s, E=-192308.2 kcal/mol, T=2544 K]bakken MD:  97%|█████████▋| 291/300 [00:12<00:00, 22.61step/s, E=-192308.2 kcal/mol, T=2544 K]bakken MD:  98%|█████████▊| 294/300 [00:13<00:00, 22.64step/s, E=-192308.2 kcal/mol, T=2544 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 22.65step/s, E=-192308.2 kcal/mol, T=2544 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 22.65step/s, E=-192316.3 kcal/mol, T=3319 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.63step/s, E=-192316.3 kcal/mol, T=3319 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.44step/s, E=-192316.3 kcal/mol, T=3319 K]
+  [Round 2] PSI4 single-points on 19 frames (ML energy range = 57.78 kcal/mol) ...
+    frame    0  E_ML=-192259.89  E_PSI4=-191399.54  err=860.355 kcal/mol
+    frame    1  E_ML=-192259.93  E_PSI4=-191407.58  err=852.360 kcal/mol
+    frame    2  E_ML=-192260.07  E_PSI4=-191408.08  err=851.993 kcal/mol
+    frame    3  E_ML=-192260.31  E_PSI4=-191406.02  err=854.286 kcal/mol
+    frame    4  E_ML=-192260.62  E_PSI4=-191406.93  err=853.687 kcal/mol
+    frame    5  E_ML=-192260.99  E_PSI4=-191412.69  err=848.305 kcal/mol
+    frame    6  E_ML=-192261.48  E_PSI4=-191419.88  err=841.590 kcal/mol
+    frame    7  E_ML=-192262.10  E_PSI4=-191422.43  err=839.666 kcal/mol
+    frame    8  E_ML=-192262.91  E_PSI4=-191416.02  err=846.886 kcal/mol
+    frame    9  E_ML=-192263.94  E_PSI4=-191401.08  err=862.857 kcal/mol
+    frame   10  E_ML=-192265.23  E_PSI4=-191383.17  err=882.052 kcal/mol
+    frame   11  E_ML=-192266.79  E_PSI4=-191370.16  err=896.629 kcal/mol
+    frame   12  E_ML=-192268.57  E_PSI4=-191366.61  err=901.965 kcal/mol
+    frame   13  E_ML=-192270.48  E_PSI4=-191369.85  err=900.634 kcal/mol
+    frame   14  E_ML=-192272.48  E_PSI4=-191371.94  err=900.542 kcal/mol
+    frame   61  E_ML=-192305.62  E_PSI4=-190720.96  err=1584.660 kcal/mol
+    frame  170  E_ML=-192294.63  E_PSI4=-191343.20  err=951.432 kcal/mol
+    frame  256  E_ML=-192298.75  E_PSI4=-190682.19  err=1616.566 kcal/mol
+    frame  270  E_ML=-192305.00  E_PSI4=-190679.81  err=1625.188 kcal/mol
+  [Round 2] mean |ΔE| = 987.982 kcal/mol  (19 PSI4 frames)
+Saved trajectory to outputs/mvko_20260319_155634/adapt_round2.npz (npz format)
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 924, Atoms: 12
+Saved trajectory to outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/943 [00:00<?, ?it/s]Computing descriptors:  39%|███▉      | 372/943 [00:00<00:00, 3716.62it/s]Computing descriptors:  79%|███████▉  | 744/943 [00:00<00:00, 3711.01it/s]Computing descriptors: 100%|██████████| 943/943 [00:00<00:00, 3694.37it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/20 [00:00<?, ?it/s]Grid search:  25%|██▌       | 5/20 [00:00<00:00, 42.80it/s]Grid search:  50%|█████     | 10/20 [00:00<00:00, 29.47it/s]Grid search:  80%|████████  | 16/20 [00:00<00:00, 38.60it/s]Grid search: 100%|██████████| 20/20 [00:00<00:00, 37.58it/s]
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0002   0.00         6.1565
+      0.0005   0.00         7.1182
+      0.0010   0.01         9.2951
+      0.0002   0.00        12.8115
+      0.0010   0.00        13.2423
+      0.0005   0.00        13.6584
+      0.0005   0.01        16.0429
+      0.0010   0.00        16.6219
+      0.0002   0.00        17.5443
+      0.0005   0.00        18.3329
+      0.0010   0.00        19.2237
+      0.0002   0.01        24.0793
+      0.0020   0.01        30.3999
+      0.0020   0.00        31.4403
+      0.0020   0.00        32.1831
+      0.0020   0.00        34.3663
+      0.0050   0.00        56.9685
+      0.0050   0.01        57.0755
+      0.0050   0.00        57.1966
+      0.0050   0.00        57.3574
+  ML-PES trained  γ=0.0002  α=0.0001  RMSE=6.1565 kcal/mol  (943 frames)
+  Round 2 complete  mean|ΔE|=987.982 kcal/mol  total frames=943
+
+  ── Adaptive round 3/5 ──
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 943, Atoms: 12
+
+  [Round 3] ML-MD exploration (300 steps, 500 K) ...
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=200)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.31388755          +0.0000          0.195440     0.01000
+      20     -306.38314880         -43.4621          0.163062     0.15000
+      40     -306.81325808        -313.3597          0.219991     0.15000
+      60     -307.15767012        -529.4816          0.139423     0.15000
+      80     -307.34488874        -646.9630          0.090774     0.15000
+     100     -307.43506707        -703.5508          0.073143     0.15000
+     120     -307.48718245        -736.2537          0.049075     0.15000
+     140     -307.51092074        -751.1497          0.037599     0.15000
+     160     -307.52288222        -758.6556          0.030765     0.15000
+     180     -307.53031373        -763.3190          0.025700     0.15000
+     200     -307.53556068        -766.6115          0.021598     0.15000
+
+  Did not converge in 200 steps  ΔE = -766.7519 kcal/mol  |F|_max = 0.021411 Ha/Å  (continuing anyway)
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -766.7519 kcal/mol from starting frame
+bakken MD:   0%|          | 0/300 [00:00<?, ?step/s]bakken MD:   1%|          | 3/300 [00:00<00:13, 22.59step/s]bakken MD:   2%|▏         | 6/300 [00:00<00:12, 23.13step/s]bakken MD:   3%|▎         | 9/300 [00:00<00:12, 23.18step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.96step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.96step/s, E=-192985.1 kcal/mol, T=793 K]bakken MD:   5%|▌         | 15/300 [00:00<00:12, 22.82step/s, E=-192985.1 kcal/mol, T=793 K]bakken MD:   6%|▌         | 18/300 [00:00<00:12, 22.72step/s, E=-192985.1 kcal/mol, T=793 K]bakken MD:   7%|▋         | 21/300 [00:00<00:12, 22.73step/s, E=-192985.1 kcal/mol, T=793 K]bakken MD:   8%|▊         | 24/300 [00:01<00:12, 22.69step/s, E=-192985.1 kcal/mol, T=793 K]bakken MD:   9%|▉         | 27/300 [00:01<00:12, 22.61step/s, E=-192985.1 kcal/mol, T=793 K]bakken MD:   9%|▉         | 27/300 [00:01<00:12, 22.61step/s, E=-192992.3 kcal/mol, T=1610 K]bakken MD:  10%|█         | 30/300 [00:01<00:11, 22.72step/s, E=-192992.3 kcal/mol, T=1610 K]bakken MD:  11%|█         | 33/300 [00:01<00:11, 22.71step/s, E=-192992.3 kcal/mol, T=1610 K]bakken MD:  12%|█▏        | 36/300 [00:01<00:11, 22.69step/s, E=-192992.3 kcal/mol, T=1610 K]bakken MD:  13%|█▎        | 39/300 [00:01<00:11, 22.61step/s, E=-192992.3 kcal/mol, T=1610 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.59step/s, E=-192992.3 kcal/mol, T=1610 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.59step/s, E=-193004.2 kcal/mol, T=2913 K]bakken MD:  15%|█▌        | 45/300 [00:01<00:11, 22.43step/s, E=-193004.2 kcal/mol, T=2913 K]bakken MD:  16%|█▌        | 48/300 [00:02<00:11, 22.57step/s, E=-193004.2 kcal/mol, T=2913 K]bakken MD:  17%|█▋        | 51/300 [00:02<00:10, 22.85step/s, E=-193004.2 kcal/mol, T=2913 K]bakken MD:  18%|█▊        | 54/300 [00:02<00:10, 23.03step/s, E=-193004.2 kcal/mol, T=2913 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 22.90step/s, E=-193004.2 kcal/mol, T=2913 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 22.90step/s, E=-193011.2 kcal/mol, T=3540 K]bakken MD:  20%|██        | 60/300 [00:02<00:10, 22.82step/s, E=-193011.2 kcal/mol, T=3540 K]bakken MD:  21%|██        | 63/300 [00:02<00:10, 22.79step/s, E=-193011.2 kcal/mol, T=3540 K]bakken MD:  22%|██▏       | 66/300 [00:02<00:10, 22.76step/s, E=-193011.2 kcal/mol, T=3540 K]bakken MD:  23%|██▎       | 69/300 [00:03<00:10, 22.75step/s, E=-193011.2 kcal/mol, T=3540 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:09, 22.81step/s, E=-193011.2 kcal/mol, T=3540 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:09, 22.81step/s, E=-193009.3 kcal/mol, T=3102 K]bakken MD:  25%|██▌       | 75/300 [00:03<00:09, 23.07step/s, E=-193009.3 kcal/mol, T=3102 K]bakken MD:  26%|██▌       | 78/300 [00:03<00:09, 23.08step/s, E=-193009.3 kcal/mol, T=3102 K]bakken MD:  27%|██▋       | 81/300 [00:03<00:09, 22.99step/s, E=-193009.3 kcal/mol, T=3102 K]bakken MD:  28%|██▊       | 84/300 [00:03<00:09, 22.84step/s, E=-193009.3 kcal/mol, T=3102 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.75step/s, E=-193009.3 kcal/mol, T=3102 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.75step/s, E=-193000.4 kcal/mol, T=1871 K]bakken MD:  30%|███       | 90/300 [00:03<00:09, 22.66step/s, E=-193000.4 kcal/mol, T=1871 K]bakken MD:  31%|███       | 93/300 [00:04<00:09, 22.54step/s, E=-193000.4 kcal/mol, T=1871 K]bakken MD:  32%|███▏      | 96/300 [00:04<00:08, 22.78step/s, E=-193000.4 kcal/mol, T=1871 K]bakken MD:  33%|███▎      | 99/300 [00:04<00:08, 23.04step/s, E=-193000.4 kcal/mol, T=1871 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 22.86step/s, E=-193000.4 kcal/mol, T=1871 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 22.86step/s, E=-192999.5 kcal/mol, T=1685 K]bakken MD:  35%|███▌      | 105/300 [00:04<00:08, 22.83step/s, E=-192999.5 kcal/mol, T=1685 K]bakken MD:  36%|███▌      | 108/300 [00:04<00:08, 22.77step/s, E=-192999.5 kcal/mol, T=1685 K]bakken MD:  37%|███▋      | 111/300 [00:04<00:08, 22.70step/s, E=-192999.5 kcal/mol, T=1685 K]bakken MD:  38%|███▊      | 114/300 [00:05<00:08, 22.61step/s, E=-192999.5 kcal/mol, T=1685 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:08, 22.67step/s, E=-192999.5 kcal/mol, T=1685 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:08, 22.67step/s, E=-193002.7 kcal/mol, T=1953 K]bakken MD:  40%|████      | 120/300 [00:05<00:07, 22.88step/s, E=-193002.7 kcal/mol, T=1953 K]bakken MD:  41%|████      | 123/300 [00:05<00:07, 22.97step/s, E=-193002.7 kcal/mol, T=1953 K]bakken MD:  42%|████▏     | 126/300 [00:05<00:07, 22.75step/s, E=-193002.7 kcal/mol, T=1953 K]bakken MD:  43%|████▎     | 129/300 [00:05<00:07, 22.65step/s, E=-193002.7 kcal/mol, T=1953 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.64step/s, E=-193002.7 kcal/mol, T=1953 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.64step/s, E=-193002.8 kcal/mol, T=1843 K]bakken MD:  45%|████▌     | 135/300 [00:05<00:07, 21.72step/s, E=-193002.8 kcal/mol, T=1843 K]bakken MD:  46%|████▌     | 138/300 [00:06<00:07, 21.74step/s, E=-193002.8 kcal/mol, T=1843 K]bakken MD:  47%|████▋     | 141/300 [00:06<00:07, 22.16step/s, E=-193002.8 kcal/mol, T=1843 K]bakken MD:  48%|████▊     | 144/300 [00:06<00:06, 22.54step/s, E=-193002.8 kcal/mol, T=1843 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 22.60step/s, E=-193002.8 kcal/mol, T=1843 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 22.60step/s, E=-192998.2 kcal/mol, T=1233 K]bakken MD:  50%|█████     | 150/300 [00:06<00:06, 22.62step/s, E=-192998.2 kcal/mol, T=1233 K]bakken MD:  51%|█████     | 153/300 [00:06<00:06, 22.63step/s, E=-192998.2 kcal/mol, T=1233 K]bakken MD:  52%|█████▏    | 156/300 [00:06<00:06, 22.64step/s, E=-192998.2 kcal/mol, T=1233 K]bakken MD:  53%|█████▎    | 159/300 [00:07<00:06, 22.55step/s, E=-192998.2 kcal/mol, T=1233 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:06, 22.64step/s, E=-192998.2 kcal/mol, T=1233 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:06, 22.64step/s, E=-193001.6 kcal/mol, T=1548 K]bakken MD:  55%|█████▌    | 165/300 [00:07<00:05, 22.93step/s, E=-193001.6 kcal/mol, T=1548 K]bakken MD:  56%|█████▌    | 168/300 [00:07<00:05, 23.11step/s, E=-193001.6 kcal/mol, T=1548 K]bakken MD:  57%|█████▋    | 171/300 [00:07<00:05, 22.92step/s, E=-193001.6 kcal/mol, T=1548 K]bakken MD:  58%|█████▊    | 174/300 [00:07<00:05, 22.76step/s, E=-193001.6 kcal/mol, T=1548 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 22.60step/s, E=-193001.6 kcal/mol, T=1548 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 22.60step/s, E=-193004.6 kcal/mol, T=1830 K]bakken MD:  60%|██████    | 180/300 [00:07<00:05, 22.54step/s, E=-193004.6 kcal/mol, T=1830 K]bakken MD:  61%|██████    | 183/300 [00:08<00:05, 22.58step/s, E=-193004.6 kcal/mol, T=1830 K]bakken MD:  62%|██████▏   | 186/300 [00:08<00:05, 22.66step/s, E=-193004.6 kcal/mol, T=1830 K]bakken MD:  63%|██████▎   | 189/300 [00:08<00:04, 22.95step/s, E=-193004.6 kcal/mol, T=1830 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.96step/s, E=-193004.6 kcal/mol, T=1830 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.96step/s, E=-193006.0 kcal/mol, T=1898 K]bakken MD:  65%|██████▌   | 195/300 [00:08<00:04, 22.74step/s, E=-193006.0 kcal/mol, T=1898 K]bakken MD:  66%|██████▌   | 198/300 [00:08<00:04, 22.48step/s, E=-193006.0 kcal/mol, T=1898 K]bakken MD:  67%|██████▋   | 201/300 [00:08<00:04, 22.46step/s, E=-193006.0 kcal/mol, T=1898 K]bakken MD:  68%|██████▊   | 204/300 [00:08<00:04, 22.46step/s, E=-193006.0 kcal/mol, T=1898 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 22.53step/s, E=-193006.0 kcal/mol, T=1898 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 22.53step/s, E=-193006.2 kcal/mol, T=1826 K]bakken MD:  70%|███████   | 210/300 [00:09<00:03, 22.84step/s, E=-193006.2 kcal/mol, T=1826 K]bakken MD:  71%|███████   | 213/300 [00:09<00:03, 23.04step/s, E=-193006.2 kcal/mol, T=1826 K]bakken MD:  72%|███████▏  | 216/300 [00:09<00:03, 22.92step/s, E=-193006.2 kcal/mol, T=1826 K]bakken MD:  73%|███████▎  | 219/300 [00:09<00:03, 22.83step/s, E=-193006.2 kcal/mol, T=1826 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:04, 19.36step/s, E=-193006.2 kcal/mol, T=1826 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:04, 19.36step/s, E=-193003.0 kcal/mol, T=1364 K]bakken MD:  75%|███████▌  | 225/300 [00:09<00:03, 20.20step/s, E=-193003.0 kcal/mol, T=1364 K]bakken MD:  76%|███████▌  | 228/300 [00:10<00:03, 20.81step/s, E=-193003.0 kcal/mol, T=1364 K]bakken MD:  77%|███████▋  | 231/300 [00:10<00:03, 21.46step/s, E=-193003.0 kcal/mol, T=1364 K]bakken MD:  78%|███████▊  | 234/300 [00:10<00:03, 21.96step/s, E=-193003.0 kcal/mol, T=1364 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 22.05step/s, E=-193003.0 kcal/mol, T=1364 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 22.05step/s, E=-193008.7 kcal/mol, T=1951 K]bakken MD:  80%|████████  | 240/300 [00:10<00:02, 22.17step/s, E=-193008.7 kcal/mol, T=1951 K]bakken MD:  81%|████████  | 243/300 [00:10<00:02, 21.39step/s, E=-193008.7 kcal/mol, T=1951 K]bakken MD:  82%|████████▏ | 246/300 [00:10<00:02, 21.65step/s, E=-193008.7 kcal/mol, T=1951 K]bakken MD:  83%|████████▎ | 249/300 [00:11<00:02, 22.01step/s, E=-193008.7 kcal/mol, T=1951 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 22.31step/s, E=-193008.7 kcal/mol, T=1951 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 22.31step/s, E=-193006.4 kcal/mol, T=1577 K]bakken MD:  85%|████████▌ | 255/300 [00:11<00:01, 22.68step/s, E=-193006.4 kcal/mol, T=1577 K]bakken MD:  86%|████████▌ | 258/300 [00:11<00:01, 22.70step/s, E=-193006.4 kcal/mol, T=1577 K]bakken MD:  87%|████████▋ | 261/300 [00:11<00:01, 22.66step/s, E=-193006.4 kcal/mol, T=1577 K]bakken MD:  88%|████████▊ | 264/300 [00:11<00:01, 22.63step/s, E=-193006.4 kcal/mol, T=1577 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.18step/s, E=-193006.4 kcal/mol, T=1577 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.18step/s, E=-193010.7 kcal/mol, T=1996 K]bakken MD:  90%|█████████ | 270/300 [00:11<00:01, 22.16step/s, E=-193010.7 kcal/mol, T=1996 K]bakken MD:  91%|█████████ | 273/300 [00:12<00:01, 22.12step/s, E=-193010.7 kcal/mol, T=1996 K]bakken MD:  92%|█████████▏| 276/300 [00:12<00:01, 22.47step/s, E=-193010.7 kcal/mol, T=1996 K]bakken MD:  93%|█████████▎| 279/300 [00:12<00:00, 22.73step/s, E=-193010.7 kcal/mol, T=1996 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 22.58step/s, E=-193010.7 kcal/mol, T=1996 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 22.58step/s, E=-193012.8 kcal/mol, T=2115 K]bakken MD:  95%|█████████▌| 285/300 [00:12<00:00, 22.58step/s, E=-193012.8 kcal/mol, T=2115 K]bakken MD:  96%|█████████▌| 288/300 [00:12<00:00, 22.64step/s, E=-193012.8 kcal/mol, T=2115 K]bakken MD:  97%|█████████▋| 291/300 [00:12<00:00, 22.54step/s, E=-193012.8 kcal/mol, T=2115 K]bakken MD:  98%|█████████▊| 294/300 [00:13<00:00, 22.55step/s, E=-193012.8 kcal/mol, T=2115 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 22.68step/s, E=-193012.8 kcal/mol, T=2115 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 22.68step/s, E=-193010.9 kcal/mol, T=1798 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.95step/s, E=-193010.9 kcal/mol, T=1798 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.54step/s, E=-193010.9 kcal/mol, T=1798 K]
+  [Round 3] PSI4 single-points on 19 frames (ML energy range = 32.26 kcal/mol) ...
+    frame    0  E_ML=-192981.43  E_PSI4=-191614.67  err=1366.755 kcal/mol
+    frame    1  E_ML=-192981.15  E_PSI4=-191602.06  err=1379.097 kcal/mol
+    frame    2  E_ML=-192981.30  E_PSI4=-191585.49  err=1395.814 kcal/mol
+    frame    3  E_ML=-192981.64  E_PSI4=-191564.93  err=1416.718 kcal/mol
+    frame    4  E_ML=-192981.65  E_PSI4=-191541.66  err=1439.986 kcal/mol
+    frame    5  E_ML=-192981.39  E_PSI4=-191519.12  err=1462.272 kcal/mol
+    frame    6  E_ML=-192981.41  E_PSI4=-191502.38  err=1479.032 kcal/mol
+    frame    7  E_ML=-192981.81  E_PSI4=-191495.97  err=1485.837 kcal/mol
+    frame    8  E_ML=-192982.33  E_PSI4=-191501.41  err=1480.913 kcal/mol
+    frame    9  E_ML=-192982.90  E_PSI4=-191516.46  err=1466.442 kcal/mol
+    frame   10  E_ML=-192983.65  E_PSI4=-191536.71  err=1446.946 kcal/mol
+    frame   11  E_ML=-192984.45  E_PSI4=-191557.80  err=1426.652 kcal/mol
+    frame   12  E_ML=-192984.94  E_PSI4=-191576.69  err=1408.247 kcal/mol
+    frame   13  E_ML=-192984.99  E_PSI4=-191591.76  err=1393.222 kcal/mol
+    frame   14  E_ML=-192985.06  E_PSI4=-191602.52  err=1382.540 kcal/mol
+    frame  102  E_ML=-192998.97  E_PSI4=-191709.25  err=1289.717 kcal/mol
+    frame  112  E_ML=-193003.04  E_PSI4=-191701.94  err=1301.094 kcal/mol
+    frame  120  E_ML=-193003.17  E_PSI4=-191676.39  err=1326.782 kcal/mol
+    frame  210  E_ML=-193006.00  E_PSI4=-191708.73  err=1297.274 kcal/mol
+  [Round 3] mean |ΔE| = 1402.386 kcal/mol  (19 PSI4 frames)
+Saved trajectory to outputs/mvko_20260319_155634/adapt_round3.npz (npz format)
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 943, Atoms: 12
+Saved trajectory to outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/962 [00:00<?, ?it/s]Computing descriptors:  38%|███▊      | 370/962 [00:00<00:00, 3695.50it/s]Computing descriptors:  77%|███████▋  | 740/962 [00:00<00:00, 3697.03it/s]Computing descriptors: 100%|██████████| 962/962 [00:00<00:00, 3686.80it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/20 [00:00<?, ?it/s]Grid search:  25%|██▌       | 5/20 [00:00<00:00, 46.97it/s]Grid search:  55%|█████▌    | 11/20 [00:00<00:00, 49.40it/s]Grid search:  80%|████████  | 16/20 [00:00<00:00, 42.68it/s]Grid search: 100%|██████████| 20/20 [00:00<00:00, 44.57it/s]
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0010   0.00         4.1676
+      0.0010   0.00         4.2045
+      0.0005   0.00         5.7181
+      0.0010   0.00         6.1254
+      0.0005   0.00         6.2973
+      0.0005   0.00         7.8304
+      0.0002   0.00        10.4333
+      0.0002   0.00        10.4735
+      0.0010   0.01        11.2983
+      0.0005   0.01        12.3243
+      0.0020   0.00        15.5351
+      0.0020   0.00        15.6982
+      0.0020   0.00        15.8131
+      0.0002   0.01        16.3672
+      0.0020   0.01        17.1348
+      0.0002   0.00        19.0495
+      0.0050   0.00        35.3236
+      0.0050   0.00        35.3344
+      0.0050   0.00        35.4013
+      0.0050   0.01        35.8885
+  ML-PES trained  γ=0.001  α=0.0001  RMSE=4.1676 kcal/mol  (962 frames)
+  Round 3 complete  mean|ΔE|=1402.386 kcal/mol  total frames=962
+
+  ── Adaptive round 4/5 ──
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 962, Atoms: 12
+
+  [Round 4] ML-MD exploration (300 steps, 500 K) ...
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=200)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.31757149          +0.0000          0.019249     0.01000
+      20     -306.31857368          -0.6289          0.011609     0.15000
+      40     -306.32020728          -1.6540          0.012822     0.15000
+      60     -306.32292290          -3.3581          0.016456     0.15000
+      80     -306.32956618          -7.5268          0.029932     0.15000
+     100     -306.35662920         -24.5091          0.086550     0.15000
+     120     -306.49381780        -110.5962          0.194986     0.15000
+     140     -306.70930381        -245.8157          0.144141     0.15000
+     160     -306.78622218        -294.0827          0.056109     0.15000
+     180     -306.79812667        -301.5529          0.016995     0.15000
+     200     -306.80193924        -303.9453          0.011108     0.15000
+
+  Did not converge in 200 steps  ΔE = -304.0193 kcal/mol  |F|_max = 0.011034 Ha/Å  (continuing anyway)
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -304.0193 kcal/mol from starting frame
+bakken MD:   0%|          | 0/300 [00:00<?, ?step/s]bakken MD:   1%|          | 3/300 [00:00<00:13, 22.23step/s]bakken MD:   2%|▏         | 6/300 [00:00<00:14, 20.77step/s]bakken MD:   3%|▎         | 9/300 [00:00<00:13, 21.86step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.45step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.45step/s, E=-192520.7 kcal/mol, T=545 K]bakken MD:   5%|▌         | 15/300 [00:00<00:12, 22.45step/s, E=-192520.7 kcal/mol, T=545 K]bakken MD:   6%|▌         | 18/300 [00:00<00:12, 22.47step/s, E=-192520.7 kcal/mol, T=545 K]bakken MD:   7%|▋         | 21/300 [00:00<00:12, 22.48step/s, E=-192520.7 kcal/mol, T=545 K]bakken MD:   8%|▊         | 24/300 [00:01<00:12, 22.46step/s, E=-192520.7 kcal/mol, T=545 K]bakken MD:   9%|▉         | 27/300 [00:01<00:12, 22.49step/s, E=-192520.7 kcal/mol, T=545 K]bakken MD:   9%|▉         | 27/300 [00:01<00:12, 22.49step/s, E=-192519.7 kcal/mol, T=431 K]bakken MD:  10%|█         | 30/300 [00:01<00:11, 22.65step/s, E=-192519.7 kcal/mol, T=431 K]bakken MD:  11%|█         | 33/300 [00:01<00:11, 22.92step/s, E=-192519.7 kcal/mol, T=431 K]bakken MD:  12%|█▏        | 36/300 [00:01<00:11, 22.92step/s, E=-192519.7 kcal/mol, T=431 K]bakken MD:  13%|█▎        | 39/300 [00:01<00:11, 22.86step/s, E=-192519.7 kcal/mol, T=431 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.80step/s, E=-192519.7 kcal/mol, T=431 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.80step/s, E=-192522.2 kcal/mol, T=737 K]bakken MD:  15%|█▌        | 45/300 [00:01<00:11, 22.70step/s, E=-192522.2 kcal/mol, T=737 K]bakken MD:  16%|█▌        | 48/300 [00:02<00:11, 22.54step/s, E=-192522.2 kcal/mol, T=737 K]bakken MD:  17%|█▋        | 51/300 [00:02<00:11, 22.51step/s, E=-192522.2 kcal/mol, T=737 K]bakken MD:  18%|█▊        | 54/300 [00:02<00:10, 22.74step/s, E=-192522.2 kcal/mol, T=737 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 23.00step/s, E=-192522.2 kcal/mol, T=737 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 23.00step/s, E=-192522.6 kcal/mol, T=751 K]bakken MD:  20%|██        | 60/300 [00:02<00:10, 22.82step/s, E=-192522.6 kcal/mol, T=751 K]bakken MD:  21%|██        | 63/300 [00:02<00:10, 22.78step/s, E=-192522.6 kcal/mol, T=751 K]bakken MD:  22%|██▏       | 66/300 [00:02<00:10, 22.70step/s, E=-192522.6 kcal/mol, T=751 K]bakken MD:  23%|██▎       | 69/300 [00:03<00:10, 22.64step/s, E=-192522.6 kcal/mol, T=751 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:10, 22.54step/s, E=-192522.6 kcal/mol, T=751 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:10, 22.54step/s, E=-192519.7 kcal/mol, T=403 K]bakken MD:  25%|██▌       | 75/300 [00:03<00:09, 22.61step/s, E=-192519.7 kcal/mol, T=403 K]bakken MD:  26%|██▌       | 78/300 [00:03<00:09, 22.88step/s, E=-192519.7 kcal/mol, T=403 K]bakken MD:  27%|██▋       | 81/300 [00:03<00:09, 22.99step/s, E=-192519.7 kcal/mol, T=403 K]bakken MD:  28%|██▊       | 84/300 [00:03<00:09, 22.87step/s, E=-192519.7 kcal/mol, T=403 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.82step/s, E=-192519.7 kcal/mol, T=403 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.82step/s, E=-192524.9 kcal/mol, T=1014 K]bakken MD:  30%|███       | 90/300 [00:03<00:09, 22.69step/s, E=-192524.9 kcal/mol, T=1014 K]bakken MD:  31%|███       | 93/300 [00:04<00:09, 22.65step/s, E=-192524.9 kcal/mol, T=1014 K]bakken MD:  32%|███▏      | 96/300 [00:04<00:09, 22.57step/s, E=-192524.9 kcal/mol, T=1014 K]bakken MD:  33%|███▎      | 99/300 [00:04<00:08, 22.78step/s, E=-192524.9 kcal/mol, T=1014 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 23.04step/s, E=-192524.9 kcal/mol, T=1014 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 23.04step/s, E=-192522.8 kcal/mol, T=722 K] bakken MD:  35%|███▌      | 105/300 [00:04<00:08, 22.98step/s, E=-192522.8 kcal/mol, T=722 K]bakken MD:  36%|███▌      | 108/300 [00:04<00:08, 22.91step/s, E=-192522.8 kcal/mol, T=722 K]bakken MD:  37%|███▋      | 111/300 [00:04<00:08, 22.91step/s, E=-192522.8 kcal/mol, T=722 K]bakken MD:  38%|███▊      | 114/300 [00:05<00:08, 22.75step/s, E=-192522.8 kcal/mol, T=722 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:08, 22.63step/s, E=-192522.8 kcal/mol, T=722 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:08, 22.63step/s, E=-192521.4 kcal/mol, T=558 K]bakken MD:  40%|████      | 120/300 [00:05<00:07, 22.58step/s, E=-192521.4 kcal/mol, T=558 K]bakken MD:  41%|████      | 123/300 [00:05<00:07, 22.84step/s, E=-192521.4 kcal/mol, T=558 K]bakken MD:  42%|████▏     | 126/300 [00:05<00:07, 22.93step/s, E=-192521.4 kcal/mol, T=558 K]bakken MD:  43%|████▎     | 129/300 [00:05<00:07, 22.68step/s, E=-192521.4 kcal/mol, T=558 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.56step/s, E=-192521.4 kcal/mol, T=558 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.56step/s, E=-192523.4 kcal/mol, T=783 K]bakken MD:  45%|████▌     | 135/300 [00:05<00:07, 22.52step/s, E=-192523.4 kcal/mol, T=783 K]bakken MD:  46%|████▌     | 138/300 [00:06<00:07, 22.42step/s, E=-192523.4 kcal/mol, T=783 K]bakken MD:  47%|████▋     | 141/300 [00:06<00:07, 22.43step/s, E=-192523.4 kcal/mol, T=783 K]bakken MD:  48%|████▊     | 144/300 [00:06<00:06, 22.56step/s, E=-192523.4 kcal/mol, T=783 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 21.91step/s, E=-192523.4 kcal/mol, T=783 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 21.91step/s, E=-192521.2 kcal/mol, T=503 K]bakken MD:  50%|█████     | 150/300 [00:06<00:06, 21.73step/s, E=-192521.2 kcal/mol, T=503 K]bakken MD:  51%|█████     | 153/300 [00:06<00:06, 21.41step/s, E=-192521.2 kcal/mol, T=503 K]bakken MD:  52%|█████▏    | 156/300 [00:06<00:06, 21.29step/s, E=-192521.2 kcal/mol, T=503 K]bakken MD:  53%|█████▎    | 159/300 [00:07<00:06, 21.50step/s, E=-192521.2 kcal/mol, T=503 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:06, 21.74step/s, E=-192521.2 kcal/mol, T=503 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:06, 21.74step/s, E=-192520.6 kcal/mol, T=439 K]bakken MD:  55%|█████▌    | 165/300 [00:07<00:06, 22.04step/s, E=-192520.6 kcal/mol, T=439 K]bakken MD:  56%|█████▌    | 168/300 [00:07<00:05, 22.45step/s, E=-192520.6 kcal/mol, T=439 K]bakken MD:  57%|█████▋    | 171/300 [00:07<00:05, 22.54step/s, E=-192520.6 kcal/mol, T=439 K]bakken MD:  58%|█████▊    | 174/300 [00:07<00:05, 22.48step/s, E=-192520.6 kcal/mol, T=439 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 22.47step/s, E=-192520.6 kcal/mol, T=439 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 22.47step/s, E=-192522.3 kcal/mol, T=628 K]bakken MD:  60%|██████    | 180/300 [00:07<00:05, 22.37step/s, E=-192522.3 kcal/mol, T=628 K]bakken MD:  61%|██████    | 183/300 [00:08<00:05, 22.36step/s, E=-192522.3 kcal/mol, T=628 K]bakken MD:  62%|██████▏   | 186/300 [00:08<00:05, 22.37step/s, E=-192522.3 kcal/mol, T=628 K]bakken MD:  63%|██████▎   | 189/300 [00:08<00:04, 22.66step/s, E=-192522.3 kcal/mol, T=628 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.91step/s, E=-192522.3 kcal/mol, T=628 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.91step/s, E=-192522.4 kcal/mol, T=634 K]bakken MD:  65%|██████▌   | 195/300 [00:08<00:04, 22.83step/s, E=-192522.4 kcal/mol, T=634 K]bakken MD:  66%|██████▌   | 198/300 [00:08<00:04, 22.63step/s, E=-192522.4 kcal/mol, T=634 K]bakken MD:  67%|██████▋   | 201/300 [00:08<00:04, 22.52step/s, E=-192522.4 kcal/mol, T=634 K]bakken MD:  68%|██████▊   | 204/300 [00:09<00:04, 21.65step/s, E=-192522.4 kcal/mol, T=634 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 21.90step/s, E=-192522.4 kcal/mol, T=634 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 21.90step/s, E=-192521.9 kcal/mol, T=568 K]bakken MD:  70%|███████   | 210/300 [00:09<00:04, 22.22step/s, E=-192521.9 kcal/mol, T=568 K]bakken MD:  71%|███████   | 213/300 [00:09<00:03, 22.55step/s, E=-192521.9 kcal/mol, T=568 K]bakken MD:  72%|███████▏  | 216/300 [00:09<00:03, 22.59step/s, E=-192521.9 kcal/mol, T=568 K]bakken MD:  73%|███████▎  | 219/300 [00:09<00:03, 22.64step/s, E=-192521.9 kcal/mol, T=568 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:03, 22.55step/s, E=-192521.9 kcal/mol, T=568 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:03, 22.55step/s, E=-192522.9 kcal/mol, T=666 K]bakken MD:  75%|███████▌  | 225/300 [00:09<00:03, 22.61step/s, E=-192522.9 kcal/mol, T=666 K]bakken MD:  76%|███████▌  | 228/300 [00:10<00:03, 22.53step/s, E=-192522.9 kcal/mol, T=666 K]bakken MD:  77%|███████▋  | 231/300 [00:10<00:03, 22.53step/s, E=-192522.9 kcal/mol, T=666 K]bakken MD:  78%|███████▊  | 234/300 [00:10<00:02, 22.80step/s, E=-192522.9 kcal/mol, T=666 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 23.01step/s, E=-192522.9 kcal/mol, T=666 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 23.01step/s, E=-192523.3 kcal/mol, T=707 K]bakken MD:  80%|████████  | 240/300 [00:10<00:02, 22.75step/s, E=-192523.3 kcal/mol, T=707 K]bakken MD:  81%|████████  | 243/300 [00:10<00:02, 22.70step/s, E=-192523.3 kcal/mol, T=707 K]bakken MD:  82%|████████▏ | 246/300 [00:10<00:02, 22.71step/s, E=-192523.3 kcal/mol, T=707 K]bakken MD:  83%|████████▎ | 249/300 [00:11<00:02, 22.57step/s, E=-192523.3 kcal/mol, T=707 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 22.47step/s, E=-192523.3 kcal/mol, T=707 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 22.47step/s, E=-192521.6 kcal/mol, T=494 K]bakken MD:  85%|████████▌ | 255/300 [00:11<00:01, 22.54step/s, E=-192521.6 kcal/mol, T=494 K]bakken MD:  86%|████████▌ | 258/300 [00:11<00:01, 22.84step/s, E=-192521.6 kcal/mol, T=494 K]bakken MD:  87%|████████▋ | 261/300 [00:11<00:01, 22.94step/s, E=-192521.6 kcal/mol, T=494 K]bakken MD:  88%|████████▊ | 264/300 [00:11<00:01, 22.76step/s, E=-192521.6 kcal/mol, T=494 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.65step/s, E=-192521.6 kcal/mol, T=494 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.65step/s, E=-192523.1 kcal/mol, T=670 K]bakken MD:  90%|█████████ | 270/300 [00:11<00:01, 22.62step/s, E=-192523.1 kcal/mol, T=670 K]bakken MD:  91%|█████████ | 273/300 [00:12<00:01, 22.51step/s, E=-192523.1 kcal/mol, T=670 K]bakken MD:  92%|█████████▏| 276/300 [00:12<00:01, 22.48step/s, E=-192523.1 kcal/mol, T=670 K]bakken MD:  93%|█████████▎| 279/300 [00:12<00:00, 22.68step/s, E=-192523.1 kcal/mol, T=670 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 22.93step/s, E=-192523.1 kcal/mol, T=670 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 22.93step/s, E=-192521.2 kcal/mol, T=439 K]bakken MD:  95%|█████████▌| 285/300 [00:12<00:00, 22.76step/s, E=-192521.2 kcal/mol, T=439 K]bakken MD:  96%|█████████▌| 288/300 [00:12<00:00, 22.64step/s, E=-192521.2 kcal/mol, T=439 K]bakken MD:  97%|█████████▋| 291/300 [00:12<00:00, 22.59step/s, E=-192521.2 kcal/mol, T=439 K]bakken MD:  98%|█████████▊| 294/300 [00:13<00:00, 22.58step/s, E=-192521.2 kcal/mol, T=439 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 22.50step/s, E=-192521.2 kcal/mol, T=439 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 22.50step/s, E=-192521.5 kcal/mol, T=470 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.48step/s, E=-192521.5 kcal/mol, T=470 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.54step/s, E=-192521.5 kcal/mol, T=470 K]
+  [Round 4] PSI4 single-points on 20 frames (ML energy range = 6.25 kcal/mol) ...
+    frame    1  E_ML=-192520.82  E_PSI4=-191266.91  err=1253.918 kcal/mol
+    frame   70  E_ML=-192519.23  E_PSI4=-191359.49  err=1159.737 kcal/mol
+    frame   71  E_ML=-192518.96  E_PSI4=-191367.03  err=1151.937 kcal/mol
+    frame   72  E_ML=-192518.91  E_PSI4=-191369.13  err=1149.782 kcal/mol
+    frame   73  E_ML=-192519.20  E_PSI4=-191363.89  err=1155.314 kcal/mol
+    frame   89  E_ML=-192524.91  E_PSI4=-191316.25  err=1208.654 kcal/mol
+    frame   90  E_ML=-192525.07  E_PSI4=-191308.10  err=1216.973 kcal/mol
+    frame   91  E_ML=-192525.12  E_PSI4=-191308.34  err=1216.786 kcal/mol
+    frame   92  E_ML=-192525.02  E_PSI4=-191315.50  err=1209.516 kcal/mol
+    frame   93  E_ML=-192524.78  E_PSI4=-191324.25  err=1200.532 kcal/mol
+    frame   94  E_ML=-192524.67  E_PSI4=-191329.97  err=1194.694 kcal/mol
+    frame   95  E_ML=-192524.82  E_PSI4=-191331.62  err=1193.199 kcal/mol
+    frame   96  E_ML=-192525.06  E_PSI4=-191331.86  err=1193.206 kcal/mol
+    frame   97  E_ML=-192525.16  E_PSI4=-191335.36  err=1189.800 kcal/mol
+    frame   98  E_ML=-192525.10  E_PSI4=-191345.60  err=1179.499 kcal/mol
+    frame   99  E_ML=-192524.89  E_PSI4=-191362.06  err=1162.830 kcal/mol
+    frame  102  E_ML=-192523.59  E_PSI4=-191405.29  err=1118.301 kcal/mol
+    frame  158  E_ML=-192521.03  E_PSI4=-191310.21  err=1210.814 kcal/mol
+    frame  261  E_ML=-192522.72  E_PSI4=-191324.46  err=1198.259 kcal/mol
+    frame  274  E_ML=-192522.46  E_PSI4=-191418.39  err=1104.074 kcal/mol
+  [Round 4] mean |ΔE| = 1183.391 kcal/mol  (20 PSI4 frames)
+Saved trajectory to outputs/mvko_20260319_155634/adapt_round4.npz (npz format)
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 962, Atoms: 12
+Saved trajectory to outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/982 [00:00<?, ?it/s]Computing descriptors:  37%|███▋      | 363/982 [00:00<00:00, 3627.42it/s]Computing descriptors:  74%|███████▍  | 728/982 [00:00<00:00, 3637.77it/s]Computing descriptors: 100%|██████████| 982/982 [00:00<00:00, 3646.91it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/20 [00:00<?, ?it/s]Grid search:  25%|██▌       | 5/20 [00:00<00:00, 45.39it/s]Grid search:  55%|█████▌    | 11/20 [00:00<00:00, 48.55it/s]Grid search:  80%|████████  | 16/20 [00:00<00:00, 46.88it/s]Grid search: 100%|██████████| 20/20 [00:00<00:00, 48.57it/s]
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0020   0.00         3.0743
+      0.0010   0.00         3.1858
+      0.0020   0.00         3.2144
+      0.0050   0.00         3.8194
+      0.0050   0.00         3.9668
+      0.0010   0.00         3.9672
+      0.0050   0.00         4.0106
+      0.0020   0.00         4.5039
+      0.0005   0.00         4.6823
+      0.0050   0.01         4.9288
+      0.0005   0.00         5.9007
+      0.0002   0.00         6.8668
+      0.0010   0.00         7.4000
+      0.0020   0.01         9.0781
+      0.0002   0.00        10.0834
+      0.0005   0.00        11.1209
+      0.0010   0.01        13.0543
+      0.0002   0.00        15.2374
+      0.0005   0.01        16.3611
+      0.0002   0.01        21.2581
+  ML-PES trained  γ=0.002  α=1e-05  RMSE=3.0743 kcal/mol  (982 frames)
+  Round 4 complete  mean|ΔE|=1183.391 kcal/mol  total frames=982
+
+  ── Adaptive round 5/5 ──
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 982, Atoms: 12
+
+  [Round 5] ML-MD exploration (300 steps, 500 K) ...
+
+  ────────────────────────────────────────────────────────────
+  bakken pre-minimiser  (tol=0.005 Ha/Å, max_steps=200)
+    Step            E (Ha)    ΔE (kcal/mol)    |F|_max (Ha/Å)    step (Å)
+  ──────  ────────────────  ───────────────  ────────────────  ──────────
+       1     -306.31860484          +0.0000          0.008718     0.01000
+      13     -306.31870248          -0.0613          0.004791     0.08916
+
+  Converged in 13 steps  ΔE = -0.0613 kcal/mol  |F|_max = 0.004791 Ha/Å
+  ────────────────────────────────────────────────────────────
+  Pre-min geometry   : ΔE = -0.0613 kcal/mol from starting frame
+bakken MD:   0%|          | 0/300 [00:00<?, ?step/s]bakken MD:   1%|          | 3/300 [00:00<00:12, 22.86step/s]bakken MD:   2%|▏         | 6/300 [00:00<00:12, 22.78step/s]bakken MD:   3%|▎         | 9/300 [00:00<00:12, 22.75step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.67step/s]bakken MD:   4%|▍         | 12/300 [00:00<00:12, 22.67step/s, E=-192227.6 kcal/mol, T=1847 K]bakken MD:   5%|▌         | 15/300 [00:00<00:12, 22.56step/s, E=-192227.6 kcal/mol, T=1847 K]bakken MD:   6%|▌         | 18/300 [00:00<00:12, 22.63step/s, E=-192227.6 kcal/mol, T=1847 K]bakken MD:   7%|▋         | 21/300 [00:00<00:12, 22.83step/s, E=-192227.6 kcal/mol, T=1847 K]bakken MD:   8%|▊         | 24/300 [00:01<00:12, 22.99step/s, E=-192227.6 kcal/mol, T=1847 K]bakken MD:   9%|▉         | 27/300 [00:01<00:11, 22.86step/s, E=-192227.6 kcal/mol, T=1847 K]bakken MD:   9%|▉         | 27/300 [00:01<00:11, 22.86step/s, E=-192251.5 kcal/mol, T=4501 K]bakken MD:  10%|█         | 30/300 [00:01<00:11, 22.71step/s, E=-192251.5 kcal/mol, T=4501 K]bakken MD:  11%|█         | 33/300 [00:01<00:11, 22.61step/s, E=-192251.5 kcal/mol, T=4501 K]bakken MD:  12%|█▏        | 36/300 [00:01<00:11, 22.63step/s, E=-192251.5 kcal/mol, T=4501 K]bakken MD:  13%|█▎        | 39/300 [00:01<00:11, 22.64step/s, E=-192251.5 kcal/mol, T=4501 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.72step/s, E=-192251.5 kcal/mol, T=4501 K]bakken MD:  14%|█▍        | 42/300 [00:01<00:11, 22.72step/s, E=-192261.2 kcal/mol, T=5321 K]bakken MD:  15%|█▌        | 45/300 [00:01<00:11, 22.86step/s, E=-192261.2 kcal/mol, T=5321 K]bakken MD:  16%|█▌        | 48/300 [00:02<00:10, 22.94step/s, E=-192261.2 kcal/mol, T=5321 K]bakken MD:  17%|█▋        | 51/300 [00:02<00:10, 22.85step/s, E=-192261.2 kcal/mol, T=5321 K]bakken MD:  18%|█▊        | 54/300 [00:02<00:10, 22.83step/s, E=-192261.2 kcal/mol, T=5321 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 22.84step/s, E=-192261.2 kcal/mol, T=5321 K]bakken MD:  19%|█▉        | 57/300 [00:02<00:10, 22.84step/s, E=-192295.6 kcal/mol, T=9022 K]bakken MD:  20%|██        | 60/300 [00:02<00:10, 22.80step/s, E=-192295.6 kcal/mol, T=9022 K]bakken MD:  21%|██        | 63/300 [00:02<00:10, 22.82step/s, E=-192295.6 kcal/mol, T=9022 K]bakken MD:  22%|██▏       | 66/300 [00:02<00:10, 22.97step/s, E=-192295.6 kcal/mol, T=9022 K]bakken MD:  23%|██▎       | 69/300 [00:03<00:09, 23.10step/s, E=-192295.6 kcal/mol, T=9022 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:09, 23.13step/s, E=-192295.6 kcal/mol, T=9022 K]bakken MD:  24%|██▍       | 72/300 [00:03<00:09, 23.13step/s, E=-192317.5 kcal/mol, T=10877 K]bakken MD:  25%|██▌       | 75/300 [00:03<00:09, 23.11step/s, E=-192317.5 kcal/mol, T=10877 K]bakken MD:  26%|██▌       | 78/300 [00:03<00:09, 23.13step/s, E=-192317.5 kcal/mol, T=10877 K]bakken MD:  27%|██▋       | 81/300 [00:03<00:09, 23.06step/s, E=-192317.5 kcal/mol, T=10877 K]bakken MD:  28%|██▊       | 84/300 [00:03<00:09, 23.02step/s, E=-192317.5 kcal/mol, T=10877 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.95step/s, E=-192317.5 kcal/mol, T=10877 K]bakken MD:  29%|██▉       | 87/300 [00:03<00:09, 22.95step/s, E=-192312.6 kcal/mol, T=9431 K] bakken MD:  30%|███       | 90/300 [00:03<00:09, 23.05step/s, E=-192312.6 kcal/mol, T=9431 K]bakken MD:  31%|███       | 93/300 [00:04<00:08, 23.12step/s, E=-192312.6 kcal/mol, T=9431 K]bakken MD:  32%|███▏      | 96/300 [00:04<00:08, 23.03step/s, E=-192312.6 kcal/mol, T=9431 K]bakken MD:  33%|███▎      | 99/300 [00:04<00:08, 22.88step/s, E=-192312.6 kcal/mol, T=9431 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 22.84step/s, E=-192312.6 kcal/mol, T=9431 K]bakken MD:  34%|███▍      | 102/300 [00:04<00:08, 22.84step/s, E=-192301.9 kcal/mol, T=7485 K]bakken MD:  35%|███▌      | 105/300 [00:04<00:08, 22.80step/s, E=-192301.9 kcal/mol, T=7485 K]bakken MD:  36%|███▌      | 108/300 [00:04<00:08, 22.76step/s, E=-192301.9 kcal/mol, T=7485 K]bakken MD:  37%|███▋      | 111/300 [00:04<00:08, 22.85step/s, E=-192301.9 kcal/mol, T=7485 K]bakken MD:  38%|███▊      | 114/300 [00:04<00:08, 22.99step/s, E=-192301.9 kcal/mol, T=7485 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:07, 23.04step/s, E=-192301.9 kcal/mol, T=7485 K]bakken MD:  39%|███▉      | 117/300 [00:05<00:07, 23.04step/s, E=-192302.7 kcal/mol, T=7097 K]bakken MD:  40%|████      | 120/300 [00:05<00:07, 22.92step/s, E=-192302.7 kcal/mol, T=7097 K]bakken MD:  41%|████      | 123/300 [00:05<00:07, 22.86step/s, E=-192302.7 kcal/mol, T=7097 K]bakken MD:  42%|████▏     | 126/300 [00:05<00:07, 22.76step/s, E=-192302.7 kcal/mol, T=7097 K]bakken MD:  43%|████▎     | 129/300 [00:05<00:07, 22.62step/s, E=-192302.7 kcal/mol, T=7097 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.62step/s, E=-192302.7 kcal/mol, T=7097 K]bakken MD:  44%|████▍     | 132/300 [00:05<00:07, 22.62step/s, E=-192313.1 kcal/mol, T=7822 K]bakken MD:  45%|████▌     | 135/300 [00:05<00:07, 22.69step/s, E=-192313.1 kcal/mol, T=7822 K]bakken MD:  46%|████▌     | 138/300 [00:06<00:07, 22.87step/s, E=-192313.1 kcal/mol, T=7822 K]bakken MD:  47%|████▋     | 141/300 [00:06<00:06, 22.80step/s, E=-192313.1 kcal/mol, T=7822 K]bakken MD:  48%|████▊     | 144/300 [00:06<00:06, 22.79step/s, E=-192313.1 kcal/mol, T=7822 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 22.82step/s, E=-192313.1 kcal/mol, T=7822 K]bakken MD:  49%|████▉     | 147/300 [00:06<00:06, 22.82step/s, E=-192301.9 kcal/mol, T=5938 K]bakken MD:  50%|█████     | 150/300 [00:06<00:06, 22.73step/s, E=-192301.9 kcal/mol, T=5938 K]bakken MD:  51%|█████     | 153/300 [00:06<00:06, 22.73step/s, E=-192301.9 kcal/mol, T=5938 K]bakken MD:  52%|█████▏    | 156/300 [00:06<00:06, 22.78step/s, E=-192301.9 kcal/mol, T=5938 K]bakken MD:  53%|█████▎    | 159/300 [00:06<00:06, 22.93step/s, E=-192301.9 kcal/mol, T=5938 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:05, 23.01step/s, E=-192301.9 kcal/mol, T=5938 K]bakken MD:  54%|█████▍    | 162/300 [00:07<00:05, 23.01step/s, E=-192293.7 kcal/mol, T=4603 K]bakken MD:  55%|█████▌    | 165/300 [00:07<00:05, 22.94step/s, E=-192293.7 kcal/mol, T=4603 K]bakken MD:  56%|█████▌    | 168/300 [00:07<00:05, 22.93step/s, E=-192293.7 kcal/mol, T=4603 K]bakken MD:  57%|█████▋    | 171/300 [00:07<00:05, 22.90step/s, E=-192293.7 kcal/mol, T=4603 K]bakken MD:  58%|█████▊    | 174/300 [00:07<00:05, 22.80step/s, E=-192293.7 kcal/mol, T=4603 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 21.79step/s, E=-192293.7 kcal/mol, T=4603 K]bakken MD:  59%|█████▉    | 177/300 [00:07<00:05, 21.79step/s, E=-192310.1 kcal/mol, T=6181 K]bakken MD:  60%|██████    | 180/300 [00:07<00:05, 22.13step/s, E=-192310.1 kcal/mol, T=6181 K]bakken MD:  61%|██████    | 183/300 [00:08<00:05, 22.52step/s, E=-192310.1 kcal/mol, T=6181 K]bakken MD:  62%|██████▏   | 186/300 [00:08<00:05, 22.67step/s, E=-192310.1 kcal/mol, T=6181 K]bakken MD:  63%|██████▎   | 189/300 [00:08<00:04, 22.76step/s, E=-192310.1 kcal/mol, T=6181 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.85step/s, E=-192310.1 kcal/mol, T=6181 K]bakken MD:  64%|██████▍   | 192/300 [00:08<00:04, 22.85step/s, E=-192310.9 kcal/mol, T=5907 K]bakken MD:  65%|██████▌   | 195/300 [00:08<00:04, 22.84step/s, E=-192310.9 kcal/mol, T=5907 K]bakken MD:  66%|██████▌   | 198/300 [00:08<00:04, 22.80step/s, E=-192310.9 kcal/mol, T=5907 K]bakken MD:  67%|██████▋   | 201/300 [00:08<00:04, 22.84step/s, E=-192310.9 kcal/mol, T=5907 K]bakken MD:  68%|██████▊   | 204/300 [00:08<00:04, 22.97step/s, E=-192310.9 kcal/mol, T=5907 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 23.05step/s, E=-192310.9 kcal/mol, T=5907 K]bakken MD:  69%|██████▉   | 207/300 [00:09<00:04, 23.05step/s, E=-192289.3 kcal/mol, T=3050 K]bakken MD:  70%|███████   | 210/300 [00:09<00:03, 23.03step/s, E=-192289.3 kcal/mol, T=3050 K]bakken MD:  71%|███████   | 213/300 [00:09<00:03, 22.97step/s, E=-192289.3 kcal/mol, T=3050 K]bakken MD:  72%|███████▏  | 216/300 [00:09<00:03, 22.94step/s, E=-192289.3 kcal/mol, T=3050 K]bakken MD:  73%|███████▎  | 219/300 [00:09<00:03, 22.94step/s, E=-192289.3 kcal/mol, T=3050 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:03, 22.90step/s, E=-192289.3 kcal/mol, T=3050 K]bakken MD:  74%|███████▍  | 222/300 [00:09<00:03, 22.90step/s, E=-192290.2 kcal/mol, T=2954 K]bakken MD:  75%|███████▌  | 225/300 [00:09<00:03, 22.93step/s, E=-192290.2 kcal/mol, T=2954 K]bakken MD:  76%|███████▌  | 228/300 [00:09<00:03, 23.10step/s, E=-192290.2 kcal/mol, T=2954 K]bakken MD:  77%|███████▋  | 231/300 [00:10<00:02, 23.07step/s, E=-192290.2 kcal/mol, T=2954 K]bakken MD:  78%|███████▊  | 234/300 [00:10<00:02, 22.94step/s, E=-192290.2 kcal/mol, T=2954 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 22.99step/s, E=-192290.2 kcal/mol, T=2954 K]bakken MD:  79%|███████▉  | 237/300 [00:10<00:02, 22.99step/s, E=-192300.2 kcal/mol, T=3908 K]bakken MD:  80%|████████  | 240/300 [00:10<00:02, 22.89step/s, E=-192300.2 kcal/mol, T=3908 K]bakken MD:  81%|████████  | 243/300 [00:10<00:02, 22.89step/s, E=-192300.2 kcal/mol, T=3908 K]bakken MD:  82%|████████▏ | 246/300 [00:10<00:02, 22.85step/s, E=-192300.2 kcal/mol, T=3908 K]bakken MD:  83%|████████▎ | 249/300 [00:10<00:02, 22.88step/s, E=-192300.2 kcal/mol, T=3908 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 23.04step/s, E=-192300.2 kcal/mol, T=3908 K]bakken MD:  84%|████████▍ | 252/300 [00:11<00:02, 23.04step/s, E=-192307.8 kcal/mol, T=4596 K]bakken MD:  85%|████████▌ | 255/300 [00:11<00:01, 23.04step/s, E=-192307.8 kcal/mol, T=4596 K]bakken MD:  86%|████████▌ | 258/300 [00:11<00:01, 23.00step/s, E=-192307.8 kcal/mol, T=4596 K]bakken MD:  87%|████████▋ | 261/300 [00:11<00:01, 22.99step/s, E=-192307.8 kcal/mol, T=4596 K]bakken MD:  88%|████████▊ | 264/300 [00:11<00:01, 23.04step/s, E=-192307.8 kcal/mol, T=4596 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.99step/s, E=-192307.8 kcal/mol, T=4596 K]bakken MD:  89%|████████▉ | 267/300 [00:11<00:01, 22.99step/s, E=-192301.1 kcal/mol, T=3543 K]bakken MD:  90%|█████████ | 270/300 [00:11<00:01, 22.97step/s, E=-192301.1 kcal/mol, T=3543 K]bakken MD:  91%|█████████ | 273/300 [00:11<00:01, 23.08step/s, E=-192301.1 kcal/mol, T=3543 K]bakken MD:  92%|█████████▏| 276/300 [00:12<00:01, 23.16step/s, E=-192301.1 kcal/mol, T=3543 K]bakken MD:  93%|█████████▎| 279/300 [00:12<00:00, 23.13step/s, E=-192301.1 kcal/mol, T=3543 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 23.04step/s, E=-192301.1 kcal/mol, T=3543 K]bakken MD:  94%|█████████▍| 282/300 [00:12<00:00, 23.04step/s, E=-192300.1 kcal/mol, T=3167 K]bakken MD:  95%|█████████▌| 285/300 [00:12<00:00, 22.99step/s, E=-192300.1 kcal/mol, T=3167 K]bakken MD:  96%|█████████▌| 288/300 [00:12<00:00, 22.92step/s, E=-192300.1 kcal/mol, T=3167 K]bakken MD:  97%|█████████▋| 291/300 [00:12<00:00, 22.86step/s, E=-192300.1 kcal/mol, T=3167 K]bakken MD:  98%|█████████▊| 294/300 [00:12<00:00, 22.90step/s, E=-192300.1 kcal/mol, T=3167 K]bakken MD:  99%|█████████▉| 297/300 [00:12<00:00, 23.07step/s, E=-192300.1 kcal/mol, T=3167 K]bakken MD:  99%|█████████▉| 297/300 [00:13<00:00, 23.07step/s, E=-192305.7 kcal/mol, T=3562 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 23.14step/s, E=-192305.7 kcal/mol, T=3562 K]bakken MD: 100%|██████████| 300/300 [00:13<00:00, 22.88step/s, E=-192305.7 kcal/mol, T=3562 K]
+  [Round 5] PSI4 single-points on 20 frames (ML energy range = 118.43 kcal/mol) ...
+    frame    0  E_ML=-192217.64  E_PSI4=-192217.44  err=0.203 kcal/mol
+    frame    1  E_ML=-192217.20  E_PSI4=-192216.65  err=0.552 kcal/mol
+    frame    2  E_ML=-192217.03  E_PSI4=-192215.72  err=1.306 kcal/mol
+    frame    3  E_ML=-192217.15  E_PSI4=-192214.70  err=2.452 kcal/mol
+    frame    4  E_ML=-192217.33  E_PSI4=-192213.42  err=3.911 kcal/mol
+    frame    5  E_ML=-192217.48  E_PSI4=-192211.78  err=5.702 kcal/mol
+    frame    6  E_ML=-192217.75  E_PSI4=-192209.84  err=7.909 kcal/mol
+    frame    7  E_ML=-192218.27  E_PSI4=-192207.72  err=10.557 kcal/mol
+    frame    8  E_ML=-192219.11  E_PSI4=-192205.49  err=13.617 kcal/mol
+    frame    9  E_ML=-192220.28  E_PSI4=-192203.20  err=17.079 kcal/mol
+    frame   10  E_ML=-192221.64  E_PSI4=-192200.65  err=20.983 kcal/mol
+    frame   11  E_ML=-192222.96  E_PSI4=-192197.49  err=25.475 kcal/mol
+    frame   12  E_ML=-192224.27  E_PSI4=-192193.37  err=30.894 kcal/mol
+    frame   13  E_ML=-192225.78  E_PSI4=-192188.13  err=37.655 kcal/mol
+    frame   14  E_ML=-192227.60  E_PSI4=-192181.62  err=45.978 kcal/mol
+    frame   94  E_ML=-192319.90  E_PSI4=-191744.77  err=575.131 kcal/mol
+    frame  158  E_ML=-192293.21  E_PSI4=-191706.04  err=587.173 kcal/mol
+    frame  193  E_ML=-192312.06  E_PSI4=-191730.31  err=581.748 kcal/mol
+    frame 245: PSI4 failed (Could not converge SCF iterations in 200 iterations.), skipping
+    frame  282  E_ML=-192298.45  E_PSI4=-191723.75  err=574.697 kcal/mol
+  [Round 5] mean |ΔE| = 133.843 kcal/mol  (19 PSI4 frames)
+Saved trajectory to outputs/mvko_20260319_155634/adapt_round5.npz (npz format)
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 982, Atoms: 12
+Saved trajectory to outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+🔧 Computing descriptors...
+Computing descriptors:   0%|          | 0/1001 [00:00<?, ?it/s]Computing descriptors:  37%|███▋      | 369/1001 [00:00<00:00, 3684.55it/s]Computing descriptors:  74%|███████▎  | 738/1001 [00:00<00:00, 3669.78it/s]Computing descriptors: 100%|██████████| 1001/1001 [00:00<00:00, 3673.19it/s]
+🔧 Scaling data...
+🤖 Tuning hyperparameters...
+Grid search:   0%|          | 0/20 [00:00<?, ?it/s]Grid search:  25%|██▌       | 5/20 [00:00<00:00, 43.15it/s]Grid search:  50%|█████     | 10/20 [00:00<00:00, 44.37it/s]Grid search:  75%|███████▌  | 15/20 [00:00<00:00, 45.84it/s]Grid search: 100%|██████████| 20/20 [00:00<00:00, 46.71it/s]
+
+======================================================================
+  ML-PES IR SPECTRUM WORKFLOW
+======================================================================
+  ML-PES model       : outputs/mvko_20260319_155634/mlpes_adapt_round5.pkl
+  Training data      : outputs/mvko_20260319_155634/combined_training_data.npz
+  Dipole model       : (will train now)
+  MD steps           : 30000  (dt=0.5 fs, save every 1)
+  Temperature        : 300.0 K
+  ZPE floor init     : yes  (filter: [50, 4000] cm⁻¹)
+  bakken pre-min     : yes  (max_steps=300, tol=0.005 Ha/Å)
+  Output dir         : outputs/mvko_20260319_155634/ir_spectrum
+Loaded trajectory from outputs/mvko_20260319_155634/combined_training_data.npz (npz format)
+  Frames: 1001, Atoms: 12
+  Molecule           : C₄H₆O₂  (12 atoms)
+
+======================================================================
+  TRAINING ML DIPOLE SURFACE
+======================================================================
+  Training frames    : 1001
+  Valid dipoles      : 0 (|μ| > 1e-6 D)
+Traceback (most recent call last):
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 1095, in <module>
+    main()
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 1073, in main
+    run_ir_workflow(
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 846, in run_ir_workflow
+    dipole_surface = train_dipole_surface(
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jmsmith1/Documents/Research/code/MD_MLPES/ir_md_spectrum.py", line 361, in train_dipole_surface
+    raise RuntimeError(f"Too few valid dipoles ({n_valid}) for training")
+RuntimeError: Too few valid dipoles (0) for training
+
+📊 Hyperparameter Search Results:
+   Gamma      Alpha      RMSE (kcal/mol)     
+   --------------------------------------------------
+   ⭐ 0.0002   0.00        31.7044
+      0.0005   0.00        49.1753
+      0.0002   0.01        49.9656
+      0.0005   0.00        50.0074
+      0.0002   0.00        54.0598
+      0.0002   0.00        62.4240
+      0.0005   0.00        71.9168
+      0.0005   0.01        77.6016
+      0.0010   0.00        81.9558
+      0.0010   0.00        88.3176
+      0.0010   0.00        89.7005
+      0.0010   0.01       101.7233
+      0.0020   0.00       125.5900
+      0.0020   0.00       126.3075
+      0.0020   0.00       128.8348
+      0.0020   0.01       130.4445
+      0.0050   0.00       164.5874
+      0.0050   0.00       164.6517
+      0.0050   0.00       164.6682
+      0.0050   0.01       164.8179
+  ML-PES trained  γ=0.0002  α=1e-05  RMSE=31.7044 kcal/mol  (1001 frames)
+  Round 5 complete  mean|ΔE|=133.843 kcal/mol  total frames=1001
+
+  Max rounds (5) reached without convergence.
+  Final errors: ['101.017', '987.982', '1402.386', '1183.391', '133.843'] kcal/mol
+
+──────────────────────────────────────────────────────────────────────
+[Step 7] IR spectrum via ML-MD dipole ACF
+──────────────────────────────────────────────────────────────────────
+  Model       : outputs/mvko_20260319_155634/mlpes_adapt_round5.pkl
+  Data        : outputs/mvko_20260319_155634/combined_training_data.npz
+  Frames      : 1001
+  MD steps    : 30000  (300 K)
+
+  Running: python3 ir_md_spectrum.py --model outputs/mvko_20260319_155634/mlpes_adapt_round5.pkl --training-data outputs/mvko_20260319_155634/combined_training_data.npz --steps 30000 --temp 300.0 --timestep 0.5 --save-every 1 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 --output-dir outputs/mvko_20260319_155634/ir_spectrum
+
+  ir_md_spectrum.py exited with code 256
+
+======================================================================
+  MVKO WORKFLOW COMPLETE
+======================================================================
+  Output dir       : outputs/mvko_20260319_155634
+  State file       : outputs/mvko_20260319_155634/state.json
+  Final model      : outputs/mvko_20260319_155634/mlpes_adapt_round5.pkl
+  Training frames  : 1001
+  Adaptive errors  : ['101.017', '987.982', '1402.386', '1183.391', '133.843'] kcal/mol
+
+  IR spectrum command:
+    python3 ir_md_spectrum.py \
+    --model outputs/mvko_20260319_155634/mlpes_adapt_round5.pkl \
+    --training-data outputs/mvko_20260319_155634/combined_training_data.npz \
+    --steps 30000 --temp 300 --timestep 0.5 --save-every 1 \
+    --preminimize --zpe-min-freq 50 --zpe-max-freq 4000
+

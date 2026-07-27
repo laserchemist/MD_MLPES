@@ -1,0 +1,12 @@
+{
+  "b3lyp_model": "outputs/mvko_20260319_081314/mlpes_initial.pkl",
+  "delta_ml_model": "outputs/casscf_surface_20260331_162217/delta_ml_surface.pkl",
+  "active_space": "CASSCF(4,4)",
+  "basis": "6-31G*",
+  "n_frames": 29,
+  "e_b3lyp_ref_ha": -306.3185840048427,
+  "e_cas_ref_ha": -304.52484969864724,
+  "abs_offset_ha": 1.7937343061954607,
+  "abs_offset_kcal": 1125.5852709764683,
+  "note": "Apply as E_corr(R) = E_B3LYP_ML(R) + delta_ML(R). The delta_ML model predicts the relative correction \u0394E_CASSCF(R) - \u0394E_B3LYP(R) in Hartree. Absolute energy offset (CASSCF vs B3LYP) does not affect forces."
+}

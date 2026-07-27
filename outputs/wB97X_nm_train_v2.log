@@ -1,0 +1,73 @@
+INFO:numexpr.utils:NumExpr defaulting to 10 threads.
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/nm_pes.py:322: RuntimeWarning: invalid value encountered in sqrt
+  FREQ_CONV * np.sqrt(evals),
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/modules/nm_pes.py:323: RuntimeWarning: invalid value encountered in sqrt
+  -FREQ_CONV * np.sqrt(-evals))
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/train_wB97X_nm_model.py:306: UserWarning: Glyph 8315 (\N{SUPERSCRIPT MINUS}) missing from font(s) Arial.
+  plt.tight_layout()
+/Users/jmsmith1/Documents/Research/code/MD_MLPES/train_wB97X_nm_model.py:307: UserWarning: Glyph 8315 (\N{SUPERSCRIPT MINUS}) missing from font(s) Arial.
+  plt.savefig(out_dir / 'nm_pes_diagnostics.png', dpi=120)
+Loading training data: outputs/wB97X_surface_20260406_223155/training_data_wB97X.npz
+Loaded trajectory from outputs/wB97X_surface_20260406_223155/training_data_wB97X.npz (npz format)
+  Frames: 894, Atoms: 12
+  894 frames, 12 atoms
+  After ΔE < 20.0 kcal/mol filter: 436 / 894 frames
+  ΔE range: 0.00 – 19.99 kcal/mol
+
+Loading eq geometry: outputs/mvko_20260319_081314/psi4_eq_coords.npy
+Loading Hessian: outputs/casscf_nm_delta_20260401_110049/hessian_used.npy
+
+Computing NM eigenvectors ...
+  30 vibrational modes
+  Lowest 6  : [124, 167, 280, 306, 338, 381] cm⁻¹
+  C-H range : [3048, 3099, 3162, 3164, 3179, 3323] cm⁻¹
+
+Projecting training data to NM coordinates ...
+  X_q shape: (436, 30)
+  ||q|| range: 0.000 – 5.403 sqrt(amu)·Bohr
+  Thermal amplitude 300K: 0.067 – 1.796
+
+LOO-CV sweep: 6 γ × 3 α = 18 combinations ...
+  γ=0.1  α=1.0e-07  LOO-CV=0.7290 kcal/mol ← best
+  γ=0.1  α=1.0e-06  LOO-CV=0.8128 kcal/mol
+  γ=0.1  α=1.0e-05  LOO-CV=0.9469 kcal/mol
+  γ=0.2  α=1.0e-07  LOO-CV=0.6213 kcal/mol ← best
+  γ=0.2  α=1.0e-06  LOO-CV=0.6687 kcal/mol
+  γ=0.2  α=1.0e-05  LOO-CV=0.9055 kcal/mol
+  γ=0.3  α=1.0e-07  LOO-CV=0.7078 kcal/mol
+  γ=0.3  α=1.0e-06  LOO-CV=0.7300 kcal/mol
+  γ=0.3  α=1.0e-05  LOO-CV=0.8042 kcal/mol
+  γ=0.5  α=1.0e-07  LOO-CV=0.9034 kcal/mol
+  γ=0.5  α=1.0e-06  LOO-CV=0.9029 kcal/mol
+  γ=0.5  α=1.0e-05  LOO-CV=0.9122 kcal/mol
+  γ=1  α=1.0e-07  LOO-CV=1.1395 kcal/mol
+  γ=1  α=1.0e-06  LOO-CV=1.1408 kcal/mol
+  γ=1  α=1.0e-05  LOO-CV=1.1494 kcal/mol
+  γ=2  α=1.0e-07  LOO-CV=1.4786 kcal/mol
+  γ=2  α=1.0e-06  LOO-CV=1.4864 kcal/mol
+  γ=2  α=1.0e-05  LOO-CV=1.4841 kcal/mol
+
+Best: γ=0.2  α=1e-07  LOO-CV=0.6213 kcal/mol
+
+Training final NMKRRPESModel on 436 frames ...
+  In-sample RMSE: 0.0327 kcal/mol
+
+Checking NM frequencies via analytic Hessian at equilibrium ...
+  NMPESDriver loaded: outputs/wB97X_nm_model_v2/_tmp_nm_check.pkl
+    n_atoms=12  n_vib=30  γ=0.2  α=1e-07
+    LOO-CV RMSE: 0.6213 kcal/mol
+  Imaginary modes: 4
+  Lowest 10: [-160, 0, 0, 0, 0, 0, 0, 85, 104, 120] cm⁻¹
+  C-H region (>2500): [3001, 3032, 3102, 3149, 3195, 3325] cm⁻¹
+
+Model saved → outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl
+Diagnostics → outputs/wB97X_nm_model_v2/nm_pes_diagnostics.png
+
+Next step — run IR spectrum with NM-PES model:
+  python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/wB97X_nm_model_v2/mlpes_wB97X_nm.pkl \
+    --training-data outputs/mvko_dipoles_20260319_171335/training_with_dipoles.npz \
+    --nm-delta-model outputs/casscf_wB97X_nm_grid_20260407_184904/nm_delta_s0_model.pkl \
+    --steps 30000 --temp 300 --preminimize --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 --max-bond-extension 2.0 \
+    --output-dir outputs/ir_spectrum_wB97X_nm_300K

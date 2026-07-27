@@ -1,0 +1,18 @@
+{
+  "molecule": "mvko_anti_cis",
+  "out_dir": "outputs/anti_cis_nm_pes_20260513",
+  "steps_done": [
+    1,
+    2,
+    3,
+    5
+  ],
+  "eq_coords": "outputs/anti_cis_nm_pes_20260513/eq_coords.npy",
+  "eq_energy": -306.2104811716841,
+  "hessian": "outputs/anti_cis_nm_pes_20260513/hessian.npy",
+  "hess_energy": -306.21048115344365,
+  "normal_modes": "outputs/anti_cis_nm_pes_20260513/normal_modes.npz",
+  "nm_data": "outputs/anti_cis_nm_pes_20260513/nm_displacements.npz",
+  "combined_data": "outputs/anti_cis_nm_pes_20260513/combined_training_data.npz",
+  "model": "outputs/anti_cis_nm_pes_20260513/mlpes_nm.pkl"
+}

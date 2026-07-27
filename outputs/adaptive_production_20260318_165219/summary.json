@@ -1,0 +1,28 @@
+{
+  "history": [
+    {
+      "cycle": 0,
+      "n_valid": 10,
+      "mean_error": 0.6553755564370887,
+      "max_error": 1.0056458800420343,
+      "std_error": 0.2631871581068057,
+      "n_above_threshold": 0,
+      "model": "outputs/nm_training_20260308_203606/mlpes_model_nm.pkl",
+      "data": "outputs/nm_training_20260308_203606/combined_training_data.npz"
+    }
+  ],
+  "final_model": "outputs/nm_training_20260308_203606/mlpes_model_nm.pkl",
+  "final_training_data": "outputs/nm_training_20260308_203606/combined_training_data.npz",
+  "converged": true,
+  "parameters": {
+    "n_steps": 100,
+    "temperature": 300.0,
+    "timestep": 0.5,
+    "snapshot_every": 10,
+    "error_threshold": 2.0,
+    "max_cycles": 3,
+    "method": "B3LYP",
+    "basis": "6-31G*"
+  },
+  "date": "2026-03-18T16:52:34.177951"
+}

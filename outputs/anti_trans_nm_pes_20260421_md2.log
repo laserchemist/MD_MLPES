@@ -1,0 +1,1970 @@
+INFO:numexpr.utils:NumExpr defaulting to 10 threads.
+INFO:modules.direct_md:PSI4 setup: wb97x-d/6-31G*
+INFO:modules.direct_md:Starting direct MD: mvko_anti_trans
+INFO:modules.direct_md:  Method: wb97x-d/6-31G*
+INFO:modules.direct_md:  Steps: 50, dt: 0.5 fs
+INFO:modules.direct_md:  Temperature: 600.0 K
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=226.03100463438798
+INFO:psi4.driver.driver:Return energy(): -306.209757274202
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=226.03100463438798
+INFO:psi4.driver.driver:Return gradient(): -306.209757274202
+INFO:psi4.driver.driver:[[ 0.00001545  0.00001775  0.        ]
+ [ 0.00005931 -0.00018042 -0.        ]
+ [-0.00007826  0.00019081 -0.        ]
+ [-0.00003145 -0.00005807  0.        ]
+ [ 0.00001169 -0.00002511  0.        ]
+ [-0.00002085  0.00000006  0.        ]
+ [ 0.00001469  0.00000945 -0.        ]
+ [ 0.00000678 -0.00005129 -0.        ]
+ [ 0.00000781 -0.00001222 -0.        ]
+ [-0.00002234 -0.00001999 -0.        ]
+ [-0.00001236 -0.00002004 -0.00002006]
+ [-0.00001236 -0.00002004  0.00002006]]
+INFO:modules.direct_md:Initial energy: -306.209757 Hartree (-192149.52 kcal/mol)
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.72760449065476
+INFO:psi4.driver.driver:Return energy(): -306.20930409670814
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.72760449065476
+INFO:psi4.driver.driver:Return gradient(): -306.20930409670814
+INFO:psi4.driver.driver:[[-0.00014496  0.00272031  0.00024637]
+ [ 0.00326991 -0.00194149 -0.00038823]
+ [-0.00025909  0.00092448  0.00010638]
+ [ 0.00006732  0.00524456 -0.00178234]
+ [ 0.00163896 -0.00829176  0.00117646]
+ [ 0.00599523 -0.00621006  0.00687283]
+ [ 0.00045203 -0.00455507  0.0009087 ]
+ [-0.0027329   0.00396666 -0.0001369 ]
+ [-0.00001488  0.00218861 -0.00053432]
+ [ 0.00111584  0.00039262  0.00019664]
+ [-0.00244655  0.00242659  0.00239718]
+ [-0.00709562  0.00282802 -0.00904547]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.42598083686767
+INFO:psi4.driver.driver:Return energy(): -306.2079984164707
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.42598083686767
+INFO:psi4.driver.driver:Return gradient(): -306.2079984164707
+INFO:psi4.driver.driver:[[-0.00028998  0.00536104  0.00048291]
+ [ 0.00641874 -0.00370805 -0.00077857]
+ [-0.00042327  0.00168087  0.0002092 ]
+ [ 0.00026366  0.01063949 -0.00365853]
+ [ 0.00309959 -0.01620011  0.00241387]
+ [ 0.01120053 -0.01237088  0.01254896]
+ [ 0.00086684 -0.00913775  0.00188151]
+ [-0.00531528  0.00773341 -0.00035456]
+ [-0.00005635  0.0043006  -0.00105286]
+ [ 0.00227449  0.00078416  0.00038284]
+ [-0.00491795  0.00498562  0.00483033]
+ [-0.01330661  0.00556491 -0.0169386 ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.12890738437324
+INFO:psi4.driver.driver:Return energy(): -306.20594825958204
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.12890738437324
+INFO:psi4.driver.driver:Return gradient(): -306.20594825958204
+INFO:psi4.driver.driver:[[-0.00041579  0.0079248   0.00071024]
+ [ 0.00950333 -0.0054714  -0.0011674 ]
+ [-0.00058841  0.00246127  0.00030589]
+ [ 0.00059727  0.01599765 -0.00561787]
+ [ 0.00437188 -0.02360772  0.00370019]
+ [ 0.01556816 -0.01838017  0.01712571]
+ [ 0.00119351 -0.01363628  0.00291078]
+ [-0.00769071  0.01117245 -0.0006401 ]
+ [-0.00014684  0.00626921 -0.0015552 ]
+ [ 0.00343096  0.00113674  0.00055304]
+ [-0.00735957  0.00763558  0.00718972]
+ [-0.01864938  0.00814971 -0.02366552]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.83876860023415
+INFO:psi4.driver.driver:Return energy(): -306.20328780929685
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.83876860023415
+INFO:psi4.driver.driver:Return gradient(): -306.20328780929685
+INFO:psi4.driver.driver:[[-0.00051852  0.01039974  0.0009307 ]
+ [ 0.01252135 -0.00723194 -0.00155579]
+ [-0.00070383  0.00328077  0.00040592]
+ [ 0.00112074  0.02120257 -0.00763028]
+ [ 0.00545071 -0.03040369  0.00502311]
+ [ 0.01911459 -0.0241547   0.02074702]
+ [ 0.00141771 -0.01794863  0.0040021 ]
+ [-0.00982306  0.01422856 -0.00097953]
+ [-0.00031627  0.00804377 -0.00204225]
+ [ 0.00456271  0.00143378  0.00070293]
+ [-0.00970906  0.0103424   0.00939787]
+ [-0.02316928  0.01055848 -0.02928926]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.55759023519414
+INFO:psi4.driver.driver:Return energy(): -306.20016795414796
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.55759023519414
+INFO:psi4.driver.driver:Return gradient(): -306.20016795414796
+INFO:psi4.driver.driver:[[-0.0005916   0.01277076  0.0011456 ]
+ [ 0.01547119 -0.00896925 -0.0019432 ]
+ [-0.00087159  0.00410173  0.00051095]
+ [ 0.00178849  0.02614362 -0.00966928]
+ [ 0.00634298 -0.03649376  0.00637046]
+ [ 0.02188326 -0.02962845  0.02357594]
+ [ 0.00144842 -0.02201256  0.00515128]
+ [-0.01169067  0.01686569 -0.00135797]
+ [-0.00059228  0.00957968 -0.00251629]
+ [ 0.00564759  0.00166041  0.00082973]
+ [-0.01191256  0.01306072  0.01139219]
+ [-0.02693331  0.01277962 -0.0339025 ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.28707582022906
+INFO:psi4.driver.driver:Return energy(): -306.1967430201442
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.28707582022906
+INFO:psi4.driver.driver:Return gradient(): -306.1967430201442
+INFO:psi4.driver.driver:[[-0.00063122  0.01502761  0.00135621]
+ [ 0.01835464 -0.01068716 -0.00232744]
+ [-0.0010271   0.00494289  0.00060301]
+ [ 0.00264359  0.03073106 -0.01170629]
+ [ 0.00706407 -0.04181752  0.0077318 ]
+ [ 0.02393037 -0.03475     0.02577274]
+ [ 0.0012737  -0.02574423  0.00634694]
+ [-0.01327851  0.01906263 -0.00176049]
+ [-0.00099918  0.01084084 -0.00298086]
+ [ 0.00666474  0.00180358  0.00093214]
+ [-0.01392821  0.0157403   0.01312577]
+ [-0.03001707  0.01481136 -0.03760929]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.02864658919094
+INFO:psi4.driver.driver:Return energy(): -306.1931629802295
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.02864658919094
+INFO:psi4.driver.driver:Return gradient(): -306.1931629802295
+INFO:psi4.driver.driver:[[-0.00063277  0.01716197  0.00156431]
+ [ 0.02116861 -0.01237524 -0.0027096 ]
+ [-0.00120745  0.00578471  0.00068966]
+ [ 0.00365799  0.03489239 -0.0137114 ]
+ [ 0.00763328 -0.04633375  0.00909767]
+ [ 0.02531891 -0.03947782  0.02748221]
+ [ 0.00086081 -0.02908538  0.00757566]
+ [-0.01458047  0.02081031 -0.00217305]
+ [-0.00155566  0.01180191 -0.00344037]
+ [ 0.00759481  0.00185274  0.00101024]
+ [-0.01572692  0.01833259  0.01456547]
+ [-0.03249581  0.01665778 -0.04051275]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.78347926829548
+INFO:psi4.driver.driver:Return energy(): -306.1895709333445
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.78347926829548
+INFO:psi4.driver.driver:Return gradient(): -306.1895709333445
+INFO:psi4.driver.driver:[[-0.00059339  0.019168    0.00177074]
+ [ 0.02391586 -0.01402683 -0.00308851]
+ [-0.00140595  0.0066297   0.00077502]
+ [ 0.00482632  0.03857587 -0.01566399]
+ [ 0.00806856 -0.05002321  0.01045936]
+ [ 0.02610909 -0.04377628  0.02882553]
+ [ 0.00021432 -0.03198561  0.00881133]
+ [-0.01559359  0.02210605 -0.00258231]
+ [-0.00227381  0.01244868 -0.00389965]
+ [ 0.00842055  0.00179953  0.00106525]
+ [-0.01729023  0.0207963   0.01568811]
+ [-0.03443796  0.01832597 -0.04270628]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.55254122759408
+INFO:psi4.driver.driver:Return energy(): -306.1860943331385
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.55254122759408
+INFO:psi4.driver.driver:Return gradient(): -306.1860943331385
+INFO:psi4.driver.driver:[[-0.00051039  0.02104154  0.00197815]
+ [ 0.026598   -0.01563997 -0.00346533]
+ [-0.00158657  0.00748968  0.00085889]
+ [ 0.00616018  0.04174329 -0.01754926]
+ [ 0.00838351 -0.05288695  0.01180865]
+ [ 0.02635493 -0.04761418  0.02989837]
+ [-0.00063735 -0.03440293  0.01001959]
+ [-0.01631778  0.02295216 -0.00297531]
+ [-0.00315786  0.01277962 -0.00436396]
+ [ 0.00912708  0.00163814  0.00109917]
+ [-0.01860793  0.02310032  0.01647774]
+ [-0.03590293  0.01982449 -0.04427049]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.3366211963411
+INFO:psi4.driver.driver:Return energy(): -306.18284103474605
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.3366211963411
+INFO:psi4.driver.driver:Return gradient(): -306.18284103474605
+INFO:psi4.driver.driver:[[-0.00038135  0.02277729  0.00218867]
+ [ 0.02921622 -0.01721053 -0.00383961]
+ [-0.00173773  0.00836471  0.00093517]
+ [ 0.00765526  0.04436798 -0.01935599]
+ [ 0.00858434 -0.05493896  0.01313689]
+ [ 0.02610154 -0.05096195  0.03077183]
+ [-0.00166738 -0.03631162  0.01116453]
+ [-0.0167548   0.02335346 -0.0033398 ]
+ [-0.00420395  0.01280487 -0.00483798]
+ [ 0.00970188  0.0013651   0.00111455]
+ [-0.01967448  0.02522215  0.01692309]
+ [-0.03693887  0.02116134 -0.04527024]]
+INFO:modules.direct_md:Step 10/50 | E = -192132.63 kcal/mol | T = 341.1 K | ETA: 586.6s
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.13635394330467
+INFO:psi4.driver.driver:Return energy(): -306.17989904113557
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.13635394330467
+INFO:psi4.driver.driver:Return gradient(): -306.17989904113557
+INFO:psi4.driver.driver:[[-0.0002052   0.02437148  0.00240455]
+ [ 0.03177009 -0.01872716 -0.00421213]
+ [-0.00189622  0.00923325  0.00100739]
+ [ 0.00927236  0.04643356 -0.02107085]
+ [ 0.00866854 -0.05620233  0.01443411]
+ [ 0.02538452 -0.05379163  0.03149489]
+ [-0.00285934 -0.03770212  0.01221754]
+ [-0.01690755  0.02331585 -0.00366422]
+ [-0.00539999  0.01254553 -0.00532525]
+ [ 0.01013488  0.00097956  0.00111425]
+ [-0.02048663  0.02714491  0.01701644]
+ [-0.03758203  0.02234257 -0.04575365]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.95223781874378
+INFO:psi4.driver.driver:Return energy(): -306.1773365622467
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.95223781874378
+INFO:psi4.driver.driver:Return gradient(): -306.1773365622467
+INFO:psi4.driver.driver:[[ 0.00001953  0.02582067  0.00262804]
+ [ 0.03425893 -0.02017904 -0.00458363]
+ [-0.00208143  0.01008248  0.00107921]
+ [ 0.01098102  0.04792873 -0.02268223]
+ [ 0.00862472 -0.05670913  0.01568862]
+ [ 0.02422815 -0.05607726  0.03209634]
+ [-0.00419886 -0.03857197  0.01315505]
+ [-0.0167787   0.0228453  -0.00393719]
+ [-0.00672651  0.0120317  -0.00582795]
+ [ 0.01041867  0.00048299  0.00110122]
+ [-0.0210418   0.02885461  0.01675322]
+ [-0.03785665  0.0233716  -0.04575184]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.78464524862667
+INFO:psi4.driver.driver:Return energy(): -306.1751989156497
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.78464524862667
+INFO:psi4.driver.driver:Return gradient(): -306.1751989156497
+INFO:psi4.driver.driver:[[ 0.00029356  0.02712263  0.00286116]
+ [ 0.03668246 -0.02156063 -0.00495371]
+ [-0.00227186  0.01091557  0.0011483 ]
+ [ 0.01277581  0.04884438 -0.0241775 ]
+ [ 0.00843428 -0.05649958  0.01688689]
+ [ 0.02264474 -0.05779535  0.03258648]
+ [-0.00566364 -0.03891956  0.01395939]
+ [-0.01636999  0.02194722 -0.00414729]
+ [-0.00815761  0.01130072 -0.00634657]
+ [ 0.01054835 -0.00012078  0.0010783 ]
+ [-0.02133698  0.03033805  0.01613138]
+ [-0.03777498  0.02424851 -0.04527892]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.63382614953218
+INFO:psi4.driver.driver:Return energy(): -306.1735069690125
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.63382614953218
+INFO:psi4.driver.driver:Return gradient(): -306.1735069690125
+INFO:psi4.driver.driver:[[ 0.00061561  0.02827593  0.00310603]
+ [ 0.03904034 -0.02286665 -0.0053223 ]
+ [-0.00244561  0.01173387  0.00121227]
+ [ 0.01465082  0.04917224 -0.02554036]
+ [ 0.00807195 -0.05561757  0.01801349]
+ [ 0.020634   -0.05892296  0.03295788]
+ [-0.00723296 -0.03874476  0.014619  ]
+ [-0.01568286  0.02062654 -0.0042832 ]
+ [-0.00966237  0.01039446 -0.00687978]
+ [ 0.01052159 -0.00082588  0.00104808]
+ [-0.02136836  0.03158183  0.01515108]
+ [-0.03733726  0.02496916 -0.0443318 ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.49990357440984
+INFO:psi4.driver.driver:Return energy(): -306.17225766124466
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.49990357440984
+INFO:psi4.driver.driver:Return gradient(): -306.17225766124466
+INFO:psi4.driver.driver:[[ 0.00098365  0.02927903  0.00336452]
+ [ 0.0413304  -0.02408835 -0.00568932]
+ [-0.0026059   0.01252656  0.00127111]
+ [ 0.01658258  0.048905   -0.02675205]
+ [ 0.0075084  -0.05410766  0.0190512 ]
+ [ 0.01818272 -0.05943752  0.03318597]
+ [-0.00889646 -0.03804949  0.01512597]
+ [-0.01471977  0.01888882 -0.00433382]
+ [-0.01120672  0.00935679 -0.00742449]
+ [ 0.01033882 -0.00162421  0.00101273]
+ [-0.02113125  0.03257196  0.01381415]
+ [-0.03653183  0.02552462 -0.04289022]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.38286135870015
+INFO:psi4.driver.driver:Return energy(): -306.1714253888057
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.38286135870015
+INFO:psi4.driver.driver:Return gradient(): -306.1714253888057
+INFO:psi4.driver.driver:[[ 0.00139604  0.03012958  0.0036384 ]
+ [ 0.04354903 -0.02521517 -0.00605474]
+ [-0.00276211  0.01328051  0.00132643]
+ [ 0.0185449   0.04803525 -0.02779295]
+ [ 0.00671277 -0.0520148   0.01998135]
+ [ 0.01526412 -0.05931564  0.03322892]
+ [-0.01065149 -0.03683466  0.01547275]
+ [-0.01348462  0.0167413  -0.0042883 ]
+ [-0.01275487  0.00823173 -0.00797601]
+ [ 0.01000325 -0.00250579  0.0009739 ]
+ [-0.02062038  0.03329385  0.01212366]
+ [-0.03533509  0.02590075 -0.04091658]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.28252365366745
+INFO:psi4.driver.driver:Return energy(): -306.17096209701384
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.28252365366745
+INFO:psi4.driver.driver:Return gradient(): -306.17096209701384
+INFO:psi4.driver.driver:[[ 0.0018504   0.03082569  0.0039294 ]
+ [ 0.04569229 -0.02623813 -0.0064183 ]
+ [-0.00290946  0.01398855  0.00137874]
+ [ 0.02052459  0.0465557  -0.02864459]
+ [ 0.00565596 -0.04938582  0.02078465]
+ [ 0.01183784 -0.05853278  0.03302722]
+ [-0.01249341 -0.03509885  0.01564945]
+ [-0.0119837   0.01419482 -0.0041361 ]
+ [-0.01427103  0.0070615  -0.00852849]
+ [ 0.00952096 -0.00345899  0.00093269]
+ [-0.01983061  0.03373241  0.01008396]
+ [-0.03371177  0.02607785 -0.03835584]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.1985269756877
+INFO:psi4.driver.driver:Return energy(): -306.170797640831
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.1985269756877
+INFO:psi4.driver.driver:Return gradient(): -306.170797640831
+INFO:psi4.driver.driver:[[ 0.00234316  0.03136602  0.0042393 ]
+ [ 0.0477559  -0.02714889 -0.00677961]
+ [-0.00303941  0.01464511  0.0014277 ]
+ [ 0.02251393  0.04446093 -0.02928958]
+ [ 0.00431353 -0.0462702   0.02144215]
+ [ 0.00785024 -0.05706329  0.03250301]
+ [-0.01441443 -0.03284059  0.01564376]
+ [-0.01022742  0.01126617 -0.00386766]
+ [-0.01572079  0.00588512 -0.0090752 ]
+ [ 0.00890102 -0.00447069  0.00088968]
+ [-0.01875783  0.03387249  0.00770103]
+ [-0.03161536  0.02603063 -0.03513591]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.13028510523134
+INFO:psi4.driver.driver:Return energy(): -306.17084139461844
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.13028510523134
+INFO:psi4.driver.driver:Return gradient(): -306.17084139461844
+INFO:psi4.driver.driver:[[ 0.00287     0.03174943  0.00457056]
+ [ 0.04973456 -0.02793887 -0.00713978]
+ [-0.00314542  0.01524329  0.0014736 ]
+ [ 0.02450596  0.04174996 -0.02971181]
+ [ 0.00266855 -0.04272196  0.02193642]
+ [ 0.00323555 -0.05488108  0.03155922]
+ [-0.01640369 -0.03006143  0.0154417 ]
+ [-0.00823227  0.00798098 -0.00347513]
+ [-0.01707233  0.00473736 -0.00960907]
+ [ 0.00815563 -0.00552641  0.00084498]
+ [-0.01740018  0.03369992  0.00498347]
+ [-0.02898938  0.02572853 -0.03116889]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.07694728955718
+INFO:psi4.driver.driver:Return energy(): -306.17098553511573
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.07694728955718
+INFO:psi4.driver.driver:Return gradient(): -306.17098553511573
+INFO:psi4.driver.driver:[[ 0.00342587  0.03197647  0.00492296]
+ [ 0.05162173 -0.02859895 -0.00749473]
+ [-0.00322688  0.0157734   0.00151502]
+ [ 0.02648979  0.03842742 -0.02989718]
+ [ 0.00071584 -0.03880319  0.02225278]
+ [-0.0020802  -0.05196092  0.03008035]
+ [-0.01844706 -0.02676849  0.01502903]
+ [-0.00602304  0.00437719 -0.00295408]
+ [-0.01829721  0.00364867 -0.01012245]
+ [ 0.00729972 -0.00661087  0.00079845]
+ [-0.01575916  0.03320247  0.00194378]
+ [-0.02576968  0.02513679 -0.02635375]]
+INFO:modules.direct_md:Step 20/50 | E = -192125.19 kcal/mol | T = 297.3 K | ETA: 433.6s
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.03735037018058
+INFO:psi4.driver.driver:Return energy(): -306.17110930496864
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.03735037018058
+INFO:psi4.driver.driver:Return gradient(): -306.17110930496864
+INFO:psi4.driver.driver:[[ 0.00400454  0.03204575  0.00529751]
+ [ 0.0534132  -0.02912075 -0.00784266]
+ [-0.00328375  0.01622747  0.00155172]
+ [ 0.02845353  0.03450998 -0.02983517]
+ [-0.00153727 -0.03458511  0.02238076]
+ [-0.00817444 -0.04828135  0.0279376 ]
+ [-0.02052688 -0.02297973  0.01439397]
+ [-0.00363341  0.0005064  -0.00230379]
+ [-0.01937054  0.00264429 -0.01060778]
+ [ 0.0063515  -0.00770792  0.0007498 ]
+ [-0.01384053  0.03237178 -0.0014    ]
+ [-0.02188754  0.02421801 -0.02058049]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.0099661245856
+INFO:psi4.driver.driver:Return energy(): -306.17108528962365
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.0099661245856
+INFO:psi4.driver.driver:Return gradient(): -306.17108528962365
+INFO:psi4.driver.driver:[[ 0.00460037  0.03195821  0.0056978 ]
+ [ 0.05510053 -0.02949659 -0.00818756]
+ [-0.00331076  0.01659853  0.00158572]
+ [ 0.03038677  0.0300271  -0.02951825]
+ [-0.00406649 -0.03015517  0.02231641]
+ [-0.01511545 -0.0438325   0.02499711]
+ [-0.02262197 -0.01872517  0.01352826]
+ [-0.0011098  -0.00356023 -0.00152926]
+ [-0.02027165  0.00174537 -0.01105836]
+ [ 0.00533134 -0.00880116  0.00069864]
+ [-0.01165636  0.031206   -0.00502186]
+ [-0.01727789  0.02293639 -0.01374114]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.9928466215064
+INFO:psi4.driver.driver:Return energy(): -306.17078848777635
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.9928466215064
+INFO:psi4.driver.driver:Return gradient(): -306.17078848777635
+INFO:psi4.driver.driver:[[ 0.0052064   0.03171474  0.00612384]
+ [ 0.05667788 -0.02971988 -0.00852649]
+ [-0.00330323  0.01688063  0.00161624]
+ [ 0.03227518  0.02502764 -0.02894641]
+ [-0.00683213 -0.02561491  0.02206305]
+ [-0.02295744 -0.03861825  0.02112449]
+ [-0.02470687 -0.01405341  0.01243153]
+ [ 0.00148953 -0.00773259 -0.00064298]
+ [-0.02098398  0.00096855 -0.01146739]
+ [ 0.00426202 -0.00987424  0.00064476]
+ [-0.00922604  0.02971177 -0.00888539]
+ [-0.01188878  0.02126301 -0.00574374]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.98357210826015
+INFO:psi4.driver.driver:Return energy(): -306.1701085596513
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.98357210826015
+INFO:psi4.driver.driver:Return gradient(): -306.1701085596513
+INFO:psi4.driver.driver:[[ 0.0058152   0.03131728  0.00657622]
+ [ 0.05813918 -0.02978477 -0.00885861]
+ [-0.00325751  0.01706844  0.0016432 ]
+ [ 0.03409852  0.01958249 -0.02812785]
+ [-0.009778   -0.0210823   0.02163295]
+ [-0.03171681 -0.03266977  0.01621312]
+ [-0.02675213 -0.00903496  0.01111343]
+ [ 0.00409374 -0.01190018  0.00033413]
+ [-0.02149479  0.00032681 -0.01182879]
+ [ 0.0031679  -0.01091114  0.00058819]
+ [-0.00657809  0.02790711 -0.01294108]
+ [-0.0056959   0.01918362  0.00346581]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.9792084288299
+INFO:psi4.driver.driver:Return energy(): -306.1689660922799
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.9792084288299
+INFO:psi4.driver.driver:Return gradient(): -306.1689660922799
+INFO:psi4.driver.driver:[[ 0.00641873  0.03076894  0.00705495]
+ [ 0.05947854 -0.02968625 -0.00918311]
+ [-0.00317139  0.0171572   0.00166659]
+ [ 0.03582885  0.01378886 -0.02708179]
+ [-0.01283234 -0.01669106  0.02104802]
+ [-0.04134744 -0.02605826  0.01021742]
+ [-0.02872357 -0.00376604  0.00959655]
+ [ 0.00662104 -0.01593398  0.00137176]
+ [-0.02179519 -0.00017025 -0.01213713]
+ [ 0.00207402 -0.01189671  0.00052917]
+ [-0.00375154  0.02582357 -0.01712403]
+ [ 0.00127727  0.01670912  0.01387206]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.97628518059932
+INFO:psi4.driver.driver:Return energy(): -306.1673310933529
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.97628518059932
+INFO:psi4.driver.driver:Return gradient(): -306.1673310933529
+INFO:psi4.driver.driver:[[ 0.0070084   0.03007395  0.00755931]
+ [ 0.06069062 -0.02942043 -0.00949931]
+ [-0.00304328  0.01714319  0.00168651]
+ [ 0.03742926  0.00777223 -0.02584099]
+ [-0.01591071 -0.01258737  0.02033994]
+ [-0.05172629 -0.01890306  0.00317381]
+ [-0.03058164  0.00162937  0.00791857]
+ [ 0.00898195 -0.01969098  0.00243022]
+ [-0.02187966 -0.00051582 -0.01238766]
+ [ 0.00100526 -0.01281699  0.00046813]
+ [-0.0007973   0.02350822 -0.02135225]
+ [ 0.00893442  0.0138882   0.02534898]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.970811311581
+INFO:psi4.driver.driver:Return energy(): -306.1652420352939
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.970811311581
+INFO:psi4.driver.driver:Return gradient(): -306.1652420352939
+INFO:psi4.driver.driver:[[ 0.00757527  0.02923763  0.00808774]
+ [ 0.06177067 -0.02898483 -0.00980667]
+ [-0.00287153  0.01702405  0.0017031 ]
+ [ 0.03885455  0.00168616 -0.02445384]
+ [-0.01892094 -0.00892308  0.01954928]
+ [-0.06261405 -0.01138898 -0.00473842]
+ [-0.03228068  0.00699943  0.00613374]
+ [ 0.01108403 -0.02302117  0.00346149]
+ [-0.02174599 -0.00070574 -0.01257638]
+ [-0.00001461 -0.01365958  0.00040558]
+ [ 0.00222132  0.02102455 -0.02552592]
+ [ 0.01708352  0.01081803  0.03761912]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.95834738219818
+INFO:psi4.driver.driver:Return energy(): -306.1628217751388
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.95834738219818
+INFO:psi4.driver.driver:Return gradient(): -306.1628217751388
+INFO:psi4.driver.driver:[[ 0.00811028  0.02826634  0.0086381 ]
+ [ 0.06271415 -0.02837834 -0.01010528]
+ [-0.0026544   0.01679872  0.00171678]
+ [ 0.04005204 -0.00429049 -0.02298491]
+ [-0.02176993 -0.00584606  0.01872341]
+ [-0.07364031 -0.00377025 -0.01316377]
+ [-0.03376891  0.01216802  0.00431283]
+ [ 0.01283815 -0.02577731  0.00441155]
+ [-0.02139514 -0.00073834 -0.01270018]
+ [-0.00096413 -0.014414    0.00034192]
+ [ 0.00522912  0.018452   -0.02952861]
+ [ 0.02541767  0.00765102  0.05021579]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.93415566195222
+INFO:psi4.driver.driver:Return energy(): -306.16028216883876
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.93415566195222
+INFO:psi4.driver.driver:Return gradient(): -306.16028216883876
+INFO:psi4.driver.driver:[[ 0.00860369  0.02716829  0.0092069 ]
+ [ 0.06352021 -0.02760142 -0.01039359]
+ [-0.00239188  0.01646748  0.00172723]
+ [ 0.04095877 -0.00996217 -0.0215146 ]
+ [-0.02436925 -0.0034882   0.01791272]
+ [-0.08431221  0.00363985 -0.02156881]
+ [-0.03498861  0.01694222  0.00254166]
+ [ 0.01416586 -0.0278267   0.00522395]
+ [-0.02083066 -0.00061413 -0.01275645]
+ [-0.00182437 -0.0150717   0.00027727]
+ [ 0.00814076  0.01588359 -0.03323001]
+ [ 0.03351205  0.00459131  0.06246816]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.89344352763882
+INFO:psi4.driver.driver:Return energy(): -306.1579119286909
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.89344352763882
+INFO:psi4.driver.driver:Return gradient(): -306.1579119286909
+INFO:psi4.driver.driver:[[ 0.00904784  0.02595103  0.00979183]
+ [ 0.06418311 -0.02665564 -0.01067372]
+ [-0.00208197  0.01603139  0.00173574]
+ [ 0.04151172 -0.0151244  -0.02013363]
+ [-0.0266454  -0.00195526  0.0171671 ]
+ [-0.09402479  0.01048392 -0.02924089]
+ [-0.03587874  0.02112395  0.00091626]
+ [ 0.01500579 -0.02906205  0.00584425]
+ [-0.02005972 -0.00033657 -0.01274406]
+ [-0.00258003 -0.01562617  0.00021134]
+ [ 0.01086374  0.01342238 -0.03649087]
+ [ 0.04084798  0.00187647  0.0735287 ]]
+INFO:modules.direct_md:Step 30/50 | E = -192116.99 kcal/mol | T = 248.8 K | ETA: 294.2s
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.8316989889288
+INFO:psi4.driver.driver:Return energy(): -306.1560414931856
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.8316989889288
+INFO:psi4.driver.driver:Return gradient(): -306.1560414931856
+INFO:psi4.driver.driver:[[ 0.0094348   0.02462359  0.01038907]
+ [ 0.06470476 -0.02554496 -0.0109433 ]
+ [-0.00172626  0.01549351  0.00174157]
+ [ 0.04164113 -0.01958459 -0.0189397 ]
+ [-0.02854254 -0.00131338  0.01653042]
+ [-0.10213223  0.01640642 -0.03537111]
+ [-0.03637681  0.02452476 -0.00046216]
+ [ 0.01532082 -0.02941356  0.00622494]
+ [-0.01909195  0.00008813 -0.01266219]
+ [-0.00321785 -0.01607219  0.00014331]
+ [ 0.01330366  0.01117444 -0.03917012]
+ [ 0.04686749 -0.00025741  0.08245271]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.74509196382488
+INFO:psi4.driver.driver:Return energy(): -306.1549861745881
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.74509196382488
+INFO:psi4.driver.driver:Return gradient(): -306.1549861745881
+INFO:psi4.driver.driver:[[ 0.00975998  0.02319437  0.01099705]
+ [ 0.06508342 -0.02427441 -0.01120308]
+ [-0.00132442  0.01485727  0.00174518]
+ [ 0.04128367 -0.023176   -0.01802626]
+ [-0.03002899 -0.00158398  0.01603736]
+ [-0.10803876  0.02110603 -0.03918882]
+ [-0.03642424  0.02698377 -0.00149702]
+ [ 0.01510069 -0.0288546   0.00632989]
+ [-0.01794066  0.00065023 -0.01251146]
+ [-0.00372722 -0.01640569  0.00007188]
+ [ 0.01536958  0.00924216 -0.0411334 ]
+ [ 0.0510568  -0.00162091  0.08833376]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.63088358022122
+INFO:psi4.driver.driver:Return energy(): -306.154979084732
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.63088358022122
+INFO:psi4.driver.driver:Return gradient(): -306.154979084732
+INFO:psi4.driver.driver:[[ 0.01002156  0.02167111  0.01161533]
+ [ 0.06531905 -0.02285105 -0.01145264]
+ [-0.00087695  0.01412726  0.00174641]
+ [ 0.04038433 -0.02577639 -0.01747424]
+ [-0.03109784 -0.00273837  0.01570962]
+ [-0.11130076  0.02438917 -0.04011233]
+ [-0.03597127  0.02838453 -0.00210542]
+ [ 0.01436409 -0.02740602  0.00613797]
+ [-0.01662256  0.00133608 -0.0122935 ]
+ [-0.00409855 -0.01662299 -0.00000465]
+ [ 0.01698114  0.00771516 -0.04226294]
+ [ 0.05304309 -0.0021168   0.09047125]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.48776057434998
+INFO:psi4.driver.driver:Return energy(): -306.1561123716967
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.48776057434998
+INFO:psi4.driver.driver:Return gradient(): -306.1561123716967
+INFO:psi4.driver.driver:[[ 0.01022127  0.02006089  0.01224536]
+ [ 0.06541272 -0.02128385 -0.01169128]
+ [-0.00038453  0.01330901  0.00174478]
+ [ 0.03890342 -0.02732167 -0.01734275]
+ [-0.0317659  -0.00469934  0.01555444]
+ [-0.1117141   0.02620502 -0.03788906]
+ [-0.03498274  0.02866861 -0.00222741]
+ [ 0.01315644 -0.02513409  0.00564503]
+ [-0.01515821  0.00212729 -0.01201106]
+ [-0.00432246 -0.01672013 -0.00008829]
+ [ 0.01807505  0.00666221 -0.04246753]
+ [ 0.05267326 -0.00176732  0.08852081]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.31601235197914
+INFO:psi4.driver.driver:Return energy(): -306.15830840004736
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.31601235197914
+INFO:psi4.driver.driver:Return gradient(): -306.15830840004736
+INFO:psi4.driver.driver:[[ 0.01036422  0.01836979  0.01289031]
+ [ 0.06536592 -0.01958356 -0.011918  ]
+ [ 0.00015208  0.01240877  0.00173949]
+ [ 0.03682151 -0.02781437 -0.01766141]
+ [-0.03206917 -0.00734665  0.01556452]
+ [-0.10935529  0.02665194 -0.03267133]
+ [-0.0334433   0.02784403 -0.00183382]
+ [ 0.01154561 -0.02214429  0.00486403]
+ [-0.01357194  0.0030005  -0.011668  ]
+ [-0.00438994 -0.01669296 -0.00018121]
+ [ 0.01861134  0.00612362 -0.04169205]
+ [ 0.05004891 -0.00071257  0.08257818]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.1175004459381
+INFO:psi4.driver.driver:Return energy(): -306.1613315779074
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.1175004459381
+INFO:psi4.driver.driver:Return gradient(): -306.1613315779074
+INFO:psi4.driver.driver:[[ 0.01045847  0.01660345  0.01355464]
+ [ 0.06518085 -0.01776244 -0.01213152]
+ [ 0.00073199  0.01143351  0.00172943]
+ [ 0.03414333 -0.0273237  -0.01842669]
+ [-0.03205726 -0.01052684  0.01571974]
+ [-0.10456008  0.0259492  -0.02499141]
+ [-0.03136087  0.02598487 -0.00093   ]
+ [ 0.00961516 -0.01857102  0.00382321]
+ [-0.01189184  0.00392696 -0.01126918]
+ [-0.00429288 -0.01653723 -0.00028572]
+ [ 0.0185774   0.0061066  -0.03992431]
+ [ 0.04550284  0.00082172  0.07316275]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.8954287280358
+INFO:psi4.driver.driver:Return energy(): -306.16483772807993
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.8954287280358
+INFO:psi4.driver.driver:Return gradient(): -306.16483772807993
+INFO:psi4.driver.driver:[[ 0.0105136   0.01476742  0.01424322]
+ [ 0.06486024 -0.01583385 -0.01233039]
+ [ 0.00135424  0.01039073  0.00171329]
+ [ 0.0308987  -0.0259776  -0.01960215]
+ [-0.03178647 -0.01406515  0.01599   ]
+ [-0.09785008  0.02438746 -0.01564863]
+ [-0.0287678   0.02322333  0.00044446]
+ [ 0.00745694 -0.01456564  0.00256289]
+ [-0.01014914  0.00487273 -0.01082025]
+ [-0.00402551 -0.01624934 -0.00040419]
+ [ 0.01798956  0.00658391 -0.03719853]
+ [ 0.03952574  0.00257502  0.06110638]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.6539775862311
+INFO:psi4.driver.driver:Return energy(): -306.16844318280494
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.6539775862311
+INFO:psi4.driver.driver:Return gradient(): -306.16844318280494
+INFO:psi4.driver.driver:[[ 0.01053975  0.01286773  0.01496034]
+ [ 0.06440732 -0.01381184 -0.01251313]
+ [ 0.00201756  0.00928839  0.00168968]
+ [ 0.02714097 -0.02394791 -0.0211231 ]
+ [-0.03131358 -0.01777808  0.01633884]
+ [-0.08983467  0.02227348 -0.00555031]
+ [-0.02571902  0.01973469  0.00222066]
+ [ 0.00516346 -0.01028436  0.00113125]
+ [-0.00837759  0.005799   -0.01032732]
+ [-0.00358603 -0.01582717 -0.00053908]
+ [ 0.01689156  0.00749666 -0.03359398]
+ [ 0.03266869  0.00430373  0.04738697]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.39789122797342
+INFO:psi4.driver.driver:Return energy(): -306.17179148503647
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.39789122797342
+INFO:psi4.driver.driver:Return gradient(): -306.17179148503647
+INFO:psi4.driver.driver:[[ 0.01054597  0.01091131  0.01570896]
+ [ 0.06382585 -0.01171065 -0.01267832]
+ [ 0.00272035  0.00813466  0.00165722]
+ [ 0.02294335 -0.02143167 -0.02290415]
+ [-0.03069087 -0.02148473  0.01672696]
+ [-0.08110634  0.01988605  0.0044616 ]
+ [-0.02228792  0.01571871  0.00430855]
+ [ 0.00282174 -0.00587791 -0.00041972]
+ [-0.00661239  0.00666316 -0.00979661]
+ [-0.00297806 -0.01527084 -0.00069283]
+ [ 0.01535009  0.00876071 -0.02922909]
+ [ 0.0254539   0.00581788  0.03296466]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.13209714272756
+INFO:psi4.driver.driver:Return energy(): -306.17460127387665
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.13209714272756
+INFO:psi4.driver.driver:Return gradient(): -306.17460127387665
+INFO:psi4.driver.driver:[[ 0.01053967  0.00890599  0.01649005]
+ [ 0.06311968 -0.00954446 -0.01282468]
+ [ 0.00346047  0.00693785  0.00161465]
+ [ 0.0183934  -0.01863207 -0.02484829]
+ [-0.02996267 -0.02501544  0.0171152 ]
+ [-0.0721753   0.01745377  0.01371843]
+ [-0.01856026  0.01138097  0.00660652]
+ [ 0.00050913 -0.00148294 -0.00203804]
+ [-0.00488893  0.00742027 -0.00923406]
+ [-0.00221154 -0.01458341 -0.00086763]
+ [ 0.01344839  0.01027552 -0.02425177]
+ [ 0.01831377  0.00699639  0.01866032]]
+INFO:modules.direct_md:Step 40/50 | E = -192127.46 kcal/mol | T = 346.9 K | ETA: 147.1s
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.86140637683465
+INFO:psi4.driver.driver:Return energy(): -306.1766897869725
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.86140637683465
+INFO:psi4.driver.driver:Return gradient(): -306.1766897869725
+INFO:psi4.driver.driver:[[ 0.01052595  0.00686067  0.01730245]
+ [ 0.06229302 -0.0073272  -0.01295111]
+ [ 0.00423546  0.00570634  0.00156094]
+ [ 0.01358661 -0.01574089 -0.02685656]
+ [-0.02916469 -0.0282184   0.01746657]
+ [-0.06344224  0.01514681  0.02175948]
+ [-0.01462749  0.0069165   0.00901117]
+ [-0.00170931  0.00278344 -0.00367493]
+ [-0.00324141  0.00802496 -0.00864502]
+ [-0.00130281 -0.01377108 -0.00106523]
+ [ 0.01127859  0.01193416 -0.01882725]
+ [ 0.01156162  0.007785    0.00508934]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.5903113344823
+INFO:psi4.driver.driver:Return energy(): -306.17797447370987
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.5903113344823
+INFO:psi4.driver.driver:Return gradient(): -306.17797447370987
+INFO:psi4.driver.driver:[[ 0.01050744  0.00478474  0.01814301]
+ [ 0.0613503  -0.00507238 -0.01305675]
+ [ 0.00504272  0.00444861  0.00149523]
+ [ 0.00862034 -0.01292586 -0.02883605]
+ [-0.0283254  -0.03096403  0.01774717]
+ [-0.05517619  0.01308025  0.02835933]
+ [-0.01058036  0.00249816  0.01142534]
+ [-0.00378229  0.00682445 -0.00528653]
+ [-0.00170134  0.00843361 -0.00803387]
+ [-0.00027403 -0.01284322 -0.00128678]
+ [ 0.00893437  0.01363264 -0.01312554]
+ [ 0.00539389  0.00818139 -0.00734491]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.3228724928497
+INFO:psi4.driver.driver:Return energy(): -306.1784596922462
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.3228724928497
+INFO:psi4.driver.driver:Return gradient(): -306.1784596922462
+INFO:psi4.driver.driver:[[ 0.01048484  0.00268779  0.0190064 ]
+ [ 0.06029716 -0.0027931  -0.01313978]
+ [ 0.00587882  0.0031733   0.00141647]
+ [ 0.00358898 -0.01032463 -0.03070497]
+ [-0.02746753 -0.03314639  0.01792623]
+ [-0.0475438   0.01132702  0.03346431]
+ [-0.00650365 -0.00173025  0.01376403]
+ [-0.0056711   0.01056341 -0.00683506]
+ [-0.00029598  0.00860705 -0.00740384]
+ [ 0.00084804 -0.01181202 -0.00153249]
+ [ 0.00650475  0.01527724 -0.00731022]
+ [-0.00009183  0.00821773 -0.01842627]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.06267502423665
+INFO:psi4.driver.driver:Return energy(): -306.17821694116867
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.06267502423665
+INFO:psi4.driver.driver:Return gradient(): -306.17821694116867
+INFO:psi4.driver.driver:[[ 0.0104575   0.0005795   0.01988775]
+ [ 0.05913585 -0.00050172 -0.01320199]
+ [ 0.00674295  0.00188866  0.00132512]
+ [-0.00141685 -0.00804154 -0.03239376]
+ [-0.02661048 -0.03468427  0.01797614]
+ [-0.0406225   0.00992764  0.03714878]
+ [-0.00247282 -0.00565653  0.01595721]
+ [-0.0073476   0.0139438  -0.0082893 ]
+ [ 0.00095269  0.00851292 -0.00675734]
+ [ 0.00203317 -0.01069209 -0.00180134]
+ [ 0.00406906  0.01678999 -0.0015293 ]
+ [-0.00487146  0.00794501 -0.02808333]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.81283357593472
+INFO:psi4.driver.driver:Return energy(): -306.17736314353186
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.81283357593472
+INFO:psi4.driver.driver:Return gradient(): -306.17736314353186
+INFO:psi4.driver.driver:[[ 0.01042405 -0.00153121  0.02078019]
+ [ 0.05787088  0.00178958 -0.01324269]
+ [ 0.00763336  0.0006038   0.00122074]
+ [-0.00631606 -0.00614986 -0.03384762]
+ [-0.02577257 -0.0355206   0.01787193]
+ [-0.03442134  0.00890038  0.03957343]
+ [ 0.00144813 -0.00919867  0.01795106]
+ [-0.00879195  0.01692607 -0.00962352]
+ [ 0.00202927  0.00812825 -0.00609543]
+ [ 0.00324966 -0.00949971 -0.0020912 ]
+ [ 0.00169469  0.01811025  0.00409012]
+ [-0.00896889  0.0074196  -0.03634324]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.5760255581524
+INFO:psi4.driver.driver:Return energy(): -306.17604135420515
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.5760255581524
+INFO:psi4.driver.driver:Return gradient(): -306.17604135420515
+INFO:psi4.driver.driver:[[ 0.01038059 -0.00363587  0.02167585]
+ [ 0.05651046  0.00406957 -0.01325948]
+ [ 0.0085468  -0.00067237  0.00110218]
+ [-0.01103963 -0.00469588 -0.03502658]
+ [-0.02497412 -0.03562181  0.01759059]
+ [-0.02891468  0.00824915  0.04092876]
+ [ 0.00520673 -0.01230133  0.01970711]
+ [-0.00999238  0.01948156 -0.01081617]
+ [ 0.00292578  0.00744106 -0.00541779]
+ [ 0.00446555 -0.00825251 -0.00239901]
+ [-0.00056384  0.01919442  0.00944435]
+ [-0.01243626  0.00669518 -0.04329389]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.35453873862846
+INFO:psi4.driver.driver:Return energy(): -306.1744053898784
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.35453873862846
+INFO:psi4.driver.driver:Return gradient(): -306.1744053898784
+INFO:psi4.driver.driver:[[ 0.01032536 -0.00572733  0.02256869]
+ [ 0.05505497  0.00632813 -0.01325453]
+ [ 0.00948161 -0.00193243  0.00097037]
+ [-0.01552552 -0.00370007 -0.03590165]
+ [-0.02424171 -0.03497713  0.01711068]
+ [-0.0240493   0.00796417  0.04141558]
+ [ 0.00876015 -0.01493165  0.02119966]
+ [-0.01094372  0.02159095 -0.01184935]
+ [ 0.00364167  0.00645106 -0.00472345]
+ [ 0.00564948 -0.00696879 -0.00272073]
+ [-0.00266537  0.02001577  0.0144542 ]
+ [-0.01533805  0.00582008 -0.04905369]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.1503230438179
+INFO:psi4.driver.driver:Return energy(): -306.17260748231644
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.1503230438179
+INFO:psi4.driver.driver:Return gradient(): -306.17260748231644
+INFO:psi4.driver.driver:[[ 0.01025483 -0.00779879  0.02345161]
+ [ 0.05350935  0.00855627 -0.01322712]
+ [ 0.01043212 -0.00317042  0.00082535]
+ [-0.01972451 -0.00316703 -0.03645501]
+ [-0.02360537 -0.03359404  0.01641168]
+ [-0.01975924  0.00802955  0.0412235 ]
+ [ 0.01207459 -0.01707398  0.02241408]
+ [-0.01164381  0.02324153 -0.0127087 ]
+ [ 0.00418385  0.00517056 -0.00401031]
+ [ 0.00677245 -0.00566698 -0.00305158]
+ [-0.00457987  0.02056038  0.0190619 ]
+ [-0.01774042  0.00483512 -0.05375013]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.96503976811428
+INFO:psi4.driver.driver:Return energy(): -306.17078976495844
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.96503976811428
+INFO:psi4.driver.driver:Return gradient(): -306.17078976495844
+INFO:psi4.driver.driver:[[ 0.01016622 -0.00984406  0.02431821]
+ [ 0.05187686  0.01074578 -0.01317739]
+ [ 0.01139304 -0.00438131  0.00066775]
+ [-0.02359472 -0.00308897 -0.03667589]
+ [-0.02309913 -0.03149578  0.01547359]
+ [-0.01597375  0.00842655  0.04051793]
+ [ 0.01512369 -0.01872529  0.02334375]
+ [-0.01209166  0.024425   -0.0133831 ]
+ [ 0.00456596  0.00362368 -0.00327583]
+ [ 0.00780797 -0.00436529 -0.00338616]
+ [-0.00628696  0.02082476  0.02322811]
+ [-0.01970618  0.00377257 -0.05750741]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.80010445985533
+INFO:psi4.driver.driver:Return energy(): -306.1690783268763
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.80010445985533
+INFO:psi4.driver.driver:Return gradient(): -306.1690783268763
+INFO:psi4.driver.driver:[[ 0.01005713 -0.01185749  0.02516226]
+ [ 0.05016014  0.01288907 -0.0131053 ]
+ [ 0.01236032 -0.0055603   0.00049823]
+ [-0.02710037 -0.00345082 -0.03655864]
+ [-0.02275932 -0.02871857  0.01427849]
+ [-0.01262258  0.00913663  0.03943752]
+ [ 0.01788702 -0.0198908   0.02398764]
+ [-0.01228587  0.0251393  -0.01386203]
+ [ 0.00480704  0.00184539 -0.00251718]
+ [ 0.00873296 -0.00308133 -0.00371864]
+ [-0.00777384  0.0208131   0.02692819]
+ [-0.02129024  0.00265839 -0.06043812]]
+INFO:modules.direct_md:Step 50/50 | E = -192124.00 kcal/mol | T = 332.3 K | ETA: 0.0s
+INFO:modules.direct_md:MD completed in 741.7s (0.1 steps/s)
+INFO:modules.direct_md:Generated trajectory: 51 frames, 12 atoms
+INFO:modules.direct_md:PSI4 setup: wb97x-d/6-31G*
+INFO:modules.direct_md:Starting direct MD: mvko_anti_trans
+INFO:modules.direct_md:  Method: wb97x-d/6-31G*
+INFO:modules.direct_md:  Steps: 50, dt: 0.5 fs
+INFO:modules.direct_md:  Temperature: 1000.0 K
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=226.03100463438798
+INFO:psi4.driver.driver:Return energy(): -306.20975727420495
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=226.03100463438798
+INFO:psi4.driver.driver:Return gradient(): -306.20975727420495
+INFO:psi4.driver.driver:[[ 0.00001545  0.00001774 -0.        ]
+ [ 0.00005931 -0.00018042 -0.        ]
+ [-0.00007826  0.00019081 -0.        ]
+ [-0.00003145 -0.00005807  0.        ]
+ [ 0.0000117  -0.00002511  0.        ]
+ [-0.00002085  0.00000006  0.        ]
+ [ 0.00001469  0.00000946 -0.        ]
+ [ 0.00000678 -0.00005129 -0.        ]
+ [ 0.00000781 -0.00001222 -0.        ]
+ [-0.00002234 -0.00002    -0.        ]
+ [-0.00001235 -0.00002004 -0.00002006]
+ [-0.00001235 -0.00002004  0.00002006]]
+INFO:modules.direct_md:Initial energy: -306.209757 Hartree (-192149.52 kcal/mol)
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.63911574399006
+INFO:psi4.driver.driver:Return energy(): -306.20900540068436
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.63911574399006
+INFO:psi4.driver.driver:Return gradient(): -306.20900540068436
+INFO:psi4.driver.driver:[[-0.00018959  0.00349768  0.00031569]
+ [ 0.00419337 -0.00245651 -0.00050097]
+ [-0.00030478  0.00114355  0.00013654]
+ [ 0.00010749  0.00682453 -0.00231949]
+ [ 0.00208855 -0.01065876  0.00153113]
+ [ 0.0076185  -0.00802398  0.008663  ]
+ [ 0.00058662 -0.00590391  0.00118619]
+ [-0.00351223  0.00510642 -0.00019265]
+ [-0.00001999  0.00282193 -0.00068693]
+ [ 0.00145446  0.00051159  0.00025265]
+ [-0.00317085  0.00316279  0.00311644]
+ [-0.00901348  0.00364361 -0.01149168]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.2490991501726
+INFO:psi4.driver.driver:Return energy(): -306.2068479013541
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=225.2490991501726
+INFO:psi4.driver.driver:Return gradient(): -306.2068479013541
+INFO:psi4.driver.driver:[[-0.00036949  0.00687804  0.00061566]
+ [ 0.00822569 -0.00473967 -0.00100472]
+ [-0.00052931  0.00213054  0.00026656]
+ [ 0.00038844  0.01387757 -0.00479794]
+ [ 0.00390575 -0.02074953  0.00316177]
+ [ 0.01399995 -0.01598251  0.01544912]
+ [ 0.0011153  -0.01187619  0.00247989]
+ [-0.00679533  0.00988455 -0.00051598]
+ [-0.00007075  0.00552491 -0.00134774]
+ [ 0.00297141  0.00101242  0.00048789]
+ [-0.00639525  0.0065414   0.0062875 ]
+ [-0.01665326  0.00712991 -0.02117739]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.8644378453335
+INFO:psi4.driver.driver:Return energy(): -306.20346953636766
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.8644378453335
+INFO:psi4.driver.driver:Return gradient(): -306.20346953636766
+INFO:psi4.driver.driver:[[-0.00051891  0.0101406   0.000901  ]
+ [ 0.01215358 -0.00702854 -0.00150528]
+ [-0.0006901   0.00318119  0.00039345]
+ [ 0.00090875  0.02090782 -0.00740467]
+ [ 0.00544509 -0.03012307  0.00487074]
+ [ 0.01915564 -0.02373102  0.02061535]
+ [ 0.00155075 -0.01774688  0.0038873 ]
+ [-0.00978471  0.01419446 -0.00094669]
+ [-0.00018653  0.00802274 -0.00198147]
+ [ 0.00449765  0.00145794  0.00069716]
+ [-0.0095781   0.01007957  0.00935647]
+ [-0.02301675  0.01038319 -0.02915505]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.48804760311046
+INFO:psi4.driver.driver:Return energy(): -306.19909131596114
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.48804760311046
+INFO:psi4.driver.driver:Return gradient(): -306.19909131596114
+INFO:psi4.driver.driver:[[-0.00062878  0.01326364  0.00117498]
+ [ 0.01597536 -0.00929778 -0.0020036 ]
+ [-0.00090683  0.00424938  0.00052912]
+ [ 0.001628    0.02772638 -0.01009019]
+ [ 0.00671371 -0.03863567  0.00663675]
+ [ 0.02316941 -0.03116183  0.02446582]
+ [ 0.00176129 -0.0234041   0.00542083]
+ [-0.01244723  0.01798083 -0.00146036]
+ [-0.0004082   0.01024721 -0.00258968]
+ [ 0.00600171  0.00182576  0.0008748 ]
+ [-0.01262307  0.01370841  0.01221286]
+ [-0.02823518  0.01337589 -0.03560579]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.1223406006839
+INFO:psi4.driver.driver:Return energy(): -306.19395111543486
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=224.1223406006839
+INFO:psi4.driver.driver:Return gradient(): -306.19395111543486
+INFO:psi4.driver.driver:[[-0.00069108  0.01623149  0.00143969]
+ [ 0.01969102 -0.01154876 -0.00249646]
+ [-0.00112023  0.00534854  0.00064682]
+ [ 0.00259739  0.03417471 -0.01280535]
+ [ 0.00773787 -0.04619292  0.00844168]
+ [ 0.02615018 -0.03819843  0.0273032 ]
+ [ 0.00169122 -0.02871162  0.00707031]
+ [-0.01476412  0.02121657 -0.00203259]
+ [-0.0007744   0.01213945 -0.0031766 ]
+ [ 0.00745297  0.00209638  0.00101827]
+ [-0.01545717  0.01734083  0.01477721]
+ [-0.03245631  0.01610234 -0.04073267]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.76929323383493
+INFO:psi4.driver.driver:Return energy(): -306.1882905630278
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.76929323383493
+INFO:psi4.driver.driver:Return gradient(): -306.1882905630278
+INFO:psi4.driver.driver:[[-0.00069991  0.01903313  0.00169584]
+ [ 0.02330106 -0.013766   -0.00298205]
+ [-0.0013834   0.00645459  0.00075966]
+ [ 0.00378281  0.04013101 -0.0155038 ]
+ [ 0.00855628 -0.05273287  0.01027007]
+ [ 0.02821769 -0.0447812   0.02939739]
+ [ 0.00128906 -0.03356495  0.0088101 ]
+ [-0.01672993  0.02389443 -0.00264134]
+ [-0.00131786  0.01365419 -0.00374852]
+ [ 0.00882233  0.00225373  0.00112795]
+ [-0.01803407  0.02089313  0.01699588]
+ [-0.03582478  0.01857007 -0.04473394]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.43051145720196
+INFO:psi4.driver.driver:Return energy(): -306.182346282553
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.43051145720196
+INFO:psi4.driver.driver:Return gradient(): -306.182346282553
+INFO:psi4.driver.driver:[[-0.00065051  0.02166376  0.00194716]
+ [ 0.02680988 -0.01594804 -0.00346205]
+ [-0.00163381  0.00759238  0.00087114]
+ [ 0.0052166   0.0455123  -0.01815828]
+ [ 0.00921016 -0.05823356  0.01210977]
+ [ 0.02948632 -0.05085999  0.03096857]
+ [ 0.00059305 -0.03786996  0.01058266]
+ [-0.01834532  0.02601962 -0.00326575]
+ [-0.00206356  0.01476256 -0.00431454]
+ [ 0.01008338  0.00228505  0.00120623]
+ [-0.02032968  0.02430369  0.01883253]
+ [-0.03847264  0.02079518 -0.0477901 ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.1072941141642
+INFO:psi4.driver.driver:Return energy(): -306.1763344073724
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=223.1072941141642
+INFO:psi4.driver.driver:Return gradient(): -306.1763344073724
+INFO:psi4.driver.driver:[[-0.00053916  0.0241168   0.00219706]
+ [ 0.03022215 -0.01809179 -0.00393575]
+ [-0.00184879  0.00876623  0.00097188]
+ [ 0.00690237  0.05026539 -0.02075236]
+ [ 0.00973539 -0.06269802  0.01395033]
+ [ 0.03006037 -0.05638711  0.03218885]
+ [-0.00034792 -0.04156959  0.01232028]
+ [-0.01961666  0.02760525 -0.00388692]
+ [-0.00302667  0.01545362 -0.00488502]
+ [ 0.01121286  0.00218129  0.00125691]
+ [-0.02233329  0.02753492  0.02026144]
+ [-0.0405144   0.02279776 -0.05005736]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.8006905925232
+INFO:psi4.driver.driver:Return energy(): -306.1704506680581
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.8006905925232
+INFO:psi4.driver.driver:Return gradient(): -306.1704506680581
+INFO:psi4.driver.driver:[[-0.00036309  0.02638752  0.00244929]
+ [ 0.03353944 -0.02018011 -0.00440492]
+ [-0.00209913  0.00993994  0.00106932]
+ [ 0.00877254  0.0543637  -0.02326738]
+ [ 0.01015695 -0.06614618  0.0157811 ]
+ [ 0.0300341  -0.06131871  0.03319029]
+ [-0.00150621 -0.04464845  0.01397199]
+ [-0.02055384  0.02866843 -0.0044881 ]
+ [-0.00421094  0.01573494 -0.00547017]
+ [ 0.01219059  0.00193681  0.00128462]
+ [-0.02403999  0.03056424  0.02126553]
+ [-0.04204512  0.0245983  -0.05166472]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.51155012119585
+INFO:psi4.driver.driver:Return energy(): -306.1648676621296
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.51155012119585
+INFO:psi4.driver.driver:Return gradient(): -306.1648676621296
+INFO:psi4.driver.driver:[[-0.00011935  0.02847383  0.00270714]
+ [ 0.03676475 -0.02220328 -0.00486968]
+ [-0.00238181  0.01111148  0.00116433]
+ [ 0.01079573  0.05779479 -0.02568686]
+ [ 0.01048678 -0.0686185   0.01759022]
+ [ 0.02948912 -0.06562075  0.03406981]
+ [-0.00284651 -0.04710852  0.01550402]
+ [-0.021166    0.02922671 -0.00505345]
+ [-0.00560817  0.01563168 -0.00607906]
+ [ 0.01299987  0.00154958  0.00129437]
+ [-0.02544657  0.03337489  0.02183689]
+ [-0.04314127  0.02621645 -0.05271497]]
+INFO:modules.direct_md:Step 10/50 | E = -192121.36 kcal/mol | T = 568.3 K | ETA: 598.8s
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.24056305943054
+INFO:psi4.driver.driver:Return energy(): -306.15972664620415
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=222.24056305943054
+INFO:psi4.driver.driver:Return gradient(): -306.15972664620415
+INFO:psi4.driver.driver:[[ 0.00019175  0.03037589  0.00297409]
+ [ 0.03990329 -0.0241584  -0.00533014]
+ [-0.00265105  0.01229174  0.00125146]
+ [ 0.01296025  0.06055346 -0.02798773]
+ [ 0.01072155 -0.07016984  0.01936408]
+ [ 0.02849357 -0.06926868  0.03489447]
+ [-0.00432737 -0.04896032  0.01690252]
+ [-0.02146041  0.02929543 -0.00556794]
+ [-0.00719857  0.01518361 -0.00671841]
+ [ 0.01362728  0.00102056  0.00129117]
+ [-0.02654944  0.03595056  0.02197664]
+ [-0.04386178  0.02766934 -0.05328611]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.98829341911866
+INFO:psi4.driver.driver:Return energy(): -306.15513789237855
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.98829341911866
+INFO:psi4.driver.driver:Return gradient(): -306.15513789237855
+INFO:psi4.driver.driver:[[ 0.00056878  0.03209338  0.00325288]
+ [ 0.04295669 -0.02603443 -0.00578684]
+ [-0.00292042  0.01346259  0.00133153]
+ [ 0.01520992  0.06264029 -0.03014211]
+ [ 0.01084337 -0.07085845  0.02108617]
+ [ 0.02710173 -0.07224541  0.03570742]
+ [-0.00593422 -0.05022212  0.01816643]
+ [-0.02144328  0.02888664 -0.00601729]
+ [-0.00895173  0.0144416  -0.00739166]
+ [ 0.01406248  0.00035379  0.0012796 ]
+ [-0.02734393  0.03827351  0.02169279]
+ [-0.04424899  0.02897027 -0.05343274]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.7552004136686
+INFO:psi4.driver.driver:Return energy(): -306.1511832786375
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.7552004136686
+INFO:psi4.driver.driver:Return gradient(): -306.1511832786375
+INFO:psi4.driver.driver:[[ 0.00101144  0.03362541  0.00354608]
+ [ 0.04592551 -0.02781844 -0.00624042]
+ [-0.00320096  0.01460897  0.00140705]
+ [ 0.01749559  0.06405678 -0.03212488]
+ [ 0.01082098 -0.07074419  0.02273692]
+ [ 0.0253518  -0.07453909  0.03653135]
+ [-0.00766601 -0.05090843  0.01929468]
+ [-0.02111871  0.02800851 -0.0063869 ]
+ [-0.01082887  0.01346343 -0.00809883]
+ [ 0.01429841 -0.00044407  0.00126348]
+ [-0.02782502  0.0403243   0.02099754]
+ [-0.04432978  0.03012811 -0.05318782]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.54164977241754
+INFO:psi4.driver.driver:Return energy(): -306.14791513263106
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.54164977241754
+INFO:psi4.driver.driver:Return gradient(): -306.14791513263106
+INFO:psi4.driver.driver:[[ 0.00151717  0.03497252  0.00385605]
+ [ 0.04881028 -0.02950087 -0.00669114]
+ [-0.00347589  0.01572721  0.00147734]
+ [ 0.01979637  0.06480237 -0.03391668]
+ [ 0.01061385 -0.06988716  0.02429386]
+ [ 0.02326451 -0.07614076  0.03736998]
+ [-0.00951283 -0.05102498  0.02027816]
+ [-0.02048797  0.02666502 -0.00666105]
+ [-0.01278509  0.01230988 -0.00883671]
+ [ 0.01433111 -0.00136405  0.00124572]
+ [-0.02798841  0.04208099  0.01990405]
+ [-0.04411632  0.03114659 -0.05256364]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.3479158097729
+INFO:psi4.driver.driver:Return energy(): -306.1453567004348
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.3479158097729
+INFO:psi4.driver.driver:Return gradient(): -306.1453567004348
+INFO:psi4.driver.driver:[[ 0.00208131  0.03613557  0.0041848 ]
+ [ 0.05160989 -0.03107109 -0.00713918]
+ [-0.00373751  0.01680762  0.00154192]
+ [ 0.02209393  0.06487501 -0.03550208]
+ [ 0.01017487 -0.0683434   0.02573171]
+ [ 0.02084156 -0.07704128  0.03820865]
+ [-0.01145845 -0.05057239  0.02109908]
+ [-0.01955061  0.02485657 -0.00682285]
+ [-0.01477211  0.01104109 -0.00959909]
+ [ 0.01415968 -0.00239514  0.00122824]
+ [-0.02783156  0.04351892  0.01842376]
+ [-0.04360622  0.03202344 -0.05155223]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.1741743491982
+INFO:psi4.driver.driver:Return energy(): -306.14350370262724
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.1741743491982
+INFO:psi4.driver.driver:Return gradient(): -306.14350370262724
+INFO:psi4.driver.driver:[[ 0.00269833  0.03711517  0.00453445]
+ [ 0.05432177 -0.03251612 -0.0075853 ]
+ [-0.0039917   0.01783419  0.00160199]
+ [ 0.02436887  0.06427035 -0.03686782]
+ [ 0.00945393 -0.06616296  0.02702283]
+ [ 0.01806425 -0.0772285   0.03901399]
+ [-0.01348427 -0.04954782  0.02173251]
+ [-0.01830584  0.02258147 -0.00685428]
+ [-0.0167411   0.00971332 -0.01037747]
+ [ 0.0137865  -0.00352441  0.00121203]
+ [-0.02735391  0.04461147  0.0165645 ]
+ [-0.04278271  0.03274972 -0.05012516]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.02048703387408
+INFO:psi4.driver.driver:Return energy(): -306.14232467399506
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=221.02048703387408
+INFO:psi4.driver.driver:Return gradient(): -306.14232467399506
+INFO:psi4.driver.driver:[[ 0.00336108  0.03791156  0.00490712]
+ [ 0.05694277 -0.03382421 -0.00802999]
+ [-0.00423271  0.01879621  0.00165825]
+ [ 0.02661715  0.06297922 -0.03800078]
+ [ 0.00840217 -0.06339048  0.02813772]
+ [ 0.01489259 -0.07668365  0.03973278]
+ [-0.0155685  -0.04794408  0.02214863]
+ [-0.01675339  0.01983768 -0.00673615]
+ [-0.01864477  0.00837709 -0.01116155]
+ [ 0.01321715 -0.00473746  0.00119724]
+ [-0.02655559  0.04533075  0.01432912]
+ [-0.04161388  0.03330879 -0.04823245]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.88677711334174
+INFO:psi4.driver.driver:Return energy(): -306.1417595080136
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.88677711334174
+INFO:psi4.driver.driver:Return gradient(): -306.1417595080136
+INFO:psi4.driver.driver:[[ 0.00406163  0.03852498  0.00530493]
+ [ 0.05946868 -0.03498428 -0.00847338]
+ [-0.00444998  0.01968436  0.00171057]
+ [ 0.0288428   0.0609883  -0.03888491]
+ [ 0.00697507 -0.06006646  0.02904608]
+ [ 0.0112651  -0.07537974  0.04029015]
+ [-0.01768828 -0.04575082  0.0223163 ]
+ [-0.0148956   0.01662586 -0.00644875]
+ [-0.02043924  0.00707585 -0.01194007]
+ [ 0.01246068 -0.00601838  0.00118339]
+ [-0.02543627  0.04564891  0.01171569]
+ [-0.04005237  0.03367572 -0.04580126]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.77279648556203
+INFO:psi4.driver.driver:Return energy(): -306.14171883423705
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.77279648556203
+INFO:psi4.driver.driver:Return gradient(): -306.14171883423705
+INFO:psi4.driver.driver:[[ 0.00479081  0.03895549  0.00572982]
+ [ 0.06189363 -0.03598428 -0.00891509]
+ [-0.00463875  0.02048637  0.00175898]
+ [ 0.0310469   0.05828056 -0.03949837]
+ [ 0.00513613 -0.05622907  0.02971786]
+ [ 0.00709877 -0.0732795   0.04058694]
+ [-0.01982451 -0.04295516  0.02220564]
+ [-0.0127398   0.0129531  -0.00597301]
+ [-0.02208535  0.00584555 -0.01270125]
+ [ 0.01152973 -0.0073499   0.00116955]
+ [-0.02399379  0.04553822  0.00871858]
+ [-0.03803437  0.0338163  -0.04273381]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.67808296731894
+INFO:psi4.driver.driver:Return energy(): -306.14208386568583
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.67808296731894
+INFO:psi4.driver.driver:Return gradient(): -306.14208386568583
+INFO:psi4.driver.driver:[[ 0.0055386   0.0392029   0.00618366]
+ [ 0.0642109  -0.03681215 -0.00935437]
+ [-0.00479549  0.02118985  0.00180374]
+ [ 0.03322837  0.05483628 -0.03981296]
+ [ 0.00286078 -0.05191881  0.03012492]
+ [ 0.00228906 -0.07033472  0.04049745]
+ [-0.02196377 -0.03954242  0.0217888 ]
+ [-0.010301    0.00883742 -0.00529206]
+ [-0.02354955  0.00471475 -0.01343344]
+ [ 0.01044062 -0.00871363  0.00115465]
+ [-0.02222371  0.04497106  0.00533063]
+ [-0.03547875  0.0336862  -0.03890502]]
+INFO:modules.direct_md:Step 20/50 | E = -192107.06 kcal/mol | T = 481.1 K | ETA: 436.7s
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.60190669123688
+INFO:psi4.driver.driver:Return energy(): -306.14270648136693
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.60190669123688
+INFO:psi4.driver.driver:Return gradient(): -306.14270648136693
+INFO:psi4.driver.driver:[[ 0.00629623  0.03926685  0.00666834]
+ [ 0.06641306 -0.03745736 -0.00979015]
+ [-0.00491359  0.02178482  0.00184468]
+ [ 0.03538815  0.05063738 -0.03979551]
+ [ 0.00013944 -0.04718576  0.03024341]
+ [-0.00328755 -0.06648923  0.03986814]
+ [-0.02409754 -0.03549828  0.02103979]
+ [-0.00760477  0.00431316 -0.00439346]
+ [-0.02480447  0.00370497 -0.01412558]
+ [ 0.00921356 -0.0100901   0.00113773]
+ [-0.02012035  0.04392137  0.00154634]
+ [-0.03228705  0.033231   -0.03416091]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.54320445392935
+INFO:psi4.driver.driver:Return energy(): -306.1434113882187
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.54320445392935
+INFO:psi4.driver.driver:Return gradient(): -306.1434113882187
+INFO:psi4.driver.driver:[[ 0.00705154  0.0391467   0.00718751]
+ [ 0.06849454 -0.03790995 -0.01022482]
+ [-0.00498607  0.02226221  0.00188281]
+ [ 0.03752168  0.04567015 -0.03940978]
+ [-0.0030165  -0.04209384  0.03005609]
+ [-0.00977066 -0.06167999  0.03851378]
+ [-0.02621987 -0.0308124   0.01993417]
+ [-0.00468972 -0.00056442 -0.00327154]
+ [-0.02582774  0.00283216 -0.01476737]
+ [ 0.00787268 -0.01145889  0.00111803]
+ [-0.01767755  0.04236498 -0.00263542]
+ [-0.02834452  0.03238619 -0.02831878]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.5005006839005
+INFO:psi4.driver.driver:Return energy(): -306.14400093721105
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.5005006839005
+INFO:psi4.driver.driver:Return gradient(): -306.14400093721105
+INFO:psi4.driver.driver:[[ 0.00779616  0.03884341  0.00774105]
+ [ 0.07044463 -0.0381602  -0.01065356]
+ [-0.00500667  0.02261211  0.00191657]
+ [ 0.03962647  0.03993176 -0.03862052]
+ [-0.0065762  -0.03673033  0.02955625]
+ [-0.01731062 -0.05584444  0.03621346]
+ [-0.0283259  -0.02548456  0.01844978]
+ [-0.00161104 -0.00571223 -0.00193187]
+ [-0.02660347  0.00210714 -0.01534942]
+ [ 0.00644549 -0.01279905  0.0010953 ]
+ [-0.01489235  0.04028413 -0.00720687]
+ [-0.0235251   0.03108104 -0.0211722 ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.4718155608356
+INFO:psi4.driver.driver:Return energy(): -306.1442642460157
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.4718155608356
+INFO:psi4.driver.driver:Return gradient(): -306.1442642460157
+INFO:psi4.driver.driver:[[ 0.00851944  0.03835785  0.00833099]
+ [ 0.07225566 -0.03820021 -0.01107645]
+ [-0.00497044  0.02282675  0.00194623]
+ [ 0.04169434  0.0334365  -0.0373975 ]
+ [-0.010483   -0.03120785  0.02874993]
+ [-0.02605259 -0.04893069  0.03272826]
+ [-0.03040823 -0.01953249  0.01656887]
+ [ 0.00155863 -0.01101672 -0.00039354]
+ [-0.0271202   0.00153696 -0.01586345]
+ [ 0.00496312 -0.01408935  0.00106968]
+ [-0.0117683   0.03767148 -0.01214704]
+ [-0.0176995   0.02924331 -0.01250118]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.45456168344654
+INFO:psi4.driver.driver:Return energy(): -306.14399200249096
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.45456168344654
+INFO:psi4.driver.driver:Return gradient(): -306.14399200249096
+INFO:psi4.driver.driver:[[ 0.00921125  0.03769204  0.0089583 ]
+ [ 0.07391987 -0.03802352 -0.01149241]
+ [-0.00487242  0.02289971  0.00197163]
+ [ 0.04371338  0.02622863 -0.03572295]
+ [-0.01465587 -0.02566841  0.02765899]
+ [-0.03612258 -0.04091104  0.02780957]
+ [-0.03245439 -0.0130014   0.01428262]
+ [ 0.00472859 -0.01633142  0.00130706]
+ [-0.02737107  0.00112572 -0.01630226]
+ [ 0.00345932 -0.0153089   0.00104171]
+ [-0.00832004  0.03453566 -0.01741686]
+ [-0.01075201  0.02681009 -0.00209594]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.44543519342417
+INFO:psi4.driver.driver:Return energy(): -306.14299866683444
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.44543519342417
+INFO:psi4.driver.driver:Return gradient(): -306.14299866683444
+INFO:psi4.driver.driver:[[ 0.00986157  0.03684904  0.00962292]
+ [ 0.07542957 -0.03762537 -0.01189994]
+ [-0.00470841  0.02282626  0.00199244]
+ [ 0.04566549  0.0183911  -0.03359865]
+ [-0.01899135 -0.02028193  0.02632323]
+ [-0.04759045 -0.03180502  0.02123545]
+ [-0.03444432 -0.00597391  0.011598  ]
+ [ 0.00779204 -0.0214789   0.0031144 ]
+ [-0.02735313  0.00087537 -0.01665959]
+ [ 0.00196939 -0.01643784  0.0010122 ]
+ [-0.00457802  0.03090726 -0.02295389]
+ [-0.00260538  0.02374339  0.01020538]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.44031303988623
+INFO:psi4.driver.driver:Return energy(): -306.14115401669903
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.44031303988623
+INFO:psi4.driver.driver:Return gradient(): -306.14115401669903
+INFO:psi4.driver.driver:[[ 0.01046026  0.0358336   0.01032392]
+ [ 0.0767781  -0.0370028  -0.01229785]
+ [-0.00447503  0.02260346  0.00200848]
+ [ 0.04752493  0.01005437 -0.0310527 ]
+ [-0.02336759 -0.01524265  0.0248011 ]
+ [-0.06042326 -0.02171307  0.0128695 ]
+ [-0.03634844  0.00141996  0.00854683]
+ [ 0.01063045 -0.0262573   0.0049537 ]
+ [-0.02706701  0.0007862  -0.01693022]
+ [ 0.00052885 -0.01745817  0.00098205]
+ [-0.00059352  0.02684586 -0.02866676]
+ [ 0.00673945  0.02005334  0.02445276]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.4341789216374
+INFO:psi4.driver.driver:Return energy(): -306.1384222310864
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.4341789216374
+INFO:psi4.driver.driver:Return gradient(): -306.1384222310864
+INFO:psi4.driver.driver:[[ 0.01099721  0.0346521   0.01105919]
+ [ 0.07795987 -0.03615488 -0.01268517]
+ [-0.00416988  0.02223033  0.00201964]
+ [ 0.04925639  0.00140381 -0.02814585]
+ [-0.02765088 -0.01075932  0.02316824]
+ [-0.07444008 -0.010841    0.00273478]
+ [-0.03812639  0.00899646  0.0051951 ]
+ [ 0.01312088 -0.03045203  0.00673339]
+ [-0.02651664  0.00085702 -0.01710991]
+ [-0.00082834 -0.01835453  0.0009519 ]
+ [ 0.00355701  0.02244618 -0.03443035]
+ [ 0.01715247  0.01582669  0.04049702]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.42111477976962
+INFO:psi4.driver.driver:Return energy(): -306.1349058652688
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.42111477976962
+INFO:psi4.driver.driver:Return gradient(): -306.1349058652688
+INFO:psi4.driver.driver:[[ 0.01146216  0.03331234  0.01182556]
+ [ 0.07896996 -0.03508285 -0.01306191]
+ [-0.00379129  0.02170803  0.00202627]
+ [ 0.05081265 -0.00731778 -0.02497765]
+ [-0.03170656 -0.00703848  0.02151311]
+ [-0.0892424   0.00046296 -0.00886652]
+ [-0.03972614  0.01651657  0.00165035]
+ [ 0.01514568 -0.03385185  0.00835044]
+ [-0.02570929  0.00108511 -0.01719555]
+ [-0.00207189 -0.01911504  0.00092196]
+ [ 0.00777015  0.01784139 -0.04008384]
+ [ 0.02832074  0.01125304  0.05788887]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.39440771592538
+INFO:psi4.driver.driver:Return energy(): -306.13088099456746
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.39440771592538
+INFO:psi4.driver.driver:Return gradient(): -306.13088099456746
+INFO:psi4.driver.driver:[[ 0.01184486  0.03182538  0.01261794]
+ [ 0.0798073  -0.03378975 -0.01342603]
+ [-0.00333966  0.02103915  0.00202784]
+ [ 0.05212753 -0.01581595 -0.02169129]
+ [-0.03541011 -0.00426364  0.01992929]
+ [-0.10418452  0.01170417 -0.02129334]
+ [-0.0410833   0.02369205 -0.00193497]
+ [ 0.01660393 -0.03626846  0.00969855]
+ [-0.02465493  0.00146627 -0.01718473]
+ [-0.00317638 -0.01973167  0.00089159]
+ [ 0.01191658  0.01320257 -0.04543206]
+ [ 0.03970543  0.00663785  0.0757866 ]]
+INFO:modules.direct_md:Step 30/50 | E = -192100.03 kcal/mol | T = 451.4 K | ETA: 295.9s
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.3468300963215
+INFO:psi4.driver.driver:Return energy(): -306.1268075253399
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.3468300963215
+INFO:psi4.driver.driver:Return gradient(): -306.1268075253399
+INFO:psi4.driver.driver:[[ 0.01213609  0.03020133  0.01343159]
+ [ 0.0804683  -0.03228115 -0.01377938]
+ [-0.00281495  0.02022891  0.00202558]
+ [ 0.0531254  -0.02375417 -0.01846814]
+ [-0.03866147 -0.00257647  0.01850735]
+ [-0.11835462  0.02225237 -0.03348791]
+ [-0.04212258  0.03020026 -0.0053679 ]
+ [ 0.01742192 -0.03755579  0.01067812]
+ [-0.02336799  0.0019934  -0.01707702]
+ [-0.00412299 -0.02020039  0.00085917]
+ [ 0.01584615  0.0087334  -0.05025189]
+ [ 0.05053948  0.00238695  0.09292165]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.27113500863078
+INFO:psi4.driver.driver:Return energy(): -306.12329043441866
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.27113500863078
+INFO:psi4.driver.driver:Return gradient(): -306.12329043441866
+INFO:psi4.driver.driver:[[ 0.01232783  0.02845296  0.01426127]
+ [ 0.08095347 -0.03056464 -0.01412162]
+ [-0.00221894  0.01928381  0.00201969]
+ [ 0.05371531 -0.03078777 -0.01551955]
+ [-0.04139117 -0.00205814  0.01732444]
+ [-0.13067113  0.03142397 -0.04407293]
+ [-0.04275886  0.03570961 -0.00842586]
+ [ 0.01756263 -0.03762766  0.01120691]
+ [-0.02186614  0.00265652 -0.01687301]
+ [-0.00489877 -0.02052051  0.000822  ]
+ [ 0.01939692  0.00465748 -0.05430344]
+ [ 0.05988926 -0.00105135  0.10767212]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.16076189484147
+INFO:psi4.driver.driver:Return energy(): -306.12097956394683
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.16076189484147
+INFO:psi4.driver.driver:Return gradient(): -306.12097956394683
+INFO:psi4.driver.driver:[[ 0.01241541  0.02659283  0.01510324]
+ [ 0.08126395 -0.02865018 -0.01445295]
+ [-0.00155381  0.01821202  0.00201051]
+ [ 0.05380027 -0.03659648 -0.01306736]
+ [-0.04356683 -0.00271828  0.01643652]
+ [-0.14002723  0.03859386 -0.05154312]
+ [-0.04290237  0.03991336 -0.01087692]
+ [ 0.01703017 -0.03646816  0.011229  ]
+ [-0.02017175  0.00344121 -0.01657507]
+ [-0.00549528 -0.02069355  0.00077638]
+ [ 0.02240801  0.00120028 -0.05734709]
+ [ 0.06680164 -0.00328538  0.11829344]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.0106606088342
+INFO:psi4.driver.driver:Return energy(): -306.1204206361676
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=220.0106606088342
+INFO:psi4.driver.driver:Return gradient(): -306.1204206361676
+INFO:psi4.driver.driver:[[ 0.01239885  0.02463256  0.01595633]
+ [ 0.08140182 -0.02655023 -0.01477317]
+ [-0.0008222   0.01702297  0.00199801]
+ [ 0.05328391 -0.04092387 -0.01131931]
+ [-0.04519266 -0.00449072  0.01587231]
+ [-0.14551601  0.04332964 -0.05460244]
+ [-0.04246642  0.04256834 -0.01250675]
+ [ 0.0158699  -0.0341345   0.01072103]
+ [-0.01831178  0.00432789 -0.0161873 ]
+ [-0.00590604 -0.0207216   0.00071782]
+ [ 0.02473503 -0.00143398 -0.05916469]
+ [ 0.07050544 -0.00409218  0.123275  ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.818051919165
+INFO:psi4.driver.driver:Return energy(): -306.1218999567933
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.818051919165
+INFO:psi4.driver.driver:Return gradient(): -306.1218999567933
+INFO:psi4.driver.driver:[[ 0.01228432  0.0225825   0.0168229 ]
+ [ 0.08137037 -0.02427976 -0.01508154]
+ [-0.000027    0.0157271   0.00198165]
+ [ 0.05208181 -0.04361251 -0.01044204]
+ [-0.04630486 -0.00723887  0.0156315 ]
+ [-0.14664887  0.04549683 -0.05253824]
+ [-0.0413779   0.04352957 -0.01314715]
+ [ 0.01416292 -0.03075047  0.00969407]
+ [-0.01631846  0.00529054 -0.01571567]
+ [-0.006124   -0.02060571  0.00064136]
+ [ 0.02626561 -0.00308626 -0.05958243]
+ [ 0.07060902 -0.0034975   0.12172796]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.58290240515643
+INFO:psi4.driver.driver:Return energy(): -306.12534705685334
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.58290240515643
+INFO:psi4.driver.driver:Return gradient(): -306.12534705685334
+INFO:psi4.driver.driver:[[ 0.01208412  0.02045113  0.01770869]
+ [ 0.08117348 -0.02185606 -0.01537654]
+ [ 0.00082877  0.01433555  0.00196026]
+ [ 0.0501327  -0.04462956 -0.01053526]
+ [-0.04696264 -0.01076827  0.01568658]
+ [-0.14348064  0.04528569 -0.04546177]
+ [-0.03958891  0.04277443 -0.01270194]
+ [ 0.01201694 -0.02649279  0.00819134]
+ [-0.01422883  0.00629613 -0.01516772]
+ [-0.00614033 -0.02034508  0.00054182]
+ [ 0.02693293 -0.00366423 -0.05849265]
+ [ 0.06721184 -0.00178119  0.113649  ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.3079515402602
+INFO:psi4.driver.driver:Return energy(): -306.13034033776535
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=219.3079515402602
+INFO:psi4.driver.driver:Return gradient(): -306.13034033776535
+INFO:psi4.driver.driver:[[ 0.01181581  0.01824588  0.01862202]
+ [ 0.08081604 -0.01929823 -0.01565609]
+ [ 0.00174198  0.01285993  0.00193217]
+ [ 0.04740941 -0.04407364 -0.01161576]
+ [-0.04723802 -0.01484505  0.0159882 ]
+ [-0.13658844  0.04314447 -0.03430606]
+ [-0.03708686  0.04040774 -0.0111624 ]
+ [ 0.00955422 -0.02157181  0.00628198]
+ [-0.01208442  0.00730417 -0.0145523 ]
+ [-0.00594514 -0.01993706  0.00041407]
+ [ 0.0267244  -0.00315617 -0.05587036]
+ [ 0.06087444  0.00060267  0.09993313]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.99828225233142
+INFO:psi4.driver.driver:Return energy(): -306.1362156935709
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.99828225233142
+INFO:psi4.driver.driver:Return gradient(): -306.1362156935709
+INFO:psi4.driver.driver:[[ 0.01149951  0.01597374  0.01957178]
+ [ 0.08030343 -0.01662653 -0.01591762]
+ [ 0.00270936  0.0113121   0.00189533]
+ [ 0.04392496 -0.04216087 -0.01361407]
+ [-0.04720477 -0.01921567  0.01647222]
+ [-0.12690692  0.03965248 -0.02056483]
+ [-0.0339005   0.03664756 -0.00860937]
+ [ 0.00690011 -0.01621021  0.00405246]
+ [-0.00992985  0.0082673  -0.01387886]
+ [-0.00553014 -0.01937825  0.00025326]
+ [ 0.02568341 -0.00163434 -0.05178077]
+ [ 0.05246104  0.00315442  0.0821284 ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.66058522585178
+INFO:psi4.driver.driver:Return energy(): -306.1422282342885
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.66058522585178
+INFO:psi4.driver.driver:Return gradient(): -306.1422282342885
+INFO:psi4.driver.driver:[[ 0.01115548  0.01364246  0.02056556]
+ [ 0.07964133 -0.01386157 -0.0161584 ]
+ [ 0.00372744  0.00970403  0.00184755]
+ [ 0.03973321 -0.03919197 -0.01638672]
+ [-0.04692976 -0.02362695  0.01706763]
+ [-0.11549736  0.03539141 -0.00589575]
+ [-0.0300994   0.03179356 -0.00520017]
+ [ 0.00417279 -0.01062367  0.00159712]
+ [-0.00781122  0.00913232 -0.0131568 ]
+ [-0.0048923  -0.01866634  0.00005509]
+ [ 0.02390376  0.0007538  -0.04637553]
+ [ 0.0429275   0.00544859  0.062049  ]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.3023398760883
+INFO:psi4.driver.driver:Return energy(): -306.14770456412845
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=218.3023398760883
+INFO:psi4.driver.driver:Return gradient(): -306.14770456412845
+INFO:psi4.driver.driver:[[ 0.01080136  0.01126099  0.02160801]
+ [ 0.07883587 -0.01102346 -0.01637583]
+ [ 0.00479249  0.00804766  0.0017868 ]
+ [ 0.03492384 -0.03550986 -0.01973864]
+ [-0.04646876 -0.02784366  0.01770358]
+ [-0.10336577  0.03085278  0.00820351]
+ [-0.02578719  0.02618696 -0.00114451]
+ [ 0.00147462 -0.00501045 -0.00098991]
+ [-0.00577374  0.00984219 -0.01239444]
+ [-0.00403703 -0.01780179 -0.00018431]
+ [ 0.02151736  0.00380532 -0.03987717]
+ [ 0.0331311   0.00720405  0.04139549]]
+INFO:modules.direct_md:Step 40/50 | E = -192110.59 kcal/mol | T = 561.3 K | ETA: 149.4s
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.9311021691686
+INFO:psi4.driver.driver:Return energy(): -306.1521422822946
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.9311021691686
+INFO:psi4.driver.driver:Return gradient(): -306.1521422822946
+INFO:psi4.driver.driver:[[ 0.01045063  0.00883977  0.02269975]
+ [ 0.07789331 -0.00813162 -0.01656759]
+ [ 0.00590055  0.00635488  0.00171127]
+ [ 0.02961429 -0.03145943 -0.02344846]
+ [-0.04586336 -0.0316587   0.01831489]
+ [-0.09130557  0.02640138  0.02066858]
+ [-0.02108974  0.02017064  0.00332448]
+ [-0.00111072  0.00046075 -0.00362112]
+ [-0.00385964  0.01033905 -0.01159849]
+ [-0.00297965 -0.01678913 -0.00046766]
+ [ 0.01867845  0.00728745 -0.03255504]
+ [ 0.02372343  0.0082952   0.02151299]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.55399536473791
+INFO:psi4.driver.driver:Return energy(): -306.15524489190005
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.55399536473791
+INFO:psi4.driver.driver:Return gradient(): -306.15524489190005
+INFO:psi4.driver.driver:[[ 0.01011206  0.00639069  0.02383734]
+ [ 0.07681986 -0.0052046  -0.01673172]
+ [ 0.0070474   0.00463759  0.00161954]
+ [ 0.02393921 -0.02735454 -0.02729313]
+ [-0.0451424  -0.03489929  0.01884403]
+ [-0.07987625  0.0222856   0.030887  ]
+ [-0.01614155  0.01405674  0.00797756]
+ [-0.003518    0.00565992 -0.00622068]
+ [-0.00210607  0.01056822 -0.01077379]
+ [-0.00174545 -0.01563736 -0.00079612]
+ [ 0.01554662  0.01096453 -0.02469724]
+ [ 0.01511873  0.00872126  0.00329788]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.17741589414575
+INFO:psi4.driver.driver:Return energy(): -306.1569097554793
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=217.17741589414575
+INFO:psi4.driver.driver:Return gradient(): -306.1569097554793
+INFO:psi4.driver.driver:[[ 0.00978959  0.00392589  0.02501394]
+ [ 0.07562191 -0.00225982 -0.01686673]
+ [ 0.00822851  0.00290751  0.00151056]
+ [ 0.0180372  -0.02345185 -0.0310715 ]
+ [-0.04432878 -0.03743109  0.0192404 ]
+ [-0.06940435  0.01865232  0.03867655]
+ [-0.01107338  0.00810587  0.01261027]
+ [-0.00570349  0.01048674 -0.00872587]
+ [-0.0005426   0.01048165 -0.0099229 ]
+ [-0.00036841 -0.01435988 -0.00116949]
+ [ 0.01227249  0.01462101 -0.01658417]
+ [ 0.00752106  0.00855837 -0.01277225]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=216.8069135582907
+INFO:psi4.driver.driver:Return energy(): -306.1571879965306
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=216.8069135582907
+INFO:psi4.driver.driver:Return gradient(): -306.1571879965306
+INFO:psi4.driver.driver:[[ 0.00948418  0.00145748  0.02622034]
+ [ 0.07430555  0.00068644 -0.01697152]
+ [ 0.00943898  0.00117598  0.00138369]
+ [ 0.01203933 -0.01993944 -0.03461874]
+ [-0.04343958 -0.03915575  0.01946068]
+ [-0.06003566  0.01558041  0.04413936]
+ [-0.00600308  0.00251819  0.01705501]
+ [-0.00763745  0.0148725  -0.01108699]
+ [ 0.00080981  0.01004235 -0.0090467 ]
+ [ 0.00111142 -0.01297382 -0.00158514]
+ [ 0.00898771  0.01807692 -0.00846825]
+ [ 0.00098057  0.00791927 -0.02654327]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=216.44719006064582
+INFO:psi4.driver.driver:Return energy(): -306.15623804212254
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=216.44719006064582
+INFO:psi4.driver.driver:Return gradient(): -306.15623804212254
+INFO:psi4.driver.driver:[[ 0.00919424 -0.00100417  0.02744602]
+ [ 0.07287699  0.00361932 -0.01704543]
+ [ 0.01067362 -0.00054613  0.00123865]
+ [ 0.00606508 -0.01694295 -0.03780793]
+ [-0.04249501 -0.0400126   0.01946639]
+ [-0.05178614  0.01309641  0.04755631]
+ [-0.00103023 -0.00256673  0.02118559]
+ [-0.00930616  0.01876198 -0.01326433]
+ [ 0.00194047  0.00922707 -0.00814429]
+ [ 0.00265051 -0.01149921 -0.00203892]
+ [ 0.00579916  0.02119587 -0.000561  ]
+ [-0.00455205  0.00691935 -0.03807915]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=216.10216599100877
+INFO:psi4.driver.driver:Return energy(): -306.15428265135046
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=216.10216599100877
+INFO:psi4.driver.driver:Return gradient(): -306.15428265135046
+INFO:psi4.driver.driver:[[ 0.00891658 -0.00345042  0.02867954]
+ [ 0.07134144  0.00652502 -0.01708812]
+ [ 0.01192718 -0.00224832  0.00107549]
+ [ 0.00021941 -0.014534   -0.04054822]
+ [-0.04151925 -0.03997762  0.01922526]
+ [-0.04459155  0.01119802  0.0492868 ]
+ [ 0.00376559 -0.00706401  0.02491556]
+ [-0.01070448  0.02212613 -0.01522776]
+ [ 0.00284822  0.00802948 -0.0072142 ]
+ [ 0.00420456 -0.00995816 -0.00252444]
+ [ 0.00278696  0.02388636  0.00697255]
+ [-0.00917534  0.00566463 -0.04756695]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=215.7750805288124
+INFO:psi4.driver.driver:Return energy(): -306.1515743932459
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=215.7750805288124
+INFO:psi4.driver.driver:Return gradient(): -306.1515743932459
+INFO:psi4.driver.driver:[[ 0.00864545 -0.00587267  0.02991005]
+ [ 0.0697056   0.00939053 -0.01709967]
+ [ 0.01319454 -0.00392055  0.00089455]
+ [-0.00541278 -0.01273699 -0.04278565]
+ [-0.04054337 -0.0390566   0.018709  ]
+ [-0.03834395  0.00986785  0.04969491]
+ [ 0.0083239  -0.01093325  0.02819282]
+ [-0.01183256  0.02495644 -0.01695528]
+ [ 0.00354092  0.00646076 -0.0062545 ]
+ [ 0.00573088 -0.00837352 -0.00303329]
+ [ 0.00000637  0.02609732  0.01401279]
+ [-0.01300653  0.00424575 -0.05524939]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=215.4686002759064
+INFO:psi4.driver.driver:Return energy(): -306.14837009896587
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=215.4686002759064
+INFO:psi4.driver.driver:Return gradient(): -306.14837009896587
+INFO:psi4.driver.driver:[[ 0.00837805 -0.00826531  0.03112725]
+ [ 0.06797326  0.0122041  -0.01708032]
+ [ 0.01447094 -0.00555316  0.00069645]
+ [-0.01076472 -0.01154142 -0.04449415]
+ [-0.03960388 -0.03727996  0.0178896 ]
+ [-0.03290858  0.00907799  0.04911691]
+ [ 0.01260099 -0.01416697  0.03099198]
+ [-0.0126913   0.02725324 -0.01843362]
+ [ 0.00403511  0.00454909 -0.00526337]
+ [ 0.00718939 -0.00676822 -0.00355616]
+ [-0.00250941  0.02781162  0.02048094]
+ [-0.01616679  0.00272958 -0.06138324]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=215.1849224570573
+INFO:psi4.driver.driver:Return energy(): -306.14491464522405
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=215.1849224570573
+INFO:psi4.driver.driver:Return gradient(): -306.14491464522405
+INFO:psi4.driver.driver:[[ 0.00810974 -0.0106228   0.03232123]
+ [ 0.06614914  0.01495577 -0.0170292 ]
+ [ 0.01575163 -0.00713806  0.00048137]
+ [-0.01578242 -0.01091823 -0.04566634]
+ [-0.03874572 -0.03469645  0.0167416 ]
+ [-0.02815     0.00879487  0.04783669]
+ [ 0.0165674  -0.01678072  0.03330774]
+ [-0.01328606  0.02901631 -0.01965023]
+ [ 0.0043546   0.00233723 -0.00423787]
+ [ 0.00854417 -0.00516471 -0.004083  ]
+ [-0.00474407  0.02903635  0.02633123]
+ [-0.01876749  0.00116652 -0.06621105]]
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute energy(): method=wb97x-d, basis=6-31g*, molecule=default, nre=214.92586551478107
+INFO:psi4.driver.driver:Return energy(): -306.14143038330724
+INFO:psi4.driver.task_planner:PLANNING Atomic:  keywords={'D_CONVERGENCE': 1e-07, 'E_CONVERGENCE': 1e-07, 'SCF__INTS_TOLERANCE': 1e-12, 'REFERENCE': 'RHF', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+INFO:psi4.driver.driver:Compute gradient(): method=wb97x-d, basis=6-31g*, molecule=default, nre=214.92586551478107
+INFO:psi4.driver.driver:Return gradient(): -306.14143038330724
+INFO:psi4.driver.driver:[[ 0.00783692 -0.01294194  0.03348433]
+ [ 0.06423707  0.01763559 -0.01694793]
+ [ 0.0170327  -0.00866681  0.00025058]
+ [-0.02042471 -0.01082668 -0.04630712]
+ [-0.03801836 -0.03136886  0.01524192]
+ [-0.02393962  0.0089829   0.04608195]
+ [ 0.0202051  -0.01880412  0.03514805]
+ [-0.01362273  0.03024461 -0.02059061]
+ [ 0.00452913 -0.00011994 -0.00317461]
+ [ 0.00976445 -0.00358446 -0.00460376]
+ [-0.00669458  0.02979598  0.0315444 ]
+ [-0.02090502 -0.00040917 -0.06994859]]
+INFO:modules.direct_md:Step 50/50 | E = -192106.65 kcal/mol | T = 551.5 K | ETA: 0.0s
+INFO:modules.direct_md:MD completed in 752.1s (0.1 steps/s)
+INFO:modules.direct_md:Generated trajectory: 51 frames, 12 atoms
+
+
+  Memory set to   5.588 GiB by Python driver.
+  Threads set to 4 by Python driver.
+Resuming from outputs/anti_trans_nm_pes_20260421/state.json
+Molecule: mvko_anti_trans  (12 atoms)
+PSI4 1.10 available
+
+  Normal modes (30 vibrational):
+    mode  1:    117.2 cm⁻¹
+    mode  2:    161.8 cm⁻¹
+    mode  3:    251.8 cm⁻¹
+    mode  4:    278.6 cm⁻¹
+    mode  5:    327.9 cm⁻¹
+    mode  6:    396.2 cm⁻¹
+    mode  7:    481.8 cm⁻¹
+    mode  8:    647.2 cm⁻¹
+    mode  9:    731.6 cm⁻¹
+    mode 10:    804.6 cm⁻¹
+    mode 11:    991.2 cm⁻¹
+    mode 12:   1007.4 cm⁻¹
+    mode 13:   1042.1 cm⁻¹
+    mode 14:   1058.8 cm⁻¹
+    mode 15:   1081.1 cm⁻¹
+    mode 16:   1108.3 cm⁻¹
+    mode 17:   1304.9 cm⁻¹
+    mode 18:   1384.8 cm⁻¹
+    mode 19:   1454.6 cm⁻¹
+    mode 20:   1481.0 cm⁻¹
+    mode 21:   1496.1 cm⁻¹
+    mode 22:   1499.4 cm⁻¹
+    mode 23:   1575.6 cm⁻¹
+    mode 24:   1721.8 cm⁻¹
+    mode 25:   3072.5 cm⁻¹
+    mode 26:   3139.7 cm⁻¹
+    mode 27:   3188.9 cm⁻¹
+    mode 28:   3189.9 cm⁻¹
+    mode 29:   3261.3 cm⁻¹
+    mode 30:   3280.7 cm⁻¹
+Loaded trajectory from outputs/anti_trans_nm_pes_20260421/nm_displacements_with_eq.npz (npz format)
+  Frames: 301, Atoms: 12
+
+=== Step 4: PSI4 MD data ===
+  MD at 600.0 K, 50 steps ...
+  MD at 1000.0 K, 50 steps ...
+Saved trajectory to outputs/anti_trans_nm_pes_20260421/md_training.npz (npz format)
+  MD data: 102 frames
+Saved trajectory to outputs/anti_trans_nm_pes_20260421/combined_training_data.npz (npz format)
+
+  Combined training data: 403 frames → outputs/anti_trans_nm_pes_20260421/combined_training_data.npz
+
+=== Step 5: NM-KRR training ===
+  Training: 387 / 403 frames (ΔE < 50.0 kcal/mol)
+  Fixed γ=0.1, α=1e-07, LOO-CV RMSE=1.079 kcal/mol
+  Saved NM-KRR model → outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+
+  NM frequencies:
+    mode  1:    117.2 cm⁻¹
+    mode  2:    161.8 cm⁻¹
+    mode  3:    251.8 cm⁻¹
+    mode  4:    278.6 cm⁻¹
+    mode  5:    327.9 cm⁻¹
+    mode  6:    396.2 cm⁻¹
+    mode  7:    481.8 cm⁻¹
+    mode  8:    647.2 cm⁻¹
+    mode  9:    731.6 cm⁻¹
+    mode 10:    804.6 cm⁻¹
+    mode 11:    991.2 cm⁻¹
+    mode 12:   1007.4 cm⁻¹
+    mode 13:   1042.1 cm⁻¹
+    mode 14:   1058.8 cm⁻¹
+    mode 15:   1081.1 cm⁻¹
+    mode 16:   1108.3 cm⁻¹
+    mode 17:   1304.9 cm⁻¹
+    mode 18:   1384.8 cm⁻¹
+    mode 19:   1454.6 cm⁻¹
+    mode 20:   1481.0 cm⁻¹
+    mode 21:   1496.1 cm⁻¹
+    mode 22:   1499.4 cm⁻¹
+    mode 23:   1575.6 cm⁻¹
+    mode 24:   1721.8 cm⁻¹
+    mode 25:   3072.5 cm⁻¹
+    mode 26:   3139.7 cm⁻¹
+    mode 27:   3188.9 cm⁻¹
+    mode 28:   3189.9 cm⁻¹
+    mode 29:   3261.3 cm⁻¹
+    mode 30:   3280.7 cm⁻¹
+
+=== Done ===
+NM-KRR model: outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl
+
+Run IR spectrum:
+  python3 ir_md_spectrum.py \
+    --nm-pes-model outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl \
+    --training-data outputs/mvko_dipoles_stretch_20260420/training_with_dipoles.npz \
+    --steps 30000 --temp 300 --preminimize \
+    --zpe-min-freq 50 --zpe-max-freq 4000 \
+    --n-trajectories 5 \
+    --nm-pes-bond-wall-factor 1.15 --nm-pes-bond-wall-stiffness 15.0 \
+    --max-bond-extension 1.35 \
+    --output-dir outputs/mvko_anti_trans_ir_300K
+
+Collect anti-trans dipoles (AFTER IR model validated):
+  python3 collect_ch_displaced_dipoles.py \
+    --nm-pes-model outputs/anti_trans_nm_pes_20260421/mlpes_nm.pkl \
+    --out-dir outputs/mvko_anti_trans_dipoles
+

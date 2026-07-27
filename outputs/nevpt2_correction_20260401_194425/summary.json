@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-04-01T23:48:08.771730",
+  "casscf_dir": "outputs/casscf_nm_delta_20260401_110049",
+  "training_data": "outputs/mvko_20260319_081314/combined_training_data.npz",
+  "n_frames_total": 51,
+  "n_frames_converged": 50,
+  "n_active_orb": 4,
+  "n_active_elec": 4,
+  "basis": "6-31g*",
+  "method": "CASSCF+SC-NEVPT2 (PySCF)",
+  "b3lyp_rel_min_kcal": 0.0,
+  "b3lyp_rel_max_kcal": 58.079000797986865,
+  "delta_casscf_range_kcal": [
+    -2.6039483193898603,
+    35.65825628594977
+  ],
+  "delta_nevpt2_range_kcal": [
+    -44.73349854495444,
+    0.6237010288536055
+  ],
+  "delta_total_range_kcal": [
+    -21.15758643709943,
+    15.09762075214867
+  ],
+  "gamma": 0.0001,
+  "alpha_reg": 0.0001,
+  "loo_cv_rmse_kcal": 9.915916678984358,
+  "train_rmse_kcal": 6.605416127672258,
+  "casscf_cv_rmse_kcal": 9.297591727980276,
+  "nevpt2_cv_rmse_kcal": 13.301051354444763,
+  "model_path": "outputs/nevpt2_correction_20260401_194425/nevpt2_correction_model.pkl"
+}
