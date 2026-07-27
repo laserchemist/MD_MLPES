@@ -248,6 +248,18 @@
         .fig-panel { display: none; }
         .fig-panel.active { display: block; }
         .fig-caption { text-align: center; color: #6b7280; font-size: 0.88rem; margin-top: 0.75rem; font-style: italic; }
+
+        /* Papers tab */
+        .paper-list { display: flex; flex-direction: column; gap: 1rem; }
+        .paper-card { display: flex; gap: 1rem; background: var(--light); border-radius: 8px; padding: 1.2rem; border-left: 4px solid var(--primary); }
+        .paper-num { font-size: 1.4rem; font-weight: 800; color: var(--primary); min-width: 1.6rem; padding-top: 0.1rem; }
+        .paper-body { flex: 1; }
+        .paper-authors { font-weight: 600; color: var(--dark); margin: 0 0 0.2rem; font-size: 0.9rem; }
+        .paper-title { color: var(--dark); margin: 0 0 0.2rem; font-size: 0.95rem; }
+        .paper-journal { color: #6b7280; margin: 0 0 0.5rem; font-size: 0.88rem; }
+        .paper-note { color: #374151; font-size: 0.88rem; margin: 0 0 0.5rem; background: white; padding: 0.5rem 0.75rem; border-radius: 4px; }
+        .paper-link { display: inline-block; font-size: 0.82rem; color: var(--primary); text-decoration: none; font-family: monospace; }
+        .paper-link:hover { text-decoration: underline; }
         .fig-img { max-width: 100%; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: block; margin: 0 auto; }
         .chart-wrap { position: relative; height: 420px; }
     </style>
@@ -289,6 +301,8 @@
         <button class="fig-tab" data-target="tab-conformers">MVKO Conformers</button>
         <button class="fig-tab" data-target="tab-ir">Anti-cis Harmonic IR</button>
         <button class="fig-tab" data-target="tab-hot">Hot Emission vs Eq.</button>
+        <button class="fig-tab" data-target="tab-expt">Expt. Comparison</button>
+        <button class="fig-tab" data-target="tab-papers">Key Papers</button>
     </div>
 
     <div class="fig-panel active" id="tab-mlpes">
@@ -319,7 +333,74 @@
         <div class="chart-wrap">
             <canvas id="hotCanvas"></canvas>
         </div>
-        <p class="fig-caption">Hot-molecule emission vs. equilibrium harmonic IR: 300 K (orange) and 2000 K (red) compared to equilibrium harmonic (blue)</p>
+        <p class="fig-caption">Anti-cis MVKO — MACE+CASSCF&delta;_S0 PES + NMDipoleSurface (wB97X-D/6-31G*): hot-molecule emission 300 K (orange) and 2000 K (red) vs. equilibrium harmonic (blue)</p>
+    </div>
+
+    <div class="fig-panel" id="tab-expt">
+        <div class="chart-wrap">
+            <canvas id="exptCanvas"></canvas>
+        </div>
+        <p class="fig-caption">Theory vs. experiment: anti-cis MVKO harmonic IR (this work, MACE+CASSCF&delta;_S0, wB97X-D/6-31G*) compared to digitized experimental bands from Chung &amp; Lee, <em>Commun. Chem.</em> 2021, Fig. 3a (5&ndash;10 &mu;s transient absorption, 0.5 cm&#8315;&#185; resolution). Shaded region = parent molecule interference in experiment.</p>
+    </div>
+
+    <div class="fig-panel" id="tab-papers">
+        <div class="paper-list">
+
+            <div class="paper-card">
+                <div class="paper-num">1</div>
+                <div class="paper-body">
+                    <p class="paper-authors">Chung, C. A.; Lee, Y. P.</p>
+                    <p class="paper-title">Infrared characterization of formation and resonance stabilization of the Criegee intermediate methyl vinyl ketone oxide.</p>
+                    <p class="paper-journal"><em>Commun. Chem.</em> <strong>2021</strong>, 4 (1), 8.</p>
+                    <p class="paper-note">Primary experimental reference. Transient IR absorption at 0.5 cm&#8315;&#185; resolution; identifies bands B&#8321;&ndash;B&#8327; (870&ndash;1460 cm&#8315;&#185;) as fingerprint of MVKO conformers. Fig. 3a compared directly to our harmonic spectra.</p>
+                    <a class="paper-link" href="https://doi.org/10.1038/s42004-020-00439-z" target="_blank">DOI: 10.1038/s42004-020-00439-z</a>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div class="paper-num">2</div>
+                <div class="paper-body">
+                    <p class="paper-authors">Wang, G.; Liu, T.; Zou, M.; Sojdak, C. A.; Kozlowski, M. C.; Karsili, T. N. V.; Lester, M. I.</p>
+                    <p class="paper-title">Electronic Spectroscopy and Dissociation Dynamics of Vinyl-Substituted Criegee Intermediates: 2-Butenal Oxide and Comparison with Methyl Vinyl Ketone Oxide and Methacrolein Oxide Isomers.</p>
+                    <p class="paper-journal"><em>J. Phys. Chem. A</em> <strong>2023</strong>, 127 (1), 203&ndash;215.</p>
+                    <p class="paper-note">UV/Vis spectroscopy and unimolecular dissociation rates for MVKO and related vinyl-substituted Criegee intermediates. Provides experimental S1 and T1 state energies for comparison with our CASSCF gaps.</p>
+                    <a class="paper-link" href="https://doi.org/10.1021/acs.jpca.2c08053" target="_blank">DOI: 10.1021/acs.jpca.2c08053</a>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div class="paper-num">3</div>
+                <div class="paper-body">
+                    <p class="paper-authors">Stewart, J. T.; Hino, L.; Pavlonnis, C.; Reyna, K. R.; Vo, B. L. N.</p>
+                    <p class="paper-title">Rotationally Resolved Infrared Spectroscopy of Supersonic Jet-Cooled Isoprene.</p>
+                    <p class="paper-journal"><em>J. Phys. Chem. A</em> <strong>2023</strong>.</p>
+                    <p class="paper-note">High-resolution vibrational spectroscopy of a conjugated diene with conformational isomerism — methodological comparison for rotationally resolved band assignments in molecules with similar structural motifs to MVKO.</p>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div class="paper-num">4</div>
+                <div class="paper-body">
+                    <p class="paper-authors">Stephenson, T. A.; Lester, M. I.</p>
+                    <p class="paper-title">Unimolecular decay dynamics of Criegee intermediates: Energy-resolved rates, thermal rates, and their atmospheric impact.</p>
+                    <p class="paper-journal"><em>Int. Rev. Phys. Chem.</em> <strong>2020</strong>, 39 (1), 1&ndash;33.</p>
+                    <p class="paper-note">Comprehensive review of Criegee intermediate unimolecular chemistry. Covers energy-resolved decay rates and their atmospheric implications — essential context for the hot-molecule (ozonolysis-energized) emission simulations in this work.</p>
+                    <a class="paper-link" href="https://doi.org/10.1080/0144235X.2019.1701353" target="_blank">DOI: 10.1080/0144235X.2019.1701353</a>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div class="paper-num">5</div>
+                <div class="paper-body">
+                    <p class="paper-authors">Kuwata, K. T.</p>
+                    <p class="paper-title">Computational Modeling of the Conformation-Dependent Atmospheric Reactivity of Criegee Intermediates.</p>
+                    <p class="paper-journal"><em>J. Phys. Chem. A</em> <strong>2024</strong>, 128 (35), 7331&ndash;7345.</p>
+                    <p class="paper-note">Computational study of how conformer identity (syn vs. anti) controls atmospheric reactivity of Criegee intermediates. Directly relevant to our multi-conformer CASSCF delta-ML approach and the atmospheric context of MVKO.</p>
+                    <a class="paper-link" href="https://doi.org/10.1021/acs.jpca.4c04224" target="_blank">DOI: 10.1021/acs.jpca.4c04224</a>
+                </div>
+            </div>
+
+        </div>
     </div>
 </section>
 
@@ -843,8 +924,34 @@ document.querySelectorAll('.fig-tab').forEach(btn => {
         panel.classList.add('active');
         if (btn.dataset.target === 'tab-ir' && !window._irChartDone) { initIrChart(); window._irChartDone = true; }
         if (btn.dataset.target === 'tab-hot' && !window._hotChartDone) { initHotChart(); window._hotChartDone = true; }
+        if (btn.dataset.target === 'tab-expt' && !window._exptChartDone) { initExptChart(); window._exptChartDone = true; }
     });
 });
+
+// --- Digitized peaks from Chung & Lee 2021, Commun. Chem. 4:8, Fig. 3a ---
+// Lorentzian peaks: [center_cm-1, half-width, relative_intensity]
+const CHUNG_PEAKS = [
+    [1458, 9, 0.50],   // B1
+    [1432, 7, 0.33],   // B2
+    [1406, 7, 0.23],   // B3
+    [1133, 8, 1.00],   // B4 (strongest in fingerprint)
+    [1013, 9, 0.50],   // B5
+    [970,  8, 0.50],   // B6 (asterisk = possible)
+    [934,  7, 0.43],   // B7
+];
+// Gray (interference) regions in Chung & Lee Fig. 3a
+const CHUNG_GRAY = [[1205, 1265], [1060, 1110]];
+
+function lorentzianSpectrum(peaks, freqMin, freqMax, step) {
+    const freq = [], inten = [];
+    for (let f = freqMin; f <= freqMax; f += step) {
+        let y = 0;
+        for (const [f0, g, h] of peaks) y += h * g * g / ((f - f0) ** 2 + g * g);
+        freq.push(f);
+        inten.push(parseFloat(y.toFixed(5)));
+    }
+    return { freq, inten };
+}
 
 function initIrChart() {
     const ctx = document.getElementById('irCanvas').getContext('2d');
@@ -866,7 +973,8 @@ function initIrChart() {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' }
+                legend: { position: 'top' },
+                title: { display: true, text: 'Anti-cis MVKO — MACE + CASSCF δ_S0 PES, NMDipoleSurface (wB97X-D/6-31G*)' }
             },
             scales: {
                 x: {
@@ -921,7 +1029,8 @@ function initHotChart() {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' }
+                legend: { position: 'top' },
+                title: { display: true, text: 'Anti-cis MVKO — Hot Emission vs. Equilibrium Harmonic (MACE+CASSCF δ_S0, wB97X-D/6-31G*)' }
             },
             scales: {
                 x: {
@@ -934,6 +1043,95 @@ function initHotChart() {
             }
         }
     });
+}
+
+function initExptChart() {
+    // Compute Lorentzian spectrum for Chung & Lee 2021 bands (850–1500 cm-1)
+    const { freq: chFreq, inten: chInten } = lorentzianSpectrum(CHUNG_PEAKS, 850, 1500, 2);
+
+    // Filter our harmonic data to 850–1500 cm-1
+    const thFreq = [], thInten = [];
+    for (const [f, i] of SPECTRA.harm) {
+        if (f >= 850 && f <= 1500) { thFreq.push(f); thInten.push(i); }
+    }
+    // Normalize theory to its max in this range (so it's comparable)
+    const thMax = Math.max(...thInten);
+    const thNorm = thInten.map(v => parseFloat((v / thMax).toFixed(5)));
+
+    // Shade interference regions as background annotation (via dataset with fill)
+    const ctx = document.getElementById('exptCanvas').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chFreq,
+            datasets: [
+                {
+                    label: 'Expt. Chung & Lee 2021 (digitized, Fig. 3a)',
+                    data: chInten,
+                    borderColor: '#1f2937',
+                    backgroundColor: 'transparent',
+                    pointRadius: 0,
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                },
+                {
+                    label: 'This work — Harmonic IR (MACE+CASSCF δ_S0, anti-cis)',
+                    // map theory freqs onto chart labels (same x axis)
+                    data: chFreq.map(f => {
+                        const idx = Math.round((f - thFreq[0]) / (thFreq[1] - thFreq[0]));
+                        return (idx >= 0 && idx < thNorm.length) ? thNorm[idx] : null;
+                    }),
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.08)',
+                    pointRadius: 0,
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'Theory vs. Experiment: MVKO Fingerprint Region (850–1500 cm⁻¹)' }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: 'Frequency (cm⁻¹)' },
+                    ticks: {
+                        maxTicksLimit: 14,
+                        callback: function(val, idx) { return chFreq[idx]; }
+                    }
+                },
+                y: {
+                    title: { display: true, text: 'Intensity (normalized)' },
+                    min: 0
+                }
+            }
+        }
+    });
+
+    // Draw gray interference bands as canvas overlays after chart renders
+    setTimeout(() => {
+        const canvas = document.getElementById('exptCanvas');
+        const chart = Chart.getChart(canvas);
+        if (!chart) return;
+        const ctx2 = canvas.getContext('2d');
+        ctx2.save();
+        ctx2.globalAlpha = 0.12;
+        ctx2.fillStyle = '#6b7280';
+        for (const [lo, hi] of CHUNG_GRAY) {
+            const x1 = chart.scales.x.getPixelForValue(lo - 850);
+            const x2 = chart.scales.x.getPixelForValue(hi - 850);
+            const y1 = chart.chartArea.top;
+            const y2 = chart.chartArea.bottom;
+            ctx2.fillRect(x1, y1, x2 - x1, y2 - y1);
+        }
+        ctx2.restore();
+    }, 400);
 }
 </script>
 </body>
