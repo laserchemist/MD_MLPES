@@ -5,7 +5,16 @@
       "Bash(awk '{print $NF}')",
       "Bash(python3 *)",
       "Bash(python3 -c ' *)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'Move Key Papers to 2nd tab and 2nd nav link; use 2000K thermal for expt comparison *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git commit -m 'Merge current into main: add research log, index, and HTML pages *)",
+      "Bash(git stash *)",
+      "Bash(git commit -m 'Fix experimental comparison chart: Gaussian peaks, linear x-axis, add 300K thermal *)"
     ]
   }
 }
