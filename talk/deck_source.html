@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine-Learned Potentials for Criegee Intermediates — MD_MLPES</title>
+<!-- SOURCE FILE. Edit this, then run: python3 talk/scripts/build_deck.py
+     The build inlines talk/figures/*.svg wherever a FIG marker appears and
+     writes the self-contained talk/index.html that GitHub Pages serves. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout concept: a lab notebook on paper — navy title band with gold rule
+     (same family as the BCCE talk cover), content on a 12-column grid,
+     figures as the largest element on every results slide. */
+  :root {
+    --navy: #0c2438;
+    --navy-2: #143a54;
+    --teal: #2fb8ae;
+    --teal-ink: #1c6f69;
+    --gold: #c9a24b;
+    --paper: #f6f4ef;
+    --panel: #eef0e9;
+    --ink: #26313a;
+    --ink-2: #4b5560;
+    --muted: #6b6b63;
+    --rule: #d8d3c4;
+    --blue: #2a78d6;
+    --orange: #c4511f;
+    --warn-bg: #f7ead0;
+    --font-body: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  html, body { background: #111; }
+  .reveal { font-family: var(--font-body); font-size: 30px; color: var(--ink); }
+  .reveal .slides { text-align: left; }
+  .reveal .slides section { height: 100%; padding: 0; box-sizing: border-box; }
+  .reveal .progress { color: var(--teal); height: 4px; }
+  .reveal .slide-number { background: rgba(12,36,56,0.75); color: #e9ecef; font-size: 15px; }
+  .reveal .controls { color: var(--teal); }
+
+  /* ---- slide frame ---- */
+  .slide { display: flex; flex-direction: column; height: 100%; background: var(--paper); }
+  .bar {
+    background: linear-gradient(100deg, var(--navy) 0%, var(--navy-2) 65%, #1c4f66 100%);
+    border-bottom: 4px solid var(--gold);
+    padding: 26px 64px 24px 64px; flex: 0 0 auto;
+  }
+  .eyebrow {
+    color: var(--teal); font-size: 17px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 700; margin: 0 0 8px 0;
+  }
+  .reveal h2 {
+    font-family: var(--font-display); color: #fdfdfb; font-size: 44px; line-height: 1.18;
+    font-weight: 700; margin: 0; text-transform: none; letter-spacing: -0.005em; text-wrap: balance;
+  }
+  .body { flex: 1 1 auto; padding: 36px 64px 40px 64px; display: grid; gap: 40px; min-height: 0; align-content: start; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-fig { grid-template-columns: 1.9fr 1fr; align-items: start; }
+  .cols-fig-r { grid-template-columns: 1fr 1.6fr; align-items: start; }
+  .stack { grid-template-rows: auto 1fr; }
+  .body > * { min-width: 0; }
+
+  .reveal p, .reveal li { line-height: 1.42; }
+  .reveal p { margin: 0 0 16px 0; }
+  .reveal ul { margin: 0; padding-left: 1.05em; display: grid; gap: 14px; align-content: start; }
+  .reveal li::marker { color: var(--teal-ink); }
+  .reveal strong { color: var(--navy); }
+  .reveal em { color: var(--ink-2); }
+  .lede { font-size: 38px; line-height: 1.35; color: var(--navy); font-weight: 600; max-width: 40ch; text-wrap: balance; }
+  .small { font-size: 27px; color: var(--ink-2); }
+  .note { font-size: 22px; color: var(--muted); }
+  .src { font-size: 19px; color: var(--muted); margin-top: auto; }
+  .reveal code { font-family: var(--font-mono); font-size: 0.82em; background: var(--panel); padding: 1px 6px; border-radius: 3px; color: var(--navy); }
+  .reveal pre { font-family: var(--font-mono); font-size: 19px; line-height: 1.5; background: var(--navy); color: #e8eef2; padding: 20px 24px; border-radius: 4px; margin: 0; box-shadow: none; width: auto; border-left: 4px solid var(--teal); white-space: pre; overflow-x: auto; }
+  .reveal pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  /* figures: inline SVG scaled to its column */
+  .fig { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .fig svg { width: 100%; height: auto; max-height: 700px; display: block; }
+  .fig figcaption { font-size: 21px; color: var(--muted); line-height: 1.35; }
+  .fig-tall svg { max-height: 840px; }
+  .stack .fig svg { max-height: 590px; }
+
+  /* callouts and tiles */
+  .callout { background: var(--panel); border-left: 4px solid var(--gold); padding: 18px 22px; border-radius: 3px; }
+  .callout.warn { background: var(--warn-bg); border-left-color: var(--orange); }
+  .callout h3, .card h3 { font-family: var(--font-body); font-size: 28px; margin: 0 0 8px 0; color: var(--navy); text-transform: none; font-weight: 700; letter-spacing: 0; }
+  .callout p:last-child, .card p:last-child { margin-bottom: 0; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; align-content: start; }
+  .tile { border-top: 3px solid var(--teal); padding-top: 14px; }
+  .tile .num { font-family: var(--font-display); font-size: 62px; font-weight: 700; color: var(--navy); line-height: 1; font-variant-numeric: tabular-nums; }
+  .tile .unit { font-size: 24px; color: var(--ink-2); font-weight: 600; margin-left: 4px; }
+  .tile .lbl { font-size: 25px; color: var(--ink-2); margin-top: 10px; line-height: 1.32; }
+  .cards { display: grid; gap: 22px; align-content: start; }
+  .card { background: #fbfaf7; border: 1px solid var(--rule); padding: 20px 22px; border-radius: 4px; }
+  .card p { font-size: 26px; color: var(--ink-2); }
+  .tag { display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 2px; margin-bottom: 8px; }
+  .tag.ok { background: #d9efe9; color: #1c6f69; }
+  .tag.bad { background: #f6dcd0; color: #93391a; }
+  .tag.mid { background: #f3e7c9; color: #7a5a12; }
+
+  /* tables */
+  .reveal table { border-collapse: collapse; font-size: 25px; width: 100%; margin: 0; }
+  .reveal table th { text-align: left; font-size: 17px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-ink); border-bottom: 2px solid var(--navy); padding: 8px 12px 8px 0; font-weight: 700; }
+  .reveal table td { border-bottom: 1px solid var(--rule); padding: 9px 12px 9px 0; vertical-align: top; font-variant-numeric: tabular-nums; }
+  .reveal table td.n { text-align: right; padding-right: 20px; }
+  .reveal table th.n { text-align: right; padding-right: 20px; }
+
+  /* equations */
+  .eq { font-family: var(--font-display); font-size: 30px; color: var(--navy); background: #fbfaf7; border: 1px solid var(--rule); border-radius: 4px; padding: 16px 22px; margin: 0 0 18px 0; }
+  .eq sub, .eq sup { font-size: 0.62em; }
+
+  /* timeline: a real chronological sequence */
+  .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 30px; align-content: start; }
+  .tl { border-left: 3px solid var(--teal); padding: 2px 0 4px 16px; }
+  .tl .when { font-size: 19px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--teal-ink); }
+  .tl .what { font-size: 26px; color: var(--ink); line-height: 1.32; margin-top: 4px; }
+
+  /* section divider slides */
+  .divider { background: transparent; color: #fdfdfb; justify-content: center; padding: 0 120px; }
+  .divider .eyebrow { font-size: 20px; }
+  .divider h2 { font-size: 72px; max-width: 18ch; }
+  .divider p { font-size: 30px; color: #c9d6de; max-width: 52ch; margin-top: 22px; }
+
+  /* cover (same structure as JMS/Talks/cover.html) */
+  .cover { display: flex; flex-direction: column; height: 100%; background: var(--paper); color: var(--ink); }
+  .cover-bar { background: linear-gradient(100deg, var(--navy) 0%, var(--navy-2) 65%, #1c4f66 100%); border-bottom: 5px solid var(--gold); padding: 56px 72px 50px 72px; }
+  .cover-bar .eyebrow { font-size: 20px; margin-bottom: 18px; }
+  .cover-bar h1 { font-family: var(--font-display); font-size: 68px; line-height: 1.12; color: #fdfdfb; margin: 0; font-weight: 700; text-transform: none; letter-spacing: -0.01em; max-width: 26ch; text-wrap: balance; }
+  .cover-bar .sub { color: #c9d6de; font-size: 30px; margin-top: 18px; }
+  .cover-body { padding: 40px 72px; display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; flex: 1; min-height: 0; }
+  .chips { display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 26px; }
+  .chip { border-left: 3px solid var(--teal); padding-left: 14px; }
+  .chip .label { color: #1c4f66; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+  .chip .value { font-size: 24px; font-weight: 600; }
+  .chip .value span { display: block; font-size: 19px; color: var(--muted); font-weight: 400; }
+  .abstract-label { color: var(--navy); font-size: 16px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--rule); padding-bottom: 8px; margin-bottom: 14px; }
+  .abstract { font-size: 23px; line-height: 1.55; color: #3c4650; max-width: 70ch; }
+  .hint { font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8a80; margin-top: 18px; }
+  .links a { color: #1c4f66; font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--teal); }
+
+  /* pipeline diagram */
+  .pipe svg { width: 100%; height: auto; display: block; }
+  .pipe text { font-family: var(--font-body); }
+  .reveal a { color: #1c4f66; }
+  .reveal a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .reveal .slides section { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · COVER -->
+<section data-background-color="#f6f4ef">
+  <div class="cover">
+    <div class="cover-bar">
+      <div class="eyebrow">MD_MLPES · Research update · 2025–2026</div>
+      <h1>Machine-learned potential energy surfaces for hot Criegee intermediates</h1>
+      <div class="sub">Molecular dynamics, multireference corrections, and infrared spectra of CH₂OO and MVKO</div>
+    </div>
+    <div class="cover-body">
+      <div>
+        <div class="chips">
+          <div class="chip"><div class="label">Presented by</div><div class="value">Jonathan M. Smith<span>Temple University</span></div></div>
+          <div class="chip"><div class="label">Systems</div><div class="value">CH₂OO · MVKO<span>5 and 12 atoms; 4 MVKO conformers</span></div></div>
+        </div>
+        <div class="abstract-label">Abstract</div>
+        <div class="abstract">
+          <p>Criegee intermediates are short-lived carbonyl oxides formed when ozone attacks alkenes. They are born hot, they come in several conformers, and their electronic structure has partial multireference character, which makes their spectra and dynamics hard to compute directly. We train machine-learned potential energy surfaces on PSI4 density-functional data, add CASSCF corrections learned in normal-mode coordinates, and run molecular dynamics fast enough to sample hot molecules. For methyl vinyl ketone oxide (MVKO), we show why the standard dipole-autocorrelation route to the IR spectrum fails, replace it with harmonic dipole derivatives sampled along trajectories, and compare the result with experiment.</p>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="callout"><h3>How to read this deck</h3><p class="small">Part 1 (slides 2–6) gives the significance and headline results. Parts 2–4 hold the methods, validation, spectra and software detail for research colleagues.</p></div>
+        <p class="links small">Code &amp; data: <a href="https://github.com/laserchemist/MD_MLPES" target="_blank" rel="noopener">github.com/laserchemist/MD_MLPES</a><br>Research log: <a href="../RESEARCH_LOG.html" target="_blank" rel="noopener">RESEARCH_LOG.html</a></p>
+        <p class="hint">Use → / ← or swipe to browse · F for fullscreen · Esc for overview</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · WHY -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Significance</div><h2>Why Criegee intermediates matter</h2></div>
+    <div class="body cols-2">
+      <div>
+        <p class="lede">Ozone + alkene → Criegee intermediate → atmospheric oxidation chemistry.</p>
+        <ul>
+          <li>Carbonyl oxides (R₂COO) are formed in the ozonolysis of alkenes, including biogenic alkenes released by vegetation.</li>
+          <li>They are reactive oxidants: they decompose to OH radicals and react with SO₂ and water, which links them to sulfate aerosol and oxidant budgets.</li>
+          <li><strong>MVKO</strong>, methyl vinyl ketone oxide, is a four-carbon Criegee intermediate formed from isoprene ozonolysis, so it sits on one of the largest atmospheric oxidation pathways.</li>
+        </ul>
+      </div>
+      <div class="cards">
+        <div class="card"><h3>What this project delivers</h3><p>A tested computational pipeline that produces potential energy surfaces, dynamics and IR spectra for these molecules at a cost low enough to sample hot, conformationally mixed populations.</p></div>
+        <div class="card"><h3>Why spectra</h3><p>IR spectra are how these transient species are detected and identified in the lab. Reliable predicted spectra help assign bands and conformers in experiments such as Chung &amp; Lee (2021).</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · CHALLENGE -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Significance</div><h2>Four things make these molecules hard to simulate</h2></div>
+    <div class="body cols-2">
+      <div class="cards">
+        <div class="card"><h3>Born hot</h3><p>Nascent Criegee intermediates from ozonolysis carry roughly 50–80 kcal/mol of internal energy (Stephenson &amp; Lester 2020). For MVKO we model ≈ 50 kcal/mol, an effective temperature near 840 K.</p></div>
+        <div class="card"><h3>Several conformers</h3><p>MVKO has four low-lying conformers (syn/anti × cis/trans) within about 3 kcal/mol, each with its own spectrum.</p></div>
+      </div>
+      <div class="cards">
+        <div class="card"><h3>Multireference character</h3><p>The COO group has partial diradical character. Single-reference DFT can be off by 9–21 kcal/mol at distorted geometries; CASSCF/NEVPT2 is needed there.</p></div>
+        <div class="card"><h3>Expensive reference data</h3><p>Direct <em>ab initio</em> MD at this level is far too slow for the picosecond trajectories and thousands of snapshots a spectrum needs. A learned surface makes it affordable.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · PIPELINE -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Approach</div><h2>One pipeline from electronic structure to spectra</h2></div>
+    <div class="body stack">
+      <div class="pipe">
+        <svg viewBox="0 0 1790 600" role="img" aria-label="Pipeline: PSI4 reference data, ML potential energy surface, CASSCF correction, molecular dynamics, IR spectrum">
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0c2438"/></marker></defs>
+          <!-- main row -->
+          <g font-size="24">
+            <rect x="10" y="60" width="300" height="190" rx="6" fill="#fbfaf7" stroke="#0c2438" stroke-width="2"/>
+            <text x="30" y="100" font-weight="700" fill="#0c2438" font-size="27">1 · Reference data</text>
+            <text x="30" y="138" fill="#26313a">PSI4 1.10</text>
+            <text x="30" y="170" fill="#26313a">B3LYP, ωB97X-D / 6-31G*</text>
+            <text x="30" y="202" fill="#4b5560">normal-mode grids +</text>
+            <text x="30" y="230" fill="#4b5560">300–1000 K PSI4 MD</text>
+
+            <rect x="380" y="60" width="330" height="190" rx="6" fill="#fbfaf7" stroke="#0c2438" stroke-width="2"/>
+            <text x="400" y="100" font-weight="700" fill="#0c2438" font-size="27">2 · Learned surface</text>
+            <text x="400" y="138" fill="#26313a">Coulomb + KRR (fast,</text>
+            <text x="400" y="168" fill="#26313a">analytic forces/Hessian)</text>
+            <text x="400" y="202" fill="#4b5560">MACE equivariant NN</text>
+            <text x="400" y="230" fill="#4b5560">(physical frequencies)</text>
+
+            <rect x="780" y="60" width="300" height="190" rx="6" fill="#fbfaf7" stroke="#0c2438" stroke-width="2"/>
+            <text x="800" y="100" font-weight="700" fill="#0c2438" font-size="27">3 · Dynamics</text>
+            <text x="800" y="138" fill="#26313a">Velocity-Verlet ML-MD</text>
+            <text x="800" y="168" fill="#26313a">0.5 fs steps</text>
+            <text x="800" y="202" fill="#4b5560">ZPE-floor initial</text>
+            <text x="800" y="230" fill="#4b5560">velocities, 300–2000 K</text>
+
+            <rect x="1150" y="60" width="300" height="190" rx="6" fill="#fbfaf7" stroke="#0c2438" stroke-width="2"/>
+            <text x="1170" y="100" font-weight="700" fill="#0c2438" font-size="27">4 · Dipoles</text>
+            <text x="1170" y="138" fill="#26313a">KRR dipole surface</text>
+            <text x="1170" y="168" fill="#26313a">in normal-mode coords</text>
+            <text x="1170" y="202" fill="#4b5560">R² = 0.9997 (anti-cis)</text>
+            <text x="1170" y="230" fill="#4b5560">analytic ∂μ/∂q</text>
+
+            <rect x="1520" y="60" width="260" height="190" rx="6" fill="#0c2438"/>
+            <text x="1540" y="100" font-weight="700" fill="#2fb8ae" font-size="27">5 · IR spectra</text>
+            <text x="1540" y="138" fill="#fdfdfb">harmonic, thermally</text>
+            <text x="1540" y="168" fill="#fdfdfb">sampled, hot-molecule</text>
+            <text x="1540" y="202" fill="#c9d6de">compared with</text>
+            <text x="1540" y="230" fill="#c9d6de">experiment</text>
+          </g>
+          <g stroke="#0c2438" stroke-width="2.5" fill="none" marker-end="url(#arr)">
+            <line x1="312" y1="155" x2="374" y2="155"/>
+            <line x1="712" y1="155" x2="774" y2="155"/>
+            <line x1="1082" y1="155" x2="1144" y2="155"/>
+            <line x1="1452" y1="155" x2="1514" y2="155"/>
+          </g>
+          <!-- correction branch -->
+          <rect x="380" y="360" width="700" height="150" rx="6" fill="#eef0e9" stroke="#c9a24b" stroke-width="2.5"/>
+          <text x="400" y="400" font-weight="700" fill="#0c2438" font-size="27">Multireference correction (Δ-ML)</text>
+          <text x="400" y="438" fill="#26313a" font-size="24">CASSCF(2,2)/(4,4) δS₀ plus S₁ and T₁ gaps, learned on</text>
+          <text x="400" y="470" fill="#26313a" font-size="24">226–232-point normal-mode grids per conformer; NEVPT2 tested</text>
+          <g stroke="#c9a24b" stroke-width="2.5" fill="none" marker-end="url(#arr)">
+            <path d="M160 252 L160 435 L374 435"/>
+            <path d="M730 358 L730 256" />
+          </g>
+          <text x="172" y="330" fill="#6b6b63" font-size="20">grid geometries</text>
+          <text x="742" y="315" fill="#6b6b63" font-size="20">E = E(ML) + δ(q)</text>
+          <text x="10" y="580" fill="#6b6b63" font-size="20">Every stage writes .npz / .json / .csv outputs with a state file, so each result in this deck traces to a file in outputs/.</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · HEADLINES -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Results at a glance</div><h2>What the pipeline achieves today</h2></div>
+    <div class="body">
+      <div class="tiles">
+        <div class="tile"><div class="num">0.27<span class="unit">kcal/mol</span></div><div class="lbl">RMSE of the MVKO energy surface, 904 B3LYP frames, 12 atoms</div></div>
+        <div class="tile"><div class="num">903×</div><div class="lbl">speed-up from exact analytic KRR forces over finite differences, agreeing to 3.3 × 10⁻⁵ Ha/Å</div></div>
+        <div class="tile"><div class="num">0.06–0.65<span class="unit">kcal/mol</span></div><div class="lbl">leave-one-out error of the CASSCF δS₀ corrections across all four MVKO conformers</div></div>
+        <div class="tile"><div class="num">0.9997</div><div class="lbl">R² of the normal-mode dipole surface used for anti-cis MVKO intensities</div></div>
+        <div class="tile"><div class="num">70,000×</div><div class="lbl">torsional over stretching weight in the dipole autocorrelation, which is why the standard IR route fails for MVKO</div></div>
+        <div class="tile"><div class="num">4</div><div class="lbl">conformers with full CASSCF grids, S₁/T₁ gaps of 19–29 kcal/mol, and spectra compared with experiment</div></div>
+      </div>
+      <p class="src">Sources: RESEARCH_LOG.md; outputs/*/summary.json; validation reports in outputs/validate_*.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · TIMELINE -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Progress</div><h2>December 2025 to July 2026</h2></div>
+    <div class="body">
+      <div class="timeline">
+        <div class="tl"><div class="when">Dec 2025</div><div class="what">CH₂OO framework: PSI4 interface, Coulomb descriptor, KRR trainer, data formats</div></div>
+        <div class="tl"><div class="when">Feb–Mar 2026</div><div class="what">PSI4 version crisis found and fixed; clean CH₂OO model (344 frames) and IR spectrum</div></div>
+        <div class="tl"><div class="when">Mar 2026</div><div class="what">MVKO introduced (904 frames, 0.27 kcal/mol); analytic forces and Hessian; adaptive-sampling lessons</div></div>
+        <div class="tl"><div class="when">Apr 2026</div><div class="what">Δ-ML in normal-mode coordinates; NEVPT2; sGDML ruled out; MACE backend; ωB97X-D surface</div></div>
+        <div class="tl"><div class="when">May 2026</div><div class="what">All four conformer CASSCF grids complete; anti-trans outliers fixed (22× better LOO-CV)</div></div>
+        <div class="tl"><div class="when">Jun 2026</div><div class="what">Root cause of ACF IR failure identified; harmonic dipole-derivative spectra for anti-cis</div></div>
+        <div class="tl"><div class="when">Jul 2026</div><div class="what">Hot-molecule spectra, multi-conformer weighting, comparison with Chung &amp; Lee (2021)</div></div>
+        <div class="tl"><div class="when">Next</div><div class="what">Boltzmann-weighted multi-conformer spectra, PES families, further molecules (see Next steps)</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER · METHODS -->
+<section data-background-color="#0c2438">
+  <div class="slide divider">
+    <div class="eyebrow">Part 2</div>
+    <h2>Methods and validation</h2>
+    <p>Reference data, descriptors, training sets, forces and Hessians, and how each surface is tested before it is used for spectra.</p>
+  </div>
+</section>
+
+<!-- 7 · REFERENCE DATA -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Methods · reference data</div><h2>PSI4 reference calculations, one installation at a time</h2></div>
+    <div class="body cols-2">
+      <div>
+        <pre><code>psi4.set_options({
+    'basis':          '6-31G*',
+    'scf_type':       'df',
+    'reference':      'rhf',
+    'maxiter':        200,
+    'e_convergence':  1e-7,
+    'd_convergence':  1e-7,
+})
+# B3LYP for CH₂OO and the base MVKO surface
+# ωB97X-D for dipoles and the MACE surface</code></pre>
+        <p class="note" style="margin-top:14px">Energies in Hartree, forces in Hartree/Å, dipoles in Debye. Conversion constants live only in <code>modules/direct_md.py</code>.</p>
+      </div>
+      <div class="cards">
+        <div class="callout warn"><h3>The PSI4 version crisis</h3><p class="small">December 2025 training data sat ≈ 8.5 kcal/mol below energies from the new PSI4 1.10 install. Mixing the two produced 15–40 kcal/mol systematic errors in validation. All old data was discarded and regenerated.</p></div>
+        <div class="callout"><h3>Rule since March 2026</h3><p class="small">Never mix training data from different PSI4 installations. Each training set records its PSI4 version and level of theory.</p></div>
+        <div class="callout"><h3>Dipole bug found on the way</h3><p class="small">A titled <code>oeprop</code> call stored dipoles under a different variable name, so every MVKO dipole read as zero until fixed.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · DESCRIPTOR + KRR -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Methods · learned surface</div><h2>Coulomb-matrix descriptor with kernel ridge regression</h2></div>
+    <div class="body cols-fig-r">
+      <div>
+        <div class="eq">M<sub>ij</sub> = Z<sub>i</sub>Z<sub>j</sub> / r<sub>ij</sub> &nbsp;(i ≠ j), &nbsp; M<sub>ii</sub> = ½ Z<sub>i</sub><sup>2.4</sup></div>
+        <ul class="small">
+          <li>Upper triangle as features: 15 for CH₂OO, 78 for MVKO. Atom order is fixed because the matrix is not permutation-invariant.</li>
+          <li>RBF-kernel KRR. <strong>StandardScaler on features and targets is essential</strong>: without it RMSE rises from ≈ 0.04 to ≈ 170 kcal/mol.</li>
+          <li>Kernel width γ scales inversely with descriptor size: 0.01 for CH₂OO, 0.001 for MVKO.</li>
+          <li>Force training is off; forces come from the energy surface.</li>
+        </ul>
+      </div>
+      <figure class="fig"><!--FIG:descriptor_benchmark--><figcaption>April 2026 benchmark on MVKO. ACSF (1,188 features) is too high-dimensional for a global kernel.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · TRAINING DATA -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Methods · training data</div><h2>Training sets combine normal-mode grids and hot PSI4 dynamics</h2></div>
+    <div class="body stack">
+      <figure class="fig"><!--FIG:mvko_training_data--></figure>
+      <p class="small">Normal-mode displacements fill the region near equilibrium and reach several hundred kcal/mol along stiff modes; PSI4 MD at 300, 600 and 1000 K samples the anharmonic, coupled motion. CH₂OO uses the same recipe: 344 frames (72 normal-mode, 202 MD, 70 validation).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · ANALYTIC FORCES -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Methods · forces and Hessian</div><h2>Exact KRR forces and Hessians make dynamics and normal modes cheap</h2></div>
+    <div class="body cols-2">
+      <div>
+        <p>Because the KRR prediction is a sum of Gaussians in scaled descriptor space, its derivatives with respect to Cartesian coordinates follow by the chain rule through the descriptor Jacobian J.</p>
+        <div class="eq">F = 2γ σ<sub>y</sub> J<sub>sc</sub><sup>T</sup> g</div>
+        <div class="eq">H = σ<sub>y</sub>(−2γ)[ g·J<sub>2,sc</sub> + J<sup>T</sup>(−2γ H<sub>desc</sub> + E<sub>sc</sub> I) J ]</div>
+        <p class="note">Implemented in <code>modules/bakken.py</code> (<code>MLPESDriver</code>); kernel weights and scaler statistics are cached at load time.</p>
+      </div>
+      <div class="tiles" style="grid-template-columns:1fr 1fr">
+        <div class="tile"><div class="num">903×</div><div class="lbl">faster than finite-difference forces</div></div>
+        <div class="tile"><div class="num">3.3×10⁻⁵</div><div class="lbl">Ha/Å maximum force difference from finite differences</div></div>
+        <div class="tile"><div class="num">&lt; 5<span class="unit">cm⁻¹</span></div><div class="lbl">frequency difference, analytic vs finite-difference Hessian</div></div>
+        <div class="tile"><div class="num">same</div><div class="lbl">unphysical C–H frequencies in both, so the stiffness is in the model, not the numerics (see the frequency test)</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · CH2OO -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Benchmark · CH₂OO</div><h2>The five-atom benchmark: a working end-to-end spectrum</h2></div>
+    <div class="body cols-fig">
+      <figure class="fig"><!--FIG:ch2oo_ir--><figcaption>20,000 steps of 0.5 fs from a pre-minimized geometry. Dipole surface R² &gt; 0.99999 on held-out frames.</figcaption></figure>
+      <div>
+        <table>
+          <tr><th>Model</th><th class="n">Value</th></tr>
+          <tr><td>Training frames</td><td class="n">344</td></tr>
+          <tr><td>Validation mean error</td><td class="n">0.64 kcal/mol</td></tr>
+          <tr><td>Validation max error</td><td class="n">1.23 kcal/mol</td></tr>
+          <tr><td>γ, α (RBF KRR)</td><td class="n">0.01, 0.001</td></tr>
+        </table>
+        <p class="small" style="margin-top:20px">Bands at 803 cm⁻¹ (O–O stretch) and 1110 cm⁻¹ (C–O stretch) are resolved. A ZPE frequency filter of 50–4000 cm⁻¹ keeps unphysical stiff modes from being given zero-point energy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · MVKO CONFORMERS -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">System · MVKO</div><h2>MVKO: 12 atoms, 30 vibrational modes, four conformers</h2></div>
+    <div class="body cols-fig-r">
+      <div>
+        <p>(CH₂=CH)(CH₃)COO, C₄H₆O₂. The vinyl group conjugates with the COO unit, giving resonance stabilization and a large permanent dipole of about 4.5 D.</p>
+        <table>
+          <tr><th>Conformer</th><th class="n">ΔE ωB97X-D</th><th class="n">ΔE CCSD(T)</th><th>CAS</th></tr>
+          <tr><td>syn-trans</td><td class="n">0.00</td><td class="n">0.00</td><td>(2,2)</td></tr>
+          <tr><td>syn-cis</td><td class="n">+1.81</td><td class="n">1.76</td><td>(2,2)</td></tr>
+          <tr><td>anti-trans</td><td class="n">+0.44</td><td class="n">2.57</td><td>(4,4)</td></tr>
+          <tr><td>anti-cis</td><td class="n">−0.02</td><td class="n">3.05</td><td>(4,4)</td></tr>
+        </table>
+        <p class="note" style="margin-top:12px">kcal/mol. CCSD(T) values from Barber et al. Anti conformers need a (4,4) active space; natural-orbital occupations ≈ [1.95, 1.72, 0.28, 0.05].</p>
+      </div>
+      <figure class="fig fig-tall"><!--FIG:mvko_conformers--></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · ADAPTIVE LESSON -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Validation · a lesson learned</div><h2>More high-energy data made the surface worse near equilibrium</h2></div>
+    <div class="body cols-2">
+      <div>
+        <p>An adaptive loop added uncertainty-selected frames from 1000–2000 K PSI4 MD. Training RMSE improved to 0.203 kcal/mol over 1,300 frames, yet the model was unusable for spectra:</p>
+        <ul class="small">
+          <li>three imaginary modes at the PSI4 minimum (−1285, −880, −718 cm⁻¹);</li>
+          <li>pre-minimization landed on a saddle point, and ZPE initialization then pumped those modes to ≈ 1,619 K;</li>
+          <li>a later C–H stretch retrain (952 frames) lost the 893 cm⁻¹ O–O band and gained imaginary modes the same way.</li>
+        </ul>
+      </div>
+      <div class="cards">
+        <div class="callout warn"><h3>Cause</h3><p class="small">Kernel weight is a shared resource. High-energy frames shift the global KRR fit away from the minimum and move the ML minimum off the true one.</p></div>
+        <div class="callout"><h3>Rules adopted</h3><p class="small">Always include the PSI4-optimized geometry as an anchor row. Use the near-equilibrium model (904 frames) for spectra. Handle H-atom wandering at the MD level with a bond guard, not with more high-energy data.</p></div>
+        <p class="note">A low training RMSE is not enough; every surface now also passes a normal-mode check (next slide).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · FREQUENCY VALIDATION -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Validation · normal modes</div><h2>Frequency test: kernel models are too stiff, MACE is not</h2></div>
+    <div class="body stack">
+      <figure class="fig"><!--FIG:frequency_validation--></figure>
+      <div class="cols-2" style="display:grid;gap:40px">
+        <p class="small">Every kernel surface tested (Coulomb-matrix KRR, KRR in normal-mode coordinates, sGDML) put 5–12 of MVKO's 30 modes above 5000 cm⁻¹, up to 38,342 cm⁻¹ for sGDML. For the 1/r-based models the research log traces this to the curvature of 1/r features under RBF or Matérn kernels; hyperparameter tuning did not remove it.</p>
+        <p class="small">The production MACE model learns local atomic energies with force-weighted training and has no modes above 5000 cm⁻¹. It still has one imaginary mode at its training-set equilibrium, so frequencies are validated per conformer before use. <span class="note">Reports: outputs/validate_anti_cis_nm_pes, outputs/validate_pes_20260418_101918.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 · BACKENDS -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Validation · backends</div><h2>Three surface models, three different jobs</h2></div>
+    <div class="body">
+      <table>
+        <tr><th>Backend</th><th>Strength</th><th>Limitation</th><th>Use it for</th></tr>
+        <tr><td><strong>Coulomb + KRR</strong><br><span class="note">modules/ml_pes_fixed.py, bakken.py</span></td><td>0.15–0.27 kcal/mol energies; exact analytic forces and Hessian; trains in seconds</td><td>Stiff curvature: unphysical C–H frequencies; global kernel shifts when high-energy data is added</td><td>Fast near-equilibrium MD, energies, rapid prototyping</td></tr>
+        <tr><td><strong>sGDML</strong><br><span class="note">modules/sgdml_pes.py</span></td><td>Force-domain kernel, energy-conserving by construction</td><td>Same 1/r stiffness (38,342 cm⁻¹ max mode); 23.5 GB kernel at 900 frames; trajectory dissociated by step 40</td><td>Retired</td></tr>
+        <tr><td><strong>MACE</strong><br><span class="note">modules/mace_pes.py</span></td><td>SO(3)-equivariant message passing; local energies; force-weighted training; no modes &gt; 5000 cm⁻¹</td><td>Energy RMSE 11 kcal/mol on the mixed set; one imaginary mode at the training-set minimum; GPU/MPS for training</td><td>Frequencies, hot MD, IR spectra</td></tr>
+      </table>
+      <p class="note">MACE settings: 64×0e + 64×1o hidden irreps, r<sub>max</sub> = 5.0 Å, two interaction layers, forces weight 100, float64, SWA. All backends share one driver interface, so MD and spectrum code does not change when the surface does.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · NM DELTA -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Methods · multireference correction</div><h2>Learning the CASSCF correction in normal-mode coordinates</h2></div>
+    <div class="body cols-2">
+      <div>
+        <div class="eq">q = U<sub>vib</sub><sup>T</sup> M<sup>½</sup> (R − R<sub>ref</sub>)</div>
+        <ul class="small">
+          <li>q = 0 at the equilibrium of each conformer, and ‖q‖² grows steadily with distortion energy.</li>
+          <li>Corrections δS₀ = E<sub>CASSCF</sub> − E<sub>DFT</sub> and the S₁, T₁ gaps are learned by KRR on q.</li>
+          <li>Grids: 4 amplitudes (0.5–2.0) along every mode, 232–240 points per conformer.</li>
+          <li>Applied as E = E<sub>ML</sub>(R) + δ(q(R)) through the same driver interface, so it composes with KRR or MACE.</li>
+        </ul>
+      </div>
+      <div class="cards">
+        <div class="callout warn"><h3>Why not Coulomb space?</h3><p class="small">At 300 K every MVKO geometry has kernel similarity K ≈ 0.999 in Coulomb space because heavy-atom charges dominate. Large corrections from distorted frames bled into equilibrium. In q-space, distorted frames are far away by construction.</p></div>
+        <div class="callout"><h3>Practical notes</h3><p class="small">MO coefficients cannot be reused across conformers (seeding anti-cis orbitals into syn-trans gave −3258 Ha). Frames with root switching or duplicate geometries are filtered by δS₀ and T₁-gap thresholds.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 · CASSCF RESULTS -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Results · multireference correction</div><h2>All four conformer grids are complete and accurate</h2></div>
+    <div class="body stack">
+      <figure class="fig"><!--FIG:casscf_conformers--></figure>
+      <p class="small">Leave-one-out errors are 0.03–0.65 kcal/mol for every state and conformer, well below k<sub>B</sub>T at 300 K (0.6 kcal/mol) for all but anti-cis δS₀. Anti conformers have higher S₁/T₁ gaps (25–29 kcal/mol) than syn (19–23). <span class="note">Data: outputs/casscf_wB97X_nm_grid_*/summary.json.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 18 · NEVPT2 -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Results · dynamic correlation</div><h2>NEVPT2 matters for hot molecules, not for room temperature</h2></div>
+    <div class="body cols-2">
+      <div>
+        <p>PySCF CASSCF(4,4)/6-31G* + SC-NEVPT2, about 80 s per frame.</p>
+        <table>
+          <tr><th>Quantity</th><th class="n">Value</th></tr>
+          <tr><td>Training frames after cleaning</td><td class="n">36 of 50</td></tr>
+          <tr><td>Frames removed (state switching)</td><td class="n">14</td></tr>
+          <tr><td>Clean-model LOO-CV</td><td class="n">1.60 kcal/mol</td></tr>
+          <tr><td>Near-equilibrium CASSCF δ</td><td class="n">+0.62 ± 1.05 kcal/mol</td></tr>
+          <tr><td>Correction at hot geometries</td><td class="n">−9 to −21 kcal/mol</td></tr>
+        </table>
+      </div>
+      <div class="cards">
+        <div class="card"><h3>Interpretation</h3><p>At 300 K the correction is within noise and does not change IR frequencies. For ozonolysis-energized MVKO (≈ 50 kcal/mol, T<sub>eff</sub> ≈ 840 K), the molecule reaches geometries where NEVPT2 lowers the energy by 9–21 kcal/mol relative to B3LYP. That should red-shift the O–O and C–O stretches.</p></div>
+        <div class="card"><h3>Status</h3><p>Marginal accuracy; kept for hot-molecule predictions only. A larger, cleaner NEVPT2 grid is a candidate next step.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER · SPECTROSCOPY -->
+<section data-background-color="#0c2438">
+  <div class="slide divider">
+    <div class="eyebrow">Part 3</div>
+    <h2>Infrared spectra of MVKO</h2>
+    <p>Why the textbook molecular-dynamics route fails for this molecule, what replaces it, and how the result compares with experiment.</p>
+  </div>
+</section>
+
+<!-- 19 · ACF FAILURE -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Spectroscopy · root cause</div><h2>For MVKO, the dipole autocorrelation sees only torsions</h2></div>
+    <div class="body cols-fig">
+      <figure class="fig"><!--FIG:acf_vs_harmonic--></figure>
+      <div>
+        <p class="small">Every ACF run for MVKO gave spectra dominated by ~150 cm⁻¹ features with no fingerprint signal. It persisted across Coulomb+KRR, retrained and MACE surfaces, B3LYP and ωB97X-D dipoles, thermostat settings, and 5 × 30,000-step trajectories.</p>
+        <div class="eq" style="font-size:24px">I<sub>tors</sub> ∝ |μ₀|² θ<sub>max</sub>² &nbsp;≫&nbsp; I<sub>str</sub> ∝ (∂|μ|/∂q<sub>str</sub>)²</div>
+        <p class="small">The 4.5 D permanent dipole of the COO zwitterion rotates with every torsion. That term outweighs stretching contributions about 70,000-fold. It is a property of the molecule, not a bug, and no setting fixes it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 · HARMONIC -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Spectroscopy · the fix</div><h2>Harmonic dipole derivatives recover the fingerprint region</h2></div>
+    <div class="body stack">
+      <figure class="fig"><!--FIG:harmonic_ir--></figure>
+      <div class="cols-2" style="display:grid;gap:40px">
+        <div class="eq" style="margin:0">I<sub>k</sub> ∝ ‖∂μ/∂q<sub>k</sub>‖², from the analytic gradient of the normal-mode KRR dipole surface</div>
+        <p class="small">No MD is needed for the equilibrium spectrum. The strongest single mode is the 1088.8 cm⁻¹ C–O stretch; the 1011 and 1016 cm⁻¹ modes overlap into the tallest broadened band. Torsional intensity drops to 0.14 of maximum.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 · HOT -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Spectroscopy · hot molecules</div><h2>Local harmonic spectra along MACE trajectories</h2></div>
+    <div class="body stack">
+      <figure class="fig"><!--FIG:hot_emission--></figure>
+      <p class="small">At each MD snapshot the local Hessian and dipole derivatives give a stick spectrum; averaging over snapshots adds thermal broadening and shifts. At 2000 K, anti-cis intensity moves from 1100–1170 cm⁻¹ toward ≈ 1025 and ≈ 1295 cm⁻¹, and syn-trans bands broaden and merge. <span class="note">Data: outputs/hot_emission_*/ir_hot_emission.csv.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 22 · EXPERIMENT -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Spectroscopy · experiment</div><h2>Comparison with step-scan FTIR of MVKO</h2></div>
+    <div class="body stack">
+      <figure class="fig"><!--FIG:expt_compare--></figure>
+      <div class="cols-2" style="display:grid;gap:40px">
+        <p class="small">Experiment: 193 nm photolysis of an iodo precursor in 40 Torr Ar, 5–10 µs gate, 0.5 cm⁻¹ resolution; seven bands B₁–B₇ between 930 and 1460 cm⁻¹ (digitized from Chung &amp; Lee 2021, Fig. 3a).</p>
+        <ul class="small">
+          <li>The 300 K anti-cis spectrum places strong bands near B₅ and B₄ and a pair near B₂/B₁, offset by roughly 5–20 cm⁻¹; B₇ and B₆ appear only weakly.</li>
+          <li>The 2000 K spectrum does not match this time gate, which suggests the molecules have largely relaxed in 40 Torr Ar by 5–10 µs.</li>
+          <li>Next: Boltzmann-weighted sum over all four conformers and a time-resolved comparison.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER · SOFTWARE -->
+<section data-background-color="#0c2438">
+  <div class="slide divider">
+    <div class="eyebrow">Part 4</div>
+    <h2>Software, lessons, and next steps</h2>
+    <p>How the code is organized, the rules that came out of debugging, and where the project goes next.</p>
+  </div>
+</section>
+
+<!-- 23 · ECOSYSTEM -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Software · architecture</div><h2>A reusable library under focused workflow scripts</h2></div>
+    <div class="body cols-2">
+      <div>
+        <table>
+          <tr><th>Library layer (modules/)</th><th>Role</th></tr>
+          <tr><td><code>direct_md.py</code></td><td>PSI4 interface, Velocity-Verlet, unit constants</td></tr>
+          <tr><td><code>data_formats.py</code></td><td><code>TrajectoryData</code>; xyz / extxyz / npz / hdf5</td></tr>
+          <tr><td><code>ml_pes_fixed.py</code></td><td>Coulomb + KRR trainer (authoritative)</td></tr>
+          <tr><td><code>bakken.py</code></td><td>ML-MD engine; analytic forces and Hessian</td></tr>
+          <tr><td><code>nm_pes.py</code>, <code>normal_modes.py</code></td><td>Hessians, normal modes, q-space KRR</td></tr>
+          <tr><td><code>mace_pes.py</code>, <code>sgdml_pes.py</code></td><td>Alternative backends, same driver API</td></tr>
+          <tr><td><code>nevpt2_pyscf.py</code>, <code>pes_family.py</code>, <code>uncertainty.py</code></td><td>Multireference, multi-surface blending, ensembles</td></tr>
+        </table>
+      </div>
+      <div class="cards">
+        <div class="card"><h3>Workflow layer (repo root)</h3><p><code>mvko_workflow.py</code>, <code>generate_nm_training.py</code>, <code>casscf_wB97X_nm_grid.py</code>, <code>train_mace_model.py</code>, <code>validate_pes_frequencies.py</code>, <code>ir_md_spectrum.py</code>. Each step writes a JSON state file so runs can restart.</p></div>
+        <div class="card"><h3>Where new code fits</h3><p>New physics goes into a module with a driver-compatible interface and unit tests; new experiments go into a small root script that calls it; new figures read only committed outputs (as this deck's <code>talk/scripts</code> do).</p></div>
+        <p class="note">Today on <code>main</code>: 21 module unit tests pass (data formats, ML-PES), plus 19 tests for this deck's data loaders and build script.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 24 · PRACTICES -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Software · rules from debugging</div><h2>Rules that each cost a debugging cycle to learn</h2></div>
+    <div class="body cols-2">
+      <div>
+        <table>
+          <tr><th>Quantity</th><th>Unit</th><th>Note</th></tr>
+          <tr><td>Coordinates</td><td>Å</td><td>PSI4 input</td></tr>
+          <tr><td>Energy</td><td>Hartree</td><td>reported in kcal/mol</td></tr>
+          <tr><td>Force</td><td>Ha/Å</td><td>PSI4 gradient ÷ 1.88973</td></tr>
+          <tr><td>Dipole</td><td>Debye</td><td>a.u. × 2.541746</td></tr>
+          <tr><td>Time</td><td>fs</td><td>× 41.3414 internally</td></tr>
+          <tr><td>Frequency</td><td>cm⁻¹</td><td>a.u. × 219474.63</td></tr>
+        </table>
+        <p class="note" style="margin-top:12px">An early force-unit slip left accelerations ~10²⁰ too small: MD that "ran" but never moved.</p>
+      </div>
+      <ul class="small">
+        <li>Scale features and targets (StandardScaler) for every KRR model.</li>
+        <li>Never mix PSI4 installations in one training set.</li>
+        <li>Anchor every retrain with the optimized geometry.</li>
+        <li>Validate frequencies, not just RMSE, before using a surface for spectra.</li>
+        <li>A flat spectrum means check the motion first, then the FFT.</li>
+        <li>Equilibrate after heating; cap parallel jobs at 2 on Apple Silicon to avoid kernel watchdog panics.</li>
+        <li>Define model classes at module scope so they pickle.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 25 · DEAD ENDS -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Record · concluded approaches</div><h2>What we tried and set aside</h2></div>
+    <div class="body">
+      <table>
+        <tr><th>Approach</th><th>Status</th><th>Reason</th></tr>
+        <tr><td>Dipole-ACF IR for MVKO</td><td><span class="tag bad">Dead end</span></td><td>Permanent-dipole rotation outweighs stretches ~70,000×</td></tr>
+        <tr><td>sGDML</td><td><span class="tag bad">Dead end</span></td><td>Same 1/r stiffness; 23.5 GB kernel; dissociates</td></tr>
+        <tr><td>Adaptive KRR with high-energy frames</td><td><span class="tag bad">Not for IR</span></td><td>Moves the minimum; imaginary modes</td></tr>
+        <tr><td>CASSCF Δ-ML in Coulomb space</td><td><span class="tag bad">Replaced</span></td><td>K ≈ 0.999 clustering; moved to q-space</td></tr>
+        <tr><td>NEVPT2 correction</td><td><span class="tag mid">Marginal</span></td><td>LOO-CV 1.60 kcal/mol; for hot geometries only</td></tr>
+        <tr><td>1D anharmonic DVR for C–H overtones</td><td><span class="tag mid">Reference</span></td><td>2ν(CH) at 5500–6500 cm⁻¹, beyond classical MD</td></tr>
+        <tr><td>MACE retrain, forces weight 10</td><td><span class="tag mid">Not validated</span></td><td>Loss plateaued at epoch 100; ACF route moot</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 26 · NEXT -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Roadmap</div><h2>Next steps</h2></div>
+    <div class="body cols-2">
+      <div class="cards">
+        <div class="card"><h3>Spectra that match the experiment's conditions</h3><p>Boltzmann-weighted spectra over all four conformers with CASSCF-corrected MACE surfaces; time-resolved comparison as molecules cool.</p></div>
+        <div class="card"><h3>Multi-state dynamics</h3><p>Extend <code>pes_family.py</code> from blending conformer surfaces to S₀/S₁/T₁ families with mixing or hopping, using the learned gaps.</p></div>
+        <div class="card"><h3>MACE quality</h3><p>Remove the remaining imaginary mode with per-conformer anchors and validate each conformer against its PSI4 Hessian.</p></div>
+      </div>
+      <div class="cards">
+        <div class="card"><h3>More molecules</h3><p>Apply the pipeline to other substituted Criegee intermediates, such as methacrolein oxide and 2-butenal oxide.</p></div>
+        <div class="card"><h3>Reproducibility</h3><p>Move the default branch back to the complete <code>main</code>, tag result-producing commits, and extend unit tests to <code>bakken.py</code>, <code>nm_pes.py</code> and <code>mace_pes.py</code>.</p></div>
+        <div class="card"><h3>Collaboration</h3><p>Shared, versioned surfaces and spectra that experimental groups can use for band and conformer assignment.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 27 · REFERENCES -->
+<section data-background-color="#f6f4ef">
+  <div class="slide">
+    <div class="bar"><div class="eyebrow">Resources</div><h2>References and project links</h2></div>
+    <div class="body cols-2">
+      <div class="small">
+        <p><strong>Chung, C. A.; Lee, Y.-P.</strong> Infrared characterization of formation and resonance stabilization of the Criegee intermediate methyl vinyl ketone oxide. <em>Commun. Chem.</em> <strong>2021</strong>, 4, 8. doi:10.1038/s42004-020-00439-z</p>
+        <p><strong>Stephenson, T. A.; Lester, M. I.</strong> Unimolecular decay dynamics of Criegee intermediates. <em>Int. Rev. Phys. Chem.</em> <strong>2020</strong>, 39, 1–33. doi:10.1080/0144235X.2019.1701353</p>
+        <p><strong>Wang, G. et al.</strong> Electronic spectroscopy and dissociation dynamics of vinyl-substituted Criegee intermediates. <em>J. Phys. Chem. A</em> <strong>2023</strong>, 127, 203–215. doi:10.1021/acs.jpca.2c08053</p>
+        <p><strong>Kuwata, K. T.</strong> Conformation-dependent atmospheric reactivity of Criegee intermediates. <em>J. Phys. Chem. A</em> <strong>2024</strong>, 128, 7331–7345. doi:10.1021/acs.jpca.4c04224</p>
+      </div>
+      <div class="cards">
+        <div class="card"><h3>Project</h3><p class="links">Repository: <a href="https://github.com/laserchemist/MD_MLPES" target="_blank" rel="noopener">github.com/laserchemist/MD_MLPES</a><br>Research log: <a href="../RESEARCH_LOG.html" target="_blank" rel="noopener">RESEARCH_LOG.html</a><br>Framework guide: <a href="../PSI4_ML_PES_Guide.html" target="_blank" rel="noopener">PSI4_ML_PES_Guide.html</a></p></div>
+        <div class="card"><h3>Software</h3><p>PSI4 1.10 · PySCF · scikit-learn · MACE (mace-torch) · ASE · NumPy / SciPy · Matplotlib · reveal.js</p></div>
+        <div class="card"><h3>Rebuild this deck</h3><p><code>python3 talk/scripts/make_figures.py</code><br><code>python3 talk/scripts/build_deck.py</code></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true, controls: true, progress: true, slideNumber: 'c/t',
+    center: false, transition: 'slide', width: 1920, height: 1080,
+    margin: 0, minScale: 0.2, maxScale: 2.0, keyboard: true, touch: true,
+  });
+</script>
+</body>
+</html>
