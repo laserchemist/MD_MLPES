@@ -127,11 +127,11 @@
 
   /* cover (same structure as JMS/Talks/cover.html) */
   .cover { display: flex; flex-direction: column; height: 100%; background: var(--paper); color: var(--ink); }
-  .cover-bar { background: linear-gradient(100deg, var(--navy) 0%, var(--navy-2) 65%, #1c4f66 100%); border-bottom: 5px solid var(--gold); padding: 56px 72px 50px 72px; }
+  .cover-bar { background: linear-gradient(100deg, var(--navy) 0%, var(--navy-2) 65%, #1c4f66 100%); border-bottom: 5px solid var(--gold); padding: 40px 72px 34px 72px; }
   .cover-bar .eyebrow { font-size: 20px; margin-bottom: 18px; }
-  .cover-bar h1 { font-family: var(--font-display); font-size: 68px; line-height: 1.12; color: #fdfdfb; margin: 0; font-weight: 700; text-transform: none; letter-spacing: -0.01em; max-width: 26ch; text-wrap: balance; }
+  .cover-bar h1 { font-family: var(--font-display); font-size: 60px; line-height: 1.12; color: #fdfdfb; margin: 0; font-weight: 700; text-transform: none; letter-spacing: -0.01em; max-width: 26ch; text-wrap: balance; }
   .cover-bar .sub { color: #c9d6de; font-size: 30px; margin-top: 18px; }
-  .cover-body { padding: 40px 72px; display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; flex: 1; min-height: 0; }
+  .cover-body { padding: 30px 72px; display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; flex: 1; min-height: 0; }
   .chips { display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 26px; }
   .chip { border-left: 3px solid var(--teal); padding-left: 14px; }
   .chip .label { color: #1c4f66; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
@@ -140,6 +140,18 @@
   .abstract-label { color: var(--navy); font-size: 16px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--rule); padding-bottom: 8px; margin-bottom: 14px; }
   .abstract { font-size: 23px; line-height: 1.55; color: #3c4650; max-width: 70ch; }
   .hint { font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8a80; margin-top: 18px; }
+  .cr { border-top: 1px solid var(--rule); padding-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .cr p { margin: 0; }
+  .cr-label { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--teal-ink); }
+  .cr-title { font-size: 18px; font-weight: 700; color: var(--navy); line-height: 1.3; }
+  .cr-authors { font-size: 15px; color: var(--ink-2); }
+  .cr-abstract { font-size: 13px; line-height: 1.45; color: var(--muted); }
+  .cr-row { display: grid; grid-template-columns: 1fr 250px; gap: 18px; align-items: start; }
+  .cr-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .cr-thumb { display: flex; flex-direction: row; align-items: flex-end; gap: 16px; text-decoration: none; color: #1c4f66; font-weight: 700; font-size: 17px; }
+  .cr-thumb img { width: 160px; height: auto; border: 1px solid var(--rule); border-radius: 3px; background: #fff; margin: 0; box-shadow: none; }
+  .cr-thumb span { border-bottom: 1px solid var(--teal); }
+  .cr-thumb:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
   .credit { font-size: 18px; color: var(--muted); font-style: italic; margin-top: 10px; }
   .poster-link { display: block; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: #fff; }
   .poster-link img { display: block; width: 100%; height: auto; margin: 0; border: 0; box-shadow: none; max-width: 100%; }
@@ -177,20 +189,29 @@
     <div class="cover-body">
       <div>
         <div class="chips">
-          <div class="chip"><div class="label">Presented by</div><div class="value">Jonathan M. Smith<span>Temple University</span></div></div>
           <div class="chip"><div class="label">Systems</div><div class="value">CH₂OO · MVKO<span>5 and 12 atoms; 4 MVKO conformers</span></div></div>
         </div>
         <div class="abstract-label">Abstract</div>
         <div class="abstract">
           <p>Criegee intermediates are short-lived carbonyl oxides formed when ozone attacks alkenes. They are born hot, they come in several conformers, and their electronic structure has partial multireference character, which makes their spectra and dynamics hard to compute directly. We train machine-learned potential energy surfaces on PSI4 density-functional data, add CASSCF corrections learned in normal-mode coordinates, and run molecular dynamics fast enough to sample hot molecules. For methyl vinyl ketone oxide (MVKO), we show why the standard dipole-autocorrelation route to the IR spectrum fails, replace it with harmonic dipole derivatives sampled along trajectories, and compare the result with experiment.</p>
         </div>
+        <div style="margin-top:22px">
+        <p class="links small">Code &amp; data: <a href="https://github.com/laserchemist/MD_MLPES" target="_blank" rel="noopener">github.com/laserchemist/MD_MLPES</a><br>Research log: <a href="../RESEARCH_LOG.html" target="_blank" rel="noopener">RESEARCH_LOG.html</a></p>
+        <p class="hint" style="margin-top:4px">Use → / ← or swipe · F fullscreen · Esc overview</p>
+        <p class="credit" style="margin-top:0">Slide show assembled in collaboration with Claude.</p>
+        </div>
       </div>
       <div class="cards">
-        <div class="callout"><h3>How to read this deck</h3><p class="small">Part 1 (slides 2–6) gives the significance and headline results. Parts 2–4 hold the methods, validation, spectra and software detail for research colleagues.</p></div>
-        <p class="links small">Code &amp; data: <a href="https://github.com/laserchemist/MD_MLPES" target="_blank" rel="noopener">github.com/laserchemist/MD_MLPES</a><br>Research log: <a href="../RESEARCH_LOG.html" target="_blank" rel="noopener">RESEARCH_LOG.html</a></p>
-        <p class="links small">Connected research: <a href="assets/Simiyu_Smith_ACS_Fall2025_poster.pdf" target="_blank" rel="noopener">ACS Fall 2025 poster (PDF)</a></p>
-        <p class="hint">Use → / ← or swipe to browse · F for fullscreen · Esc for overview</p>
-        <p class="credit">Slide show assembled in collaboration with Claude.</p>
+        <p class="small" style="margin:0">Part 1 (slides 2–6): significance and headline results. Parts 2–4: methods, validation, spectra and software.</p>
+        <div class="cr">
+          <div class="cr-label">Connected research · ACS Fall 2025 National Meeting, Washington, DC</div>
+          <div class="cr-text">
+          <p class="cr-title">4328157 · Vibrational spectral prediction of transient species using machine learning potential energy surfaces</p>
+          <p class="cr-authors">Belinta Simiyu and Jonathan M. Smith · Temple University; Hylleraas Centre, University of Oslo</p>
+          <p class="cr-abstract">Highly energized species explore unique portions of molecular potential energy surfaces and undergo novel reaction dynamics. We have developed machine learning potential energy surfaces of energized species and radicals to explore dynamics. Molecular dynamics on these surfaces can be used to simulate experimental spectra. Experimental spectra can be used to refine and train machine learning potentials. Criegee intermediates are highly energized intermediates formed following atmospheric ozonolysis of alkenes and we use this context as the first application of our methodology. We have trained machine learning potential energy surfaces (MLPES) from importance sampled points DFT (B3LYP/cc-pVTZ) ab initio molecular dynamics (AIMD) trajectories with energy and gradients computed at the CCSD(T)/cc-pVTZ level using the sGDML algorithm.</p>
+          </div>
+          <a class="cr-thumb" href="assets/Simiyu_Smith_ACS_Fall2025_poster.pdf" target="_blank" rel="noopener"><img src="assets/acs2025_poster_thumb.jpg" alt="Poster thumbnail: Vibrational spectral prediction of transient species using machine learning potential energy surfaces"><span>Open the poster (PDF) →</span></a>
+        </div>
       </div>
     </div>
   </div>
