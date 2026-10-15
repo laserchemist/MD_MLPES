@@ -62,3 +62,17 @@ def test_build_missing_figure_names_it(tmp_path):
     src.write_text("<!--FIG:nothere-->")
     with pytest.raises(FileNotFoundError, match="nothere"):
         bd.build(src, tmp_path, tmp_path / "o.html")
+
+
+DECK = bd.TALK_DIR / "index.html"
+
+
+@pytest.mark.skipif(not DECK.exists(), reason="deck not built")
+def test_deck_local_links_resolve():
+    """Every relative href/src in the built deck points to an existing file."""
+    html = DECK.read_text(encoding="utf-8")
+    refs = re.findall(r'(?:href|src)="([^"#:]+)"', html)
+    local = [r for r in refs if not r.startswith(("http", "//", "data:"))]
+    assert local, "expected some local links (poster, research log)"
+    missing = [r for r in local if not (bd.TALK_DIR / r).exists()]
+    assert missing == []
