@@ -141,11 +141,17 @@
   .abstract { font-size: 23px; line-height: 1.55; color: #3c4650; max-width: 70ch; }
   .hint { font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8a80; margin-top: 18px; }
   .credit { font-size: 18px; color: var(--muted); font-style: italic; margin-top: 10px; }
-  .poster-link { display: block; max-width: 960px; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: #fff; }
+  .poster-link { display: block; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: #fff; }
   .poster-link img { display: block; width: 100%; height: auto; margin: 0; border: 0; box-shadow: none; max-width: 100%; }
   .poster-link:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-  .cite { font-size: 23px; line-height: 1.45; color: var(--ink); margin: 0 0 14px 0; }
-  .cite .num { font-family: var(--font-mono); font-size: 19px; color: var(--teal-ink); }
+  .poster-text { display: flex; flex-direction: column; gap: 12px; }
+  .poster-text p { margin: 0; }
+  .pt-title { font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1.3; text-wrap: balance; }
+  .pt-title .num { font-family: var(--font-mono); font-size: 17px; font-weight: 400; color: var(--teal-ink); }
+  .pt-authors { font-size: 19px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+  .pt-authors span { font-weight: 400; color: var(--muted); font-size: 17px; }
+  .pt-abstract { font-size: 17px; line-height: 1.5; color: var(--ink-2); max-width: 72ch; }
+  .pt-link { font-size: 22px; margin-top: 6px; }
   .links a { color: #1c4f66; font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--teal); }
 
   /* pipeline diagram */
@@ -12274,17 +12280,18 @@ L 622.934922 409.217724
 <!-- CONNECTED RESEARCH · ACS Fall 2025 poster -->
 <section data-background-color="#f6f4ef">
   <div class="slide">
-    <div class="bar"><div class="eyebrow">Connected research · ACS Fall 2025, Washington, DC</div><h2>Vibrational spectral prediction of transient species using ML potential energy surfaces</h2></div>
-    <div class="body cols-fig">
+    <div class="bar"><div class="eyebrow">Connected research</div><h2>Poster · ACS Fall 2025 National Meeting, Washington, DC</h2></div>
+    <div class="body cols-2">
+      <div class="poster-text">
+        <p class="pt-title"><span class="num">4328157</span> · Vibrational spectral prediction of transient species using machine learning potential energy surfaces</p>
+        <p class="pt-authors">Belinta Simiyu and Jonathan M. Smith<br><span>Temple University · Hylleraas Centre, University of Oslo</span></p>
+        <p class="pt-abstract">Highly energized species explore unique portions of molecular potential energy surfaces and undergo novel reaction dynamics. We have developed machine learning potential energy surfaces of energized species and radicals to explore dynamics. Molecular dynamics on these surfaces can be used to simulate experimental spectra. Experimental spectra can be used to refine and train machine learning potentials. Criegee intermediates are highly energized intermediates formed following atmospheric ozonolysis of alkenes and we use this context as the first application of our methodology. We have trained machine learning potential energy surfaces (MLPES) from importance sampled points DFT (B3LYP/cc-pVTZ) ab initio molecular dynamics (AIMD) trajectories with energy and gradients computed at the CCSD(T)/cc-pVTZ level using the sGDML algorithm.</p>
+        <p class="links pt-link"><a href="assets/Simiyu_Smith_ACS_Fall2025_poster.pdf" target="_blank" rel="noopener">Open the poster (PDF) →</a></p>
+      </div>
       <figure class="fig">
         <a class="poster-link" href="assets/Simiyu_Smith_ACS_Fall2025_poster.pdf" target="_blank" rel="noopener"><img src="assets/acs2025_poster.jpg" alt="ACS Fall 2025 poster: Vibrational spectral prediction of transient species using machine learning potential energy surfaces"></a>
-        <figcaption>Click the poster to open the full PDF.</figcaption>
-        <div class="callout"><h3>How it connects</h3><p class="small">The poster set out the protocol this project builds on: importance-sampled AIMD, an ML surface, ML-MD and dipole autocorrelation for CH₂OO. This deck extends it to MVKO, adds multireference corrections, and moves from sGDML to MACE where frequencies demanded it.</p></div>
+        <figcaption>The poster set out the protocol this project builds on: importance-sampled AIMD, an ML surface, ML-MD and dipole autocorrelation for CH₂OO.</figcaption>
       </figure>
-      <div>
-        <p class="cite"><span class="num">4328157</span><br><strong>Belinta Simiyu and Jonathan M. Smith</strong><br><span class="small">Temple University · Hylleraas Centre, University of Oslo<br>American Chemical Society Fall 2025 National Meeting, Washington, DC</span></p>
-        <p class="note">Highly energized species explore unique portions of molecular potential energy surfaces and undergo novel reaction dynamics. We have developed machine learning potential energy surfaces of energized species and radicals to explore dynamics. Molecular dynamics on these surfaces can be used to simulate experimental spectra. Experimental spectra can be used to refine and train machine learning potentials. Criegee intermediates are highly energized intermediates formed following atmospheric ozonolysis of alkenes and we use this context as the first application of our methodology. We have trained machine learning potential energy surfaces (MLPES) from importance sampled points DFT (B3LYP/cc-pVTZ) ab initio molecular dynamics (AIMD) trajectories with energy and gradients computed at the CCSD(T)/cc-pVTZ level using the sGDML algorithm.</p>
-      </div>
     </div>
   </div>
 </section>
