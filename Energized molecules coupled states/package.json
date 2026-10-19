@@ -1,0 +1,21 @@
+{
+  "name": "middle-zone-talk",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Bridging the middle zone: physics-framed matrices for coupled states of energized molecules (slide viewer)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "sync": "python3 tools/sync_slides.py"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^6.4.4"
+  }
+}

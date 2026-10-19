@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diabml"
+version = "0.1.0"
+description = "Physics-framed learned matrices (CDNN-style) for coupled potential energy surfaces: H3, H2O, CH2OO"
+requires-python = ">=3.10"
+dependencies = ["numpy", "scipy", "matplotlib", "torch"]
+
+[project.optional-dependencies]
+qc = ["pyscf>=2.4"]          # only needed to generate new reference data
+notebooks = ["jupyter", "ipywidgets"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["diabml*"]
