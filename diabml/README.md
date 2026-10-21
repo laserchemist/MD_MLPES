@@ -21,6 +21,8 @@ metrics.py  per-state errors, seam gaps, permutation errors
 plotting.py standard figures;   ui.py  optional ipywidgets cut explorer
 notebooks/  01 H3 (London frame vs CDNN), 02 H2O (DIM frame), 03 CH2OO (fragment-channel frame, first look)
 workflow/   config-driven CH2OO workflow: run folders, stages, figures, tables, report
+dynamics/   Cartesian surfaces (forces and couplings of every state by autograd) and an ASE calculator
+examples/   ch2oo_nve.py: constant-energy test trajectories on a trained model
 tests/      physics guarantees of every frame (degeneracies, permutation invariance, exact limits) and plumbing
 data/       cached reference data, so notebooks need no quantum chemistry
 ```
@@ -29,7 +31,7 @@ data/       cached reference data, so notebooks need no quantum chemistry
 
 ```bash
 pip install numpy scipy matplotlib torch jupyter ipywidgets   # pyscf only to generate new references
-python -m pytest -q tests                                     # 14 tests, under a minute
+python -m pytest -q tests                                     # 19 tests, under a minute
 cd notebooks && jupyter lab                                   # or: python build_notebooks.py --execute
 ```
 
@@ -49,6 +51,26 @@ python -m diabml.workflow.ch2oo status runs/02_nevpt2_2d                # progre
 Each run folder gets `data/ models/ results/ figures/ tables/ logs/` and `report.html`. Stages can be rerun one at a
 time; the scan writes a checkpoint after every geometry and continues where it stopped. See `RUNNING_CH2OO.html` for
 setup on macOS (Apple silicon), the recommended sequence of runs, and what every figure and table shows.
+
+## Models on disk and dynamics
+
+Trained models are saved as `name.pt` (a `state_dict` of weights plus a plain-data `spec` that rebuilds the model:
+class, layer sizes, scalers, the frame's structures, asymptotes and walls) and `name.json` (the same spec, readable).
+`diabml.models.load_model(path)` rebuilds a model with PyTorch's safe loader (no pickled code).
+
+```python
+from diabml.models import load_model
+from diabml.dynamics import CoordinateSurface, DiabmlCalculator, ch2oo_atoms, ch2oo_coordinates, reduced_restraints
+model = load_model('runs/01_baseline/models/random_framed.pt')
+atoms = ch2oo_atoms()
+names = model.meta['coord_names']
+atoms.calc = DiabmlCalculator(reduced_restraints(CoordinateSurface(model, ch2oo_coordinates(names)),
+                                                 atoms.positions, free=names), state=0)
+atoms.get_forces(); atoms.calc.results['energies'], atoms.calc.results['couplings']
+```
+
+`DistanceSurface` (all interatomic distances, optional permutation averaging) is the entry point for a
+full-dimensional model. `python examples/ch2oo_nve.py <model.pt>` runs a constant-energy test trajectory.
 
 ## The one interface to know: `Frame`
 

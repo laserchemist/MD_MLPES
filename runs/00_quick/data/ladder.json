@@ -1,0 +1,11 @@
+{
+ "experiment": {
+  "IE_CH2O_adiabatic": 10.88,
+  "EA_O": 1.461,
+  "O_1D_3P": 1.967
+ },
+ "dE_ion_experiment": 7.452,
+ "use": "experiment",
+ "dE_ion_used": 7.452,
+ "r_cross_A": 1.932319511540526
+}

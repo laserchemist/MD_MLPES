@@ -12,7 +12,8 @@ dependencies = ["numpy", "scipy", "matplotlib", "torch", "tomli; python_version 
 [project.optional-dependencies]
 qc = ["pyscf>=2.4"]          # only needed to generate new reference data
 notebooks = ["jupyter", "ipywidgets"]
-test = ["pytest"]
+md = ["ase"]                 # ASE calculator and example trajectories (diabml.dynamics)
+test = ["pytest", "ase"]
 
 [tool.setuptools.packages.find]
 include = ["diabml*"]

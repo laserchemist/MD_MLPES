@@ -4,7 +4,7 @@ A run folder holds everything one study produces:
 
     <run>/config.toml     the only input file (edit it, then run the stages)
     <run>/data/           refs.npz (reference energies + diagnostics), scan_checkpoint.npz, ladder.json
-    <run>/models/         trained models (torch.save of the whole model; load with torch.load(..., weights_only=False))
+    <run>/models/         trained models: name.pt (weights + JSON spec) and name.json; load with diabml.models.load_model
     <run>/results/        metrics.json, curves.npz (numbers behind every figure and table)
     <run>/figures/        PNG figures
     <run>/tables/         CSV and Markdown tables
@@ -45,7 +45,8 @@ DEFAULTS = {
                  'a_COO': [65.0, 85.0, 100.0, 117.7, 135.0, 155.0]},
     },
     'ladder': {'compute': False, 'basis': 'aug-cc-pvtz', 'use': 'experiment'},
-    'frame': {'zeta_env': 1.0, 'r_ref': 1.35, 'feature_zetas': [0.6, 1.0, 1.6]},
+    'frame': {'zeta_env': 1.0, 'r_ref': 1.35, 'feature_zetas': [0.6, 1.0, 1.6],
+              'ion_wall_r_eq': 1.35, 'ion_wall_rho': 0.3, 'covalent_wall': [2000.0, 0.1]},
     'train': {
         'models': ['framed', 'cdnn'],
         'exclude_flagged': True,        # drop unconverged / inconsistent-active-space points
@@ -64,6 +65,9 @@ _COMMON_TRAIN = '''
 zeta_env = 1.0                 # overlap envelope exponent (1/bohr): how fast learned corrections die off with r_OO
 r_ref = 1.35                   # envelope = 1 at this O-O distance (Angstrom)
 feature_zetas = [0.6, 1.0, 1.6]
+ion_wall_r_eq = 1.35           # Born-Mayer wall on the ion pair, balanced against the Coulomb pull at this r_OO (Angstrom)
+ion_wall_rho = 0.3             # its range (Angstrom)
+covalent_wall = [2000.0, 0.1]  # A (eV), rho (Angstrom) for the other structures: ~0.01 eV at 1.2 Angstrom, steep below
 
 [train]
 models = ["framed", "cdnn"]    # framed = ChannelFrame + small networks; cdnn = plain CDNN (Shu et al. 2025)

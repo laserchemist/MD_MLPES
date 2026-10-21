@@ -63,6 +63,7 @@ class CDNN(_Base):
     def __init__(self, n_in, n_states, n_matrix=None, hidden=(256, 128, 64), scaler=None):
         super().__init__()
         self.n_states, self.n = n_states, n_matrix or n_states
+        self.n_in, self.hidden = n_in, tuple(hidden)
         self.iu = torch.triu_indices(self.n, self.n)
         self.net = mlp(n_in, hidden, len(self.iu[0]))
         self.scaler = scaler
@@ -91,6 +92,12 @@ class CDNN(_Base):
     def matrix(self, coords):
         return self._matrix(self.prepare(coords))
 
+    def matrix_t(self, coords):
+        """Matrix from a torch tensor of coordinates, differentiable with respect to them (forces)."""
+        mean = torch.as_tensor(np.asarray(self.scaler[0], float), dtype=coords.dtype)
+        std = torch.as_tensor(np.asarray(self.scaler[1], float), dtype=coords.dtype)
+        return self._matrix({'x': (coords - mean) / std})
+
     def reset(self, seed):
         _init(self.net, seed)
 
@@ -115,6 +122,7 @@ class FramedModel(_Base):
     def __init__(self, frame, n_states, hidden=(32, 32), use_slots=None, slot_bias=None):
         super().__init__()
         self.frame, self.n_states = frame, n_states
+        self.hidden = tuple(hidden)
         # slot_bias: {slot: value} starts that slot's outputs at a constant instead of zero. Needed for couplings
         # between structures that the physics prior leaves uncoupled: at Omega_ij = 0 the eigenvalue gradient
         # d lambda_k / d Omega_ij = 2 v_ik v_jk vanishes, so a zero-initialised coupling slot never learns.
@@ -138,6 +146,10 @@ class FramedModel(_Base):
     def matrix(self, coords):
         return self._matrix(self.prepare(coords))
 
+    def matrix_t(self, coords):
+        """Matrix from a torch tensor of coordinates, differentiable with respect to them (needs frame.prepare_torch)."""
+        return self._matrix(self.frame.prepare_torch(coords))
+
     def reset(self, seed):
         for i, (name, net) in enumerate(self.nets.items()):
             _init(net, seed * 101 + i, zero_last=True)
@@ -148,6 +160,67 @@ class FramedModel(_Base):
         hook = getattr(self, 'post_reset', None)      # optional picklable callable(model), e.g. to seed couplings
         if hook is not None:
             hook(self)
+
+
+# ---------------------------------------------------------------------------------------------------- saving
+def model_spec(model) -> dict:
+    """Plain-data description of a model (no code, no pickles): enough to rebuild it with load_model."""
+    if isinstance(model, IndependentNN):
+        raise TypeError('IndependentNN is a negative control and is not saved')
+    if isinstance(model, CDNN):
+        return {'class': 'CDNN', 'n_in': model.n_in, 'n_states': model.n_states, 'n_matrix': model.n,
+                'hidden': list(model.hidden),
+                'scaler': [np.asarray(v, float).tolist() for v in model.scaler]}
+    if isinstance(model, FramedModel):
+        if not hasattr(model.frame, 'spec'):
+            raise TypeError(f'{type(model.frame).__name__} has no spec(); it cannot be saved this way')
+        return {'class': 'FramedModel', 'n_states': model.n_states, 'hidden': list(model.hidden),
+                'slots': list(model.nets.keys()), 'slot_bias': model.slot_bias, 'frame': model.frame.spec()}
+    raise TypeError(type(model).__name__)
+
+
+def save_model(model, path, meta=None):
+    """Save weights and a JSON spec together: path (.pt, tensors + plain data) and path.json (readable copy).
+
+    The .pt file loads with torch.load(..., weights_only=True): no pickled classes, so it survives code changes
+    that keep the architecture, and loading it cannot run code."""
+    import json
+    from pathlib import Path
+    path = Path(path)
+    def plain(o):                     # numpy scalars / arrays -> Python, so torch.load(weights_only=True) accepts it
+        if isinstance(o, np.generic):
+            return o.item()
+        if isinstance(o, np.ndarray):
+            return o.tolist()
+        raise TypeError(type(o).__name__)
+    spec = {'format': 'diabml-model', 'version': 1, 'model': model_spec(model), 'meta': meta or {}}
+    spec = json.loads(json.dumps(spec, default=plain))
+    torch.save({'spec': spec, 'state_dict': {k: v.detach().cpu() for k, v in model.state_dict().items()}}, path)
+    shapes = {k: list(v.shape) for k, v in model.state_dict().items()}
+    path.with_suffix('.json').write_text(json.dumps(dict(spec, parameter_shapes=shapes,
+                                                         n_parameters=int(sum(v.numel() for v in model.state_dict().values()))),
+                                                    indent=1, ensure_ascii=False))
+    return path
+
+
+def load_model(path):
+    """Rebuild a model saved with save_model. Returns the model (eval mode); its meta is in model.meta."""
+    d = torch.load(path, weights_only=True)
+    spec = d['spec']['model']
+    if spec['class'] == 'CDNN':
+        m = CDNN(spec['n_in'], spec['n_states'], n_matrix=spec['n_matrix'], hidden=tuple(spec['hidden']),
+                 scaler=tuple(np.array(v) for v in spec['scaler']))
+    elif spec['class'] == 'FramedModel':
+        from .frames.channel import ChannelFrame
+        frames = {'ChannelFrame': ChannelFrame}
+        fr = frames[spec['frame']['type']].from_spec(spec['frame'])
+        m = FramedModel(fr, spec['n_states'], hidden=tuple(spec['hidden']), use_slots=spec['slots'],
+                        slot_bias=spec['slot_bias'])
+    else:
+        raise ValueError(spec['class'])
+    m.load_state_dict(d['state_dict'])
+    m.meta = d['spec'].get('meta', {})
+    return m.eval()
 
 
 # ---------------------------------------------------------------------------------------------------- training

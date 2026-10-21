@@ -1,0 +1,82 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CH2OO run: nevpt2_2d</title>
+<style>
+:root{--paper:#F6F4F0;--ink:#2E2A36;--muted:#7A7480;--rule:#DAD3C8;--plum:#3D2C58;--copper:#C8873A;--panel:#EFEBF3}
+@media (prefers-color-scheme:dark){:root{--paper:#17131f;--ink:#ece8f2;--muted:#a69cb6;--rule:#3d3250;--panel:#241b33}}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,sans-serif}
+header{background:var(--plum);color:#fff;border-bottom:5px solid var(--copper);padding:28px 24px}
+header h1{margin:0;font:600 30px Georgia,serif} header p{margin:6px 0 0;color:#E9B872}
+main{max-width:1180px;margin:0 auto;padding:16px}
+h2{font:600 24px Georgia,serif;border-bottom:1px solid var(--rule);padding-bottom:4px;margin-top:36px}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:14px} th,td{border-bottom:1px solid var(--rule);padding:6px 8px;text-align:left}
+th{background:var(--panel)} figure{margin:22px 0} img{max-width:100%;background:#fff;border:1px solid var(--rule)}
+figcaption,.src{color:var(--muted);font-size:14px} pre{background:var(--panel);padding:12px;overflow:auto;font-size:13px}
+</style></head><body>
+<header><h1>CH₂OO workflow run: nevpt2_2d</h1><p>SA4-CASSCF(8,6)/cc-pVDZ + SC-NEVPT2, planar (r_OO, angle COO) · 2026-10-21 10:33</p></header>
+<main><h2>Tables</h2><h3>T1. Reference data</h3><table><thead><tr><th>quantity</th><th>value</th></tr></thead><tbody><tr><td>method</td><td>SA4-CASSCF(8,6)/cc-pvdz + SC-NEVPT2</td></tr><tr><td>energies used for training</td><td>nevpt2</td></tr><tr><td>geometries</td><td>120</td></tr><tr><td>coordinates</td><td>r_OO 1.2–8, a_COO 65–155</td></tr><tr><td>fixed</td><td>r_CH = 1.08, a_HCO = 120, r_CO = 1.272</td></tr><tr><td>converged</td><td>120 / 120</td></tr><tr><td>consistent active space</td><td>120 / 120</td></tr><tr><td>O(¹D) components at largest r_OO: spread (meV)</td><td>6.5</td></tr><tr><td>S3 asymptote (eV)</td><td>1.218</td></tr><tr><td>mean time per geometry (s)</td><td>1.6</td></tr><tr><td>total compute (h)</td><td>0.05</td></tr><tr><td>largest CASCI vs SA-CASSCF energy difference before NEVPT2 (µEh)</td><td>6822.45</td></tr><tr><td>S0 well depth along the cut (eV)</td><td>2.198</td></tr><tr><td>S0 minimum at r_OO (Å)</td><td>1.350</td></tr></tbody></table><p class="src">tables/T1_reference_summary.csv</p><h3>T2. Ladder anchors for the ion-pair structure (frame uses: experiment)</h3><table><thead><tr><th>quantity</th><th>experiment</th><th>computed (aug-cc-pvtz)</th></tr></thead><tbody><tr><td>IE(CH₂O) (eV)</td><td>10.880 (adiabatic)</td><td>10.956 (vertical)</td></tr><tr><td>EA(O) (eV)</td><td>1.461</td><td>1.336</td></tr><tr><td>O ¹D – ³P (eV)</td><td>1.967</td><td>1.967 (experiment)</td></tr><tr><td>ΔE(ion pair) = IE − EA − ΔE(¹D) (eV)</td><td>7.452</td><td>7.653</td></tr><tr><td>Coulomb crossing r* = 14.40 / ΔE (Å)</td><td>1.93</td><td>1.88</td></tr></tbody></table><p class="src">tables/T2_ladder.csv</p><h3>T3. RMSE (kcal/mol), mean ± s.d. over seeds</h3><table><thead><tr><th>test</th><th>model</th><th>S0</th><th>S1</th><th>S2</th><th>S3</th><th>seeds</th></tr></thead><tbody><tr><td>random split: test</td><td>framed CDNN</td><td>1.49 ± 1.19</td><td>2.13 ± 1.07</td><td>3.74 ± 2.71</td><td>5.39 ± 2.62</td><td>3</td></tr><tr><td>random split: test</td><td>CDNN</td><td>1.53 ± 0.95</td><td>1.93 ± 1.12</td><td>3.56 ± 1.79</td><td>4.82 ± 2.39</td><td>3</td></tr><tr><td>trained r ≤ 2.3 Å: validation</td><td>framed CDNN</td><td>2.10 ± 0.81</td><td>2.40 ± 0.34</td><td>4.36 ± 1.41</td><td>6.36 ± 3.27</td><td>3</td></tr><tr><td>trained r ≤ 2.3 Å: validation</td><td>CDNN</td><td>1.56 ± 0.59</td><td>2.97 ± 1.35</td><td>3.49 ± 0.69</td><td>8.19 ± 5.53</td><td>3</td></tr><tr><td>trained r ≤ 2.3 Å: beyond 2.3 Å</td><td>framed CDNN</td><td>1.84 ± 0.67</td><td>1.36 ± 0.25</td><td>3.98 ± 0.75</td><td>1.51 ± 0.22</td><td>3</td></tr><tr><td>trained r ≤ 2.3 Å: beyond 2.3 Å</td><td>CDNN</td><td>65.77 ± 22.26</td><td>24.44 ± 3.48</td><td>197.72 ± 61.38</td><td>354.07 ± 43.11</td><td>3</td></tr></tbody></table><p class="src">tables/T3_model_errors.csv</p><h3>T4. Learning curve, test RMSE (kcal/mol) on 24 fixed points</h3><table><thead><tr><th>n train</th><th>model</th><th>mean RMSE</th><th>S0</th><th>S1</th><th>S2</th><th>S3</th></tr></thead><tbody><tr><td>20</td><td>framed CDNN</td><td>13.40 ± 2.01</td><td>23.85</td><td>11.35</td><td>11.27</td><td>7.12</td></tr><tr><td>40</td><td>framed CDNN</td><td>13.90 ± 3.97</td><td>19.35</td><td>11.52</td><td>10.79</td><td>13.92</td></tr><tr><td>60</td><td>framed CDNN</td><td>14.76 ± 3.50</td><td>20.34</td><td>15.60</td><td>14.73</td><td>8.37</td></tr><tr><td>90</td><td>framed CDNN</td><td>9.94 ± 3.80</td><td>21.14</td><td>5.29</td><td>6.90</td><td>6.43</td></tr><tr><td>20</td><td>CDNN</td><td>18.79 ± 4.67</td><td>23.60</td><td>13.27</td><td>15.00</td><td>23.30</td></tr><tr><td>40</td><td>CDNN</td><td>12.59 ± 1.41</td><td>16.03</td><td>11.08</td><td>9.81</td><td>13.45</td></tr><tr><td>60</td><td>CDNN</td><td>10.85 ± 0.86</td><td>9.02</td><td>7.68</td><td>9.17</td><td>17.53</td></tr><tr><td>90</td><td>CDNN</td><td>7.76 ± 0.79</td><td>10.42</td><td>2.22</td><td>4.81</td><td>13.59</td></tr></tbody></table><p class="src">tables/T4_learning_curve.csv</p><h3>T6. Dynamic correlation along the equilibrium cut (each level zeroed at its own asymptote)</h3><table><thead><tr><th>state (near r_OO = 1.35 Å)</th><th>SA-CASSCF (eV)</th><th>SC-NEVPT2 (eV)</th><th>shift (eV)</th></tr></thead><tbody><tr><td>S0</td><td>-1.141</td><td>-2.198</td><td>-1.057</td></tr><tr><td>S1</td><td>3.147</td><td>1.675</td><td>-1.472</td></tr><tr><td>S2</td><td>6.392</td><td>5.092</td><td>-1.301</td></tr><tr><td>S3</td><td>8.995</td><td>8.162</td><td>-0.832</td></tr><tr><td>S0 well depth</td><td>1.141</td><td>2.198</td><td>1.057</td></tr></tbody></table><p class="src">tables/T6_dynamic_correlation.csv</p>
+<h2>Figures</h2><figure><img src="figures/F1_ref_cuts.png" alt="Reference energies of the four singlet A′ states along r(O–O) at each C–O–O angle (SA4-CASSCF(8,6)/cc-pvdz + SC-NEVPT2; energies relative to CH₂O + O(¹D)). Red crosses mark unconverged points or points whose active space changed character."><figcaption><b>F1.</b> Reference energies of the four singlet A′ states along r(O–O) at each C–O–O angle (SA4-CASSCF(8,6)/cc-pvdz + SC-NEVPT2; energies relative to CH₂O + O(¹D)). Red crosses mark unconverged points or points whose active space changed character.</figcaption></figure><figure><img src="figures/F2_ref_character.png" alt="State character along r(O–O) at ∠C–O–O = 117.7°: energy, terminal-O charge (zwitterion proxy) and effective unpaired electrons (biradical proxy), each from the state&#x27;s own density."><figcaption><b>F2.</b> State character along r(O–O) at ∠C–O–O = 117.7°: energy, terminal-O charge (zwitterion proxy) and effective unpaired electrons (biradical proxy), each from the state&#x27;s own density.</figcaption></figure><figure><img src="figures/F3_ref_maps.png" alt="Each state over the planar (r(O–O), ∠C–O–O) grid; log scale in r to show the short-range region."><figcaption><b>F3.</b> Each state over the planar (r(O–O), ∠C–O–O) grid; log scale in r to show the short-range region.</figcaption></figure><figure><img src="figures/F4_dynamic_correlation.png" alt="Effect of dynamic correlation along r(O–O) at ∠C–O–O = 117.7°. Each level is zeroed at its own CH₂O + O(¹D) asymptote, so the right panel shows how binding changes. State-specific NEVPT2 can be unreliable where states nearly cross; look for kinks there."><figcaption><b>F4.</b> Effect of dynamic correlation along r(O–O) at ∠C–O–O = 117.7°. Each level is zeroed at its own CH₂O + O(¹D) asymptote, so the right panel shows how binding changes. State-specific NEVPT2 can be unreliable where states nearly cross; look for kinks there.</figcaption></figure><figure><img src="figures/F5_parity.png" alt="Held-out test points (random split, first seed): model against reference for each state. Titles give the test RMSE per state, averaged over seeds."><figcaption><b>F5.</b> Held-out test points (random split, first seed): model against reference for each state. Titles give the test RMSE per state, averaged over seeds.</figcaption></figure><figure><img src="figures/F6_extrapolation.png" alt="Trained only on r(O–O) ≤ 2.3 Å (shaded: no training data), drawn at ∠C–O–O = 117.7°. The frame fixes the asymptotes and the ion-pair Coulomb tail; plain CDNN has to guess them."><figcaption><b>F6.</b> Trained only on r(O–O) ≤ 2.3 Å (shaded: no training data), drawn at ∠C–O–O = 117.7°. The frame fixes the asymptotes and the ion-pair Coulomb tail; plain CDNN has to guess them.</figcaption></figure><figure><img src="figures/F7_learned_matrix.png" alt="The framed model&#x27;s matrix along r(O–O) at ∠C–O–O = 117.7°: structures (dashed) behind the adiabatic states, and the learned couplings. Energies alone do not fix how much the structures mix (see F9)."><figcaption><b>F7.</b> The framed model&#x27;s matrix along r(O–O) at ∠C–O–O = 117.7°: structures (dashed) behind the adiabatic states, and the learned couplings. Energies alone do not fix how much the structures mix (see F9).</figcaption></figure><figure><img src="figures/F8_learning_curve.png" alt="Test error against the number of training points; bars span the seeds."><figcaption><b>F8.</b> Test error against the number of training points; bars span the seeds.</figcaption></figure>
+<h2>Configuration</h2><pre># Step 1: dynamic correlation. SA4-CASSCF(8,6) + SC-NEVPT2 with cc-pVDZ on the planar 2D grid (120 points).
+[run]
+name = &quot;nevpt2_2d&quot;
+description = &quot;SA4-CASSCF(8,6)/cc-pVDZ + SC-NEVPT2, planar (r_OO, angle COO)&quot;
+threads = 6                    # PySCF and PyTorch threads; use the number of performance cores
+
+[refs]
+source = &quot;compute&quot;
+basis = &quot;cc-pvdz&quot;
+ncas = 6                       # active space: C-O-O pi (3), O-O sigma/sigma*, terminal-O in-plane lone pair
+nelecas = 8
+nroots = 4                     # singlet A&#x27; states averaged with equal weights
+spin = &quot;singlet&quot;
+dynamic = &quot;nevpt2&quot;             # none | nevpt2 (state-specific SC-NEVPT2 on the SA-CASSCF orbitals)
+energy = &quot;nevpt2&quot;              # which energies the models learn
+max_cycle = 100
+
+[refs.grid]                    # one list per coordinate; a single value holds that coordinate fixed
+r_OO = [1.20, 1.275, 1.35, 1.425, 1.50, 1.60, 1.70, 1.80, 1.90, 2.00, 2.15, 2.30, 2.50, 2.75, 3.00, 3.50, 4.00, 5.00, 6.50, 8.00]
+a_COO = [65.0, 85.0, 100.0, 117.7, 135.0, 155.0]
+r_CO = [1.272]
+
+[ladder]
+compute = true                 # delta-CCSD(T) IE(CH2O) and EA(O); about 10-30 min
+basis = &quot;aug-cc-pvtz&quot;
+use = &quot;experiment&quot;             # experiment | computed: which ion-pair asymptote the frame uses
+
+[frame]
+zeta_env = 1.0                 # overlap envelope exponent (1/bohr): how fast learned corrections die off with r_OO
+r_ref = 1.35                   # envelope = 1 at this O-O distance (Angstrom)
+feature_zetas = [0.6, 1.0, 1.6]
+
+[train]
+models = [&quot;framed&quot;, &quot;cdnn&quot;]    # framed = ChannelFrame + small networks; cdnn = plain CDNN (Shu et al. 2025)
+exclude_flagged = true         # skip unconverged points and points whose active space changed character
+hidden_framed = [128, 64]
+hidden_cdnn = [128, 64]
+coupling_init = 0.1            # eV; framed couplings must not start at exactly 0 (their energy gradient vanishes there)
+lr_framed = 2e-3
+lr_cdnn = 1e-3
+alpha2 = 1e-6                  # L2 weight penalty (eq. 5 of the CDNN paper)
+epochs = 6000
+restarts = 2
+seeds = [0, 1, 2]
+
+[train.random_split]           # interpolation test: random train / validation / test split of all usable points
+enabled = true
+train_fraction = 0.75
+val_fraction = 0.125
+
+[train.extrapolation]          # train only on r_OO &lt;= r_train_max, test beyond it
+enabled = true
+r_train_max = 2.3
+
+[train.learning_curve]         # test error vs number of training points (fixed test set)
+enabled = true
+n_train = [20, 40, 60, 90]
+test_fraction = 0.2
+
+[train.restraint]              # diabatic restraint: ground-state weight of the ionic structure follows the CASSCF charge
+enabled = false
+weights = [0.0, 0.1, 1.0, 10.0]
+q_ref = -0.6                   # terminal-O Mulliken charge taken to mean &quot;fully zwitterionic&quot; (an assumption: vary it)
+min_gap_eV = 0.1               # apply only where S1 - S0 exceeds this (eigenvector derivatives blow up at degeneracies)
+</pre></main></body></html>

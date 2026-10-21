@@ -1,0 +1,51 @@
+# Smoke test: shipped SA4-CASSCF(8,6)/6-31G* data, short training. Takes a few minutes.
+[run]
+name = "quick"
+description = "Smoke test of the workflow on the shipped CASSCF data"
+threads = 6
+
+[refs]
+source = "file"
+file = "{diabml}/data/ch2oo_casscf.npz"
+
+[ladder]
+compute = false
+use = "experiment"
+
+[frame]
+zeta_env = 1.0                 # overlap envelope exponent (1/bohr): how fast learned corrections die off with r_OO
+r_ref = 1.35                   # envelope = 1 at this O-O distance (Angstrom)
+feature_zetas = [0.6, 1.0, 1.6]
+
+[train]
+models = ["framed", "cdnn"]    # framed = ChannelFrame + small networks; cdnn = plain CDNN (Shu et al. 2025)
+exclude_flagged = true         # skip unconverged points and points whose active space changed character
+hidden_framed = [128, 64]
+hidden_cdnn = [128, 64]
+coupling_init = 0.1            # eV; framed couplings must not start at exactly 0 (their energy gradient vanishes there)
+lr_framed = 2e-3
+lr_cdnn = 1e-3
+alpha2 = 1e-6                  # L2 weight penalty (eq. 5 of the CDNN paper)
+epochs = 400
+restarts = 1
+seeds = [0]
+
+[train.random_split]           # interpolation test: random train / validation / test split of all usable points
+enabled = true
+train_fraction = 0.75
+val_fraction = 0.125
+
+[train.extrapolation]          # train only on r_OO <= r_train_max, test beyond it
+enabled = true
+r_train_max = 2.3
+
+[train.learning_curve]         # test error vs number of training points (fixed test set)
+enabled = true
+n_train = [20, 60]
+test_fraction = 0.2
+
+[train.restraint]              # diabatic restraint: ground-state weight of the ionic structure follows the CASSCF charge
+enabled = true
+weights = [0.0, 0.1, 1.0, 10.0]
+q_ref = -0.6                   # terminal-O Mulliken charge taken to mean "fully zwitterionic" (an assumption: vary it)
+min_gap_eV = 0.1               # apply only where S1 - S0 exceeds this (eigenvector derivatives blow up at degeneracies)

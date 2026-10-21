@@ -1,0 +1,10 @@
+{
+ "F1_ref_cuts.png": "Reference energies of the four singlet A′ states along r(O–O) at each C–O–O angle (SA4-CASSCF(8,6)/6-31G*, singlet A' (Cs), planar, CH2O fragment rigid; energies relative to CH₂O + O(¹D)). Red crosses mark unconverged points or points whose active space changed character.",
+ "F2_ref_character.png": "State character along r(O–O) at ∠C–O–O = 117.7°: energy, terminal-O charge (zwitterion proxy) and effective unpaired electrons (biradical proxy), each from the state's own density.",
+ "F3_ref_maps.png": "Each state over the planar (r(O–O), ∠C–O–O) grid; log scale in r to show the short-range region.",
+ "F5_parity.png": "Held-out test points (random split, first seed): model against reference for each state. Titles give the test RMSE per state, averaged over seeds.",
+ "F6_extrapolation.png": "Trained only on r(O–O) ≤ 2.3 Å (shaded: no training data), drawn at ∠C–O–O = 117.7°. The frame fixes the asymptotes and the ion-pair Coulomb tail; plain CDNN has to guess them.",
+ "F7_learned_matrix.png": "The framed model's matrix along r(O–O) at ∠C–O–O = 117.7°: structures (dashed) behind the adiabatic states, and the learned couplings. Energies alone do not fix how much the structures mix (see F9).",
+ "F8_learning_curve.png": "Test error against the number of training points; bars span the seeds.",
+ "F9_restraint.png": "Diabatic restraint: the ground state's weight on the CH₂O⁺ + O⁻ structure is pulled toward the CASSCF terminal-O charge divided by q_ref = -0.6 e (an assumption to vary). Left: along r(O–O); right: energy accuracy against agreement with the charge target."
+}

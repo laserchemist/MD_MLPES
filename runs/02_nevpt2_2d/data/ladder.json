@@ -1,0 +1,19 @@
+{
+ "experiment": {
+  "IE_CH2O_adiabatic": 10.88,
+  "EA_O": 1.461,
+  "O_1D_3P": 1.967
+ },
+ "dE_ion_experiment": 7.452,
+ "computed": {
+  "IE_CH2O_vertical": 10.956424564542656,
+  "EA_O": 1.3362115185844778,
+  "O_1D_3P": 1.967,
+  "basis": "aug-cc-pvtz",
+  "method": "delta-CCSD(T); O 1D-3P experimental",
+  "dE_ion": 7.653213045958179
+ },
+ "use": "experiment",
+ "dE_ion_used": 7.452,
+ "r_cross_A": 1.932319511540526
+}

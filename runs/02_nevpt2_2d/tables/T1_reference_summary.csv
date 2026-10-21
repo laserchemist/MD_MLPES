@@ -1,0 +1,15 @@
+quantity,value
+method,"SA4-CASSCF(8,6)/cc-pvdz + SC-NEVPT2"
+energies used for training,nevpt2
+geometries,120
+coordinates,"r_OO 1.2–8, a_COO 65–155"
+fixed,"r_CH = 1.08, a_HCO = 120, r_CO = 1.272"
+converged,120 / 120
+consistent active space,120 / 120
+O(¹D) components at largest r_OO: spread (meV),6.5
+S3 asymptote (eV),1.218
+mean time per geometry (s),1.6
+total compute (h),0.05
+largest CASCI vs SA-CASSCF energy difference before NEVPT2 (µEh),6822.45
+S0 well depth along the cut (eV),2.198
+S0 minimum at r_OO (Å),1.350

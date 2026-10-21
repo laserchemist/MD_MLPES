@@ -31,7 +31,7 @@ def test_asymptotes_follow_r_co():
     coords = np.array([[8.0, 117.7, 1.2], [8.0, 117.7, 1.4], [1.35, 117.7, 1.2], [1.35, 117.7, 1.4]])
     E = np.array([[0, 0, 0, 1.0], [1, 1, 1, 2.0], [-1, 3, 6, 9], [-1, 3, 6, 9.0]])
     ref = RefSet('t', coords, E, ['r_OO', 'a_COO', 'r_CO'])
-    a = W.Asymptotes(ref, 7.0)
+    a = W.asymptote_table(ref, 7.0)
     out = a(np.array([[2.0, 117.7, 1.3]]))[0]
     assert np.allclose(out[:4], [0.5, 0.5, 0.5, 1.5]) and np.isclose(out[4], 7.5)
 

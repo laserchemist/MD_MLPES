@@ -264,44 +264,38 @@ def _dE_ion(run):
 
 
 # ------------------------------------------------------------------------------------------------ frame
-class Asymptotes:
-    """Asymptotic energies of the five structures as a function of the coordinates that survive dissociation.
+def asymptote_table(ref, dE_ion):
+    """Asymptotes of the five CH2OO structures (an AsymptoteTable).
 
     States 0-2 (CH2O + O(1D)) and 3 (CH2O(T1) + O(3P)) come from the reference data at the largest r_OO, averaged
     over the angle; if r_CO varies they are interpolated in r_CO (the CH2O fragment energy depends on it). The ion
-    pair sits dE_ion (ladder) above the mean of the three O(1D) components."""
-
-    def __init__(self, ref, dE_ion):
-        r = ref.coords[:, 0]
-        far = np.isclose(r, r.max())
-        self.j = ref.coord_names.index('r_CO') if 'r_CO' in ref.coord_names else None
-        self.dE = float(dE_ion)
-        if self.j is None:
-            self.knots = np.array([0.0])
-            self.vals = np.nanmean(ref.energies[far, :4], 0)[None, :]
-        else:
-            self.knots = np.unique(ref.coords[far, self.j])
-            self.vals = np.array([np.nanmean(ref.energies[far & np.isclose(ref.coords[:, self.j], k), :4], 0)
-                                  for k in self.knots])
-
-    def __call__(self, coords):
-        coords = np.atleast_2d(coords)
-        if self.j is None:
-            a = np.repeat(self.vals, len(coords), 0)
-        else:
-            x = coords[:, self.j]
-            a = np.stack([np.interp(x, self.knots, self.vals[:, s]) for s in range(4)], 1)
-        return np.c_[a, a[:, :3].mean(1) + self.dE]
+    pair CH2O(+) + O(-) sits dE_ion (ladder) above the mean of the three O(1D) components."""
+    from ..frames import AsymptoteTable
+    r = ref.coords[:, 0]
+    far = np.isclose(r, r.max())
+    j = ref.coord_names.index('r_CO') if 'r_CO' in ref.coord_names else None
+    if j is None:
+        knots, vals = [0.0], np.nanmean(ref.energies[far, :4], 0)[None, :]
+    else:
+        knots = np.unique(ref.coords[far, j])
+        vals = np.array([np.nanmean(ref.energies[far & np.isclose(ref.coords[:, j], k), :4], 0) for k in knots])
+    return AsymptoteTable(knots, vals, j=j, extra=[(4, [0, 1, 2], float(dE_ion))])
 
 
 def build_frame(run, ref):
     from ..frames import ChannelFrame, Diabat
     fc = run.cfg['frame']
-    asy = Asymptotes(ref, _dE_ion(run))
+    dE = _dE_ion(run)
+    asy = asymptote_table(ref, dE)
     c = asy.vals.mean(0)
-    diabats = [Diabat('CH₂O + O(¹D) a', c[0]), Diabat('CH₂O + O(¹D) b', c[1]), Diabat('CH₂O + O(¹D) c', c[2]),
-               Diabat('CH₂O(T₁) + O(³P)', c[3], kind='biradical'),
-               Diabat('CH₂O⁺ + O⁻', c[:3].mean() + asy.dE, charge_product=-1.0, kind='ionic')]
+    cA, crho = fc.get('covalent_wall', [2000.0, 0.1])
+    rho_ion = float(fc.get('ion_wall_rho', 0.3))
+    A_ion = Diabat.born_mayer_balance(float(fc.get('ion_wall_r_eq', 1.35)), -1.0, rho_ion)
+    diabats = [Diabat('CH₂O + O(¹D) a', c[0], wall_A=cA, wall_rho=crho),
+               Diabat('CH₂O + O(¹D) b', c[1], wall_A=cA, wall_rho=crho),
+               Diabat('CH₂O + O(¹D) c', c[2], wall_A=cA, wall_rho=crho),
+               Diabat('CH₂O(T₁) + O(³P)', c[3], kind='biradical', wall_A=cA, wall_rho=crho),
+               Diabat('CH₂O⁺ + O⁻', c[:3].mean() + dE, charge_product=-1.0, kind='ionic', wall_A=A_ion, wall_rho=rho_ion)]
     return ChannelFrame(diabats, n_coords=len(ref.coord_names), r_index=0, zeta_env=fc['zeta_env'],
                         r_ref=fc['r_ref'], feature_zetas=tuple(fc['feature_zetas']), asymptote_fn=asy)
 
@@ -350,7 +344,7 @@ def restraint_penalty(weight, target, mask):
 # ------------------------------------------------------------------------------------------------ train
 def stage_train(run):
     import torch
-    from ..models import train
+    from ..models import train, save_model
     from .. import metrics as Mx
     run.threads()
     ref = load_refs(run)
@@ -370,7 +364,17 @@ def stage_train(run):
                'method': ref.meta.get('method', ref.name), 'config': tc}
     x = np.linspace(max(1.15, r.min() - 0.05), r.max(), 400)
     X = cut_coords(ref, x)
-    curves = {'x': x, 'cut_values': json.dumps(slice_values(ref))}
+    xs = np.linspace(0.6, 1.6, 200)                 # below the data: is there a hole?
+    curves = {'x': x, 'x_short': xs, 'cut_values': json.dumps(slice_values(ref))}
+
+    def save(m, name, experiment, tr):
+        save_model(m, run.p('models', f'{name}.pt'), meta={
+            'run': str(run.path), 'experiment': experiment, 'seed': int(tc['seeds'][0]), 'n_train': int(len(tr)),
+            'coord_names': ref.coord_names, 'coord_units': [UNITS[c] for c in ref.coord_names],
+            'energy_unit': 'eV', 'energy_zero': ref.meta.get('zero', ''), 'method': ref.meta.get('method', ref.name),
+            'fixed_coordinates': ref.meta.get('fixed', {}), 'atom_order': ['C', 'O1 (central)', 'O2 (terminal)', 'H', 'H'],
+            'states': 'lowest 4 eigenvalues = S0..S3 (singlet A\'); matrix order = ' + ', '.join(
+                ['CH2O+O(1D) a', 'b', 'c', 'CH2O(T1)+O(3P)', 'CH2O(+)+O(-)'])})
 
     def fit(kind, tr, va, seed, penalty=None):
         torch.manual_seed(seed)
@@ -395,8 +399,9 @@ def stage_train(run):
                 run.log(f'random split seed {seed} {kind}: test RMSE {np.round(res[kind][-1]["test_rmse_kcal"], 2)} '
                         f'kcal/mol ({dt:.0f} s)')
                 if seed == tc['seeds'][0]:
-                    torch.save(m, run.p('models', f'random_{kind}.pt'))
+                    save(m, f'random_{kind}', 'random split', tr)
                     curves[f'random_{kind}_E'] = m.predict(X)
+                    curves[f'random_{kind}_short'] = m.predict(cut_coords(ref, xs))
                     curves[f'random_{kind}_test_pred'] = m.predict(ref.coords[te])
                     curves['random_test_idx'] = te
                     if kind == 'framed':
@@ -423,7 +428,7 @@ def stage_train(run):
                 run.log(f'extrapolation seed {seed} {kind}: beyond {ex["r_train_max"]} Å RMSE '
                         f'{np.round(res[kind][-1]["outer_rmse_kcal"], 1)} kcal/mol')
                 if seed == tc['seeds'][0]:
-                    torch.save(m, run.p('models', f'extrap_{kind}.pt'))
+                    save(m, f'extrap_{kind}', f'trained on r_OO <= {ex["r_train_max"]}', tr)
                     curves[f'extrap_{kind}_E'] = m.predict(X)
         metrics['extrapolation'] = dict(res, r_train_max=ex['r_train_max'], n_inner=int(len(inner)),
                                         n_outer=int(len(outer)))
@@ -473,7 +478,7 @@ def stage_train(run):
                         'ionic_weight_at_eq': float(ionic_weight(m, cut_coords(ref, np.array([1.35])))[0])})
                     if seed == tc['seeds'][0]:
                         curves[f'restraint_{wgt}_ionic_weight'] = ionic_weight(m, X)
-                        torch.save(m, run.p('models', f'restraint_w{wgt}.pt'))
+                        save(m, f'restraint_w{wgt}', f'restraint weight {wgt}', tr)
                 run.log(f'restraint weight {wgt}: energy RMSE '
                         f'{np.round(np.mean([v["test_rmse_kcal"] for v in res[str(wgt)]], 0), 2)} kcal/mol, '
                         f'ionic-weight MAE {np.mean([v["ionic_weight_mae"] or np.nan for v in res[str(wgt)]]):.3f}')
@@ -482,7 +487,7 @@ def stage_train(run):
                                         target_cut_r=r[eqv].tolist())
     run.p('results', 'metrics.json').write_text(json.dumps(metrics, indent=1))
     np.savez(run.p('results', 'curves.npz'), **curves)
-    run.log(f'wrote results/metrics.json, results/curves.npz and models/*.pt')
+    run.log('wrote results/metrics.json, results/curves.npz, models/*.pt (+ .json spec; load with diabml.models.load_model)')
 
 
 # ------------------------------------------------------------------------------------------------ figures
@@ -724,6 +729,24 @@ def stage_figures(run):
         save(fig, 'F9_restraint.png', 'Diabatic restraint: the ground state\'s weight on the CH₂O⁺ + O⁻ structure is '
              f'pulled toward the CASSCF terminal-O charge divided by q_ref = {R["q_ref"]} e (an assumption to vary). '
              'Left: along r(O–O); right: energy accuracy against agreement with the charge target.')
+    # F10 short range: below the data
+    if 'x_short' in cv.files and all(f'random_{k}_short' in cv.files for k in models):
+        xs, rmin = cv['x_short'], float(r.min())
+        fig, axes = plt.subplots(1, len(models), figsize=(7 * len(models), 4.6), squeeze=False)
+        for ax, k in zip(axes[0], models):
+            S = cv[f'random_{k}_short']
+            ax.axvspan(xs.min(), rmin, color=COPPER, alpha=0.12, lw=0)
+            for s in range(4):
+                ax.plot(xs, S[:, s], color=SCOL[s], lw=2, label=f'S{s}')
+            o = np.argsort(r[cm])
+            ax.plot(r[cm][o], E[cm][o, 0], 'o', color=INK, ms=4, mfc='white', label='reference S0')
+            ax.axhline(float(np.nanmin(E[:, 0])), color=GREY, lw=1, ls=':')
+            ax.set(xlabel='r(O–O) (Å)', ylabel='E (eV)', xlim=(xs.min(), xs.max()), ylim=(float(np.nanmin(E[:, 0])) - 3, 15),
+                   title=f'{MNAME[k]}: below the data (shaded)')
+            ax.legend(loc='upper right', fontsize=10)
+        save(fig, 'F10_short_range.png', f'Model energies at O–O distances shorter than any reference point (shaded, '
+             f'r < {rmin:g} Å), drawn at {note}. A curve that drops below the dotted line (the lowest reference energy) is a '
+             'hole: trajectories that reach it fall in. The framed model has Born–Mayer walls for this; plain CDNN does not.')
     run.p('figures', 'captions.json').write_text(json.dumps(cap, indent=1, ensure_ascii=False))
 
 

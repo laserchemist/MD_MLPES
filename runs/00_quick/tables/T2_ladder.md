@@ -1,0 +1,9 @@
+**T2. Ladder anchors for the ion-pair structure (frame uses: experiment)**
+
+| quantity | experiment | computed (not run) |
+|---|---|---|
+| IE(CH₂O) (eV) | 10.880 (adiabatic) |  |
+| EA(O) (eV) | 1.461 |  |
+| O ¹D – ³P (eV) | 1.967 |  |
+| ΔE(ion pair) = IE − EA − ΔE(¹D) (eV) | 7.452 |  |
+| Coulomb crossing r* = 14.40 / ΔE (Å) | 1.93 |  |
