@@ -112,9 +112,13 @@ class IndependentNN(CDNN):
 class FramedModel(_Base):
     """A physics Frame with each of its slots learned by a small MLP (zero-initialised => starts at the prior)."""
 
-    def __init__(self, frame, n_states, hidden=(32, 32), use_slots=None):
+    def __init__(self, frame, n_states, hidden=(32, 32), use_slots=None, slot_bias=None):
         super().__init__()
         self.frame, self.n_states = frame, n_states
+        # slot_bias: {slot: value} starts that slot's outputs at a constant instead of zero. Needed for couplings
+        # between structures that the physics prior leaves uncoupled: at Omega_ij = 0 the eigenvalue gradient
+        # d lambda_k / d Omega_ij = 2 v_ik v_jk vanishes, so a zero-initialised coupling slot never learns.
+        self.slot_bias = dict(slot_bias or {})
         names = use_slots if use_slots is not None else list(frame.slots)
         self.nets = torch.nn.ModuleDict({k: mlp(frame.slots[k][0], hidden, frame.slots[k][1]) for k in names})
         self.reset(0)
@@ -135,18 +139,27 @@ class FramedModel(_Base):
         return self._matrix(self.prepare(coords))
 
     def reset(self, seed):
-        for i, net in enumerate(self.nets.values()):
+        for i, (name, net) in enumerate(self.nets.items()):
             _init(net, seed * 101 + i, zero_last=True)
+            if name in getattr(self, 'slot_bias', {}):
+                last = [m for m in net.modules() if isinstance(m, torch.nn.Linear)][-1]
+                with torch.no_grad():
+                    last.bias.fill_(self.slot_bias[name])
+        hook = getattr(self, 'post_reset', None)      # optional picklable callable(model), e.g. to seed couplings
+        if hook is not None:
+            hook(self)
 
 
 # ---------------------------------------------------------------------------------------------------- training
 def train(model, coords, energies, val_coords=None, val_energies=None, epochs=4000, lr=1e-3, alpha2=1e-6,
-          restarts=3, augment=None, log=None, weights=None):
+          restarts=3, augment=None, log=None, weights=None, penalty=None):
     """Adam + cosine schedule on the CDNN cost (Shu et al. eq. 5): mean squared eigenvalue error / 2
     + alpha2/2 * sum of squared weights. Keeps the restart and epoch with the lowest validation MUE.
 
     augment(coords, energies) -> (coords, energies) is applied to training and validation data (e.g. adding all
-    atom permutations). weights: optional per-state weights in the loss."""
+    atom permutations). weights: optional per-state weights in the loss.
+    penalty(model, cache) -> scalar tensor: an extra loss term evaluated on the training cache (e.g. a diabatic
+    restraint on eigenvector character). Model selection still uses the validation energy error."""
     if augment is not None:
         coords, energies = augment(coords, energies)
         if val_coords is not None:
@@ -170,6 +183,8 @@ def train(model, coords, energies, val_coords=None, val_energies=None, epochs=40
             opt.zero_grad()
             loss = (w * (model(c_tr) - y_tr) ** 2).mean() / 2
             loss = loss + alpha2 / 2 * sum((p ** 2).sum() for n, p in model.named_parameters() if 'weight' in n)
+            if penalty is not None:
+                loss = loss + penalty(model, c_tr)
             loss.backward()
             opt.step(); sched.step()
             if ep % 50 == 0 or ep == epochs - 1:

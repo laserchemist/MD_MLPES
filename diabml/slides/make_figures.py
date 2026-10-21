@@ -117,7 +117,7 @@ def schematics():
     axes[0].text(0.62, 0.35, 'exact', color=INK, fontsize=13)
     axes[1].plot(x, -e, color=GREEN); axes[1].plot(x, e, color=GREEN)
     axes[1].set(title='Eigenvalues of a smooth 2 × 2 matrix', xlabel='coordinate through the crossing', yticks=[], xticks=[])
-    axes[1].text(0, -0.55, 'exact touching (cone)', ha='center', color=GREEN, fontsize=15)
+    axes[1].text(0, -0.93, 'exact degeneracy (conical intersection)', ha='center', color=GREEN, fontsize=14, bbox=dict(fc='#F6F4F0', ec='none', pad=2))
     fig.tight_layout()
     save(fig, 'topology.png')
 
@@ -153,7 +153,7 @@ def h3():
     for k, f in preds.items():
         E = f(C)
         ax.semilogy(d, np.maximum((E[:, 1] - E[:, 0]) * 1000, 1e-3), color=cols[k], label=k)
-    ax.set(xlabel='r₁₂ − 1.08 Å  (across the seam)', ylabel='E₁ − E₀  (meV)', title='Gap near the conical intersection (exact: |x|-shaped cone, 0 at the seam)')
+    ax.set(xlabel='r₁₂ − 1.08 Å  (across the seam)', ylabel='E₁ − E₀  (meV)', title='Gap near the conical intersection (exact: zero at the seam)')
     ax.legend(loc='upper right')
     save(fig, 'h3_gap.png')
     # global learning curves

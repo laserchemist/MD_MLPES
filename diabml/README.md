@@ -20,6 +20,7 @@ models.py   CDNN (the paper's model), IndependentNN (negative control), FramedMo
 metrics.py  per-state errors, seam gaps, permutation errors
 plotting.py standard figures;   ui.py  optional ipywidgets cut explorer
 notebooks/  01 H3 (London frame vs CDNN), 02 H2O (DIM frame), 03 CH2OO (fragment-channel frame, first look)
+workflow/   config-driven CH2OO workflow: run folders, stages, figures, tables, report
 tests/      physics guarantees of every frame (degeneracies, permutation invariance, exact limits) and plumbing
 data/       cached reference data, so notebooks need no quantum chemistry
 ```
@@ -28,9 +29,26 @@ data/       cached reference data, so notebooks need no quantum chemistry
 
 ```bash
 pip install numpy scipy matplotlib torch jupyter ipywidgets   # pyscf only to generate new references
-python -m pytest -q tests                                     # 11 tests, a few seconds
+python -m pytest -q tests                                     # 14 tests, under a minute
 cd notebooks && jupyter lab                                   # or: python build_notebooks.py --execute
 ```
+
+## CH2OO workflow (run folders and config files)
+
+`diabml.workflow.ch2oo` runs the CH2OO study end to end from one `config.toml` per run folder:
+reference scans (SA-CASSCF, optional SC-NEVPT2; resumable), ladder anchors (delta-CCSD(T) IE and EA), training
+(framed CDNN vs CDNN: random split, extrapolation, learning curve, optional charge-based diabatic restraint), figures,
+tables and an HTML report.
+
+```bash
+python -m diabml.workflow.ch2oo init runs/00_quick --template quick     # templates: quick baseline nevpt2_2d cas_3d restraint
+python -m diabml.workflow.ch2oo all  runs/00_quick                      # refs, ladder, train, figures, tables, report
+python -m diabml.workflow.ch2oo status runs/02_nevpt2_2d                # progress of a running scan
+```
+
+Each run folder gets `data/ models/ results/ figures/ tables/ logs/` and `report.html`. Stages can be rerun one at a
+time; the scan writes a checkpoint after every geometry and continues where it stopped. See `RUNNING_CH2OO.html` for
+setup on macOS (Apple silicon), the recommended sequence of runs, and what every figure and table shows.
 
 ## The one interface to know: `Frame`
 

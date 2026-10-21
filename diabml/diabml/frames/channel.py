@@ -49,8 +49,12 @@ class ChannelFrame(Frame):
     """
 
     def __init__(self, diabats: list[Diabat], n_coords, r_index=0, coord_scale=None, zeta_env=1.0, r_ref=1.35,
-                 feature_zetas=(0.6, 1.0, 1.6), raw_r=False, coulomb_softening=0.5, name='fragment-channel frame'):
+                 feature_zetas=(0.6, 1.0, 1.6), raw_r=False, coulomb_softening=0.5, name='fragment-channel frame',
+                 asymptote_fn=None):
         self.diabats = diabats
+        # optional: asymptote_fn(coords) -> (N, n_diabats) asymptotic energies that depend on the coordinates that do
+        # not separate the fragments (e.g. a C-O stretch inside CH2O); default = the constant Diabat.asymptote values
+        self.asymptote_fn = asymptote_fn
         self.n_diabats = len(diabats)
         self.diabat_labels = [d.label for d in diabats]
         self.r_index = r_index
@@ -78,10 +82,14 @@ class ChannelFrame(Frame):
         parts = [ov, other] + ([(r[:, None] - self.r_ref)] if self.raw_r else [])
         return np.concatenate(parts, 1)
 
-    def tails(self, r):
+    def tails(self, r, coords=None):
         r = np.asarray(r, float)
-        return np.stack([d.asymptote + d.charge_product * COULOMB_EV_ANG / np.sqrt(r ** 2 + self.soft ** 2)
-                         for d in self.diabats], 1)
+        if self.asymptote_fn is not None and coords is not None:
+            asym = np.asarray(self.asymptote_fn(np.atleast_2d(coords)), float)
+        else:
+            asym = np.array([d.asymptote for d in self.diabats])[None, :] * np.ones((len(r), 1))
+        q = np.array([d.charge_product for d in self.diabats])[None, :]
+        return asym + q * COULOMB_EV_ANG / np.sqrt(r[:, None] ** 2 + self.soft ** 2)
 
     def prepare(self, coords):
         coords = np.atleast_2d(np.asarray(coords, float))
@@ -90,7 +98,7 @@ class ChannelFrame(Frame):
         r = coords[:, self.r_index]
         t = lambda a: torch.tensor(np.asarray(a, float))
         x = t(self.features(coords))[:, None, :]
-        return {'base': t(self.tails(r)), 'sw': t(self.envelope(r)), 'slot_in': {'diag': x, 'coup': x}}
+        return {'base': t(self.tails(r, coords)), 'sw': t(self.envelope(r)), 'slot_in': {'diag': x, 'coup': x}}
 
     def assemble(self, c, out):
         N, n = c['base'].shape

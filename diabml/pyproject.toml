@@ -7,7 +7,7 @@ name = "diabml"
 version = "0.1.0"
 description = "Physics-framed learned matrices (CDNN-style) for coupled potential energy surfaces: H3, H2O, CH2OO"
 requires-python = ">=3.10"
-dependencies = ["numpy", "scipy", "matplotlib", "torch"]
+dependencies = ["numpy", "scipy", "matplotlib", "torch", "tomli; python_version < '3.11'"]
 
 [project.optional-dependencies]
 qc = ["pyscf>=2.4"]          # only needed to generate new reference data
