@@ -1,0 +1,20 @@
+{
+  "name": "teach-o2-nn",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "React slide show: teaching a neural network the O–O bond (neural-network potential energy surfaces)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.3.4",
+    "vite": "5.4.11"
+  }
+}

@@ -1,0 +1,97 @@
+/* Palette and type, shared by every slide */
+:root {
+  --ink: #14213d;
+  --paper: #f7f5ef;
+  --white: #ffffff;
+  --muted: #4a5568;
+  --muted2: #5a6475;
+  --rule: #e1ded4;
+  --orange: #e07a2f;
+  --orange-ink: #c2621e;
+  --blue: #2a78d6;
+  --blue-tint: #dce8f7;
+  --blue-ink: #36506e;
+  --on-dark: #bfc8d8;
+  --head: "Space Grotesk", Arial, sans-serif;
+  --body: "IBM Plex Sans", Arial, sans-serif;
+  --mono: "JetBrains Mono", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; }
+body { background: #0b1222; font-family: var(--body); overflow: hidden; }
+
+/* ---------- viewer chrome ---------- */
+.viewer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+.stage-box { position: relative; }
+.stage {
+  position: absolute; left: 0; top: 0;
+  width: 1920px; height: 1080px;
+  transform-origin: 0 0;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+.controls {
+  position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(20, 33, 61, 0.85); color: #f7f5ef;
+  padding: 6px 12px; border-radius: 999px; font-size: 14px;
+  opacity: 0.25; transition: opacity 0.2s;
+}
+.controls:hover, .controls:focus-within { opacity: 1; }
+.controls button {
+  background: transparent; color: inherit; border: 1px solid rgba(247, 245, 239, 0.4);
+  border-radius: 999px; padding: 4px 12px; font: inherit; cursor: pointer;
+}
+.controls button:hover { background: rgba(247, 245, 239, 0.15); }
+.progress { position: fixed; left: 0; top: 0; height: 4px; background: var(--orange); transition: width 0.25s; }
+.notes {
+  position: fixed; left: 0; right: 0; bottom: 0; max-height: 34vh; overflow-y: auto;
+  background: rgba(247, 245, 239, 0.97); color: var(--ink);
+  padding: 18px 28px 64px; font-size: 17px; line-height: 1.5;
+  border-top: 3px solid var(--orange);
+}
+.notes h4 { font-family: var(--head); margin-bottom: 6px; color: var(--orange-ink); }
+.help { color: var(--on-dark); }
+
+/* ---------- slide primitives (all sizes in 1920×1080 canvas px) ---------- */
+.slide {
+  position: absolute; inset: 0;
+  background: var(--paper); color: var(--ink); font-family: var(--body);
+  padding: 128px; display: flex; flex-direction: column; gap: 40px;
+  animation: fade 0.35s ease;
+}
+.slide.dark { background: var(--ink); color: var(--paper); }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.head { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow { font-size: 24px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--orange-ink); }
+.title { font-family: var(--head); font-size: 64px; font-weight: 700; line-height: 1.1; }
+h3, .h3 { font-family: var(--head); font-size: 40px; font-weight: 600; line-height: 1.2; }
+.h3s { font-family: var(--head); font-size: 30px; font-weight: 600; line-height: 1.2; }
+
+.row { display: flex; gap: 48px; }
+.col { display: flex; flex-direction: column; gap: 24px; }
+.flex1 { flex: 1; }
+.p24 { font-size: 24px; line-height: 1.4; }
+.p26 { font-size: 26px; line-height: 1.45; }
+.p28 { font-size: 28px; line-height: 1.4; }
+.p30 { font-size: 30px; line-height: 1.4; }
+.muted { color: var(--muted); }
+.card { background: var(--white); border: 1px solid var(--rule); border-radius: 16px; padding: 28px 36px; display: flex; flex-direction: column; gap: 8px; }
+.panel-dark { background: var(--ink); color: var(--paper); border-radius: 16px; padding: 28px 36px; display: flex; flex-direction: column; gap: 16px; }
+.ruled { border-top: 4px solid var(--blue); padding-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+.ruled.orange { border-top-color: var(--orange); }
+.ruled.violet { border-top-color: #6c5ce0; }
+.stat { font-family: var(--head); font-size: 56px; font-weight: 700; line-height: 1.1; }
+.fig { object-fit: contain; border-radius: 12px; display: block; }
+.mono { font-family: var(--mono); font-size: 24px; line-height: 1.45; white-space: pre; }
+.mono .c { color: #9fb1cc; }
+
+table.t { border-collapse: collapse; width: 100%; }
+table.t th, table.t td { padding: 10px 14px; border-bottom: 1px solid rgba(127, 127, 127, 0.3); text-align: left; }
+table.t .r { text-align: right; }
+
+.pill { border-radius: 12px; padding: 16px 28px; font-size: 30px; }
+.arrow { width: 56px; height: 28px; flex: none; }
+.flow-box { flex: 1; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 6px; }
