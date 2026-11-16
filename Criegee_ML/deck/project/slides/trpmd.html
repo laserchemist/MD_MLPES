@@ -1,0 +1,20 @@
+<section id="trpmd" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">Quantum dynamics that scales · stage rpmd9d</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:56px;font-weight:600;line-height:1.12;color:#1C2433">Ring-polymer dynamics, checked against VCI, recovers most of the quantum shift</h2>
+<img src="/_blob/eb0b9854633ba09d5a8ef48b6a46f1dd" alt="TRPMD spectra at 300 K, 800 to 1520 cm-1, for P = 1 (classical), 32 and 128 beads, with VCI band centres dashed: the quantum bands move from the classical positions toward the VCI centres; P = 32 and 128 coincide" style="width:1664px;height:350px;object-fit:contain;background:#FFFFFF;border:1px solid #DAD3C8;border-radius:8px">
+<div style="display:flex;gap:44px;align-items:start">
+<table style="width:1060px;font-size:25px;color:#1C2433">
+<tr><th style="width:16%">band</th><th style="width:19%;text-align:right">classical</th><th style="width:17%;text-align:right">P = 32</th><th style="width:17%;text-align:right">P = 128</th><th style="width:13%;text-align:right">VCI</th><th style="width:18%;text-align:right">gap closed</th></tr>
+<tr><td>ν₆ O–O</td><td style="text-align:right">915.8 ± 0.7</td><td style="text-align:right">914.5</td><td style="text-align:right">913.8</td><td style="text-align:right">908.1</td><td style="text-align:right">25%</td></tr>
+<tr><td>ν₄ C–O</td><td style="text-align:right">1294.2 ± 0.9</td><td style="text-align:right">1281.7</td><td style="text-align:right">1282.2</td><td style="text-align:right">1277.5</td><td style="text-align:right">72%</td></tr>
+<tr><td>ν₃ scissor</td><td style="text-align:right">1463.3 ± 0.7</td><td style="text-align:right">1440.4</td><td style="text-align:right">1440.9</td><td style="text-align:right">1434.6</td><td style="text-align:right">78%</td></tr>
+</table>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:25px;line-height:1.4;color:#1C2433"><b>Converged:</b> P = 32 and 128 agree within 1 cm⁻¹</p>
+<p style="font-size:25px;line-height:1.4;color:#1C2433"><b>Remaining 5–6 cm⁻¹</b> is TRPMD, not the surface</p>
+<p style="font-size:25px;line-height:1.4;color:#1C2433"><b>Cost:</b> P = 32, 64 × 50 ps, 37 min on a laptop</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 31 · intensity-weighted band centres, cm⁻¹, 300 K; TRPMD: Rossi, Ceriotti &amp; Manolopoulos, JCP 140, 234116 (2014)</p>
+<aside>Thermostatted ring-polymer molecular dynamics (TRPMD): each atom is a ring of P beads joined by springs; the internal modes of the ring are thermostatted (friction 2 lambda omega_k, lambda 0.5) and the spectrum is the Fourier transform of the Kubo-transformed, bead-averaged dipole autocorrelation. Same surface and dipole as the VCI, so differences are the dynamics alone. Classical reference: 160 trajectories from the ir stage; band centres are intensity-weighted over 870-950, 1250-1340 and 1400-1500 cm-1 with bootstrap error bars (TRPMD errors 0.2-0.6 cm-1). VCI centres are the centres of the VCI contour over the same windows. A friction scan (lambda 0 to 1) changed nothing. TRPMD is known to leave part of the anharmonic shift and to broaden bands through the thermostat (Rossi et al. 2014; Benson and Althorpe 2021 for quasi-centroid MD); here it is quantified on a molecule where the exact answer is available. Cost scales with the number of atoms times P, not exponentially with modes as VCI does: the reason it is the route to MVK-oxide. P = 128 took about 4 hours for 64 trajectories; P = 32 is enough here (planning stage rpmd_plan predicts this from the harmonic frequencies).</aside>
+</section>

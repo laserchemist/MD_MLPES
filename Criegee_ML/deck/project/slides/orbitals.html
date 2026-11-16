@@ -1,0 +1,21 @@
+<section id="orbitals" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">Refinement 6 · the method · QD-NEVPT2 added</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:56px;font-weight:600;line-height:1.12;color:#1C2433">The upturn came from state-specific orbitals, not state mixing</h2>
+<div style="display:flex;gap:56px;align-items:start">
+<table style="width:980px;font-size:28px;color:#1C2433">
+<tr><th style="width:46%">curvature (eV/Å²), r(C–O) 1.244 Å</th><th style="width:18%;text-align:right">1.428</th><th style="width:18%;text-align:right">1.458</th><th style="width:18%;text-align:right">1.488</th></tr>
+<tr><td>SC-NEVPT2, state-specific</td><td style="text-align:right">23.1</td><td style="text-align:right">27.9</td><td style="text-align:right">33.9</td></tr>
+<tr style="background:#E3EBF5"><td>SC-NEVPT2, SA3 orbitals</td><td style="text-align:right">15.3</td><td style="text-align:right">12.4</td><td style="text-align:right">9.9</td></tr>
+<tr style="background:#E3EBF5"><td>QD-NEVPT2, 3 states</td><td style="text-align:right">15.2</td><td style="text-align:right">12.4</td><td style="text-align:right">10.0</td></tr>
+<tr><td>CCSD(T)</td><td style="text-align:right">16.5</td><td style="text-align:right">12.8</td><td style="text-align:right">9.9</td></tr>
+</table>
+<ul style="flex:1;font-size:28px;line-height:1.45;color:#4A5160;display:flex;flex-direction:column;gap:12px">
+<li>QD ≈ SC on SA3 orbitals: state mixing negligible</li>
+<li>QD S1–S0 gap 4.7 → 2.9 eV along the cuts: no surface hopping in the well</li>
+<li>SA3 has its own jump at short O–O (~240 meV vs CCSD(T) ~90)</li>
+</ul>
+</div>
+<p style="font-size:28px;line-height:1.4;color:#1C2433"><b>Verdict:</b> CCSD(T) for the ground-state well. For the NEVPT2 excited states: state-averaged orbitals, tracked including the top root.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 20 · run 29_aug, method_cut with qd_nroots = 3</p>
+<aside>The same pattern holds at r(C-O) 1.269 A; at 1.294 A no method turns up. The SA3 jump sits between r(O-O) 1.278 and 1.308 A (1.308 and 1.338 A at r(C-O) 1.294): another averaged solution, the same kind of switch that spoiled the SA4 data. State-averaged orbitals behave better toward dissociation, the direction that matters for ozonolysis and branching.</aside>
+</section>

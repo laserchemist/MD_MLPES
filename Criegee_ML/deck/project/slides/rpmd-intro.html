@@ -1,0 +1,136 @@
+<section id="rpmd-intro" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">Ring-polymer molecular dynamics · the idea</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:56px;font-weight:600;line-height:1.12;color:#1C2433">RPMD: each quantum atom a necklace of beads</h2>
+<div style="display:flex;gap:44px;align-items:start">
+<svg aria-label="Left: a C-O-H fragment drawn as ring polymers: each atom is a ring of 16 beads joined by springs; the hydrogen ring is much larger than the carbon and oxygen rings because lighter atoms spread more. Right: frequency axis from 0 to 3500 wavenumbers with the CH2OO fundamentals as sticks and the internal vibrations of the ring polymer at 300 K, the lowest near 1310 wavenumbers, landing on the C-O stretch" width="720" height="558" viewBox="0 0 800 620">
+<line x1="110" y1="330" x2="250" y2="250" stroke="#C9CFDA" stroke-width="10"/><line x1="250" y1="250" x2="250" y2="110" stroke="#C9CFDA" stroke-width="10"/>
+<line x1="131.1" y1="330.0" x2="114.7" y2="331.9" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="114.7" y1="331.9" x2="120.9" y2="340.9" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="120.9" y1="340.9" x2="114.6" y2="341.1" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="114.6" y1="341.1" x2="110.0" y2="342.4" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="110.0" y1="342.4" x2="104.9" y2="342.2" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="104.9" y1="342.2" x2="105.1" y2="334.9" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="105.1" y1="334.9" x2="97.8" y2="335.0" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="97.8" y1="335.0" x2="99.0" y2="330.0" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="99.0" y1="330.0" x2="86.3" y2="320.2" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="86.3" y1="320.2" x2="99.5" y2="319.5" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="99.5" y1="319.5" x2="105.1" y2="318.2" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="105.1" y1="318.2" x2="110.0" y2="317.0" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="110.0" y1="317.0" x2="114.5" y2="319.2" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="114.5" y1="319.2" x2="117.3" y2="322.7" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="117.3" y1="322.7" x2="121.7" y2="325.2" stroke="#A84A26" stroke-width="2.5"/>
+<line x1="121.7" y1="325.2" x2="131.1" y2="330.0" stroke="#A84A26" stroke-width="2.5"/>
+<circle cx="131.1" cy="330.0" r="7" fill="#A84A26"/>
+<circle cx="114.7" cy="331.9" r="7" fill="#A84A26"/>
+<circle cx="120.9" cy="340.9" r="7" fill="#A84A26"/>
+<circle cx="114.6" cy="341.1" r="7" fill="#A84A26"/>
+<circle cx="110.0" cy="342.4" r="7" fill="#A84A26"/>
+<circle cx="104.9" cy="342.2" r="7" fill="#A84A26"/>
+<circle cx="105.1" cy="334.9" r="7" fill="#A84A26"/>
+<circle cx="97.8" cy="335.0" r="7" fill="#A84A26"/>
+<circle cx="99.0" cy="330.0" r="7" fill="#A84A26"/>
+<circle cx="86.3" cy="320.2" r="7" fill="#A84A26"/>
+<circle cx="99.5" cy="319.5" r="7" fill="#A84A26"/>
+<circle cx="105.1" cy="318.2" r="7" fill="#A84A26"/>
+<circle cx="110.0" cy="317.0" r="7" fill="#A84A26"/>
+<circle cx="114.5" cy="319.2" r="7" fill="#A84A26"/>
+<circle cx="117.3" cy="322.7" r="7" fill="#A84A26"/>
+<circle cx="121.7" cy="325.2" r="7" fill="#A84A26"/>
+<line x1="267.9" y1="250.0" x2="263.9" y2="255.8" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="263.9" y1="255.8" x2="264.0" y2="264.0" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="264.0" y1="264.0" x2="255.8" y2="264.0" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="255.8" y1="264.0" x2="250.0" y2="266.1" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="250.0" y1="266.1" x2="241.5" y2="270.5" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="241.5" y1="270.5" x2="237.1" y2="262.9" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="237.1" y1="262.9" x2="237.1" y2="255.3" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="237.1" y1="255.3" x2="234.7" y2="250.0" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="234.7" y1="250.0" x2="233.2" y2="243.0" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="233.2" y1="243.0" x2="233.2" y2="233.2" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="233.2" y1="233.2" x2="244.3" y2="236.2" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="244.3" y1="236.2" x2="250.0" y2="235.0" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="250.0" y1="235.0" x2="257.7" y2="231.5" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="257.7" y1="231.5" x2="258.8" y2="241.2" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="258.8" y1="241.2" x2="263.7" y2="244.3" stroke="#1C2433" stroke-width="2.5"/>
+<line x1="263.7" y1="244.3" x2="267.9" y2="250.0" stroke="#1C2433" stroke-width="2.5"/>
+<circle cx="267.9" cy="250.0" r="7" fill="#1C2433"/>
+<circle cx="263.9" cy="255.8" r="7" fill="#1C2433"/>
+<circle cx="264.0" cy="264.0" r="7" fill="#1C2433"/>
+<circle cx="255.8" cy="264.0" r="7" fill="#1C2433"/>
+<circle cx="250.0" cy="266.1" r="7" fill="#1C2433"/>
+<circle cx="241.5" cy="270.5" r="7" fill="#1C2433"/>
+<circle cx="237.1" cy="262.9" r="7" fill="#1C2433"/>
+<circle cx="237.1" cy="255.3" r="7" fill="#1C2433"/>
+<circle cx="234.7" cy="250.0" r="7" fill="#1C2433"/>
+<circle cx="233.2" cy="243.0" r="7" fill="#1C2433"/>
+<circle cx="233.2" cy="233.2" r="7" fill="#1C2433"/>
+<circle cx="244.3" cy="236.2" r="7" fill="#1C2433"/>
+<circle cx="250.0" cy="235.0" r="7" fill="#1C2433"/>
+<circle cx="257.7" cy="231.5" r="7" fill="#1C2433"/>
+<circle cx="258.8" cy="241.2" r="7" fill="#1C2433"/>
+<circle cx="263.7" cy="244.3" r="7" fill="#1C2433"/>
+<line x1="318.4" y1="110.0" x2="309.2" y2="134.5" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="309.2" y1="134.5" x2="290.5" y2="150.5" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="290.5" y1="150.5" x2="275.0" y2="170.4" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="275.0" y1="170.4" x2="250.0" y2="126.4" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="250.0" y1="126.4" x2="223.1" y2="174.9" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="223.1" y1="174.9" x2="219.9" y2="140.1" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="219.9" y1="140.1" x2="219.8" y2="122.5" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="219.8" y1="122.5" x2="190.1" y2="110.0" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="190.1" y1="110.0" x2="189.2" y2="84.8" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="189.2" y1="84.8" x2="214.8" y2="74.8" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="214.8" y1="74.8" x2="234.3" y2="72.2" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="234.3" y1="72.2" x2="250.0" y2="53.6" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="250.0" y1="53.6" x2="271.1" y2="58.9" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="271.1" y1="58.9" x2="303.5" y2="56.5" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="303.5" y1="56.5" x2="311.4" y2="84.6" stroke="#2C5F9E" stroke-width="2.5"/>
+<line x1="311.4" y1="84.6" x2="318.4" y2="110.0" stroke="#2C5F9E" stroke-width="2.5"/>
+<circle cx="318.4" cy="110.0" r="7" fill="#2C5F9E"/>
+<circle cx="309.2" cy="134.5" r="7" fill="#2C5F9E"/>
+<circle cx="290.5" cy="150.5" r="7" fill="#2C5F9E"/>
+<circle cx="275.0" cy="170.4" r="7" fill="#2C5F9E"/>
+<circle cx="250.0" cy="126.4" r="7" fill="#2C5F9E"/>
+<circle cx="223.1" cy="174.9" r="7" fill="#2C5F9E"/>
+<circle cx="219.9" cy="140.1" r="7" fill="#2C5F9E"/>
+<circle cx="219.8" cy="122.5" r="7" fill="#2C5F9E"/>
+<circle cx="190.1" cy="110.0" r="7" fill="#2C5F9E"/>
+<circle cx="189.2" cy="84.8" r="7" fill="#2C5F9E"/>
+<circle cx="214.8" cy="74.8" r="7" fill="#2C5F9E"/>
+<circle cx="234.3" cy="72.2" r="7" fill="#2C5F9E"/>
+<circle cx="250.0" cy="53.6" r="7" fill="#2C5F9E"/>
+<circle cx="271.1" cy="58.9" r="7" fill="#2C5F9E"/>
+<circle cx="303.5" cy="56.5" r="7" fill="#2C5F9E"/>
+<circle cx="311.4" cy="84.6" r="7" fill="#2C5F9E"/>
+<text x="50" y="338" font-size="28" font-weight="600" text-anchor="middle" fill="#1C2433" font-family="IBM Plex Sans, Arial">O</text>
+<text x="300" y="258" font-size="28" font-weight="600" text-anchor="middle" fill="#1C2433" font-family="IBM Plex Sans, Arial">C</text>
+<text x="330" y="118" font-size="28" font-weight="600" text-anchor="middle" fill="#1C2433" font-family="IBM Plex Sans, Arial">H</text>
+<text x="180" y="430" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">each atom: P beads on springs</text>
+<text x="180" y="458" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">light H spreads most (~0.16 Å)</text>
+<text x="595" y="40" font-size="24" text-anchor="middle" fill="#1C2433" font-family="IBM Plex Sans, Arial">frequencies at 300 K (cm⁻¹)</text>
+<line x1="420" y1="560" x2="770" y2="560" stroke="#7A808C" stroke-width="2"/>
+<text x="420" y="588" font-size="20" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">0</text>
+<text x="520" y="588" font-size="20" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">1000</text>
+<text x="620" y="588" font-size="20" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">2000</text>
+<text x="720" y="588" font-size="20" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">3000</text>
+<line x1="472.0" y1="560" x2="472.0" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<line x1="482.0" y1="560" x2="482.0" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<line x1="505.3" y1="560" x2="505.3" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<line x1="511.0" y1="560" x2="511.0" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<line x1="540.3" y1="560" x2="540.3" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<line x1="547.5" y1="560" x2="547.5" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<line x1="563.2" y1="560" x2="563.2" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<line x1="723.2" y1="560" x2="723.2" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<line x1="739.1" y1="560" x2="739.1" y2="390" stroke="#2C5F9E" stroke-width="4"/>
+<text x="600" y="380" font-size="22" text-anchor="middle" fill="#2C5F9E" font-family="IBM Plex Sans, Arial">CH₂OO vibrations</text>
+<line x1="550.8" y1="560" x2="550.8" y2="130" stroke="#A84A26" stroke-width="4" stroke-dasharray="10 7"/>
+<text x="550.8" y="118" font-size="20" text-anchor="middle" fill="#A84A26" font-family="IBM Plex Sans, Arial">1308</text>
+<line x1="680.3" y1="560" x2="680.3" y2="130" stroke="#A84A26" stroke-width="4" stroke-dasharray="10 7"/>
+<text x="680.3" y="118" font-size="20" text-anchor="middle" fill="#A84A26" font-family="IBM Plex Sans, Arial">2603</text>
+<text x="595" y="82" font-size="22" text-anchor="middle" fill="#A84A26" font-family="IBM Plex Sans, Arial">ring-polymer springs</text>
+</svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:4px;background:#ECE6DA;padding:14px 22px;border-radius:10px"><h3 style="font-family:'Source Serif 4', Georgia, serif;font-size:28px;font-weight:600;color:#1C2433">The trick (Feynman)</h3><p style="font-size:23px;line-height:1.35;color:#1C2433">In its statistics each quantum atom is a classical ring of P beads on springs (ω<sub>P</sub> = P k<sub>B</sub>T/ħ); plain MD of the rings then gives zero-point energy and the spread of the atoms.</p></div><div style="display:flex;flex-direction:column;gap:4px;background:#ECE6DA;padding:14px 22px;border-radius:10px"><h3 style="font-family:'Source Serif 4', Georgia, serif;font-size:28px;font-weight:600;color:#1C2433">Exact for a harmonic bond</h3><p style="font-size:23px;line-height:1.35;color:#1C2433">Approximate for anharmonic ones: here it closes 25–78% of the gap to VCI.</p></div><div style="display:flex;flex-direction:column;gap:4px;background:#E3EBF5;padding:14px 22px;border-radius:10px"><h3 style="font-family:'Source Serif 4', Georgia, serif;font-size:28px;font-weight:600;color:#1C2433">The springs’ own vibrations</h3><p style="font-size:23px;line-height:1.35;color:#1C2433">The lowest ring mode is ≈ 2πk<sub>B</sub>T/hc = 1310 cm⁻¹ at 300 K for any P: on the C–O band. TRPMD damps it with a thermostat, which broadens bands.</p></div><div style="display:flex;flex-direction:column;gap:4px;background:#ECE6DA;padding:14px 22px;border-radius:10px"><h3 style="font-family:'Source Serif 4', Georgia, serif;font-size:28px;font-weight:600;color:#1C2433">Still classical in time</h3><p style="font-size:23px;line-height:1.35;color:#1C2433">No quantum mixing (Fermi resonances, overtones), no sharp Q branch: those need VCI.</p></div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 30 · Craig &amp; Manolopoulos, JCP 121, 3368 (2004); TRPMD: Rossi, Ceriotti &amp; Manolopoulos, JCP 140, 234116 (2014)</p>
+<aside>For an undergraduate audience. Feynman's path integral says the quantum Boltzmann distribution of a particle is the same as the classical distribution of a closed chain (ring polymer) of P copies, the beads, each feeling 1/P of the potential and joined to its neighbours by harmonic springs of frequency omega_P = P kB T / hbar; the result becomes exact as P grows (the planning stage rpmd_plan shows 97% of the zero-point energy captured at P = 32 for the C-H stretches, 99.8% at P = 128). The ring's size shows the quantum spread of the atom: about 0.16 A for H and a few hundredths of an A for C and O at 300 K. RPMD (Craig and Manolopoulos 2004) goes one step further and runs Newtonian dynamics of the rings, using the bead-averaged dipole to compute the spectrum. Why harmonic springs matter twice. First, for a harmonic potential the ring's centre moves exactly like the quantum oscillator (the Kubo-transformed correlation function is exact), so RPMD is exact in the harmonic limit and errors come only from anharmonicity. Second, the springs between beads are themselves vibrations, with frequencies omega_k = 2 omega_P sin(k pi / P); the lowest tends to 2 pi kB T / hbar, about 1310 cm-1 at 300 K, whatever P is (1308, 2603, 3874 cm-1 for P = 32, drawn on the right). These unphysical vibrations can resonate with real ones, here the C-O stretch, and put spurious peaks or splittings in the spectrum. Thermostatted RPMD (TRPMD, Rossi, Ceriotti and Manolopoulos 2014) attaches a friction to the ring's internal modes only (gamma_k = 2 lambda omega_k, lambda 0.5 here), which removes the resonances but broadens the bands; our friction scan from 0 to 1 did not move the band centres. What remains classical: the motion of the ring's centre, so quantum interference between states (Fermi resonances such as nu4 / 2nu9, overtone and combination bands) and quantized rotation (the Q branch) are missing. That is why TRPMD sits 5-6 cm-1 above VCI on the same surface, and why VCI is the reference wherever it can be done. For MVK-oxide, where VCI cannot cover all 30 modes, TRPMD calibrated this way is the practical quantum method.</aside>
+</section>

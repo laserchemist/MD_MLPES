@@ -1,0 +1,14 @@
+<section id="delta-idea" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">Toward one surface · the Δ idea</p>
+<div style="display:flex;gap:48px;align-items:flex-start">
+<img src="/_blob/0c2a07063c18bec1a5183325c3e73625" alt="Six panels: NEVPT2 states and CCSD(T) points along the O-O bond; the difference Delta measured where both exist; Delta learned and switched off between 1.55 and 1.75 Angstrom; the corrected ground state; why adding w times Delta times the identity keeps the couplings; the five-step recipe" style="width:1060px;height:730px;object-fit:contain;background:#FBFAF7;border:1px solid #DAD3C8;border-radius:8px">
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:52px;font-weight:600;line-height:1.12;color:#1C2433">Correct the cheap global surface only where CCSD(T) can be trusted</h2>
+<p style="font-size:28px;line-height:1.4;color:#1C2433">The network keeps every state and coupling from NEVPT2. CCSD(T) fixes the ground-state well.</p>
+<p style="font-size:28px;line-height:1.4;color:#1C2433">Δ is added to every diagonal element, so the gaps, eigenvectors and hopping are unchanged.</p>
+<p style="font-size:28px;line-height:1.4;color:#1C2433">A switch w turns Δ off where the states crowd together.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 35 · data: 24_spec and 29_aug, r(C–O) 1.27 Å</p>
+<aside>Written for an undergraduate audience. Panel 1: NEVPT2 is multireference, so it describes all four states out to CH2O + O(1D), but at cc-pVDZ and with SA4 noise. CCSD(T) is single-reference: accurate in the well (T1 0.03-0.07) and not valid where the states crowd together. Panel 2: Delta = CCSD(T) minus the network's NEVPT2 ground state at the same geometries. Panel 3: a smooth model of Delta (polynomial or GP), multiplied by a switch w that is 1 in the well and 0 past 1.75 A. Panel 5 is why this is safe for dynamics with surface hopping: adding the same number to every diagonal element of the diabatic matrix shifts all adiabatic energies equally and leaves the mixing (eigenvectors) and therefore the nonadiabatic couplings alone. The switch range and the cubic Delta are illustrative; the next slide shows what the switch costs in force.</aside>
+</section>

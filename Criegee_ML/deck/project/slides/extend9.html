@@ -1,0 +1,15 @@
+<section id="extend9" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">Refinement 7b · stages well9d_extend, rpmd_check</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:56px;font-weight:600;line-height:1.12;color:#1C2433">Extended to 1.5 eV where the quantum beads go, with no loss near the minimum</h2>
+<div style="display:flex;gap:44px;align-items:start">
+<img src="/_blob/ad4e3e21e34b5c2adced25636392cec2" alt="Left: histogram of CCSD(T) energies, the original 3163 points below 0.8 eV and 450 added points from 0.5 to 4.6 eV. Right: error of the surface before extension at the new points, a few meV near 1 eV growing to tens of meV above 1.5 eV" style="width:1060px;height:420px;object-fit:contain;background:#FFFFFF;border:1px solid #DAD3C8;border-radius:8px">
+<div style="flex:1;display:flex;flex-direction:column;gap:18px">
+<p style="font-size:26px;line-height:1.4;color:#1C2433"><b>450 new points</b> from the ring-polymer bead geometries and a harmonic sample, 0.5–4.6 eV</p>
+<p style="font-size:26px;line-height:1.4;color:#1C2433"><b>Old surface, out of sample:</b> 5 meV at 0.8–1 eV, 17 at 1–1.5, 41 at 1.5–2</p>
+<p style="font-size:26px;line-height:1.4;color:#1C2433"><b>Refit to 1.5 eV:</b> held-out 0.59 meV within 0.8 eV (was 0.61)</p>
+<p style="font-size:26px;line-height:1.4;color:#1C2433"><b>Beads outside the data:</b> 10.9% before, 0.6% now; error seen by the beads ≤ 2 meV</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 23 · 400 new CCSD(T)/aVDZ + 50 from rpmd_check; 50 more aVTZ points for the Δ</p>
+<aside>Why: path-integral beads spread over the zero-point width of each atom, about 0.16 A for H, so a 300 K ring polymer visits C-H bond lengths the 0.8 eV fit never saw. rpmd_check computed CCSD(T) at bead geometries and found errors growing with energy; well9d_extend then chose 400 new points by farthest-point sampling from the saved bead geometries (half) and a harmonic sample weighted toward 2 eV (half), spread away from everything already computed, and added the 50 rpmd_check points. The surface before extension, tested at these points it had never seen: RMS 1.5 meV at 0.4-0.8 eV, 4.9 at 0.8-1.0, 16.8 at 1.0-1.5, 40.9 at 1.5-2.0 eV. After refitting with the window raised to 1.5 eV, the held-out error within 0.8 eV is unchanged (0.61 to 0.59 meV), the harmonic frequencies of the low modes move by 2 cm-1 or less, and the C-H stretches by 7 and 11 cm-1. The new rpmd_check, at P = 128: 0.6% of bead geometries outside the fitted range; error 4.1 meV RMS there within the 1.5 eV window, 25 meV beyond it (a rare tail); weighted by how often the beads go there, at most about 2 meV. Before the extension the share outside was 10.9% (P = 16). The TRPMD band centres did not change, which confirms the tail does not matter for the spectrum.</aside>
+</section>

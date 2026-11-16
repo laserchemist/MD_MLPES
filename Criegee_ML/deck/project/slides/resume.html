@@ -1,0 +1,17 @@
+<section id="resume" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">Picking it up again</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:60px;font-weight:600;line-height:1.12;color:#1C2433">Where everything is</h2>
+<table style="font-size:24px;color:#1C2433">
+<tr><th style="width:17%">run</th><th style="width:47%">what</th><th style="width:36%">key result</th></tr>
+<tr><td>24_spec, 25_tracked</td><td>SA4 NEVPT2 reference data</td><td>O–O harmonic 915–1161 over fits</td></tr>
+<tr><td>26_gs, 27_gs4d</td><td>state-specific NEVPT2, 3-D and 4-D</td><td>O–O 937 / 944; smooth contour</td></tr>
+<tr><td>28_aug, 29_aug</td><td>aug-cc-pVDZ; method_cut (CCSD(T), FIC, QD)</td><td>NEVPT2 upturn: orbitals</td></tr>
+<tr><td>30_cc, 32_cc4d_tz</td><td>CCSD(T) 3-D; aug-cc-pVTZ points</td><td>O–O 867; Δ for 4-D</td></tr>
+<tr><td>31_cc4d (4-D)</td><td>CCSD(T) + Δ, DVR, IR</td><td>O–O 923, C–O 1279</td></tr>
+<tr style="background:#E3EBF5"><td>31_cc4d (9-D)</td><td>well9d, _tz, _fit, _dipole, _extend</td><td>3,613 points; 0.59 meV</td></tr>
+<tr style="background:#E3EBF5"><td>31_cc4d (9-D)</td><td>well9d_vci, _bands, _isotopes, rpmd9d, rpmd_check</td><td>vci_9d.html, dynamics_9d.html</td></tr>
+</table>
+<p style="font-family:'Courier New', monospace;font-size:24px;line-height:1.5;color:#1C2433;background:#ECE6DA;padding:20px 28px;border-radius:8px">python -m diabml.workflow.ch2oo well9d | well9d_tz | well9d_fit | well9d_dipole | well9d_vci | well9d_bands | well9d_isotopes | rpmd9d | rpmd_check | well9d_extend  runs/31_cc4d</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 39 · runs under ~/Documents/Research/MD_MLPES/diabml/runs</p>
+<aside>Each run folder has config.toml with the settings used, logs/ with the stage logs, results/ with json and csv, and the html reports: vci_9d.html (methods, VCI tables, band shapes, isotopologues, dynamics comparison, references) and dynamics_9d.html (classical and TRPMD trajectory diagnostics and the rpmd_check section). Docs: docs/workflow_guide.html (every stage and option), docs/dvr_note.html. Code: diabml/vci.py, rotor.py, dynamics/rpmd.py; workflow/well9d.py, vci9.py, isotopes9.py, compare9.py, rpmd9.py, rpmd_check.py, extend9.py. ORCA 6.1.1 arm64 via ORCA_PATH; conda env diabml. For runs longer than an hour on the laptop, start them with caffeinate so the Mac does not sleep. The 3-D and 4-D stages (gs_grid, vib_levels, method_cut, ir, ir_replot, freeze, shell, shell_check) are unchanged. MVK-oxide talk: https://laserchemist.github.io/MD_MLPES/talk/ (source in MD_MLPES/talk/).</aside>
+</section>

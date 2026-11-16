@@ -1,0 +1,89 @@
+<section id="dvr-intro" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">Refinement 3 · the idea</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:56px;font-weight:600;line-height:1.12;color:#1C2433">DVR, the discrete variable representation: quantum levels on a grid</h2>
+<div style="display:flex;gap:48px;align-items:start">
+<svg aria-label="A Morse-shaped bond potential with a row of evenly spaced grid points along the bond length; the lowest three vibrational wavefunctions drawn as stems at the grid points, sitting at their energies, which get closer together going up" width="880" height="600" viewBox="0 0 880 600">
+<line x1="80" y1="520" x2="860" y2="520" stroke="#7A808C" stroke-width="2"/><line x1="80" y1="40" x2="80" y2="520" stroke="#7A808C" stroke-width="2"/>
+<path d="M98.1,184.6 L100.7,200.2 L103.2,215.4 L105.8,230.0 L108.3,244.0 L110.9,257.6 L113.4,270.7 L116.0,283.3 L118.5,295.5 L121.1,307.2 L123.6,318.4 L126.2,329.3 L128.7,339.7 L131.3,349.7 L133.8,359.3 L136.4,368.6 L138.9,377.5 L141.5,386.0 L144.0,394.1 L146.6,401.9 L149.1,409.4 L151.6,416.6 L154.2,423.4 L156.7,429.9 L159.3,436.2 L161.8,442.1 L164.4,447.8 L166.9,453.2 L169.5,458.3 L172.0,463.2 L174.6,467.8 L177.1,472.1 L179.7,476.3 L182.2,480.2 L184.8,483.9 L187.3,487.3 L189.9,490.6 L192.4,493.6 L195.0,496.5 L197.5,499.1 L200.1,501.6 L202.6,503.9 L205.2,506.0 L207.7,508.0 L210.3,509.8 L212.8,511.4 L215.3,512.8 L217.9,514.2 L220.4,515.3 L223.0,516.4 L225.5,517.2 L228.1,518.0 L230.6,518.6 L233.2,519.1 L235.7,519.5 L238.3,519.8 L240.8,520.0 L243.4,520.0 L245.9,519.9 L248.5,519.8 L251.0,519.5 L253.6,519.2 L256.1,518.7 L258.7,518.2 L261.2,517.6 L263.8,516.9 L266.3,516.1 L268.9,515.2 L271.4,514.3 L274.0,513.3 L276.5,512.2 L279.0,511.1 L281.6,509.9 L284.1,508.6 L286.7,507.3 L289.2,505.9 L291.8,504.5 L294.3,503.0 L296.9,501.5 L299.4,499.9 L302.0,498.3 L304.5,496.6 L307.1,494.9 L309.6,493.1 L312.2,491.3 L314.7,489.5 L317.3,487.6 L319.8,485.7 L322.4,483.8 L324.9,481.8 L327.5,479.8 L330.0,477.8 L332.6,475.8 L335.1,473.7 L337.7,471.6 L340.2,469.5 L342.8,467.3 L345.3,465.2 L347.8,463.0 L350.4,460.8 L352.9,458.6 L355.5,456.4 L358.0,454.1 L360.6,451.9 L363.1,449.6 L365.7,447.3 L368.2,445.1 L370.8,442.8 L373.3,440.5 L375.9,438.2 L378.4,435.8 L381.0,433.5 L383.5,431.2 L386.1,428.8 L388.6,426.5 L391.2,424.2 L393.7,421.8 L396.3,419.5 L398.8,417.1 L401.4,414.8 L403.9,412.4 L406.5,410.1 L409.0,407.8 L411.5,405.4 L414.1,403.1 L416.6,400.7 L419.2,398.4 L421.7,396.1 L424.3,393.8 L426.8,391.4 L429.4,389.1 L431.9,386.8 L434.5,384.5 L437.0,382.2 L439.6,379.9 L442.1,377.6 L444.7,375.4 L447.2,373.1 L449.8,370.8 L452.3,368.6 L454.9,366.4 L457.4,364.1 L460.0,361.9 L462.5,359.7 L465.1,357.5 L467.6,355.3 L470.2,353.1 L472.7,350.9 L475.2,348.7 L477.8,346.6 L480.3,344.5 L482.9,342.3 L485.4,340.2 L488.0,338.1 L490.5,336.0 L493.1,333.9 L495.6,331.8 L498.2,329.8 L500.7,327.7 L503.3,325.7 L505.8,323.6 L508.4,321.6 L510.9,319.6 L513.5,317.6 L516.0,315.7 L518.6,313.7 L521.1,311.7 L523.7,309.8 L526.2,307.9 L528.8,306.0 L531.3,304.1 L533.9,302.2 L536.4,300.3 L538.9,298.4 L541.5,296.6 L544.0,294.8 L546.6,292.9 L549.1,291.1 L551.7,289.3 L554.2,287.5 L556.8,285.8 L559.3,284.0 L561.9,282.3 L564.4,280.5 L567.0,278.8 L569.5,277.1 L572.1,275.4 L574.6,273.8 L577.2,272.1 L579.7,270.4 L582.3,268.8 L584.8,267.2 L587.4,265.6 L589.9,264.0 L592.5,262.4 L595.0,260.8 L597.6,259.2 L600.1,257.7 L602.6,256.2 L605.2,254.6 L607.7,253.1 L610.3,251.6 L612.8,250.1 L615.4,248.7 L617.9,247.2 L620.5,245.8 L623.0,244.3 L625.6,242.9 L628.1,241.5 L630.7,240.1 L633.2,238.7 L635.8,237.3 L638.3,236.0 L640.9,234.6 L643.4,233.3 L646.0,232.0 L648.5,230.7 L651.1,229.4 L653.6,228.1 L656.2,226.8 L658.7,225.5 L661.3,224.3 L663.8,223.0 L666.3,221.8 L668.9,220.6 L671.4,219.4 L674.0,218.2 L676.5,217.0 L679.1,215.8 L681.6,214.6 L684.2,213.5 L686.7,212.3 L689.3,211.2 L691.8,210.1 L694.4,209.0 L696.9,207.9 L699.5,206.8 L702.0,205.7 L704.6,204.6 L707.1,203.6 L709.7,202.5 L712.2,201.5 L714.8,200.4 L717.3,199.4 L719.9,198.4 L722.4,197.4 L725.0,196.4 L727.5,195.4 L730.1,194.5 L732.6,193.5 L735.1,192.5 L737.7,191.6 L740.2,190.7 L742.8,189.7 L745.3,188.8 L747.9,187.9 L750.4,187.0 L753.0,186.1 L755.5,185.2 L758.1,184.4 L760.6,183.5 L763.2,182.6 L765.7,181.8 L768.3,181.0 L770.8,180.1 L773.4,179.3 L775.9,178.5 L778.5,177.7 L781.0,176.9 L783.6,176.1 L786.1,175.3 L788.7,174.5 L791.2,173.8 L793.8,173.0 L796.3,172.3 L798.8,171.5 L801.4,170.8 L803.9,170.1 L806.5,169.3 L809.0,168.6 L811.6,167.9 L814.1,167.2 L816.7,166.5 L819.2,165.8 L821.8,165.2 L824.3,164.5 L826.9,163.8 L829.4,163.2 L832.0,162.5 L834.5,161.9 L837.1,161.2 L839.6,160.6 L842.2,160.0 L844.7,159.4 L847.3,158.8 L849.8,158.1 L852.4,157.5 L854.9,157.0 L857.5,156.4 L860.0,155.8" fill="none" stroke="#1C2433" stroke-width="4"/>
+<line x1="152.2" y1="478.8" x2="357.5" y2="478.8" stroke="#2C5F9E" stroke-width="2" stroke-dasharray="6 5"/>
+<line x1="136.6" y1="478.8" x2="136.6" y2="472.1" stroke="#2C5F9E" stroke-width="5"/><circle cx="136.6" cy="472.1" r="6" fill="#2C5F9E"/>
+<line x1="167.9" y1="478.8" x2="167.9" y2="464.6" stroke="#2C5F9E" stroke-width="5"/><circle cx="167.9" cy="464.6" r="6" fill="#2C5F9E"/>
+<line x1="199.1" y1="478.8" x2="199.1" y2="455.8" stroke="#2C5F9E" stroke-width="5"/><circle cx="199.1" cy="455.8" r="6" fill="#2C5F9E"/>
+<line x1="230.3" y1="478.8" x2="230.3" y2="449.1" stroke="#2C5F9E" stroke-width="5"/><circle cx="230.3" cy="449.1" r="6" fill="#2C5F9E"/>
+<line x1="261.6" y1="478.8" x2="261.6" y2="447.5" stroke="#2C5F9E" stroke-width="5"/><circle cx="261.6" cy="447.5" r="6" fill="#2C5F9E"/>
+<line x1="292.8" y1="478.8" x2="292.8" y2="451.0" stroke="#2C5F9E" stroke-width="5"/><circle cx="292.8" cy="451.0" r="6" fill="#2C5F9E"/>
+<line x1="324.0" y1="478.8" x2="324.0" y2="457.5" stroke="#2C5F9E" stroke-width="5"/><circle cx="324.0" cy="457.5" r="6" fill="#2C5F9E"/>
+<line x1="355.2" y1="478.8" x2="355.2" y2="464.5" stroke="#2C5F9E" stroke-width="5"/><circle cx="355.2" cy="464.5" r="6" fill="#2C5F9E"/>
+<line x1="386.5" y1="478.8" x2="386.5" y2="470.3" stroke="#2C5F9E" stroke-width="5"/><circle cx="386.5" cy="470.3" r="6" fill="#2C5F9E"/>
+<text x="850" y="486.8" font-size="24" text-anchor="end" fill="#2C5F9E" font-family="IBM Plex Sans, Arial">v = 0</text>
+<line x1="119.1" y1="402.5" x2="444.1" y2="402.5" stroke="#A84A26" stroke-width="2" stroke-dasharray="6 5"/>
+<line x1="136.6" y1="402.5" x2="136.6" y2="415.9" stroke="#A84A26" stroke-width="5"/><circle cx="136.6" cy="415.9" r="6" fill="#A84A26"/>
+<line x1="167.9" y1="402.5" x2="167.9" y2="425.8" stroke="#A84A26" stroke-width="5"/><circle cx="167.9" cy="425.8" r="6" fill="#A84A26"/>
+<line x1="199.1" y1="402.5" x2="199.1" y2="430.5" stroke="#A84A26" stroke-width="5"/><circle cx="199.1" cy="430.5" r="6" fill="#A84A26"/>
+<line x1="230.3" y1="402.5" x2="230.3" y2="423.6" stroke="#A84A26" stroke-width="5"/><circle cx="230.3" cy="423.6" r="6" fill="#A84A26"/>
+<line x1="292.8" y1="402.5" x2="292.8" y2="387.4" stroke="#A84A26" stroke-width="5"/><circle cx="292.8" cy="387.4" r="6" fill="#A84A26"/>
+<line x1="324.0" y1="402.5" x2="324.0" y2="374.6" stroke="#A84A26" stroke-width="5"/><circle cx="324.0" cy="374.6" r="6" fill="#A84A26"/>
+<line x1="355.2" y1="402.5" x2="355.2" y2="371.2" stroke="#A84A26" stroke-width="5"/><circle cx="355.2" cy="371.2" r="6" fill="#A84A26"/>
+<line x1="386.5" y1="402.5" x2="386.5" y2="375.2" stroke="#A84A26" stroke-width="5"/><circle cx="386.5" cy="375.2" r="6" fill="#A84A26"/>
+<line x1="417.7" y1="402.5" x2="417.7" y2="382.4" stroke="#A84A26" stroke-width="5"/><circle cx="417.7" cy="382.4" r="6" fill="#A84A26"/>
+<line x1="448.9" y1="402.5" x2="448.9" y2="389.5" stroke="#A84A26" stroke-width="5"/><circle cx="448.9" cy="389.5" r="6" fill="#A84A26"/>
+<line x1="480.2" y1="402.5" x2="480.2" y2="394.9" stroke="#A84A26" stroke-width="5"/><circle cx="480.2" cy="394.9" r="6" fill="#A84A26"/>
+<text x="850" y="410.5" font-size="24" text-anchor="end" fill="#A84A26" font-family="IBM Plex Sans, Arial">v = 1</text>
+<line x1="98.7" y1="334.6" x2="520.5" y2="334.6" stroke="#2E7D5B" stroke-width="2" stroke-dasharray="6 5"/>
+<line x1="105.4" y1="334.6" x2="105.4" y2="327.3" stroke="#2E7D5B" stroke-width="5"/><circle cx="105.4" cy="327.3" r="6" fill="#2E7D5B"/>
+<line x1="136.6" y1="334.6" x2="136.6" y2="316.2" stroke="#2E7D5B" stroke-width="5"/><circle cx="136.6" cy="316.2" r="6" fill="#2E7D5B"/>
+<line x1="167.9" y1="334.6" x2="167.9" y2="308.7" stroke="#2E7D5B" stroke-width="5"/><circle cx="167.9" cy="308.7" r="6" fill="#2E7D5B"/>
+<line x1="199.1" y1="334.6" x2="199.1" y2="314.0" stroke="#2E7D5B" stroke-width="5"/><circle cx="199.1" cy="314.0" r="6" fill="#2E7D5B"/>
+<line x1="261.6" y1="334.6" x2="261.6" y2="353.3" stroke="#2E7D5B" stroke-width="5"/><circle cx="261.6" cy="353.3" r="6" fill="#2E7D5B"/>
+<line x1="292.8" y1="334.6" x2="292.8" y2="359.4" stroke="#2E7D5B" stroke-width="5"/><circle cx="292.8" cy="359.4" r="6" fill="#2E7D5B"/>
+<line x1="324.0" y1="334.6" x2="324.0" y2="347.9" stroke="#2E7D5B" stroke-width="5"/><circle cx="324.0" cy="347.9" r="6" fill="#2E7D5B"/>
+<line x1="355.2" y1="334.6" x2="355.2" y2="328.0" stroke="#2E7D5B" stroke-width="5"/><circle cx="355.2" cy="328.0" r="6" fill="#2E7D5B"/>
+<line x1="386.5" y1="334.6" x2="386.5" y2="311.0" stroke="#2E7D5B" stroke-width="5"/><circle cx="386.5" cy="311.0" r="6" fill="#2E7D5B"/>
+<line x1="417.7" y1="334.6" x2="417.7" y2="303.3" stroke="#2E7D5B" stroke-width="5"/><circle cx="417.7" cy="303.3" r="6" fill="#2E7D5B"/>
+<line x1="448.9" y1="334.6" x2="448.9" y2="304.3" stroke="#2E7D5B" stroke-width="5"/><circle cx="448.9" cy="304.3" r="6" fill="#2E7D5B"/>
+<line x1="480.2" y1="334.6" x2="480.2" y2="310.4" stroke="#2E7D5B" stroke-width="5"/><circle cx="480.2" cy="310.4" r="6" fill="#2E7D5B"/>
+<line x1="511.4" y1="334.6" x2="511.4" y2="317.7" stroke="#2E7D5B" stroke-width="5"/><circle cx="511.4" cy="317.7" r="6" fill="#2E7D5B"/>
+<line x1="542.6" y1="334.6" x2="542.6" y2="323.9" stroke="#2E7D5B" stroke-width="5"/><circle cx="542.6" cy="323.9" r="6" fill="#2E7D5B"/>
+<line x1="573.9" y1="334.6" x2="573.9" y2="328.4" stroke="#2E7D5B" stroke-width="5"/><circle cx="573.9" cy="328.4" r="6" fill="#2E7D5B"/>
+<text x="850" y="342.6" font-size="24" text-anchor="end" fill="#2E7D5B" font-family="IBM Plex Sans, Arial">v = 2</text>
+<circle cx="105.4" cy="520" r="5" fill="#A84A26"/>
+<circle cx="136.6" cy="520" r="5" fill="#A84A26"/>
+<circle cx="167.9" cy="520" r="5" fill="#A84A26"/>
+<circle cx="199.1" cy="520" r="5" fill="#A84A26"/>
+<circle cx="230.3" cy="520" r="5" fill="#A84A26"/>
+<circle cx="261.6" cy="520" r="5" fill="#A84A26"/>
+<circle cx="292.8" cy="520" r="5" fill="#A84A26"/>
+<circle cx="324.0" cy="520" r="5" fill="#A84A26"/>
+<circle cx="355.2" cy="520" r="5" fill="#A84A26"/>
+<circle cx="386.5" cy="520" r="5" fill="#A84A26"/>
+<circle cx="417.7" cy="520" r="5" fill="#A84A26"/>
+<circle cx="448.9" cy="520" r="5" fill="#A84A26"/>
+<circle cx="480.2" cy="520" r="5" fill="#A84A26"/>
+<circle cx="511.4" cy="520" r="5" fill="#A84A26"/>
+<circle cx="542.6" cy="520" r="5" fill="#A84A26"/>
+<circle cx="573.9" cy="520" r="5" fill="#A84A26"/>
+<circle cx="605.1" cy="520" r="5" fill="#A84A26"/>
+<circle cx="636.3" cy="520" r="5" fill="#A84A26"/>
+<circle cx="667.6" cy="520" r="5" fill="#A84A26"/>
+<circle cx="698.8" cy="520" r="5" fill="#A84A26"/>
+<circle cx="730.0" cy="520" r="5" fill="#A84A26"/>
+<circle cx="761.3" cy="520" r="5" fill="#A84A26"/>
+<circle cx="792.5" cy="520" r="5" fill="#A84A26"/>
+<circle cx="823.7" cy="520" r="5" fill="#A84A26"/>
+<text x="470.0" y="564" font-size="24" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">bond length, on a grid of points</text>
+<text x="30" y="280.0" font-size="24" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial" transform="rotate(-90 30 280.0)">energy</text>
+<line x1="123.25581395348834" y1="478.8" x2="123.25581395348834" y2="402.5" stroke="#7A808C" stroke-width="2"/>
+<line x1="123.25581395348834" y1="402.5" x2="123.25581395348834" y2="334.6" stroke="#7A808C" stroke-width="2"/>
+<text x="109.25581395348834" y="448.6" font-size="22" text-anchor="end" fill="#1C2433" font-family="IBM Plex Sans, Arial">IR line</text>
+</svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;gap:20px;align-items:baseline"><p style="font-family:'Source Serif 4', Georgia, serif;font-size:36px;font-weight:600;color:#A84A26;width:36px">1</p><p style="flex:1;font-size:27px;line-height:1.4;color:#1C2433"><b>A ruler of points.</b> Replace the smooth bond length by evenly spaced points: the “discrete variables”.</p></div>
+<div style="display:flex;gap:20px;align-items:baseline"><p style="font-family:'Source Serif 4', Georgia, serif;font-size:36px;font-weight:600;color:#A84A26;width:36px">2</p><p style="flex:1;font-size:27px;line-height:1.4;color:#1C2433"><b>Potential energy is easy:</b> just V at each point, the diagonal of a matrix.</p></div>
+<div style="display:flex;gap:20px;align-items:baseline"><p style="font-family:'Source Serif 4', Georgia, serif;font-size:36px;font-weight:600;color:#A84A26;width:36px">3</p><p style="flex:1;font-size:27px;line-height:1.4;color:#1C2433"><b>Kinetic energy</b> links each point to its neighbours: how sharply the wave bends.</p></div>
+<div style="display:flex;gap:20px;align-items:baseline"><p style="font-family:'Source Serif 4', Georgia, serif;font-size:36px;font-weight:600;color:#A84A26;width:36px">4</p><p style="flex:1;font-size:27px;line-height:1.4;color:#1C2433"><b>Diagonalise the matrix:</b> eigenvalues are the energy levels, eigenvectors the wave at each point.</p></div>
+<p style="font-size:26px;line-height:1.4;color:#1C2433;background:#E3EBF5;padding:18px 24px;border-radius:10px">The IR line is E₁ − E₀. In a real, anharmonic well the levels crowd together going up, so it comes out below the harmonic frequency on its own.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 13 · drawn from a real 24-point DVR of a model (Morse) bond</p>
+<aside>For an undergraduate audience. The Schrödinger equation for a vibrating bond is a differential equation; on a grid it becomes a matrix equation, which a computer solves in milliseconds. Why it is called discrete variable representation: the unknowns are the values of the wavefunction at discrete points of the variable (here the bond length), and the potential energy matrix is diagonal in that representation, so no integrals over the surface are needed, only its value at each point. The kinetic-energy matrix has a closed form for evenly spaced points (Colbert and Miller, J. Chem. Phys. 96, 1982 (1992)); it is like the finite-difference second derivative of a calculus class, but exact for functions that fit on the grid. Our 3-D and 4-D calculations used the same idea with 28 points per coordinate in 3-D (21,952 grid points) and 20 per coordinate in 4-D. In the figure the stems are the eigenvector entries: v = 0 has no node, v = 1 one node, v = 2 two; the spacing E2 - E1 is about 11% smaller than E1 - E0, which is the anharmonicity. The cost grows as (points per coordinate) to the power of the number of coordinates, which is why the full 9-D problem later uses VCI instead.</aside>
+</section>

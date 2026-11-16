@@ -1,0 +1,116 @@
+{
+ "v": 4,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-02T19:30:00Z"
+ },
+ "lists": "css",
+ "title": "Criegee intermediates: ML surfaces benchmarked on vibrational spectroscopy",
+ "cover": "cover",
+ "order": [
+  "cover",
+  "agenda",
+  "motivation",
+  "goal",
+  "benchmarks",
+  "kuwata",
+  "approach",
+  "headline",
+  "roadmap",
+  "nn-limit",
+  "sa4-noise",
+  "gs-grid",
+  "dvr-intro",
+  "dvr",
+  "rot-doublets",
+  "rot-intuition",
+  "contour",
+  "fourd",
+  "method-cut",
+  "orbitals",
+  "tz-results",
+  "surface9",
+  "extend9",
+  "vci-intro",
+  "vci-method",
+  "vci-table",
+  "vci-bands",
+  "isotopes",
+  "cd2oo",
+  "rpmd-intro",
+  "trpmd",
+  "recipe",
+  "mvko",
+  "diabatic-net",
+  "delta-idea",
+  "switch-ramp",
+  "gp-vs-poly",
+  "next",
+  "resume",
+  "summary",
+  "levels3d",
+  "basis",
+  "nevpt2"
+ ],
+ "sections": {
+  "s0": {
+   "description": "Why: hot Criegees from ozonolysis, larger Criegees, and the spectroscopy that tests a surface",
+   "start": "cover"
+  },
+  "s1": {
+   "description": "The result for CH2OO, and the seven refinements that led to it",
+   "start": "headline"
+  },
+  "s2": {
+   "description": "Refinements 1-3: a smooth fit, clean data, quantum levels",
+   "start": "nn-limit"
+  },
+  "s3": {
+   "description": "Refinement 4: rotation sets the band shape",
+   "start": "rot-doublets"
+  },
+  "s4": {
+   "description": "Refinements 5-6: the CH2 coordinates and CCSD(T) for the well",
+   "start": "fourd"
+  },
+  "s5": {
+   "description": "Refinement 7: the full 9-D CCSD(T) surface",
+   "start": "surface9"
+  },
+  "s6": {
+   "description": "Quantum vibrations and rotations: VCI against experiment and the literature",
+   "start": "vci-intro"
+  },
+  "s7": {
+   "description": "Independent tests: isotopologues, CD2OO and ring-polymer dynamics",
+   "start": "isotopes"
+  },
+  "s8": {
+   "description": "What it took, and what carries over to MVK-oxide",
+   "start": "recipe"
+  },
+  "s9": {
+   "description": "Beyond the well: the complementary diabatic network for multistate and hot-molecule dynamics",
+   "start": "diabatic-net"
+  },
+  "s10": {
+   "description": "Next steps and where everything is",
+   "start": "next"
+  },
+  "s11": {
+   "description": "Appendix: earlier 3-D and 4-D results in detail",
+   "start": "summary"
+  }
+ },
+ "faces": {
+  "source-serif-4": {
+   "family": "Source Serif 4",
+   "href": "https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400..700&display=swap"
+  },
+  "ibm-plex-sans": {
+   "family": "IBM Plex Sans",
+   "href": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+  }
+ },
+ "designSystems": []
+}

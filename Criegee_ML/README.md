@@ -2,9 +2,9 @@
 
 **Criegee intermediates investigated with new machine-learned multireference and Δ-ML surfaces, benchmarked on vibrational spectroscopy**
 
-Jonathan M. Smith, Temple University · project status, 4 November 2026
+Jonathan M. Smith, Temple University · research update, November 2026
 
-A React slide viewer (same viewer as `../Energized_molecules`). The 28 slides are 1920×1080 HTML, scaled to the browser window.
+A React slide viewer (same viewer as `../Energized_molecules`). The 43 slides are 1920×1080 HTML, scaled to the browser window.
 The built site is in `slides/`, served at `https://laserchemist.github.io/MD_MLPES/Criegee_ML/slides/`.
 
 ## Viewing
@@ -23,7 +23,7 @@ The **PDF** button prints one slide per page; choose "Save as PDF".
 ## Update the slides
 
 ```bash
-python3 tools/sync_slides.py path/to/deck/project   # folder with deck.json and slides/*.html
+python3 tools/sync_slides.py deck/project           # deck.json and slides/*.html (a copy of the Slides deck is kept in deck/)
 npm install        # once
 npm run build      # writes dist/
 rm -rf slides && cp -r dist slides
@@ -45,7 +45,14 @@ tools/sync_slides.py   regenerates src/slides.json from a Slides deck export
 
 ## Key references
 
+- R. Criegee, *Angew. Chem. Int. Ed. Engl.* **14**, 745 (1975) (mechanism of ozonolysis).
+- D. Stone et al., *Phys. Chem. Chem. Phys.* **20**, 24940 (2018) (CH₂OO and CD₂OO decomposition kinetics).
 - B. N. Simiyu and J. M. Smith, poster, ACS Fall 2025 National Meeting.
 - K. T. Kuwata, *J. Phys. Chem. A* **128**, 7331 (2024).
 - Y.-T. Su et al., *Science* **340**, 174 (2013).
 - T. L. Nguyen et al., *J. Phys. Chem. A* **119**, 5524 (2015).
+- J. Li et al., *J. Phys. Chem. Lett.* **5**, 2364 (2014) (full-dimensional VCI for CH₂OO).
+- Y.-H. Huang et al., *J. Chem. Phys.* **142**, 214301 (2015); **145**, 044305 (2016).
+- Y.-P. Chang et al., *J. Chem. Phys.* **146**, 244302 (2017); J. Li, *Chin. J. Chem. Phys.* **33**, 65 (2020) (CD₂OO VCI).
+- M. Nakajima and Y. Endo, *J. Chem. Phys.* **139**, 101103 (2013); M. C. McCarthy et al., *J. Phys. Chem. Lett.* **4**, 4133 (2013).
+- C. A. Chung and Y.-P. Lee, *Commun. Chem.* **4**, 8 (2021) (MVK-oxide IR).

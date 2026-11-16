@@ -29,6 +29,14 @@ BLOBS = {
     '0c2a07063c18bec1a5183325c3e73625': 'delta_idea.png',
     'b046159feb6d44d74d9d05d03fa4f09c': 'switch_penalty.png',
     '38e497b488fb134b6622afa87e910e1e': 'gp_vs_poly.png',
+    'b45af018b63775ae62965153a399aac7': 'vci_spectra.png',
+    '87c7b3b8cd469e8149feb13b0d11f6a2': 'vci_bands.png',
+    '07709e3211524d0d7bf8196504be5143': 'vci_isotopes.png',
+    '25d3b46db80362cce2a36134ced55b53': 'vci_dynamics.png',
+    'eb0b9854633ba09d5a8ef48b6a46f1dd': 'trpmd_spectra.png',
+    'ad4e3e21e34b5c2adced25636392cec2': 'well9d_extend.png',
+    '82382c426a9b3727a44217abbc1d32d9': 'well9d_fit.png',
+    '34dec07f17807b6304c154343d33fff8': 'ch2oo_diabats.png',
 }
 
 
@@ -52,6 +60,7 @@ def main(project):
         if missing:
             sys.exit(f'{sid}: unknown image ids {missing}; add them to BLOBS')
         html = re.sub(r'/_blob/([0-9a-f]{32})', lambda mm: 'figures/' + BLOBS[mm.group(1)], html)
+        html = re.sub(r'<a href="#slide-(\d+)"', r'<a data-internal href="#/\1"', html)   # links to other slides
         html = html.replace('<a href=', '<a target="_blank" rel="noopener" href=')
         t = re.search(r'<h[12][^>]*>(.*?)</h[12]>', html, re.S)
         if sid in starts:

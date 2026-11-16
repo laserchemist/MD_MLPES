@@ -1,0 +1,23 @@
+<section id="vci-method" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">Vibrational configuration interaction · stage well9d_vci</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:60px;font-weight:600;line-height:1.12;color:#1C2433">VCI in practice, on the 9-D surface</h2>
+<div style="display:flex;gap:48px;align-items:start">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'Source Serif 4', Georgia, serif;font-size:38px;color:#1C2433;background:#ECE6DA;padding:26px 32px;border-radius:12px">H = ½ Σ P<sub>k</sub>² + ½ Σ (Π<sub>α</sub>−π<sub>α</sub>) μ<sub>αβ</sub> (Π<sub>β</sub>−π<sub>β</sub>) − ⅛ Σ μ<sub>αα</sub> + V(Q)</p>
+<ul style="font-size:28px;line-height:1.45;color:#4A5160;display:flex;flex-direction:column;gap:10px">
+<li>Watson Hamiltonian in Eckart normal modes, with Coriolis coupling</li>
+<li>V as an n-mode expansion to 3-mode terms; dipole to 2-mode</li>
+<li>Basis: low modes to 7000 cm⁻¹ × C–H stretches to 3 quanta, 36,890 states</li>
+<li>Larger basis changes fundamentals by ≤ 4 cm⁻¹, zero-point by 0.03</li>
+</ul>
+</div>
+<div style="width:560px;display:flex;flex-direction:column;gap:14px;background:#E3EBF5;padding:32px 36px;border-radius:12px">
+<h3 style="font-family:'Source Serif 4', Georgia, serif;font-size:36px;font-weight:600;color:#1C2433">Then rotation (well9d_bands)</h3>
+<p style="font-size:26px;line-height:1.4;color:#1C2433">A, B, C for every level from ⟨μ⟩ plus Coriolis terms</p>
+<p style="font-size:26px;line-height:1.4;color:#1C2433">Asymmetric-rotor line strengths, 300 K</p>
+<p style="font-size:26px;line-height:1.4;color:#1C2433">43 bands, 2.3 million lines, 22 s</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 25 · Watson, Mol. Phys. 15, 479 (1968); n-mode: Carter, Culik &amp; Bowman, JCP 107, 10458 (1997)</p>
+<aside>Code: diabml/vci.py, workflow/vci9.py, rotor.py. The same approach as MULTIMODE (Bowman and Carter), written for this project so it can read our surfaces directly. Potential grids: 174,989 points; where the polynomial is used outside its fitted range it is guarded by the harmonic value, which changed nothing measurable. Sparse matrix solved for the lowest eigenvalues with ARPACK; about 5 minutes on a laptop. Assignments by overlap with the product basis; the fundamentals have 69-96% of a single basis state except the C-H symmetric stretch, which sits in a dense polyad near 3030 cm-1. Intensities from 2-mode dipole matrix elements, in km/mol. Zero-point energy 6626.7 cm-1 (harmonic 6717.2, GVPT2 6614.6). Rotational constants: ground state 2.5618, 0.41158, 0.35388 cm-1 against experiment 2.5934, 0.41579, 0.35763; for the band shapes the ground state is anchored to experiment and every other level takes its computed change from the ground state.</aside>
+</section>

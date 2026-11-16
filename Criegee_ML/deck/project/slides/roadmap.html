@@ -1,0 +1,51 @@
+<section id="roadmap" data-transition="fade" style="background:#F6F3EC;color:#1C2433;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A84A26">How we got there</p>
+<h2 style="font-family:'Source Serif 4', Georgia, serif;font-size:56px;font-weight:600;line-height:1.12;color:#1C2433">Seven refinements, each fixing what the previous surface got wrong</h2>
+<div style="display:flex;gap:48px;align-items:start">
+<table style="width:1080px;font-size:24px;color:#1C2433">
+<tr><th style="width:5%">#</th><th style="width:40%">refinement</th><th style="width:55%">what it fixed</th></tr>
+<tr><td>1</td><td>Polynomial on the well data</td><td>NN ensemble left the O–O curvature to chance</td></tr>
+<tr><td>2</td><td>State-specific reference grid</td><td>SA4 data scattered 5–50 meV; now 0.3 meV</td></tr>
+<tr><td>3</td><td>Quantum levels (DVR)</td><td>band positions from levels, not classical peaks</td></tr>
+<tr><td>4</td><td>Many trajectories, rotation kept</td><td>band shape is the P/R rotational contour</td></tr>
+<tr><td>5</td><td>CH₂ coordinates (4-D)</td><td>C–O / scissor mixing and intensity split</td></tr>
+<tr><td>6</td><td>CCSD(T) + aug-cc-pVTZ Δ</td><td>NEVPT2 upturn gone; C–O within 7 cm⁻¹</td></tr>
+<tr style="background:#E3EBF5"><td><b>7</b></td><td><b>Full 9-D surface, VCI + rotor</b></td><td><b>C–H stretches, rock, wag: all five bands</b></td></tr>
+</table>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<svg aria-label="Mean absolute error of the O-O, C-O and scissor fundamentals against experiment at four stages: 3-D NEVPT2 53 cm-1, 4-D NEVPT2 53, 4-D CCSD(T) plus Delta 22, 9-D CCSD(T) with VCI 4.4; the largest single error falls from 79 to 11 cm-1" width="536" height="470" viewBox="0 0 536 470">
+<line x1="70" y1="20" x2="70" y2="360" stroke="#7A808C" stroke-width="2"/>
+<line x1="70" y1="360" x2="530" y2="360" stroke="#7A808C" stroke-width="2"/>
+<text x="60" y="368" font-size="22" text-anchor="end" fill="#4A5160" font-family="IBM Plex Sans, Arial">0</text>
+<text x="60" y="208" font-size="22" text-anchor="end" fill="#4A5160" font-family="IBM Plex Sans, Arial">40</text>
+<text x="60" y="48" font-size="22" text-anchor="end" fill="#4A5160" font-family="IBM Plex Sans, Arial">80</text>
+<line x1="70" y1="200" x2="530" y2="200" stroke="#DAD3C8" stroke-width="1"/>
+<line x1="70" y1="40" x2="530" y2="40" stroke="#DAD3C8" stroke-width="1"/>
+<rect x="95" y="146" width="80" height="214" fill="#9AA3B2"/>
+<rect x="205" y="148" width="80" height="212" fill="#9AA3B2"/>
+<rect x="315" y="274" width="80" height="86" fill="#9AA3B2"/>
+<rect x="425" y="342" width="80" height="18" fill="#A84A26"/>
+<line x1="95" y1="44" x2="175" y2="44" stroke="#1C2433" stroke-width="4"/>
+<line x1="205" y1="44" x2="285" y2="44" stroke="#1C2433" stroke-width="4"/>
+<line x1="315" y1="184" x2="395" y2="184" stroke="#1C2433" stroke-width="4"/>
+<line x1="425" y1="317" x2="505" y2="317" stroke="#1C2433" stroke-width="4"/>
+<text x="135" y="136" font-size="24" text-anchor="middle" fill="#1C2433" font-family="IBM Plex Sans, Arial">53</text>
+<text x="245" y="138" font-size="24" text-anchor="middle" fill="#1C2433" font-family="IBM Plex Sans, Arial">53</text>
+<text x="355" y="264" font-size="24" text-anchor="middle" fill="#1C2433" font-family="IBM Plex Sans, Arial">22</text>
+<text x="465" y="305" font-size="24" font-weight="600" text-anchor="middle" fill="#A84A26" font-family="IBM Plex Sans, Arial">4.4</text>
+<text x="135" y="392" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">3-D</text>
+<text x="135" y="418" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">NEVPT2</text>
+<text x="245" y="392" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">4-D</text>
+<text x="245" y="418" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">NEVPT2</text>
+<text x="355" y="392" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">4-D</text>
+<text x="355" y="418" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial">CCSD(T)+Δ</text>
+<text x="465" y="392" font-size="22" font-weight="600" text-anchor="middle" fill="#A84A26" font-family="IBM Plex Sans, Arial">9-D</text>
+<text x="465" y="418" font-size="22" font-weight="600" text-anchor="middle" fill="#A84A26" font-family="IBM Plex Sans, Arial">VCI</text>
+<text x="20" y="200" font-size="22" text-anchor="middle" fill="#4A5160" font-family="IBM Plex Sans, Arial" transform="rotate(-90 20 200)">cm⁻¹</text>
+</svg>
+<p style="font-size:24px;line-height:1.4;color:#4A5160">Bars: mean |error| of O–O, C–O and scissor against experiment. Black lines: the largest of the three.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7A808C">J. M. Smith · Temple University · 9 · runs 26_gs, 27_gs4d, 31_cc4d (4-D), 31_cc4d (9-D); expt.: Huang et al., JCP 142, 214301 (2015)</p>
+<aside>The deck's spine. Each step was forced by a specific failure of the step before, and each later section of the deck backs one row. Values in the chart (cm-1, quantum fundamentals against 909.3, 1285.9, 1434.1): 3-D state-specific NEVPT2/cc-pVDZ (26_gs): O-O 937, C-O 1365, no scissor in the model (mean of two bands); 4-D NEVPT2 (27_gs4d): 944, 1331, 1513; 4-D CCSD(T)/aug-cc-pVDZ plus aug-cc-pVTZ Delta (31_cc4d, DVR): 923, 1279, 1478; 9-D CCSD(T) plus 9-D aug-cc-pVTZ Delta with VCI (31_cc4d, well9d stages): 910.0, 1275.1, 1432.3. A further step, extending the 9-D surface to 1.5 eV where the ring-polymer beads go, changed none of the fundamentals by more than 2 cm-1 and is shown later with the TRPMD check. Lessons that were not refinements but ruled options out: NEVPT2 with state-specific orbitals turns up on the outer O-O wall (method_cut), and aug-cc-pVDZ alone softens O-O; both are in the appendix.</aside>
+</section>
