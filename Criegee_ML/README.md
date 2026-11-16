@@ -4,7 +4,7 @@
 
 Jonathan M. Smith, Temple University · research update, November 2026
 
-A React slide viewer (same viewer as `../Energized_molecules`). The 43 slides are 1920×1080 HTML, scaled to the browser window.
+A React slide viewer (same viewer as `../Energized_molecules`). The 44 slides are 1920×1080 HTML, scaled to the browser window.
 The built site is in `slides/`, served at `https://laserchemist.github.io/MD_MLPES/Criegee_ML/slides/`.
 
 ## Viewing

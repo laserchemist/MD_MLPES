@@ -37,6 +37,7 @@ BLOBS = {
     'ad4e3e21e34b5c2adced25636392cec2': 'well9d_extend.png',
     '82382c426a9b3727a44217abbc1d32d9': 'well9d_fit.png',
     '34dec07f17807b6304c154343d33fff8': 'ch2oo_diabats.png',
+    '044f7974867e56589dbd7d4f08aeed9a': 'ch2oo_trajectory.webp',
 }
 
 
