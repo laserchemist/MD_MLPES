@@ -4,12 +4,65 @@
     python -m diabml.workflow.ch2oo refs     RUN     # SA-CASSCF (+ NEVPT2) scan; resumable, checkpoint every point
     python -m diabml.workflow.ch2oo status   RUN     # progress and time per point of a running scan
     python -m diabml.workflow.ch2oo ladder   RUN     # fragment IE / EA (delta-CCSD(T)) for the ion-pair asymptote
+    python -m diabml.workflow.ch2oo nacs     RUN     # ab initio derivative couplings along r_OO (test of diabaticity)
     python -m diabml.workflow.ch2oo train    RUN     # framed CDNN vs CDNN: random split, extrapolation, learning curve,
                                                      # optional diabatic restraint
     python -m diabml.workflow.ch2oo figures  RUN
     python -m diabml.workflow.ch2oo tables   RUN
     python -m diabml.workflow.ch2oo report   RUN     # RUN/report.html
     python -m diabml.workflow.ch2oo all      RUN     # refs, ladder, train, figures, tables, report
+
+Active learning (template "active", see diabml/workflow/active.py): one run folder per round,
+    python -m diabml.workflow.ch2oo propose  RUN     # committee of models; geometries where they disagree most
+    python -m diabml.workflow.ch2oo compute  RUN     # new references there, at the level of the base data
+    python -m diabml.workflow.ch2oo merge    RUN     # base + new -> data/refs.npz
+    (all = refs, ladder, propose, compute, merge, train, figures, tables, report)
+
+Active learning from dynamics (template "explore", see diabml/workflow/explore.py):
+    python -m diabml.workflow.ch2oo explore  RUN     # watched trajectories; flag where the surface becomes uncertain
+    (all = refs, ladder, explore, compute, merge, train, figures, tables, report; plus RUN/dynamics.html)
+
+Fill a region with a grid of new points (see diabml/workflow/fill.py), in an active/explore run folder:
+    python -m diabml.workflow.ch2oo fill     RUN     # grid in [[fill.box]] minus points near the data -> proposed.npz
+    (then compute and merge as for any round)
+
+Audit of the reference data with ORCA (see diabml/workflow/audit.py):
+    python -m diabml.workflow.ch2oo audit RUN --orca /path/to/orca_folder --jobs 6   # -> RUN/audit.html
+    python -m diabml.workflow.ch2oo repair RUN    # -> RUN/data/repaired/{nevpt2,qd_nevpt2}/ (diabml/workflow/repair.py)
+
+Follow one SA-CASSCF solution through a region (see diabml/workflow/track.py):
+    python -m diabml.workflow.ch2oo track      RUN --jobs 6   # -> RUN/data/tracked/refs.npz (smooth near the minimum)
+
+Dipoles and IR (see diabml/workflow/dipoles.py and ir.py):
+    python -m diabml.workflow.ch2oo dipoles    RUN --jobs 6   # finite-field dipoles at every point -> data/dipoles.npz
+    python -m diabml.workflow.ch2oo dipole_fit RUN            # dipole surface -> models/dipole.pt
+    python -m diabml.workflow.ch2oo ir         RUN --jobs 6   # hot-molecule IR from dynamics -> RUN/ir.html
+    python -m diabml.workflow.ch2oo gs_grid    RUN --jobs 6   # ground-state CASSCF+NEVPT2 grid at the minimum (ORCA)
+    python -m diabml.workflow.ch2oo method_cut RUN --jobs 8   # CCSD(T) and FIC-NEVPT2 along r(O-O) cuts of the grid
+    python -m diabml.workflow.ch2oo freeze     RUN --name benchmark   # fix the validated well surface (a switch)
+    python -m diabml.workflow.ch2oo shell      RUN --batch 1          # CCSD(T) shell beyond the well, one batch
+    python -m diabml.workflow.ch2oo shell_check RUN                   # benchmark error and Delta on the shell
+    python -m diabml.workflow.ch2oo well9d     RUN --batch 1 [-v]     # 9-D CCSD(T) well: Hessian, then sampled batches
+    python -m diabml.workflow.ch2oo well9d_fit RUN [-v]               # 9-D polynomial, harmonic modes, checks
+    python -m diabml.workflow.ch2oo well9d_tz  RUN [-v]               # aug-cc-pVTZ subset: 9-D basis correction
+    python -m diabml.workflow.ch2oo well9d_vpt2 RUN [-v]              # anharmonic fundamentals, Fermi resonances
+    python -m diabml.workflow.ch2oo well9d_dipole RUN [-v]            # finite-field dipoles -> 9-D dipole surface
+    python -m diabml.workflow.ch2oo well9d_vci RUN [-v]               # variational levels, absorption and emission
+    python -m diabml.workflow.ch2oo well9d_bands RUN                  # rotationally resolved bands from the VCI levels
+    python -m diabml.workflow.ch2oo well9d_isotopes RUN [-v]          # isotopologues: microwave constants, shifts
+    python -m diabml.workflow.ch2oo well9d_compare RUN                # classical dynamics vs VCI on the same surface
+    python -m diabml.workflow.ch2oo rpmd_plan RUN                     # TRPMD planning: beads, resolution, run time
+    python -m diabml.workflow.ch2oo rpmd9d RUN [-v]                   # TRPMD spectra (P = 1, 16, 32) on the 9-D surface
+    python -m diabml.workflow.ch2oo rpmd_check RUN [--jobs N] -v       # CCSD(T) where the beads leave the fitted range
+    python -m diabml.workflow.ch2oo well9d_extend RUN [--jobs N] -v    # new CCSD(T) to 2 eV from the beads, then refit
+    python -m diabml.workflow.ch2oo dynamics_report RUN               # dynamics_9d.html: trajectory diagnostics
+    python -m diabml.workflow.ch2oo vci_report RUN                    # vci_9d.html: results and full methods
+    python -m diabml.workflow.ch2oo ir RUN    ([ir] surface = "well9d") # spectra on the 9-D well, no restraints
+    python -m diabml.workflow.ch2oo ir_replot  RUN            # redraw IR3/IR4 and ir.html from the saved spectra
+    python -m diabml.workflow.ch2oo vib_levels RUN            # quantum levels on the well polynomial -> RUN/vib_levels.html
+
+Production surface (see diabml/workflow/production.py):
+    python -m diabml.workflow.ch2oo production RUN   # averaged ensemble -> models/production.pt; T10, P1, P2
 
 Everything a stage needs is read from RUN/config.toml and from files earlier stages wrote, so stages can be rerun
 one at a time (e.g. change training settings and rerun train, figures, tables, report without touching the scan).
@@ -21,6 +74,7 @@ import csv
 import itertools
 import json
 import os
+import re
 import shutil
 import sys
 import time
@@ -46,6 +100,7 @@ class Run:
             (self.path / d).mkdir(parents=True, exist_ok=True)
         self.cfg = C.load(self.path)
         self._log = None
+        self.verbose = False            # --verbose: detail() lines also go to the terminal
 
     def p(self, *parts):
         return self.path.joinpath(*parts)
@@ -57,6 +112,14 @@ class Run:
     def log(self, msg):
         line = f'[{time.strftime("%H:%M:%S")}] {msg}'
         print(line, flush=True)
+        if self._log:
+            self._log.write(line + '\n'); self._log.flush()
+
+    def detail(self, msg):
+        """A detail line: always written to the stage log, printed to the terminal only with --verbose."""
+        line = f'[{time.strftime("%H:%M:%S")}]   {msg}'
+        if self.verbose:
+            print(line, flush=True)
         if self._log:
             self._log.write(line + '\n'); self._log.flush()
 
@@ -87,7 +150,40 @@ def load_refs(run):
     path = run.p('data', 'refs.npz')
     if not path.exists():
         sys.exit(f'{path} not found: run the refs stage first')
-    return RefSet.load(path)
+    ref = RefSet.load(path)
+    if run.cfg['train'].get('sort_states', True):
+        ref = adiabatic_order(ref)
+    return ref
+
+
+PER_STATE = ('q_O_terminal', 'n_unpaired')        # E_casscf_eV / E_nevpt2_eV stay per SA-CASSCF root
+
+
+def adiabatic_order(ref):
+    """Put every row's state energies in ascending order, the order of the model's eigenvalues.
+
+    State-specific SC-NEVPT2 corrects each SA-CASSCF root separately, and where roots are close the corrected
+    energies can come out in a different order (S1 below S0, S3 below S2, ...). A model's eigenvalues are always
+    sorted, so an unsorted target column cannot be fitted. Per-state diagnostics move with their energies;
+    extra['state_order'][i, k] is the SA-CASSCF root that became state k (for remapping couplings)."""
+    E = np.asarray(ref.energies, float)
+    n = E.shape[1]
+    P = np.argsort(np.where(np.isfinite(E), E, np.inf), 1, kind='stable')
+    ref.extra['state_order'] = P
+    if not np.any(P != np.arange(n)):
+        return ref
+    rows = np.arange(len(E))[:, None]
+    ref.energies = E[rows, P]
+    for k in PER_STATE:
+        v = ref.extra.get(k)
+        if v is not None and np.ndim(v) == 2 and v.shape[1] >= n:
+            v = np.array(v, float)
+            v[:, :n] = v[rows, P]
+            ref.extra[k] = v
+    moved = np.any(P != np.arange(n), 1)
+    ref.meta = dict(ref.meta, n_reordered=int(moved.sum()),
+                    largest_reorder_eV=float(np.nanmax(np.abs(ref.energies - E))))
+    return ref
 
 
 def slice_values(ref):
@@ -97,7 +193,7 @@ def slice_values(ref):
     for j, name in enumerate(ref.coord_names):
         if name == 'r_OO':
             continue
-        vals = np.unique(ref.coords[:, j])
+        vals = np.unique(ref.coords[grid_mask(ref), j])
         out[name] = float(vals[np.argmin(np.abs(vals - rv.get(name, vals.mean())))])
     return out
 
@@ -118,7 +214,7 @@ def cut_coords(ref, x, values=None):
 
 
 # ------------------------------------------------------------------------------------------------ init
-def stage_init(path, template):
+def stage_init(path, template, refs=None):
     path = Path(path).expanduser()
     path.mkdir(parents=True, exist_ok=True)
     cfg = path / 'config.toml'
@@ -127,8 +223,15 @@ def stage_init(path, template):
     else:
         if template not in C.TEMPLATES:
             sys.exit(f'unknown template {template}; choose from {sorted(C.TEMPLATES)}')
-        cfg.write_text(C.TEMPLATES[template])
-        print(f'wrote {cfg} (template "{template}")')
+        text = C.TEMPLATES[template]
+        if refs:
+            line = f'file = "{refs}"'
+            if re.search(r'^file = ".*?"', text, re.M):
+                text = re.sub(r'^file = ".*?"', lambda m: line, text, count=1, flags=re.M)
+            else:
+                text = re.sub(r'^source = "compute"', lambda m: f'source = "file"\n{line}', text, count=1, flags=re.M)
+        cfg.write_text(text)
+        print(f'wrote {cfg} (template "{template}"' + (f', refs.file = "{refs}")' if refs else ')'))
     Run(path)
     print('folders: data/ models/ results/ figures/ tables/ logs/')
 
@@ -155,11 +258,25 @@ def stage_refs(run, force=False):
     from ..refset import RefSet
     cfg = run.cfg['refs']
     out = run.p('data', 'refs.npz')
+    if run.cfg['active'].get('enabled', False):
+        from . import active
+        return active.setup_refs(run)
     if cfg['source'] == 'file':
         src = C.resolve(cfg['file'], run.path)
+        if not src.exists():
+            hint = ''
+            if src.name == 'refs.npz' and src.parent.name == 'data':
+                hint = (f' It is written by the refs stage of the run in {src.parent.parent}: finish that run first '
+                        f'(python -m diabml.workflow.ch2oo refs {src.parent.parent}),')
+            sys.exit(f'refs.file in {run.p("config.toml")} points to {src}, which does not exist.{hint} or set '
+                     f'refs.file to another refs.npz (e.g. "{{diabml}}/data/ch2oo_casscf.npz" for the shipped CASSCF data).')
         ref = RefSet.load(src)
         ref.meta = dict(ref.meta, copied_from=str(src))
         ref.save(out)
+        sib = src.parent / 'nacs.npz'
+        if sib.exists():
+            shutil.copy(sib, run.p('data', 'nacs.npz'))
+            run.log(f'copied {sib} (ab initio couplings for F11/T7)')
         run.log(f'copied {src} -> {out}: {ref}')
         return ref
     if out.exists() and not force:
@@ -263,13 +380,251 @@ def _dE_ion(run):
     return json.loads(path.read_text())['dE_ion_used']
 
 
+# ------------------------------------------------------------------------------------------------ nacs
+def _geometry_kwargs(ref, coords_row):
+    """ch2oo_xyz keyword arguments for one row of ref.coords plus the run's fixed coordinates."""
+    kw = {}
+    for k, v in ref.meta.get('fixed', {}).items():
+        kw[KW.get(k, k.lower())] = float(v)
+    for name, v in zip(ref.coord_names, coords_row):
+        kw[KW[name]] = float(v)
+    return kw
+
+
+def _ref_casscf_relative(ref):
+    """Reference SA-CASSCF state energies relative to S0 (eV). The couplings come from SA-CASSCF, so the check that
+    they belong to the same states must compare SA-CASSCF with SA-CASSCF, even when the run learns NEVPT2 energies."""
+    E = ref.extra.get('E_casscf_eV') if hasattr(ref, 'extra') and ref.extra else None
+    E = np.asarray(ref.energies if E is None else E, float)
+    return E - E[:, [0]]
+
+
+def _check_and_write_nacs(run, ref, want, pairs, tau, vec, Es, conv, nroots):
+    """Compare the NAC run's SA-CASSCF energies with the reference SA-CASSCF energies, flag mismatches and write
+    data/nacs.npz. tau_all keeps every computed value; tau has the mismatched geometries set to NaN."""
+    from ..units import HARTREE_EV
+    nc = run.cfg['nacs']
+    rr = ref.coords[want, 0]
+    zero = float(np.nanmin(Es[np.argmax(rr), :]))
+    Ec = (Es - Es[:, [0]]) * HARTREE_EV
+    Er = _ref_casscf_relative(ref)[want][:, :nroots]
+    mismatch = np.nanmax(np.abs(Ec - Er), 1)
+    tol = float(nc.get('energy_tolerance_eV', 0.01))
+    bad = ~(mismatch <= tol) | ~conv
+    tau_all = np.array(tau, float)
+    tau = tau_all.copy()
+    if bad.any():
+        tau[bad] = np.nan
+        run.log(f'  {int(bad.sum())}/{len(want)} geometries discarded: unconverged, or SA-CASSCF state energies differ '
+                f'from the reference SA-CASSCF energies by more than {tol * 1000:.0f} meV (a different solution); worst '
+                f'{np.nanmax(mismatch):.3f} eV')
+    else:
+        run.log(f'  all {len(want)} geometries reproduce the reference SA-CASSCF state energies (largest difference '
+                f'{np.nanmax(mismatch) * 1000:.2f} meV)')
+    np.savez(run.p('data', 'nacs.npz'), r=rr, idx=want, coords=ref.coords[want], pairs=np.array(pairs), tau=tau,
+             tau_all=tau_all, vectors=vec, E_eV=(Es - zero) * HARTREE_EV, converged=conv, energy_mismatch_eV=mismatch,
+             cut=json.dumps(slice_values(ref)))
+    run.log(f'wrote data/nacs.npz ({int((~bad).sum())}/{len(want)} geometries usable)')
+
+
+def _tau_from_vectors(ref, want, vec):
+    """|projection of each coupling vector on the O1->O2 unit vector| (recovers tau from the stored vectors)."""
+    from ..geometry import ch2oo_xyz
+    tau = np.full(vec.shape[:2], np.nan)
+    for k, i in enumerate(want):
+        xyz = np.array([x for _, x in ch2oo_xyz(**_geometry_kwargs(ref, ref.coords[i]))])
+        e = (xyz[2] - xyz[1]) / np.linalg.norm(xyz[2] - xyz[1])
+        tau[k] = np.abs(vec[k, :, 2] @ e)
+    return tau
+
+
+def stage_nacs(run):
+    """Ab initio derivative couplings along the O-O stretch (SA-CASSCF, PySCF), at the cut or at every grid point.
+
+    Couplings only mean something for the same electronic states as the reference data, and SA-CASSCF can converge to
+    different solutions depending on the starting orbitals. So the SA-CASSCF is redone along exactly the path the
+    reference scan took (start nearest equilibrium, greedy nearest neighbour, orbitals from the nearest finished point),
+    or, when the run's own scan checkpoint is present, from the reference orbitals at each geometry. Every result is
+    then checked against the reference state energies and discarded if they differ (energy_tolerance_eV).
+
+    For each requested pair the derivative coupling vector d_kl = <k|grad l> is projected on the O1->O2 unit vector of
+    the terminal O: tau_kl along r_OO (1/Angstrom). Phases are arbitrary, so magnitudes are stored. Resumable: results
+    and orbitals are written to data/nacs_checkpoint.npz after every geometry."""
+    from ..geometry import ch2oo_xyz
+    from ..refs.casscf import CASSpec, run_sa_casscf, _visit_order, _mol as _mol_for
+    from ..units import BOHR_ANG, HARTREE_EV
+    from pyscf.nac import sacasscf as NAC
+    nc = run.cfg['nacs']
+    if not nc.get('enabled', False):
+        run.log('nacs disabled in config.toml ([nacs] enabled = false)'); return
+    n = run.threads()
+    ref = load_refs(run)
+    cfg = run.cfg['refs']
+    spin_ss = {'singlet': 0.0, 'triplet': 2.0}[cfg['spin']]
+    spec = CASSpec(ncas=int(cfg['ncas']), nelecas=int(cfg['nelecas']), nroots=int(cfg['nroots']), basis=cfg['basis'],
+                   symmetry='Cs', wfnsym="A'", spin_ss=spin_ss, max_cycle=int(cfg['max_cycle']))
+    pairs = [tuple(int(i) for i in p) for p in nc['pairs']]
+    sel = cut_mask(ref) if nc.get('points', 'cut') == 'cut' else np.ones(len(ref), bool)
+    if nc.get('r_max'):
+        sel &= ref.coords[:, 0] <= float(nc['r_max'])
+    want = np.where(sel)[0]                                  # where couplings are computed
+    N = len(ref)
+    # the reference scan's path over all its points (same construction as stage_refs / refs.ch2oo.generate)
+    rv = _reference_values()
+    axes = ref.coord_names
+    scale = np.array([1.0 if a.startswith('r') else 50.0 for a in axes])
+    i0 = int(np.argmin(np.sum(((ref.coords - [rv.get(a, 0.0) for a in axes]) / scale) ** 2, 1)))
+    perm = np.r_[i0, np.delete(np.arange(N), i0)]
+    zc = (ref.coords[perm] - ref.coords[perm].mean(0)) / (ref.coords[perm].std(0) + 1e-12)
+    path = [int(perm[k]) for k in _visit_order(zc)]          # reference-point indices in visiting order
+    zpt = np.empty_like(zc); zpt[perm] = zc                  # standardised coords indexed by reference point
+    # reference orbitals, if this run made the scan itself
+    ref_mo = None
+    sck = run.p('data', 'scan_checkpoint.npz')
+    if sck.exists():
+        z = np.load(sck)
+        if 'mo' in z.files and z['points'].shape[0] == N:
+            pts_full = z['points']
+            # the scan stored points in its own (permuted) order with all grid axes; map them to reference rows
+            cols = [list(ref.meta.get('grid_axes', axes)).index(a) for a in axes] if 'grid_axes' in ref.meta else None
+            if cols is not None:
+                key = {tuple(np.round(p[cols], 6)): i for i, p in enumerate(pts_full)}
+                rows = [key.get(tuple(np.round(c, 6))) for c in ref.coords]
+                if all(r_ is not None for r_ in rows):
+                    ref_mo = z['mo'][rows]
+                    run.log('  starting every geometry from the reference scan\'s own orbitals')
+    nsel = len(want)
+    old = run.p('data', 'nacs.npz')
+    if old.exists() and not run.p('data', 'nacs_checkpoint.npz').exists():
+        z = np.load(old)
+        if (np.array_equal(z['idx'], want) and np.array_equal(z['pairs'], np.array(pairs)) and 'vectors' in z.files
+                and np.isfinite(z['vectors']).any()):
+            run.log('data/nacs.npz already holds the computed couplings: re-checking them against the reference '
+                    '(delete data/nacs.npz to recompute from scratch)')
+            from ..units import HARTREE_EV
+            vec = z['vectors']
+            tau = z['tau_all'] if 'tau_all' in z.files else _tau_from_vectors(ref, want, vec)
+            _check_and_write_nacs(run, ref, want, pairs, tau, vec, z['E_eV'] / HARTREE_EV, z['converged'], spec.nroots)
+            return
+    pos = {int(i): k for k, i in enumerate(want)}
+    tau = np.full((nsel, len(pairs)), np.nan)
+    vec = np.full((nsel, len(pairs), 5, 3), np.nan)
+    E = np.full((N, spec.nroots), np.nan)
+    conv = np.zeros(N, bool)
+    done = np.zeros(N, bool)
+    mos = None
+    ck = run.p('data', 'nacs_checkpoint.npz')
+    if ck.exists():
+        z = np.load(ck)
+        if np.array_equal(z['want'], want) and np.array_equal(z['pairs'], np.array(pairs)) and len(z['done']) == N:
+            tau, vec, E, conv, done = z['tau'], z['vectors'], z['E_hartree'], z['converged'], z['done']
+            mos = z['mo'] if 'mo' in z.files else None
+            run.log(f'  resuming: {int(done.sum())}/{N} geometries already done')
+    visited = [i for i in path if done[i]]
+    live = {}
+
+    def guess_for(i):
+        if i in live:
+            return live[i]
+        return mos[i], _mol_for(ch2oo_xyz(**_geometry_kwargs(ref, ref.coords[i])), spec)
+
+    def checkpoint():
+        tmp = str(ck) + '.tmp.npz'
+        np.savez(tmp, want=want, pairs=np.array(pairs), tau=tau, vectors=vec, E_hartree=E, converged=conv, done=done,
+                 **({} if mos is None else {'mo': mos}))
+        os.replace(tmp, ck)
+
+    # only walk the path as far as needed: up to the last point where couplings are wanted
+    last = max(path.index(int(i)) for i in want)
+    todo = [i for i in path[:last + 1] if not done[i]]
+    run.log(f'{nsel} geometries for couplings ({nc.get("points", "cut")}), pairs {pairs}; SA-CASSCF along the reference '
+            f'path at {len(todo)} geometries; {spec}; {n} threads')
+    t0 = time.time()
+    n_off = 0
+    ref_rel = _ref_casscf_relative(ref)
+    for step, i in enumerate(todo):
+        atoms = ch2oo_xyz(**_geometry_kwargs(ref, ref.coords[i]))
+        if ref_mo is not None:
+            guess = (ref_mo[i], _mol_for(atoms, spec))
+        elif visited:
+            j = min(visited, key=lambda m: float(np.sum((zpt[m] - zpt[i]) ** 2)))
+            guess = guess_for(j)
+        else:
+            guess = None
+        mol, mc = run_sa_casscf(atoms, spec, guess)
+        if not mc.converged and visited:                   # same retry as the reference scan
+            mol, mc = run_sa_casscf(atoms, spec, guess_for(visited[0]))
+        live[i] = (mc.mo_coeff, mol)
+        if mos is None:
+            mos = np.full((N,) + mc.mo_coeff.shape, np.nan)
+        mos[i] = mc.mo_coeff
+        E[i], conv[i] = mc.e_states, mc.converged
+        mm = float(np.max(np.abs((E[i] - E[i, 0]) * HARTREE_EV - ref_rel[i, :spec.nroots])))
+        n_off += mm > float(nc.get('energy_tolerance_eV', 0.01))
+        if i in pos:
+            k = pos[i]
+            xyz = np.array([x for _, x in atoms])
+            e = (xyz[2] - xyz[1]) / np.linalg.norm(xyz[2] - xyz[1])
+            nac = NAC.NonAdiabaticCouplings(mc)
+            nac.verbose = 0
+            for c, pr in enumerate(pairs):
+                v = np.asarray(nac.kernel(state=pr)) / BOHR_ANG          # 1/bohr -> 1/Angstrom
+                vec[k, c] = v
+                tau[k, c] = abs(float(v[2] @ e))
+        done[i] = True
+        visited.append(i)
+        checkpoint()
+        if step % 10 == 0 or step == len(todo) - 1:
+            run.log(f'  {step + 1}/{len(todo)}  {np.round(ref.coords[i], 3)}  '
+                    f'{"|tau| " + str(np.round(tau[pos[i]], 3)) if i in pos else "(path only)"}  energy vs reference '
+                    f'{mm * 1000:.2f} meV; {n_off} off so far  {time.time() - t0:.0f} s')
+    _check_and_write_nacs(run, ref, want, pairs, tau, vec, E[want], conv[want], spec.nroots)
+    ck.unlink(missing_ok=True)
+
+
+def coupling_comparison(run, ref):
+    """Model |tau_kl| along r_OO at the ab initio points and on a fine grid, for every saved framed/CDNN model."""
+    from ..models import load_model
+    path = run.p('data', 'nacs.npz')
+    if not path.exists():
+        return None
+    z = np.load(path)
+    pairs = [tuple(int(x) for x in p) for p in z['pairs']]
+    sv = json.loads(str(z['cut']))
+    on_cut = cut_mask(ref, sv)[z['idx']]
+    if on_cut.sum() < 2:
+        return None
+    o = np.argsort(z['r'][on_cut])
+    xr = z['r'][on_cut][o]
+    xf = np.linspace(max(1.15, xr.min()), min(4.0, xr.max()), 300)
+    out = {'r': xr, 'tau_ref': z['tau'][on_cut][o], 'E_ref': z['E_eV'][on_cut][o], 'pairs': pairs, 'x': xf, 'models': {}}
+    names = (['random_framed', 'random_cdnn'] + sorted(p.stem for p in run.p('models').glob('restraint_w*.pt'))
+             + sorted(p.stem for p in run.p('models').glob('coupfit_w*.pt')))
+    for nm in names:
+        f = run.p('models', f'{nm}.pt')
+        if not f.exists():
+            continue
+        try:
+            m = load_model(f)
+        except Exception as exc:                     # an old-format file: skip it, say why
+            run.log(f'coupling comparison: cannot load {f.name} ({exc.__class__.__name__}); retrain to include it')
+            continue
+        Tp = model_couplings_r(m, cut_coords(ref, xr, sv))
+        Tf = model_couplings_r(m, cut_coords(ref, xf, sv))
+        out['models'][nm] = {'at_ref': np.array([np.abs(Tp[:, a, b]) for a, b in pairs]).T,
+                             'fine': np.array([np.abs(Tf[:, a, b]) for a, b in pairs]).T}
+    return out
+
+
 # ------------------------------------------------------------------------------------------------ frame
-def asymptote_table(ref, dE_ion):
+def asymptote_table(ref, dE_ion, form='spline', curv_min=20.0):
     """Asymptotes of the five CH2OO structures (an AsymptoteTable).
 
     States 0-2 (CH2O + O(1D)) and 3 (CH2O(T1) + O(3P)) come from the reference data at the largest r_OO, averaged
     over the angle; if r_CO varies they are interpolated in r_CO (the CH2O fragment energy depends on it). The ion
-    pair CH2O(+) + O(-) sits dE_ion (ladder) above the mean of the three O(1D) components."""
+    pair CH2O(+) + O(-) sits dE_ion (ladder) above the mean of the three O(1D) components. form / curv_min: see
+    AsymptoteTable ([frame] asymptote, asymptote_curv_min; 'spline' keeps forces continuous in r_CO and the C-O bond
+    bound beyond the data)."""
     from ..frames import AsymptoteTable
     r = ref.coords[:, 0]
     far = np.isclose(r, r.max())
@@ -279,14 +634,14 @@ def asymptote_table(ref, dE_ion):
     else:
         knots = np.unique(ref.coords[far, j])
         vals = np.array([np.nanmean(ref.energies[far & np.isclose(ref.coords[:, j], k), :4], 0) for k in knots])
-    return AsymptoteTable(knots, vals, j=j, extra=[(4, [0, 1, 2], float(dE_ion))])
+    return AsymptoteTable(knots, vals, j=j, extra=[(4, [0, 1, 2], float(dE_ion))], form=form, curv_min=curv_min)
 
 
 def build_frame(run, ref):
     from ..frames import ChannelFrame, Diabat
     fc = run.cfg['frame']
     dE = _dE_ion(run)
-    asy = asymptote_table(ref, dE)
+    asy = asymptote_table(ref, dE, fc.get('asymptote', 'spline'), float(fc.get('asymptote_curv_min', 20.0)))
     c = asy.vals.mean(0)
     cA, crho = fc.get('covalent_wall', [2000.0, 0.1])
     rho_ion = float(fc.get('ion_wall_rho', 0.3))
@@ -296,8 +651,20 @@ def build_frame(run, ref):
                Diabat('CH₂O + O(¹D) c', c[2], wall_A=cA, wall_rho=crho),
                Diabat('CH₂O(T₁) + O(³P)', c[3], kind='biradical', wall_A=cA, wall_rho=crho),
                Diabat('CH₂O⁺ + O⁻', c[:3].mean() + dE, charge_product=-1.0, kind='ionic', wall_A=A_ion, wall_rho=rho_ion)]
-    return ChannelFrame(diabats, n_coords=len(ref.coord_names), r_index=0, zeta_env=fc['zeta_env'],
-                        r_ref=fc['r_ref'], feature_zetas=tuple(fc['feature_zetas']), asymptote_fn=asy)
+    fr = ChannelFrame(diabats, n_coords=len(ref.coord_names), r_index=0, zeta_env=fc['zeta_env'],
+                      r_ref=fc['r_ref'], feature_zetas=tuple(fc['feature_zetas']), asymptote_fn=asy)
+    if fc.get('guard', True):
+        # beyond the data the networks are frozen (smooth clamp) and a wall on every structure supplies the
+        # short-range repulsion; without it a trajectory that compresses r_OO below the data can fall into a hole
+        X = ref.coords[np.all(np.isfinite(ref.energies[:, :4]), 1)]
+        lo, hi = X.min(0), X.max(0)
+        width = np.maximum(hi - lo, 1e-6)
+        g_lo = [float(lo[0]) - float(fc.get('guard_margin_r', 0.05))] + [float(v) for v in lo[1:]]
+        g_hi = [None] + [float(v) for v in hi[1:]]                   # r_OO: the envelope handles large r
+        soft = [float(fc.get('guard_soft_r', 0.0125))] + [0.02 * float(w) for w in width[1:]]
+        k, off = fc.get('inner_wall', [30.0, 0.1])
+        fr.set_guard(g_lo, g_hi, soft, wall_r=float(lo[0]) + float(off), wall_k=float(k))
+    return fr
 
 
 def make_model(run, ref, kind):
@@ -313,32 +680,169 @@ def make_model(run, ref, kind):
     raise ValueError(kind)
 
 
-def ionic_weight(model, coords):
-    """Weight of the ionic (zwitterion) structure in the model's adiabatic ground state."""
+def ionic_weights(model, coords, n=4):
+    """Weight of the ionic (zwitterion) structure in each of the model's lowest n adiabatic states: (N, n)."""
     M = model.matrix(coords).detach().numpy()
-    w, V = np.linalg.eigh(M)
-    return V[:, ION, 0] ** 2
+    _, V = np.linalg.eigh(M)
+    return V[:, ION, :n] ** 2
 
 
-def charge_target(ref, idx, q_ref, min_gap):
-    q = ref.extra['q_O_terminal'][idx, 0]
-    t = np.clip(q / q_ref, 0.0, 1.0)
-    mask = (ref.energies[idx, 1] - ref.energies[idx, 0]) > min_gap
-    return t, mask
+def ionic_weight(model, coords):
+    return ionic_weights(model, coords)[:, 0]
+
+
+def q_ion_auto(ref, usable, r_max=1.5):
+    """Terminal-O charge of a pure zwitterion, from the data: the four-state sum of terminal-O charges at short
+    range, where the ionic structure lies inside the four computed states (median over r_OO <= r_max)."""
+    q = np.asarray(ref.extra['q_O_terminal'], float)[:, :4]
+    qs = q.sum(1)                                   # NaN where a point has no charges (e.g. repaired from ORCA)
+    m = usable & (ref.coords[:, 0] <= r_max) & np.isfinite(qs)
+    return float(np.median(qs[m]))
+
+
+def charge_targets(ref, idx, q_ion, min_gap, states='all'):
+    """Targets for the ionic weight of each state, q_k / q_ion (clipped to 0..1), and where to apply them.
+
+    states = 'all': S0-S3 at points where every neighbouring reference gap exceeds min_gap (eigenvector derivatives
+    diverge at degeneracies); 'ground': S0 only, where S1 - S0 > min_gap. Returns (targets (N, 4), mask (N, 4))."""
+    q = ref.extra['q_O_terminal'][idx, :4]
+    t = np.clip(q / q_ion, 0.0, 1.0)
+    gaps = np.diff(ref.energies[idx, :4], axis=1)
+    mask = np.zeros_like(t, bool)
+    if states == 'ground':
+        mask[:, 0] = gaps[:, 0] > min_gap
+    else:
+        mask[:] = np.all(gaps > min_gap, 1)[:, None]
+    mask &= np.isfinite(t)                          # no charges at this point: no restraint
+    return np.nan_to_num(t), mask
 
 
 def restraint_penalty(weight, target, mask):
     import torch
-    t = torch.tensor(target[mask])
-    m = torch.tensor(mask)
+    rows = mask.any(1)
+    t = torch.tensor(target[rows])
+    m = torch.tensor(mask[rows])
+    r = torch.tensor(rows)
 
     def pen(model, cache):
         if weight == 0 or not m.any():
             return torch.zeros(())
-        M = model._matrix(cache)[m]
+        M = model._matrix(cache)[r]
         _, V = torch.linalg.eigh(M)
-        return weight * ((V[:, ION, 0] ** 2 - t) ** 2).mean()
+        return weight * ((V[:, ION, :4] ** 2 - t) ** 2)[m].mean()
     return pen
+
+
+def load_nacs(run, ref):
+    """Ab initio |tau_kl| along r_OO aligned with the reference points: (tau (N, n_pairs) with NaN where not computed,
+    pairs, E_eV (N, n_states) of the coupling calculation)."""
+    path = run.p('data', 'nacs.npz')
+    if not path.exists():
+        return None
+    z = np.load(path)
+    pairs = [tuple(int(x) for x in p) for p in z['pairs']]
+    raw = np.full((len(ref), len(pairs)), np.nan)
+    raw[z['idx']] = z['tau']
+    P = ref.extra.get('state_order')
+    if P is None:
+        return raw, pairs
+    # couplings were computed between SA-CASSCF roots; state k (energy order) is root P[i, k]
+    look = {frozenset(p): c for c, p in enumerate(pairs)}
+    tau = np.full_like(raw, np.nan)
+    for c, (a, b) in enumerate(pairs):
+        src = [look.get(frozenset((int(pa), int(pb)))) for pa, pb in zip(P[:, a], P[:, b])]
+        for i, j in enumerate(src):
+            if j is not None:
+                tau[i, c] = raw[i, j]
+    return tau, pairs
+
+
+def coupling_targets(ref, idx, tau, pairs, min_gap, cap):
+    """Which ab initio couplings to fit: computed, states more than min_gap apart, |tau| below cap (narrow
+    avoided-crossing spikes are left to the energies, which already fix them)."""
+    T = tau[idx]
+    gaps = np.stack([ref.energies[idx, b] - ref.energies[idx, a] for a, b in pairs], 1)
+    mask = np.isfinite(T) & (np.abs(gaps) > min_gap) & (T < cap)
+    return np.nan_to_num(T), mask
+
+
+def coupling_penalty(weight, coords, target, mask, pairs, h=1e-3, delta=0.02, huber=1.0):
+    """weight * mean (|tau_model| - |tau_ref|)^2 over the masked training couplings, with tau_model from a central
+    difference of the (differentiable) matrix along r_OO. Robust form: tau_model = G dE / (dE^2 + delta^2) (delta in
+    eV) so a model gap that closes during training cannot blow up, and misfits beyond `huber` (1/Angstrom) count
+    linearly instead of quadratically."""
+    import torch
+    rows = mask.any(1)
+    X = torch.tensor(np.asarray(coords, float)[rows])
+    Xp, Xm = X.clone(), X.clone()
+    Xp[:, 0] += h; Xm[:, 0] -= h
+    t, m, r = torch.tensor(target[rows]), torch.tensor(mask[rows]), torch.tensor(rows)
+    a = torch.tensor([p[0] for p in pairs]); b = torch.tensor([p[1] for p in pairs])
+
+    def pen(model, cache):
+        if weight == 0 or not m.any():
+            return torch.zeros(())
+        M = model._matrix(cache)[r]
+        dM = (model.matrix_t(Xp) - model.matrix_t(Xm)) / (2 * h)
+        w, V = torch.linalg.eigh(M)
+        G = torch.einsum('nik,nij,njl->nkl', V, dM, V)
+        n = torch.arange(len(w))[:, None]
+        dw = w[n, b[None, :]] - w[n, a[None, :]]
+        # the reference states are > min_gap apart here, but the model's need not be during training: a plain
+        # 1/dw would send the coupling (and its gradient) to infinity and wreck the fit, so the denominator is
+        # regularised (|tau| <= 1/(2 delta) * |G|) and large misfits count linearly (Huber)
+        tau = G[n, a[None, :], b[None, :]] * dw / (dw ** 2 + delta ** 2)
+        d = (tau.abs() - t)[m]
+        return weight * torch.where(d.abs() < huber, 0.5 * d ** 2 / huber, d.abs() - 0.5 * huber).mean() * 2 * huber
+    return pen
+
+
+def model_couplings_r(model, coords, h=1e-4, n=4):
+    """Derivative couplings of the model's adiabatic states along r_OO (column 0), tau_kl = v_k^T (dOmega/dr) v_l /
+    (E_l - E_k), in 1/Angstrom: (N, n, n). Signs are arbitrary (eigenvector phases), so compare magnitudes."""
+    if getattr(model, 'mode', None) == 'adiabatic' and hasattr(model, 'members'):
+        # ensemble: magnitudes averaged over members (each member's phases are its own)
+        return np.mean([np.abs(model_couplings_r(m, coords, h, n)) for m in model.members], 0)
+    X = np.atleast_2d(np.asarray(coords, float))
+    Xp, Xm = X.copy(), X.copy()
+    Xp[:, 0] += h; Xm[:, 0] -= h
+    M = model.matrix(X).detach().numpy()
+    dM = (model.matrix(Xp).detach().numpy() - model.matrix(Xm).detach().numpy()) / (2 * h)
+    w, V = np.linalg.eigh(M)
+    V = V[:, :, :n]
+    G = np.einsum('nik,nij,njl->nkl', V, dM, V)
+    dE = w[:, None, :n] - w[:, :n, None]
+    with np.errstate(divide='ignore', invalid='ignore'):
+        tau = G / dE
+    tau[:, np.arange(n), np.arange(n)] = 0.0
+    return tau
+
+
+def usable_points(run, ref, log=True):
+    """Indices of reference points the models train on: finite energies and, with exclude_flagged, converged, same
+    active space, and (NEVPT2 data) CASCI states that reproduce SA-CASSCF."""
+    tc = run.cfg['train']
+    usable = np.all(np.isfinite(ref.energies[:, :4]), 1)
+    if tc['exclude_flagged']:
+        for k in ('converged', 'active_space_consistent'):
+            if k in ref.extra:
+                usable &= ref.extra[k].astype(bool)
+        # NEVPT2 is computed on CASCI states built from the SA-CASSCF orbitals; if CASCI does not reproduce the
+        # SA-CASSCF energies, the NEVPT2 energies belong to different states and the point is not usable
+        if 'casci_mismatch_hartree' in ref.extra and ref.meta.get('energy_level') == 'nevpt2':
+            cm = np.nan_to_num(np.asarray(ref.extra['casci_mismatch_hartree'], float), nan=0.0)
+            bad = cm > float(tc.get('max_casci_mismatch_hartree', 1e-3))
+            if bad.any() and log:
+                run.log(f'  excluding {int((usable & bad).sum())} points where CASCI does not reproduce SA-CASSCF '
+                        f'(> {1000 * float(tc.get("max_casci_mismatch_hartree", 1e-3)):.1f} mEh): '
+                        f'{np.round(ref.coords[bad], 3).tolist()}')
+            usable &= ~bad
+    return np.where(usable)[0]
+
+
+def grid_mask(ref):
+    """Rows on the original scan grid (active-learning points are off-grid and are left out of grid figures)."""
+    return ref.extra['al_round'] == 0 if 'al_round' in ref.extra else np.ones(len(ref), bool)
 
 
 # ------------------------------------------------------------------------------------------------ train
@@ -349,12 +853,8 @@ def stage_train(run):
     run.threads()
     ref = load_refs(run)
     tc = run.cfg['train']
-    usable = np.all(np.isfinite(ref.energies[:, :4]), 1)
-    if tc['exclude_flagged']:
-        for k in ('converged', 'active_space_consistent'):
-            if k in ref.extra:
-                usable &= ref.extra[k].astype(bool)
-    U = np.where(usable)[0]
+    U = usable_points(run, ref)
+    usable = np.zeros(len(ref), bool); usable[U] = True
     run.log(f'{ref}; {len(U)} usable points; models {tc["models"]}')
     r = ref.coords[:, 0]
     E = ref.energies[:, :4]
@@ -409,7 +909,7 @@ def stage_train(run):
                         curves['random_framed_diag'] = np.diagonal(M, axis1=1, axis2=2)
                         iu = np.triu_indices(5, 1)
                         curves['random_framed_coup'] = M[:, iu[0], iu[1]]
-                        curves['random_framed_ionic_weight'] = ionic_weight(m, X)
+                        curves['random_framed_ionic_weight'] = ionic_weights(m, X)
         metrics['random_split'] = res
     # ---- extrapolation
     ex = tc['extrapolation']
@@ -460,6 +960,10 @@ def stage_train(run):
             run.log('restraint skipped: the reference data have no q_O_terminal')
         else:
             res = {}
+            states = rc.get('states', 'all')
+            q_ion = q_ion_auto(ref, usable) if str(rc['q_ref']) == 'auto' else float(rc['q_ref'])
+            run.log(f'restraint on {states} states; charge of a pure zwitterion q_ion = {q_ion:.3f} e'
+                    + (' (from the data: four-state sum at r_OO <= 1.5 Å)' if str(rc['q_ref']) == 'auto' else ''))
             eqv = cut_mask(ref) & usable
             for wgt in rc['weights']:
                 res[str(wgt)] = []
@@ -468,23 +972,62 @@ def stage_train(run):
                     ntr = int(tc['random_split']['train_fraction'] * len(p))
                     nva = int(tc['random_split']['val_fraction'] * len(p))
                     tr, va, te = p[:ntr], p[ntr:ntr + nva], p[ntr + nva:]
-                    tt, mt = charge_target(ref, tr, rc['q_ref'], rc['min_gap_eV'])
+                    tt, mt = charge_targets(ref, tr, q_ion, rc['min_gap_eV'], states)
                     m, dt = fit('framed', tr, va, seed, penalty=restraint_penalty(float(wgt), tt, mt))
-                    te_t, te_m = charge_target(ref, te, rc['q_ref'], rc['min_gap_eV'])
-                    iw = ionic_weight(m, ref.coords[te])
+                    te_t, te_m = charge_targets(ref, te, q_ion, rc['min_gap_eV'], states)
+                    iw = ionic_weights(m, ref.coords[te])
                     res[str(wgt)].append({
                         'seed': seed, 'test_rmse_kcal': Mx.rmse_kcal(m.predict(ref.coords[te]), E[te]).tolist(),
                         'ionic_weight_mae': float(np.mean(np.abs(iw[te_m] - te_t[te_m]))) if te_m.any() else None,
-                        'ionic_weight_at_eq': float(ionic_weight(m, cut_coords(ref, np.array([1.35])))[0])})
+                        'ionic_weight_at_eq': ionic_weights(m, cut_coords(ref, np.array([1.35])))[0].tolist()})
                     if seed == tc['seeds'][0]:
-                        curves[f'restraint_{wgt}_ionic_weight'] = ionic_weight(m, X)
-                        save(m, f'restraint_w{wgt}', f'restraint weight {wgt}', tr)
+                        curves[f'restraint_{wgt}_ionic_weight'] = ionic_weights(m, X)
+                        save(m, f'restraint_w{wgt}', f'restraint weight {wgt} ({states} states, q_ion {q_ion:.3f} e)', tr)
                 run.log(f'restraint weight {wgt}: energy RMSE '
                         f'{np.round(np.mean([v["test_rmse_kcal"] for v in res[str(wgt)]], 0), 2)} kcal/mol, '
                         f'ionic-weight MAE {np.mean([v["ionic_weight_mae"] or np.nan for v in res[str(wgt)]]):.3f}')
-            metrics['restraint'] = dict(res, q_ref=rc['q_ref'], min_gap_eV=rc['min_gap_eV'],
-                                        target_cut=np.clip(ref.extra['q_O_terminal'][eqv, 0] / rc['q_ref'], 0, 1).tolist(),
+            metrics['restraint'] = dict(res, q_ref=q_ion, states=states, min_gap_eV=rc['min_gap_eV'],
+                                        target_cut=np.clip(ref.extra['q_O_terminal'][eqv, :4] / q_ion, 0, 1).tolist(),
                                         target_cut_r=r[eqv].tolist())
+    # ---- fit the couplings themselves (with the charge restraint), test on held-out couplings
+    cf = tc.get('coupling_fit', {})
+    nac = load_nacs(run, ref)
+    if cf.get('enabled', False) and 'framed' in tc['models']:
+        if nac is None:
+            run.log('coupling fit skipped: no data/nacs.npz (run the nacs stage with points = "all")')
+        else:
+            tau, pairs = nac
+            q_ion = q_ion_auto(ref, usable) if str(rc['q_ref']) == 'auto' else float(rc['q_ref'])
+            res = {}
+            for wc in cf['weights']:
+                res[str(wc)] = []
+                for seed in tc['seeds']:
+                    p = np.random.default_rng(seed).permutation(U)
+                    ntr = int(tc['random_split']['train_fraction'] * len(p))
+                    nva = int(tc['random_split']['val_fraction'] * len(p))
+                    tr, va, te = p[:ntr], p[ntr:ntr + nva], p[ntr + nva:]
+                    tt, mt = charge_targets(ref, tr, q_ion, rc['min_gap_eV'], rc.get('states', 'all'))
+                    ct, cm_ = coupling_targets(ref, tr, tau, pairs, cf['min_gap_eV'], cf['cap'])
+                    pq = restraint_penalty(float(cf['charge_weight']), tt, mt)
+                    pc = coupling_penalty(float(wc), ref.coords[tr], ct, cm_, pairs)
+                    m, dt = fit('framed', tr, va, seed, penalty=lambda mod, c, pq=pq, pc=pc: pq(mod, c) + pc(mod, c))
+                    te_ct, te_cm = coupling_targets(ref, te, tau, pairs, cf['min_gap_eV'], cf['cap'])
+                    Tm = model_couplings_r(m, ref.coords[te])
+                    tm = np.stack([np.abs(Tm[:, a_, b_]) for a_, b_ in pairs], 1)
+                    err = [float(np.sqrt(np.mean((tm[te_cm[:, c], c] - te_ct[te_cm[:, c], c]) ** 2))) if te_cm[:, c].any()
+                           else None for c in range(len(pairs))]
+                    te_t, te_m = charge_targets(ref, te, q_ion, rc['min_gap_eV'], rc.get('states', 'all'))
+                    iw = ionic_weights(m, ref.coords[te])
+                    res[str(wc)].append({'seed': seed, 'test_rmse_kcal': Mx.rmse_kcal(m.predict(ref.coords[te]), E[te]).tolist(),
+                                         'coupling_rmse': err, 'n_test_couplings': int(te_cm.sum()),
+                                         'ionic_weight_mae': float(np.mean(np.abs(iw[te_m] - te_t[te_m]))) if te_m.any() else None})
+                    if seed == tc['seeds'][0]:
+                        save(m, f'coupfit_w{wc}', f'coupling fit weight {wc} + charge restraint {cf["charge_weight"]}', tr)
+                run.log(f'coupling fit weight {wc}: energy RMSE '
+                        f'{np.round(np.mean([v["test_rmse_kcal"] for v in res[str(wc)]], 0), 2)} kcal/mol, held-out |tau| RMSE '
+                        f'{np.round(np.nanmean([[e if e is not None else np.nan for e in v["coupling_rmse"]] for v in res[str(wc)]], 0), 3)} 1/Å')
+            metrics['coupling_fit'] = dict(res, pairs=[list(p) for p in pairs], charge_weight=cf['charge_weight'],
+                                           cap=cf['cap'], min_gap_eV=cf['min_gap_eV'], q_ion=q_ion)
     run.p('results', 'metrics.json').write_text(json.dumps(metrics, indent=1))
     np.savez(run.p('results', 'curves.npz'), **curves)
     run.log('wrote results/metrics.json, results/curves.npz, models/*.pt (+ .json spec; load with diabml.models.load_model)')
@@ -528,13 +1071,14 @@ def stage_figures(run):
 
     # F1 cuts at every angle
     ja = ref.coord_names.index('a_COO') if 'a_COO' in ref.coord_names else None
-    angles = np.unique(ref.coords[:, ja]) if ja is not None else [None]
+    gm = grid_mask(ref)
+    angles = np.unique(ref.coords[gm, ja]) if ja is not None else [None]
     base = {k: v for k, v in sv.items() if k != 'a_COO'}
     ncol = min(3, len(angles)); nrow = int(np.ceil(len(angles) / ncol))
     fig, axes = plt.subplots(nrow, ncol, figsize=(5.2 * ncol, 3.8 * nrow), squeeze=False)
     for ax, a in zip(axes.flat, angles):
         vals = dict(base, **({'a_COO': a} if a is not None else {}))
-        m = cut_mask(ref, vals)
+        m = cut_mask(ref, vals) & gm
         o = np.argsort(r[m])
         for s in range(min(4, ref.n_states)):
             ax.plot(r[m][o], E[m][o, s], '-o', ms=3, color=SCOL[s], label=f'S{s}')
@@ -566,7 +1110,7 @@ def stage_figures(run):
 
     # F3 maps over (r_OO, angle)
     if ja is not None and len(angles) > 2:
-        m = cut_mask(ref, base) if base else np.ones(len(ref), bool)
+        m = (cut_mask(ref, base) if base else np.ones(len(ref), bool)) & gm
         rr, aa = np.unique(r[m]), np.unique(ref.coords[m, ja])
         fig, axes = plt.subplots(1, 4, figsize=(18, 4.2), sharey=True)
         for s, ax in enumerate(axes):
@@ -586,12 +1130,12 @@ def stage_figures(run):
     # F3b r_CO dependence
     if 'r_CO' in ref.coord_names:
         jc = ref.coord_names.index('r_CO')
-        rcs = np.unique(ref.coords[:, jc])
+        rcs = np.unique(ref.coords[gm, jc])
         fig, axes = plt.subplots(1, 2, figsize=(13, 4.4))
         cmap = plt.get_cmap('plasma')
         for k, rc in enumerate(rcs):
             vals = dict(sv, r_CO=rc)
-            m = cut_mask(ref, vals); o = np.argsort(r[m])
+            m = cut_mask(ref, vals) & gm; o = np.argsort(r[m])
             for ax, s in zip(axes, (0, 1)):
                 ax.plot(r[m][o], E[m][o, s], '-o', ms=3, color=cmap(k / max(1, len(rcs) - 1)), label=f'r(C–O) = {rc:g} Å')
         for ax, s in zip(axes, (0, 1)):
@@ -708,16 +1252,23 @@ def stage_figures(run):
     # F9 restraint
     if 'restraint' in M:
         R = M['restraint']
-        ws = [w for w in R if w not in ('q_ref', 'min_gap_eV', 'target_cut', 'target_cut_r')]
+        ws = [w for w in R if w not in ('q_ref', 'states', 'min_gap_eV', 'target_cut', 'target_cut_r')]
         fig, axes = plt.subplots(1, 2, figsize=(15, 5))
         cmap = plt.get_cmap('viridis')
         for k, w in enumerate(ws):
             key = f'restraint_{w}_ionic_weight'
             if key in cv.files:
-                axes[0].plot(x, cv[key], color=cmap(k / max(1, len(ws) - 1)), lw=2, label=f'weight {w}')
-        axes[0].plot(R['target_cut_r'], R['target_cut'], 'o', color=INK, ms=5, label=f'target: q / ({R["q_ref"]} e)')
-        axes[0].set(xlabel='r(O–O) (Å)', ylabel='ionic weight in ground state', xlim=(x.min(), 5), ylim=(-0.05, 1.05),
-                    title='Zwitterion character of S0')
+                W = np.atleast_2d(cv[key].T).T
+                c = cmap(k / max(1, len(ws) - 1))
+                axes[0].plot(x, W[:, 0], color=c, lw=2, label=f'weight {w}')
+                if W.shape[1] > 1:
+                    axes[0].plot(x, W[:, 1], color=c, lw=1.6, ls='--')
+        T = np.atleast_2d(np.array(R['target_cut']).T).T
+        axes[0].plot(R['target_cut_r'], T[:, 0], 'o', color=INK, ms=5, label=f'S0 target q₀ / ({R["q_ref"]:.2f} e)')
+        if T.shape[1] > 1:
+            axes[0].plot(R['target_cut_r'], T[:, 1], 'o', color=INK, ms=5, mfc='white', label='S1 target (dashed: model S1)')
+        axes[0].set(xlabel='r(O–O) (Å)', ylabel='zwitterion weight', xlim=(x.min(), 5), ylim=(-0.05, 1.05),
+                    title='Zwitterion character of S0 (solid) and S1 (dashed)')
         axes[0].legend(fontsize=10)
         e = [np.mean([np.mean(v['test_rmse_kcal']) for v in R[w]]) for w in ws]
         iw = [np.mean([v['ionic_weight_mae'] for v in R[w] if v['ionic_weight_mae'] is not None]) for w in ws]
@@ -726,9 +1277,39 @@ def stage_figures(run):
             axes[1].annotate(f' {w}', (a, b))
         axes[1].set(xlabel='ionic-weight error vs charge target (MAE)', ylabel='energy test RMSE, mean of states (kcal/mol)',
                     title='Trade-off as the restraint weight grows')
-        save(fig, 'F9_restraint.png', 'Diabatic restraint: the ground state\'s weight on the CH₂O⁺ + O⁻ structure is '
-             f'pulled toward the CASSCF terminal-O charge divided by q_ref = {R["q_ref"]} e (an assumption to vary). '
-             'Left: along r(O–O); right: energy accuracy against agreement with the charge target.')
+        save(fig, 'F9_restraint.png', f'Diabatic restraint ({R.get("states", "ground")} states): each state\'s weight on '
+             'the CH₂O⁺ + O⁻ structure is pulled toward its CASSCF terminal-O charge divided by the charge of a pure '
+             f'zwitterion, {R["q_ref"]:.2f} e. Left: along r(O–O); right: energy accuracy against agreement with the targets.')
+    # F11 derivative couplings vs ab initio
+    cc = coupling_comparison(run, ref)
+    if cc and cc['models']:
+        pairs = cc['pairs']
+        fig, axes = plt.subplots(1, len(pairs), figsize=(5.6 * len(pairs), 4.6), squeeze=False)
+        style = {'random_framed': (GREEN, '-', 'framed CDNN'), 'random_cdnn': (ORANGE, '-', 'CDNN')}
+        rw = [k for k in cc['models'] if k.startswith('restraint_w')]
+        cw = [k for k in cc['models'] if k.startswith('coupfit_w')]
+        if cw:                                   # with a coupling fit, show the strongest charge-only model for comparison
+            rw = rw[-1:]
+            cc['models'] = {k: v for k, v in cc['models'].items() if not k.startswith('restraint_w') or k in rw}
+        cmap = plt.get_cmap('viridis')
+        for i, k in enumerate(rw):
+            style[k] = (cmap(i / max(1, len(rw) - 1)) if not cw else PLUM, '--', 'charge restraint, weight ' + k[len('restraint_w'):])
+        cmap2 = plt.get_cmap('autumn')
+        for i, k in enumerate(cw):
+            style[k] = (cmap2(i / max(1, len(cw))), '-', 'coupling fit, weight ' + k[len('coupfit_w'):])
+        for c, (a, b) in enumerate(pairs):
+            ax = axes[0][c]
+            for k, d in cc['models'].items():
+                col, ls, lab = style.get(k, (GREY, ':', k))
+                ax.plot(cc['x'], d['fine'][:, c], color=col, ls=ls, lw=1.8, label=lab)
+            ax.plot(cc['r'], cc['tau_ref'][:, c], 'o', color=INK, ms=6, label='SA-CASSCF (PySCF)')
+            top = np.nanmax(cc['tau_ref'][:, c])
+            ax.set(xlabel='r(O–O) (Å)', ylabel=f'|τ{a}{b}| along r(O–O) (1/Å)', title=f'S{a}–S{b}',
+                   xlim=(cc['x'].min(), cc['x'].max()), ylim=(0, max(1.0, 1.6 * top)))
+        axes[0][0].legend(fontsize=9)
+        save(fig, 'F11_couplings.png', 'Derivative couplings between adjacent states along the O–O stretch: the models\' '
+             '(computed from their matrices, never trained on) against ab initio SA-CASSCF couplings. A quasi-diabatic '
+             'matrix reproduces these; a matrix that only fits energies need not. Magnitudes, because phases are arbitrary.')
     # F10 short range: below the data
     if 'x_short' in cv.files and all(f'random_{k}_short' in cv.files for k in models):
         xs, rmin = cv['x_short'], float(r.min())
@@ -774,6 +1355,8 @@ def stage_tables(run):
     cons = ex.get('active_space_consistent', np.ones(len(ref), bool)).astype(bool)
     far = np.isclose(r, r.max()) & cut_mask(ref, {k: v for k, v in slice_values(ref).items() if k != 'a_COO'})
     rows = [['method', ref.meta.get('method', ref.name)], ['energies used for training', ref.meta.get('energy_level', 'casscf')],
+            ['geometries whose state energies were put in ascending order (largest shift, eV)',
+             f'{ref.meta.get("n_reordered", 0)} ({ref.meta.get("largest_reorder_eV", 0.0):.2f})'],
             ['geometries', len(ref)],
             ['coordinates', ', '.join(f'{n} {np.min(ref.coords[:, j]):g}–{np.max(ref.coords[:, j]):g}' for j, n in enumerate(ref.coord_names))],
             ['fixed', ', '.join(f'{k} = {v:g}' for k, v in ref.meta.get('fixed', {}).items())],
@@ -835,14 +1418,50 @@ def stage_tables(run):
         if 'restraint' in M:
             R = M['restraint']
             rows = []
-            for w in [w for w in R if w not in ('q_ref', 'min_gap_eV', 'target_cut', 'target_cut_r')]:
+            for w in [w for w in R if w not in ('q_ref', 'states', 'min_gap_eV', 'target_cut', 'target_cut_r')]:
                 e = np.mean([v['test_rmse_kcal'] for v in R[w]], 0)
                 iw = [v['ionic_weight_mae'] for v in R[w] if v['ionic_weight_mae'] is not None]
+                eq = np.mean([np.atleast_1d(v['ionic_weight_at_eq'])[:2] for v in R[w]], 0)
                 rows.append([w] + [f'{v:.2f}' for v in e] + [_f(float(np.mean(iw)), 3) if iw else '',
-                                                             _f(float(np.mean([v['ionic_weight_at_eq'] for v in R[w]])), 2)])
-            tables.append(_write_table(run, 'T5_restraint', ['weight', 'S0', 'S1', 'S2', 'S3', 'ionic-weight MAE',
-                                                             'ionic weight at 1.35 Å'], rows,
-                                       f'T5. Diabatic restraint (q_ref = {R["q_ref"]} e): test RMSE (kcal/mol) and agreement with the charge target'))
+                                                             ' / '.join(f'{v:.2f}' for v in eq)])
+            tables.append(_write_table(run, 'T5_restraint', ['weight', 'S0', 'S1', 'S2', 'S3', 'zwitterion-weight MAE',
+                                                             'zwitterion weight S0 / S1 at 1.35 Å'], rows,
+                                       f'T5. Diabatic restraint ({R.get("states", "ground")} states, pure zwitterion '
+                                       f'{R["q_ref"]:.2f} e): test RMSE (kcal/mol) and agreement with the charge targets'))
+    cc = coupling_comparison(run, ref)
+    if cc and cc['models']:
+        rows = []
+        Eg = cc['E_ref']
+        for k, d in cc['models'].items():
+            row = [k.replace('random_', '').replace('restraint_w', 'charge restraint, weight ').replace('coupfit_w', 'coupling fit, weight ')]
+            for c, (a, b) in enumerate(cc['pairs']):
+                ok = np.isfinite(cc['tau_ref'][:, c]) & (np.abs(Eg[:, b] - Eg[:, a]) > 0.1)
+                err = np.sqrt(np.mean((d['at_ref'][ok, c] - cc['tau_ref'][ok, c]) ** 2)) if ok.any() else np.nan
+                row.append(_f(float(err), 3))
+            i_pk = int(np.nanargmax(d['fine'][:, 0]))
+            row.append(_f(float(cc['x'][i_pk]), 2))
+            rows.append(row)
+        i_ref = int(np.nanargmax(cc['tau_ref'][:, 0]))
+        rows.append(['SA-CASSCF reference'] + ['0'] * len(cc['pairs']) + [_f(float(cc['r'][i_ref]), 2)])
+        tables.append(_write_table(run, 'T7_couplings', ['model'] + [f'|τ{a}{b}| RMS error (1/Å)' for a, b in cc['pairs']]
+                                   + ['peak of |τ01| at r_OO (Å)'], rows,
+                                   'T7. Derivative couplings along r_OO against SA-CASSCF (points where the two states '
+                                   'are more than 0.1 eV apart)'))
+    if mp.exists():
+        M = json.loads(mp.read_text())
+        if 'coupling_fit' in M:
+            Cf = M['coupling_fit']
+            prs = Cf['pairs']
+            rows = []
+            for w in [k for k in Cf if k not in ('pairs', 'charge_weight', 'cap', 'min_gap_eV', 'q_ion')]:
+                e = np.mean([v['test_rmse_kcal'] for v in Cf[w]], 0)
+                ce = np.nanmean([[x if x is not None else np.nan for x in v['coupling_rmse']] for v in Cf[w]], 0)
+                iw = [v['ionic_weight_mae'] for v in Cf[w] if v['ionic_weight_mae'] is not None]
+                rows.append([w] + [f'{v:.2f}' for v in e] + [f'{v:.3f}' for v in ce] + [_f(float(np.mean(iw)), 3) if iw else ''])
+            tables.append(_write_table(run, 'T8_coupling_fit', ['coupling weight', 'S0', 'S1', 'S2', 'S3']
+                                       + [f'|τ{a}{b}| (1/Å)' for a, b in prs] + ['zwitterion-weight MAE'], rows,
+                                       f'T8. Fitting the ab initio couplings (with charge restraint weight {Cf["charge_weight"]}): '
+                                       'held-out energy RMSE (kcal/mol) and held-out coupling RMSE'))
     if 'E_nevpt2_eV' in ex:
         rows = []
         Ec, En = ex['E_casscf_eV'][cm][o], ex['E_nevpt2_eV'][cm][o]
@@ -854,6 +1473,22 @@ def stage_tables(run):
         tables.append(_write_table(run, 'T6_dynamic_correlation', ['state (near r_OO = 1.35 Å)', 'SA-CASSCF (eV)',
                                                                    'SC-NEVPT2 (eV)', 'shift (eV)'], rows,
                                    'T6. Dynamic correlation along the equilibrium cut (each level zeroed at its own asymptote)'))
+    from . import active
+    rows = active.table_rows(run)
+    if rows:
+        tables.append(_write_table(run, 'T9_active_learning', ['quantity', 'value'], rows,
+                                   'T9. Active learning: committee spread and the error where it was largest'))
+    from . import explore
+    rows = explore.table_rows(run)
+    if rows:
+        tables.append(_write_table(run, 'T11_dynamics_exploration', ['quantity', 'value'], rows,
+                                   'T11. Active learning from dynamics (details and figures: dynamics.html)'))
+    from . import production
+    rows = production.table_rows(run)
+    if rows:
+        tables.append(_write_table(run, 'T10_production_regions', ['region (held-out test points)', 'n',
+                                   'one model S0 / S1 / S2 / S3', 'ensemble S0 / S1 / S2 / S3', 'member spread'], rows,
+                                   'T10. Production ensemble: held-out RMSE (kcal/mol) by region'))
     run.p('tables', 'tables.json').write_text(json.dumps(tables, indent=1, ensure_ascii=False))
 
 
@@ -862,6 +1497,9 @@ def stage_report(run):
     import html
     cfg_text = run.p('config.toml').read_text()
     caps = json.loads(run.p('figures', 'captions.json').read_text()) if run.p('figures', 'captions.json').exists() else {}
+    for extra in ('active_captions.json', 'production_captions.json'):
+        if run.p('figures', extra).exists():
+            caps = dict(json.loads(run.p('figures', extra).read_text()), **caps)
     tabs = json.loads(run.p('tables', 'tables.json').read_text()) if run.p('tables', 'tables.json').exists() else []
     esc = html.escape
     parts = []
@@ -888,7 +1526,7 @@ th{{background:var(--panel)}} figure{{margin:22px 0}} img{{max-width:100%;backgr
 figcaption,.src{{color:var(--muted);font-size:14px}} pre{{background:var(--panel);padding:12px;overflow:auto;font-size:13px}}
 </style></head><body>
 <header><h1>CH₂OO workflow run: {esc(name)}</h1><p>{esc(run.cfg['run'].get('description', ''))} · {time.strftime('%Y-%m-%d %H:%M')}</p></header>
-<main><h2>Tables</h2>{''.join(parts) or '<p>No tables yet.</p>'}
+<main>{'<p><a href="dynamics.html">Dynamics log (dynamics.html)</a>: every trajectory of this round, with diagnostics.</p>' if run.p('dynamics.html').exists() else ''}{'<p><a href="audit.html">Reference audit (audit.html)</a>: every point checked against ORCA.</p>' if run.p('audit.html').exists() else ''}<h2>Tables</h2>{''.join(parts) or '<p>No tables yet.</p>'}
 <h2>Figures</h2>{figs or '<p>No figures yet.</p>'}
 <h2>Configuration</h2><pre>{esc(cfg_text)}</pre></main></body></html>'''
     run.p('report.html').write_text(page)
@@ -896,7 +1534,8 @@ figcaption,.src{{color:var(--muted);font-size:14px}} pre{{background:var(--panel
 
 
 # ------------------------------------------------------------------------------------------------ cli
-STAGES = ['init', 'refs', 'status', 'ladder', 'train', 'figures', 'tables', 'report', 'all']
+STAGES = ['init', 'refs', 'status', 'ladder', 'nacs', 'propose', 'compute', 'merge', 'train', 'figures', 'tables',
+          'report', 'production', 'explore', 'fill', 'audit', 'repair', 'track', 'dipoles', 'dipole_fit', 'ir', 'gs_grid', 'vib_levels', 'method_cut', 'ir_replot', 'freeze', 'shell', 'shell_check', 'well9d', 'well9d_fit', 'well9d_tz', 'well9d_vpt2', 'well9d_dipole', 'well9d_vci', 'well9d_bands', 'well9d_isotopes', 'well9d_compare', 'rpmd9d', 'rpmd_plan', 'dynamics_report', 'rpmd_check', 'well9d_extend', 'vci_report', 'all']
 
 
 def main(argv=None):
@@ -905,18 +1544,78 @@ def main(argv=None):
     ap.add_argument('stage', choices=STAGES)
     ap.add_argument('run', help='run folder (holds config.toml)')
     ap.add_argument('--template', default='quick', help=f'for init: {", ".join(C.TEMPLATES)}')
-    ap.add_argument('--force', action='store_true', help='refs: recompute even if data/refs.npz exists')
+    ap.add_argument('--refs', help='init: the refs.npz this run starts from (refs.file, relative to the run folder)')
+    ap.add_argument('--orca', help='audit, track: the ORCA folder (or the orca executable)')
+    ap.add_argument('--jobs', type=int, help='audit: ORCA runs in parallel; dipoles, ir: processes')
+    ap.add_argument('--name', help='freeze: the name of the frozen surface (models/surfaces/<name>.npz)')
+    ap.add_argument('--batch', type=int, help='shell, well9d: compute this batch only (default: all)')
+    ap.add_argument('-v', '--verbose', action='store_true',
+                    help='print detail lines to the terminal too (they always go to logs/<stage>.log); '
+                         'used by the well9d stages')
+    ap.add_argument('--force', action='store_true', help='refs: recompute even if data/refs.npz exists; '
+                    'propose: propose again even if data/proposed.npz exists')
     a = ap.parse_args(argv)
     if a.stage == 'init':
-        return stage_init(a.run, a.template)
+        return stage_init(a.run, a.template, a.refs)
     run = Run(a.run)
+    run.verbose = bool(a.verbose)
     if a.stage == 'status':
         return stage_status(run)
-    todo = ['refs', 'ladder', 'train', 'figures', 'tables', 'report'] if a.stage == 'all' else [a.stage]
+    todo = ['refs', 'ladder', 'nacs', 'train', 'figures', 'tables', 'report'] if a.stage == 'all' else [a.stage]
+    if a.stage == 'all' and not run.cfg['nacs'].get('enabled', False):
+        todo.remove('nacs')
+    active_run = run.cfg['active'].get('enabled', False)
+    explore_run = run.cfg['explore'].get('enabled', False)
+    if a.stage == 'all' and active_run:
+        todo = ['refs', 'ladder', 'explore' if explore_run else 'propose', 'compute', 'merge', 'train', 'figures',
+                'tables', 'report']
+        if explore_run and not run.cfg['explore'].get('train_after', False):
+            # the next round's committee is the model that matters; train a production surface at the end instead
+            todo = [t for t in todo if t not in ('train', 'figures')]
+    if a.stage == 'explore' and not active_run:
+        sys.exit('explore belongs to active-learning runs: make one with --template explore')
+    if a.stage in ('propose', 'compute', 'merge', 'fill') and not active_run:
+        sys.exit(f'{a.stage} belongs to active-learning runs: make one with --template active ([active] enabled = true)')
+    from . import active, audit, dipoles, explore, fill, ir, production, repair, track, vib_levels, gs_grid, method_cut, shell
+    from . import well9d, vci9, vci_report, isotopes9, compare9, rpmd9, dynamics_report, rpmd_check, extend9
     for st in todo:
         run.open_log(st)
         t0 = time.time()
-        {'refs': lambda: stage_refs(run, a.force), 'ladder': lambda: stage_ladder(run), 'train': lambda: stage_train(run),
+        {'refs': lambda: stage_refs(run, a.force), 'ladder': lambda: stage_ladder(run), 'nacs': lambda: stage_nacs(run),
+         'propose': lambda: active.stage_propose(run, a.force), 'compute': lambda: active.stage_compute(run),
+         'merge': lambda: active.stage_merge(run),
+         'production': lambda: production.stage_production(run),
+         'explore': lambda: explore.stage_explore(run, a.force),
+         'fill': lambda: fill.stage_fill(run, a.force),
+         'audit': lambda: audit.stage_audit(run, a.orca, a.jobs),
+         'repair': lambda: repair.stage_repair(run),
+         'track': lambda: track.stage_track(run, a.jobs, a.orca),
+         'dipoles': lambda: dipoles.stage_dipoles(run, a.jobs),
+         'dipole_fit': lambda: dipoles.stage_dipole_fit(run),
+         'ir': lambda: ir.stage_ir(run, a.jobs),
+         'vib_levels': lambda: vib_levels.stage_vib_levels(run),
+         'ir_replot': lambda: ir.stage_ir_replot(run),
+         'freeze': lambda: shell.stage_freeze(run, a.name),
+         'shell': lambda: shell.stage_shell(run, a.jobs, a.orca, a.batch),
+         'shell_check': lambda: shell.stage_shell_check(run),
+         'well9d': lambda: well9d.stage_well9d(run, a.jobs, a.orca, a.batch),
+         'well9d_fit': lambda: well9d.stage_well9d_fit(run),
+         'well9d_tz': lambda: well9d.stage_well9d_tz(run, a.jobs, a.orca),
+         'well9d_vpt2': lambda: well9d.stage_well9d_vpt2(run),
+         'well9d_dipole': lambda: well9d.stage_well9d_dipole(run, a.jobs, a.orca),
+         'well9d_vci': lambda: vci9.stage_well9d_vci(run),
+         'well9d_bands': lambda: vci9.stage_well9d_bands(run),
+         'well9d_isotopes': lambda: isotopes9.stage_well9d_isotopes(run),
+         'well9d_compare': lambda: compare9.stage_well9d_compare(run),
+         'rpmd9d': lambda: rpmd9.stage_rpmd9d(run),
+         'rpmd_plan': lambda: rpmd9.stage_rpmd_plan(run),
+         'dynamics_report': lambda: dynamics_report.stage_dynamics_report(run),
+         'rpmd_check': lambda: rpmd_check.stage_rpmd_check(run, a.jobs, a.orca),
+         'well9d_extend': lambda: extend9.stage_well9d_extend(run, a.jobs, a.orca),
+         'vci_report': lambda: vci_report.stage_vci_report(run),
+         'gs_grid': lambda: gs_grid.stage_gs_grid(run, a.jobs, a.orca),
+         'method_cut': lambda: method_cut.stage_method_cut(run, a.jobs, a.orca),
+         'train': lambda: stage_train(run),
          'figures': lambda: stage_figures(run), 'tables': lambda: stage_tables(run),
          'report': lambda: stage_report(run)}[st]()
         run.log(f'{st} done in {time.time() - t0:.0f} s')

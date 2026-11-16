@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>diabml workflow guide</title>
+<style>
+:root{
+  --bg:#f7f5f0; --panel:#ffffff; --ink:#22252b; --muted:#5d6470; --line:#dcd8cf;
+  --accent:#2f6db5; --accent2:#c8873a; --ok:#2e8a5f; --warn:#b5482f; --code:#f0ede6; --codeink:#2a2f38;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181d; --panel:#1e2128; --ink:#e7e4dd; --muted:#a3a9b4; --line:#343843;
+    --accent:#7fb0ec; --accent2:#e3a45f; --ok:#6cc79a; --warn:#ec8a72; --code:#262a33; --codeink:#e7e4dd;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","IBM Plex Sans",Helvetica,Arial,sans-serif}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1280px;margin:0 auto}
+nav{position:sticky;top:0;height:100vh;overflow:auto;padding:28px 18px;border-right:1px solid var(--line);font-size:14px}
+nav b{display:block;margin:0 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+nav a{display:block;color:var(--ink);text-decoration:none;padding:3px 0}
+nav a:hover{color:var(--accent)}
+nav a.sub{padding-left:12px;color:var(--muted)}
+main{padding:32px 40px 80px;min-width:0}
+h1{font-family:Georgia,"Source Serif 4",serif;font-weight:400;font-size:38px;margin:0 0 6px}
+h2{font-family:Georgia,"Source Serif 4",serif;font-weight:400;font-size:28px;margin:48px 0 12px;padding-top:12px;border-top:1px solid var(--line)}
+h3{font-size:18px;margin:28px 0 8px}
+p,li{max-width:80ch}
+.lede{color:var(--muted);font-size:17px;margin:0 0 20px}
+code,pre{font-family:"SF Mono",Menlo,Consolas,"JetBrains Mono",monospace;font-size:13.5px}
+code{background:var(--code);color:var(--codeink);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);color:var(--codeink);padding:14px 16px;border-radius:8px;overflow-x:auto;line-height:1.45;border:1px solid var(--line)}
+pre code{background:none;padding:0}
+.c{color:var(--muted)}
+table{border-collapse:collapse;width:100%;margin:10px 0 18px;font-size:14.5px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{background:var(--code);font-weight:600}
+tr:last-child td{border-bottom:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0}
+.note{border-left:4px solid var(--accent2);background:var(--panel);padding:10px 16px;border-radius:6px;margin:14px 0}
+.warn{border-left-color:var(--warn)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;border:1px solid var(--line);color:var(--muted);margin-left:6px;vertical-align:2px}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:16px 0}
+.step{flex:1 1 170px;background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:10px;padding:12px 14px;font-size:14px}
+.step b{display:block;font-size:15px;margin-bottom:4px}
+.step.o{border-top-color:var(--accent2)} .step.g{border-top-color:var(--ok)}
+.arrow{align-self:center;color:var(--muted);font-size:22px}
+.tree{white-space:pre;overflow-x:auto;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13.5px;line-height:1.5}
+svg text{fill:var(--ink);font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+svg .m{fill:var(--muted)}
+svg .box{fill:var(--panel);stroke:var(--line);stroke-width:1.5}
+svg .b1{stroke:var(--accent);stroke-width:2.5}
+svg .b2{stroke:var(--accent2);stroke-width:2.5}
+svg .b3{stroke:var(--ok);stroke-width:2.5}
+svg .ln{stroke:var(--muted);stroke-width:1.6;fill:none}
+svg .loop{stroke:var(--accent2);stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+@media (max-width:860px){table{display:block;overflow-x:auto} .wrap{grid-template-columns:1fr} nav{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)} main{padding:20px 16px 60px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<b>diabml workflow</b>
+<a href="#overview">Overall workflow</a>
+<a href="#setup">Setup &amp; environment</a>
+<a href="#runfolder">The run folder</a>
+<a href="#templates">Templates</a>
+<a href="#stages">Stage reference</a>
+<a class="sub" href="#s-scan">Scans &amp; training</a>
+<a class="sub" href="#s-active">Active learning</a>
+<a class="sub" href="#s-explore">Explore (dynamics)</a>
+<a class="sub" href="#s-audit">Audit &amp; repair</a>
+<a class="sub" href="#s-production">Production</a>
+<a class="sub" href="#s-ir">Dipoles &amp; IR</a>
+<a href="#recipes">Recipes</a>
+<a class="sub" href="#r-round">Next exploration round</a>
+<a class="sub" href="#r-fill">Fill a region (grid)</a>
+<a class="sub" href="#r-audit">Audit a data set</a>
+<a class="sub" href="#r-prod">Production + dynamics</a>
+<a class="sub" href="#r-ir">Hot-molecule IR</a>
+<a class="sub" href="#r-scan">New reference scan</a>
+<a href="#models">Trained models</a>
+<a href="#dynamics">Running dynamics (ASE)</a>
+<a href="#config">Key settings</a>
+<a href="#history">This project's runs</a>
+<a href="#trouble">Troubleshooting</a>
+</nav>
+<main>
+
+<h1>diabml workflow guide</h1>
+<p class="lede">Quasi-diabatic machine-learned potential energy surfaces for CH<sub>2</sub>OO: how each kind of run is set up and carried out, where its results go, and where the trained models live. Every command runs from the <code>diabml</code> folder: <code>~/Documents/Research/MD_MLPES/diabml</code>.</p>
+
+<!-- ====================================================================== overview -->
+<h2 id="overview">Overall workflow</h2>
+<p>A study is a series of <b>run folders</b> under <code>runs/</code>. Each run reads its settings from <code>RUN/config.toml</code> and the files earlier stages wrote, so stages can be rerun one at a time. Data flow forward from one run to the next through <code>refs.file</code>: a new run starts from another run's <code>data/refs.npz</code>.</p>
+
+<svg viewBox="0 0 1000 430" width="100%" role="img" aria-label="Workflow: reference scan, audit and repair, exploration rounds with ORCA compute, production surface, dynamics">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="m"/></marker></defs>
+  <!-- row 1 -->
+  <rect class="box b1" x="20" y="20" width="200" height="92" rx="10"/>
+  <text x="120" y="48" text-anchor="middle" font-weight="600" font-size="16">1 · Reference scan</text>
+  <text x="120" y="70" text-anchor="middle" font-size="13" class="m">init --template cas_3d</text>
+  <text x="120" y="90" text-anchor="middle" font-size="13" class="m">refs → ladder → train</text>
+
+  <rect class="box b2" x="270" y="20" width="200" height="92" rx="10"/>
+  <text x="370" y="48" text-anchor="middle" font-weight="600" font-size="16">2 · Audit (ORCA)</text>
+  <text x="370" y="70" text-anchor="middle" font-size="13" class="m">audit RUN --jobs 6</text>
+  <text x="370" y="90" text-anchor="middle" font-size="13" class="m">→ audit.html</text>
+
+  <rect class="box b2" x="520" y="20" width="200" height="92" rx="10"/>
+  <text x="620" y="48" text-anchor="middle" font-weight="600" font-size="16">3 · Repair</text>
+  <text x="620" y="70" text-anchor="middle" font-size="13" class="m">repair RUN</text>
+  <text x="620" y="90" text-anchor="middle" font-size="13" class="m">→ data/repaired/{nevpt2,qd}</text>
+
+  <rect class="box b3" x="770" y="20" width="210" height="92" rx="10"/>
+  <text x="875" y="48" text-anchor="middle" font-weight="600" font-size="16">6 · Production</text>
+  <text x="875" y="70" text-anchor="middle" font-size="13" class="m">production RUN</text>
+  <text x="875" y="90" text-anchor="middle" font-size="13" class="m">→ models/production.pt</text>
+
+  <line class="ln" x1="220" y1="66" x2="268" y2="66" marker-end="url(#ah)"/>
+  <line class="ln" x1="470" y1="66" x2="518" y2="66" marker-end="url(#ah)"/>
+  <path class="ln" d="M620 112 L620 170" marker-end="url(#ah)"/>
+
+  <!-- loop row -->
+  <rect class="box b1" x="250" y="172" width="740" height="150" rx="12" style="fill:none;stroke-dasharray:4 4"/>
+  <text x="265" y="195" font-size="13" font-weight="600" class="m">4–5 · one exploration round = one new run folder (repeat until every trajectory completes)</text>
+
+  <rect class="box" x="270" y="210" width="150" height="90" rx="10"/>
+  <text x="345" y="240" text-anchor="middle" font-weight="600">init + refs</text>
+  <text x="345" y="262" text-anchor="middle" font-size="12.5" class="m">--template explore</text>
+  <text x="345" y="280" text-anchor="middle" font-size="12.5" class="m">--refs ../prev/…</text>
+
+  <rect class="box" x="450" y="210" width="150" height="90" rx="10"/>
+  <text x="525" y="240" text-anchor="middle" font-weight="600">explore</text>
+  <text x="525" y="262" text-anchor="middle" font-size="12.5" class="m">committee + 9 watched</text>
+  <text x="525" y="280" text-anchor="middle" font-size="12.5" class="m">trajectories</text>
+
+  <rect class="box" x="630" y="210" width="150" height="90" rx="10"/>
+  <text x="705" y="240" text-anchor="middle" font-weight="600">compute</text>
+  <text x="705" y="262" text-anchor="middle" font-size="12.5" class="m">ORCA, lowest of</text>
+  <text x="705" y="280" text-anchor="middle" font-size="12.5" class="m">scratch + neighbours</text>
+
+  <rect class="box" x="810" y="210" width="150" height="90" rx="10"/>
+  <text x="885" y="240" text-anchor="middle" font-weight="600">merge</text>
+  <text x="885" y="262" text-anchor="middle" font-size="12.5" class="m">base + new</text>
+  <text x="885" y="280" text-anchor="middle" font-size="12.5" class="m">→ data/refs.npz</text>
+
+  <line class="ln" x1="420" y1="255" x2="448" y2="255" marker-end="url(#ah)"/>
+  <line class="ln" x1="600" y1="255" x2="628" y2="255" marker-end="url(#ah)"/>
+  <line class="ln" x1="780" y1="255" x2="808" y2="255" marker-end="url(#ah)"/>
+  <path class="loop" d="M885 300 L885 312 L345 312 L345 302" marker-end="url(#ah)"/>
+  <text x="615" y="340" text-anchor="middle" font-size="12" class="m">next round: refs.file = this round's data/refs.npz</text>
+
+  <path class="ln" d="M960 210 L960 140 L900 114" marker-end="url(#ah)"/>
+  <text x="975" y="160" font-size="12" class="m" text-anchor="end">when converged</text>
+
+  <!-- dynamics -->
+  <rect class="box b3" x="770" y="350" width="210" height="64" rx="10"/>
+  <text x="875" y="376" text-anchor="middle" font-weight="600">7 · Dynamics</text>
+  <text x="875" y="398" text-anchor="middle" font-size="12.5" class="m">examples/ch2oo_nve.py · ASE</text>
+  <path class="ln" d="M985 112 L992 112 L992 382 L982 382" marker-end="url(#ah)"/>
+
+  <!-- side note -->
+  <rect class="box" x="20" y="350" width="700" height="64" rx="10"/>
+  <text x="36" y="376" font-size="13" font-weight="600">Older path (still available)</text>
+  <text x="36" y="398" font-size="12.5" class="m">active template: propose (committee disagreement on random geometries) → compute → merge → train</text>
+</svg>
+
+<div class="note"><b>Rule of thumb.</b> Never change a finished run's data in place: make a new run folder that points at it with <code>--refs</code>. Each folder then records exactly what was done (its <code>config.toml</code> and <code>logs/</code>).</div>
+
+<!-- ====================================================================== setup -->
+<h2 id="setup">Setup &amp; environment</h2>
+<pre><code>conda activate diabml                     <span class="c"># has torch, ase, pyscf; the base environment lacks ase</span>
+cd ~/Documents/Research/MD_MLPES/diabml
+python -c "import ase, torch, pyscf; print('ok')"
+
+<span class="c"># ORCA (native Apple-silicon build), used by audit and by compute with engine = "orca"</span>
+echo 'export ORCA_PATH=~/Documents/Research/orca_6_1_1_macosx_arm64_openmpi411' &gt;&gt; ~/.zshrc
+source ~/.zshrc
+
+<span class="c"># long runs: keep the Mac awake</span>
+caffeinate -i python -m diabml.workflow.ch2oo all runs/20_md7
+
+<span class="c"># tests (about 30 s)</span>
+python -m pytest -q tests</code></pre>
+<p>Every command has the form <code>python -m diabml.workflow.ch2oo STAGE RUN [options]</code>. Options:</p>
+<table>
+<tr><th>Option</th><th>Used by</th><th>Meaning</th></tr>
+<tr><td><code>--template NAME</code></td><td>init</td><td>which <code>config.toml</code> to write (see <a href="#templates">Templates</a>); default <code>quick</code></td></tr>
+<tr><td><code>--refs PATH</code></td><td>init</td><td>sets <code>refs.file</code>: the <code>refs.npz</code> this run starts from, relative to the run folder</td></tr>
+<tr><td><code>--force</code></td><td>refs, propose, explore</td><td>redo even if the output exists (refs: recompute the scan; propose/explore: replace <code>proposed.npz</code>)</td></tr>
+<tr><td><code>--orca PATH</code></td><td>audit</td><td>ORCA folder or executable (otherwise <code>[audit] orca</code> or <code>ORCA_PATH</code>)</td></tr>
+<tr><td><code>--jobs N</code></td><td>audit</td><td>ORCA runs in parallel (default 6)</td></tr>
+<tr><td><code>--batch B</code></td><td>shell, well9d</td><td>compute one batch only (well9d: 0 = the Hessian); needed with <code>select = "gp"</code></td></tr>
+<tr><td><code>-v</code>, <code>--verbose</code></td><td>the well9d stages</td><td>also print the detail lines (mode tables, coordinate ranges, per-order and per-batch errors) to the terminal; they always go to <code>logs/&lt;stage&gt;.log</code></td></tr>
+</table>
+
+<!-- ====================================================================== run folder -->
+<h2 id="runfolder">The run folder</h2>
+<p><code>init</code> creates the folder and its sub-folders; every stage adds to them. Everything for one study step is inside.</p>
+<div class="card tree">runs/20_md7/
+├── config.toml            <span class="c">settings (from the template, edit freely)</span>
+├── report.html            <span class="c">figures + tables of the run (report stage)</span>
+├── dynamics.html          <span class="c">explore runs: every trajectory, why it stopped</span>
+├── audit.html             <span class="c">audit runs: which points are on a wrong solution</span>
+├── data/
+│   ├── refs.npz           <span class="c">THE reference data of this run (what train / production use)</span>
+│   ├── base_refs.npz      <span class="c">active/explore: the data this round started from</span>
+│   ├── proposed.npz       <span class="c">geometries to compute next (propose / explore)</span>
+│   ├── new_refs.npz       <span class="c">this round's new points (compute) → merged into refs.npz</span>
+│   ├── nacs.npz           <span class="c">ab initio derivative couplings (+ nacs_base.npz)</span>
+│   ├── orbitals.npz       <span class="c">PySCF orbital library (starting orbitals for PySCF compute)</span>
+│   ├── orca_orbitals.json <span class="c">ORCA orbital library: geometry → converged .gbw file</span>
+│   ├── ladder.json        <span class="c">fragment IE/EA used for the ion-pair asymptote</span>
+│   ├── compute/           <span class="c">ORCA inputs/outputs of the compute stage</span>
+│   ├── audit/             <span class="c">ORCA inputs/outputs of the audit (keep: the repaired library points here)</span>
+│   └── repaired/          <span class="c">repair stage: nevpt2/ and qd_nevpt2/, each a complete data set</span>
+├── models/                <span class="c">trained models: NAME.pt + NAME.json (see Trained models)</span>
+├── results/               <span class="c">numbers: metrics.json, active.json, explore.json, production.json, audit.*, repair.*</span>
+│   └── trajectories/      <span class="c">explore: traj_NN.traj (ASE) and traj_NN.npz (every monitored quantity)</span>
+├── figures/               <span class="c">F*, A*, P*, R1 PNGs + captions JSON</span>
+├── tables/                <span class="c">T1–T11 as .csv and .md, tables.json</span>
+└── logs/                  <span class="c">STAGE.log: everything printed, appended on every rerun</span></div>
+
+<!-- ====================================================================== templates -->
+<h2 id="templates">Templates</h2>
+<table>
+<tr><th>Template</th><th>Purpose</th><th>Data source</th><th><code>all</code> runs</th></tr>
+<tr><td><code>quick</code></td><td>smoke test, a few minutes</td><td>shipped SA4-CASSCF(8,6)/6-31G* data</td><td>refs, ladder, train, figures, tables, report</td></tr>
+<tr><td><code>baseline</code></td><td>the talk's training settings on the shipped data</td><td>shipped data</td><td>same</td></tr>
+<tr><td><code>nevpt2_2d</code></td><td>SA4-CASSCF(8,6)+SC-NEVPT2/cc-pVDZ, planar 2-D grid</td><td>computed (PySCF)</td><td>same</td></tr>
+<tr><td><code>cas_3d</code></td><td>adds the C–O stretch: 3-D grid (r_OO, ∠COO, r_CO)</td><td>computed (PySCF)</td><td>same</td></tr>
+<tr><td><code>restraint</code></td><td>diabatic charge restraint on earlier references</td><td>file</td><td>same</td></tr>
+<tr><td><code>active</code></td><td>one active-learning round: committee disagreement on random geometries</td><td>file (previous round)</td><td>refs, ladder, propose, compute, merge, train, figures, tables, report</td></tr>
+<tr><td><code>explore</code></td><td>one round of active learning <b>from dynamics</b> (current method)</td><td>file (previous round)</td><td>refs, ladder, explore, compute, merge, tables, report <span class="tag">train skipped unless train_after</span></td></tr>
+</table>
+<p><code>active</code> and <code>explore</code> runs compute new points with ORCA (<code>[compute] engine = "orca"</code>); set <code>engine = "pyscf"</code> to use PySCF.</p>
+
+<!-- ====================================================================== stages -->
+<h2 id="stages">Stage reference</h2>
+
+<h3 id="s-scan">Scans &amp; training</h3>
+<table>
+<tr><th>Stage</th><th>Command</th><th>Does</th><th>Writes</th></tr>
+<tr><td>init</td><td><code>init RUN --template T [--refs P]</code></td><td>makes the folder and <code>config.toml</code> (never overwrites an existing one)</td><td><code>config.toml</code>, sub-folders</td></tr>
+<tr><td>refs</td><td><code>refs RUN [--force]</code></td><td>source = compute: SA-CASSCF (+SC-NEVPT2) scan with PySCF, checkpoint every point, resumable. source = file: copies <code>refs.file</code> (and its <code>nacs.npz</code>, orbital libraries). Active/explore: copies to <code>base_refs.npz</code>, then merges</td><td><code>data/refs.npz</code>, <code>scan_checkpoint.npz</code></td></tr>
+<tr><td>status</td><td><code>status RUN</code></td><td>progress and time per point of a running scan</td><td>—</td></tr>
+<tr><td>ladder</td><td><code>ladder RUN</code></td><td>fragment ionisation energy / electron affinity (experiment or ΔCCSD(T)) for the ion-pair asymptote</td><td><code>data/ladder.json</code></td></tr>
+<tr><td>nacs</td><td><code>nacs RUN</code></td><td>ab initio derivative couplings along r_OO (<code>[nacs] enabled = true</code>)</td><td><code>data/nacs.npz</code></td></tr>
+<tr><td>train</td><td><code>train RUN</code></td><td>framed model vs CDNN: random split, extrapolation, learning curve, optional restraint and coupling fit (<code>[train]</code>)</td><td><code>models/*.pt</code>, <code>results/metrics.json</code>, <code>curves.npz</code></td></tr>
+<tr><td>figures</td><td><code>figures RUN</code></td><td>F1–F11</td><td><code>figures/</code></td></tr>
+<tr><td>tables</td><td><code>tables RUN</code></td><td>T1–T11 (whichever results exist)</td><td><code>tables/</code></td></tr>
+<tr><td>report</td><td><code>report RUN</code></td><td>one page with all figures and tables; links dynamics.html / audit.html</td><td><code>report.html</code></td></tr>
+<tr><td>all</td><td><code>all RUN</code></td><td>the template's stage list (see Templates)</td><td>—</td></tr>
+</table>
+
+<h3 id="s-active">Active learning (committee)</h3>
+<table>
+<tr><th>Stage</th><th>Does</th><th>Writes</th></tr>
+<tr><td>propose <span class="tag">--force</span></td><td>trains a committee (5 framed models on bootstrap samples), scores 20 000 random geometries by disagreement, picks <code>n_new</code> spread-out ones</td><td><code>data/proposed.npz</code>, <code>results/proposed.csv</code>, <code>models/committee_k.pt</code>, A1</td></tr>
+<tr><td>compute</td><td>new references at the proposed geometries at the base data's level. <b>ORCA</b> (default in templates): each point from scratch orbitals and from the 2 nearest library points' orbitals, in parallel; the lowest state-averaged SA-CASSCF solution is kept. PySCF: from the nearest PySCF orbitals</td><td><code>data/new_refs.npz</code>, <code>new_orca_orbitals.json</code>, <code>data/compute/</code>, <code>results/compute_orca.csv</code>, A2</td></tr>
+<tr><td>fill <span class="tag">--force</span></td><td>a regular grid of geometries in the boxes of <code>[[fill.box]]</code> (default: the inner O–O wall, r_OO 1.00–1.15 Å × ∠COO 95–145° × r_CO 1.1–1.6 Å, and C–O stretched to 1.55/1.65 Å), minus points within <code>min_distance</code> grid steps of the data; trains the committee first so compute can report how wrong the surface was there. Use it instead of waiting for trajectories to find a region</td><td><code>data/proposed.npz</code>, <code>results/proposed.csv</code></td></tr>
+<tr><td>merge</td><td>base + new → refs (near-duplicates dropped), carries couplings and both orbital libraries forward</td><td><code>data/refs.npz</code>, <code>orca_orbitals.json</code>, <code>nacs.npz</code></td></tr>
+</table>
+
+<h3 id="s-explore">Explore: active learning from dynamics</h3>
+<p><code>explore RUN [--force]</code> trains the committee, then runs watched constant-energy trajectories on its average from every start in <code>[explore]</code> (r_OO 1.35/1.6/1.9 Å × 1000/1500/2000 K = 9 trajectories, 300 fs each). Each stops <i>before</i> the surface goes wrong:</p>
+<table>
+<tr><th>Stop reason</th><th>Setting</th><th>What it means</th></tr>
+<tr><td>spread</td><td><code>spread_eV = 0.25</code></td><td>committee members disagree on the active state: not enough data here</td></tr>
+<tr><td>distance</td><td><code>data_distance = 1.5</code></td><td>more than 1.5 grid steps from every reference point</td></tr>
+<tr><td>jump</td><td><code>jump_meV = 5</code></td><td>total energy changes in one step: a kink or break in the surface</td></tr>
+<tr><td>force</td><td><code>force_max = 25</code></td><td>extreme force (a steep wall or a hole). Raise to 40 if stops are at the real inner O–O wall</td></tr>
+<tr><td>completed</td><td><code>steps × dt</code></td><td>ran to the end on trusted surface</td></tr>
+</table>
+<p>The stopping geometries (plus a few fs of look-ahead) become <code>data/proposed.npz</code> for compute. Nonadiabatic regions (small gaps, Massey parameter) are logged, not stopped on. Output: <code>dynamics.html</code>, <code>results/explore.json</code>, <code>results/trajectories/traj_NN.{traj,npz}</code>, <code>models/committee_k.pt</code>. The loop has converged when every trajectory completes; then try hotter or more stretched starts.</p>
+
+<h3 id="s-audit">Audit &amp; repair (ORCA)</h3>
+<table>
+<tr><th>Stage</th><th>Command</th><th>Does</th><th>Writes</th></tr>
+<tr><td>audit</td><td><code>audit RUN [--orca P] [--jobs 6]</code></td><td>ORCA SA-CASSCF + SC- and QD-NEVPT2 at every point of <code>data/refs.npz</code>; classifies each point: <b>same</b> / <b>ours higher</b> (our point on a wrong, higher solution) / <b>orca higher</b> (retried from a neighbour's orbitals) / <b>failed</b>. Resumable. ~25 min for 872 points (arm64, 6 jobs)</td><td><code>audit.html</code>, <code>results/audit.{npz,csv,json}</code>, <code>data/audit/</code></td></tr>
+<tr><td>repair</td><td><code>repair RUN</code></td><td>replaces every “ours higher” point with ORCA's lower solution; drops couplings/orbitals/charges from the wrong solution; makes a QD-NEVPT2 version; writes the ORCA orbital library</td><td><code>data/repaired/nevpt2/</code> and <code>data/repaired/qd_nevpt2/</code> (each: <code>refs.npz</code>, <code>nacs.npz</code>, <code>orbitals.npz</code>, <code>orca_orbitals.json</code>), <code>results/repair.{json,csv}</code>, R1</td></tr>
+</table>
+<div class="note warn"><b>Keep <code>data/audit/</code>.</b> The orbital library of every later round points at the <code>.gbw</code> files there. The <code>.densities</code> files (most of its 1.3 GB) are not needed and can be deleted.</div>
+
+<h3 id="s-production">Production surface</h3>
+<p><code>production RUN</code> works on any run with <code>data/refs.npz</code>. Test phase: 10 % of the usable points held out, 5 framed members (charge restraint + coupling fit) trained on the rest, errors reported by region (dynamics / high energy / corner). Final phase: the 5 members retrained on everything and saved as one averaged ensemble. Then hole scans: below the shortest O–O distance and beyond the data in r_CO (worst member and the ensemble mean, which is what dynamics feels). About 35 min.</p>
+<p>Writes <code>models/production.pt</code> (+ <code>.json</code>), <code>results/production.json</code>, <code>results/production_test.npz</code>, P1 (parity), P2 (cuts), P3 (hole scan), table T10.</p>
+
+<h3 id="s-ir">Dipoles and IR spectra</h3>
+<table>
+<tr><th>Stage</th><th>Command</th><th>Does</th><th>Writes</th></tr>
+<tr><td>dipoles</td><td><code>dipoles RUN [--jobs 6]</code></td><td>at every point of <code>data/refs.npz</code>: SA-CASSCF + SC-NEVPT2 with PySCF, field-free and with ±0.002 a.u. along x and y (the molecular plane); relaxed dipole of every state by central differences. The field-free energies must match the data (same SA-CASSCF solution), otherwise retried from a matched neighbour's orbitals. Resumable. ~30 min for ~1000 points on 6 cores. (ORCA cannot be used: with symmetry on it applies every field perpendicular to the Cs plane.)</td><td><code>data/dipoles.npz</code>, <code>results/dipoles.json</code>, D1</td></tr>
+<tr><td>dipole_fit</td><td><code>dipole_fit RUN</code></td><td>S0 dipole surface as learned atomic charges, μ = Σ q<sub>i</sub>(x) r<sub>i</sub> (neutral; rotates with the molecule; carries over to more coordinates). Held-out test, then trained on all points with S1 − S0 &gt; 5 mEh</td><td><code>models/dipole.pt</code> (+ .json), <code>results/dipole_fit.json</code>, D2</td></tr>
+<tr><td>ir</td><td><code>ir RUN [--jobs 6]</code></td><td>for each temperature in <code>[ir]</code>: Langevin equilibration, then constant-energy trajectories on <code>production.pt</code> with the lab-frame dipole from <code>dipole.pt</code>; spectrum = averaged power spectrum of dμ/dt (harmonic quantum correction); harmonic spectrum at the S0 minimum as sticks. Flags trajectories that left the trusted surface. <code>[ir] surface = "well9d"</code>: the 9-D CCSD(T) well and 9-D dipole surface, all nine modes free (no restraint springs), outputs suffixed <code>_9d</code>, band markers from <code>well9d_vpt2</code></td><td><code>ir.html</code>, <code>results/ir_spectrum.csv</code>, <code>results/ir.json</code>, <code>results/ir_TK.npz</code>, IR1, IR2</td></tr>
+<tr><td>vib_levels</td><td><code>vib_levels RUN</code></td><td>refits the well polynomial (<code>[vib]</code> order, window) and solves the J = 0 vibrational Schrödinger equation for r(O–O), ∠COO, r(C–O) with a rigid CH₂ on a sinc-DVR grid (exact G matrix): quantum fundamentals, overtones, combinations, assignments, intensities from <code>dipole.pt</code>, compared with Su et al. (2013). Also reports how much the harmonic frequencies change over polynomial orders and windows: if that range is wider than the anharmonic shift, the data, not the method, limit the comparison</td><td><code>vib_levels.html</code>, <code>results/vib_levels.{json,csv}</code>, <code>models/well_poly_vib.npz</code>, VL1</td></tr>
+<tr><td>gs_grid</td><td><code>gs_grid RUN [--jobs 6]</code></td><td>dense state-specific CASSCF(8,6)+SC-NEVPT2 grid around the S0 minimum (<code>[gs_grid]</code> step, half_points; ORCA, orbitals passed along a spanning tree): smooth data for the curvature of the well, free of the SA4 top-root jumps. Used by <code>vib_levels</code> (<code>[vib] source = "gs_grid"</code>) and <code>ir</code> (<code>[ir] well_source = "gs_grid"</code>). See <a href="dvr_note.html">dvr_note.html</a></td><td><code>data/gs_grid.npz</code>, <code>results/gs_grid.json</code></td></tr>
+<tr><td>well9d</td><td><code>well9d RUN --batch B [--jobs 8] [-v]</code></td><td>the well in all nine internal coordinates (r_OO, ∠COO, r_CO, r_CH1, r_CH2, ∠HCO1, ∠HCO2 and the out-of-plane dihedrals d_H1, d_H2; 1 = the H syn to the terminal O) at RHF-CCSD(T). <b>Batch 0</b>: a finite-difference Hessian at the centre (the frozen 4-D minimum unless <code>[well9d.center]</code>), 163 points, giving the nine CCSD(T) harmonic frequencies, the Newton step to the 9-D minimum and a mirror-symmetry check. <b>Batches 1…</b>: points sampled in the normal coordinates of that Hessian (harmonic energy up to <code>e_max_eV</code>), chosen by farthest-point sampling and split so each batch spans the well; <code>select = "gp"</code> picks later batches where a Gaussian process of the anharmonic part is least sure (one batch at a time). Finished points are reused; the design is saved and reused</td><td><code>data/well9d_hessian.npz</code>, <code>data/well9d_design.npz</code>, <code>data/well9d.npz</code>, <code>results/well9d_hessian.json</code></td></tr>
+<tr><td>well9d_fit</td><td><code>well9d_fit RUN [-v]</code></td><td>polynomial in the nine coordinates, even in (d_H1, d_H2) so the mirror symmetry is exact, plus the <code>[gs_grid.delta]</code> aug-cc-pVTZ correction on the 4-D projection. Orders in <code>fit_orders</code> are scored by leaving out one batch at a time; the best is kept. At its minimum: nine harmonic frequencies with labels and symmetry, equilibrium rotational constants, and the difference from the frozen 4-D benchmark on its planar symmetric slice. Recomputes nothing</td><td><code>models/well9d.npz</code>, <code>results/well9d.json</code>, <code>results/well9d_fit.csv</code>, <code>figures/W9_well9d.png</code></td></tr>
+<tr><td>well9d_tz</td><td><code>well9d_tz RUN [--jobs 8] [-v]</code></td><td>CCSD(T) in <code>[well9d] tz_basis</code> (aug-cc-pVTZ) at <code>tz_points</code> (200) of the computed 9-D points within <code>tz_e_max_eV</code>, spread by farthest-point sampling. <code>well9d_fit</code> then fits the basis-set difference by a symmetric polynomial (order chosen by held-out error) and adds it in all nine coordinates, replacing the 4-D projection of <code>[gs_grid.delta]</code>. Finished points are reused; raise <code>tz_points</code> and rerun to add more</td><td><code>data/well9d_tz.npz</code></td></tr>
+<tr><td>well9d_vpt2</td><td><code>well9d_vpt2 RUN [-v]</code></td><td>anharmonic fundamentals of <code>models/well9d.npz</code> by VPT2: minimum refined by Newton steps, exact Cartesian Hessians by automatic differentiation, cubic and semi-diagonal quartic constants from displaced Hessians, Coriolis constants; Fermi resonances (Martin test) removed from the anharmonic constants and diagonalised with their partners (GVPT2). Modes numbered v1–v9 (Cs, Herzberg) and compared with the experimental band origins; polyad compositions, two-quantum levels, zero-point energy. Method and checks: <code>diabml/vpt2.py</code>, <code>tests/test_vpt2.py</code></td><td><code>results/well9d_vpt2.json</code></td></tr>
+<tr><td>well9d_dipole</td><td><code>well9d_dipole RUN [--jobs 8] [-v]</code></td><td>finite-field CCSD(T) dipoles (±F along x, y, z; 4 runs for planar points) at <code>[well9d] dipole_points</code> (500) of the computed 9-D points within <code>dipole_e_max_eV</code>; ORCA's field convention is identified against its own SCF dipole (the stage stops if nothing matches). Fits the 9-D dipole surface (bond vectors × invariant polynomials: exact under rotation and reflection; order by held-out error) and reports the harmonic intensities at the 9-D minimum. Finished outputs are reused, so rerunning refits</td><td><code>data/well9d_dipoles.npz</code>, <code>models/dipole9d.npz</code>, <code>results/well9d_dipole.json</code></td></tr>
+<tr><td>well9d_vci</td><td><code>well9d_vci RUN [-v]</code></td><td>variational vibrational levels of the 9-D surface (VCI, Watson Hamiltonian with Coriolis, J = 0): harmonic-oscillator product basis in the Eckart normal modes, the seven modes below 2500 cm⁻¹ to <code>[well9d] vci_ecut</code> (7000 cm⁻¹) times the two C–H stretches to <code>vci_ch_quanta</code> (3), 3-mode representation of the potential, 2-mode of the dipole. Reports the fundamentals against GVPT2 and experiment, the zero-point energy, mixed (resonant) levels, absolute intensities (km/mol) and band types, and a convergence check against a smaller basis (<code>vci_ecut_check</code>, <code>vci_ch_quanta_check</code>). Spectra: absorption at <code>vci_temperature</code> (hot bands from Boltzmann populations) and emission with <code>vci_emission_kJmol</code> (13) above the zero-point level (levels populated at the vibrational temperature with that mean energy; the population above the computed levels is estimated and reported). Needs no ORCA runs; 10–20 min (36,710 basis states)</td><td><code>results/well9d_vci.json</code>, <code>results/well9d_vci.npz</code>, <code>figures/VCI1_spectra.png</code>, <code>figures/VCI2_oo_band.png</code></td></tr>
+<tr><td>well9d_bands</td><td><code>well9d_bands RUN [-v]</code></td><td>rotationally resolved absorption and emission from the saved VCI levels (run <code>well9d_vci</code> first): each strong vibrational band (hot bands included, <code>[well9d] band_fraction</code> of the 780–1560 cm⁻¹ intensity, at most <code>band_max</code>) is spread over its exact rigid asymmetric-rotor line list (a/b/c hybrid from the VCI transition moment) at <code>band_T_rot</code>, with the rotational constants of its own two levels (VCI expectation values of Watson's μ tensor plus perturbative Coriolis terms; ground level anchored to experiment, <code>band_ground</code>), Gaussian instrument function <code>band_fwhm_cm</code>. Reports the O–O P/R maxima and the shape correlation with Su et al. (2013), and the sensitivity to the vibration–rotation constants (rigid constants). About 3 min</td><td><code>results/well9d_bands.{json,npz}</code>, <code>figures/VCI3_bands.png</code>, <code>vci_9d.html</code></td></tr>
+<tr><td>well9d_isotopes</td><td><code>well9d_isotopes RUN [-v]</code></td><td>isotopologues on the same surface (no ORCA runs): ground-state rotational constants B<sub>0</sub> = B<sub>e</sub> + ΔB<sub>vib</sub> (second-order vibrational correction from the cubic force field, plus Coriolis) for the nine species with microwave data (Nakajima and Endo 2013; McCarthy et al. 2013, <code>data/reference/ch2oo_isotopologues.json</code>), with B<sub>e</sub> at the surface's minimum and at the semi-experimental equilibrium structure, which separates errors in the position of the minimum from errors in the shape of the well; harmonic and GVPT2 fundamentals for every species, and VCI fundamentals with intensities for <code>[well9d] iso_vci</code> (CD₂OO and CH₂¹⁸O¹⁸O; basis <code>iso_ecut</code>), each with its rotationally resolved 300 K spectrum; CH₂OO and CD₂OO are compared with the digitized spectra of Huang et al. (2016) (<code>data/reference/huang2016_*.csv</code>). Adds a section to <code>vci_9d.html</code></td><td><code>results/well9d_isotopes.{json,npz}</code>, <code>figures/VCI4_isotopes.png</code></td></tr>
+<tr><td>well9d_compare</td><td><code>well9d_compare RUN</code></td><td>classical dynamics against VCI on the same surface and dipole: the <code>ir</code> spectrum for <code>[ir] surface = "well9d"</code> (Fourier transform of the dipole autocorrelation) against the VCI spectrum with rotational contours (<code>well9d_bands</code>) and the digitized measurement; per-band positions (harmonic, dynamics, VCI, experiment), region centres and intensity shares, correlations, and the hot-band shift at 13 kJ/mol. Needs <code>ir</code>, <code>well9d_vci</code>, <code>well9d_bands</code>; seconds. Adds a section to <code>vci_9d.html</code></td><td><code>results/well9d_compare.json</code>, <code>figures/VCI5_dynamics.png</code></td></tr>
+<tr><td>rpmd_plan</td><td><code>rpmd_plan RUN</code></td><td>planning for <code>rpmd9d</code>, no dynamics: the share of each mode's quantum (zero-point) potential energy that P beads capture at <code>[rpmd] temperature</code> (exact for a harmonic mode, from the VCI harmonic wavenumbers), the spectral resolution of candidate run lengths, and the predicted wall time of the configured run from a short timing probe. Seconds</td><td>log only</td></tr>
+<tr><td>rpmd9d</td><td><code>rpmd9d RUN [-v]</code></td><td>thermostatted ring-polymer MD (TRPMD) on the 9-D surface and dipole: for each bead number in <code>[rpmd] beads</code> (default 1, 16, 32; P = 1 is classical MD with the same protocol), path-integral MD equilibration (PILE-L) then TRPMD (internal-mode friction 2&nbsp;<code>lam</code>&nbsp;ω<sub>k</sub>), and the spectrum from the Kubo-transformed bead-averaged dipole autocorrelation. All trajectories of a batch and all beads go through the surface in one batched call (analytic polynomial gradient). Reports band maxima, centroid temperature, mean potential energy (zero-point energy included) and how much bead sampling left the fitted region; then reruns <code>well9d_compare</code> with the TRPMD trace. Progress (share of steps done, expected finish of the bead number and of the whole stage) is logged every <code>[rpmd] progress_minutes</code> (5). The benchmark of the approximate quantum dynamics that can go to larger Criegee intermediates. About 15 min per bead number on 4 processes (10 ps, 64 trajectories)</td><td><code>results/rpmd_9d.{json}</code>, <code>results/rpmd_9d_spectrum.csv</code>, <code>results/rpmd_9d_P*.npz</code>, <code>figures/RPMD1_spectra.png</code></td></tr>
+<tr><td>rpmd_check</td><td><code>rpmd_check RUN [--jobs N] [-v]</code></td><td>is the surface right where the ring polymer goes? <code>rpmd9d</code> keeps a sample of the bead geometries it visits inside and outside the fitted range (and the share outside, by coordinate); this stage computes RHF-CCSD(T) in the surface's basis (plus the 9-D basis-set correction) at <code>[rpmd] check_points</code> (40) outside geometries chosen by farthest-point sampling and <code>check_controls</code> (10) inside ones, removes the energy offset with the controls, and reports the surface error by coordinate and by energy against the fit's held-out error, with a verdict (no new data needed, or add <code>data/rpmd_check.npz</code> to the fit). About 50 ORCA runs; adds a section to <code>dynamics_9d.html</code></td><td><code>results/rpmd_check.json</code>, <code>data/rpmd_check.npz</code>, <code>figures/RPMD2_check.png</code></td></tr>
+<tr><td>well9d_extend</td><td><code>well9d_extend RUN [--jobs N] [-v]</code></td><td>extends the 9-D surface to higher energy (where the beads and C&ndash;H overtones go). Candidates: the bead geometries every <code>rpmd9d</code> run saved (outside the fitted box, or above <code>[well9d] extend_e_min_eV</code>, 0.6) and a harmonic sample up to <code>extend_e_max_eV</code> (2.0) weighted to the top (<code>extend_e_power</code> 0.5). <code>extend_points</code> (400) are chosen by farthest-point sampling from everything already computed, <code>extend_bead_fraction</code> (0.5) from the beads; the <code>rpmd_check</code> points are added as they are. CCSD(T) in the surface basis (<code>data/well9d_extend/</code>), merged as <code>extend_batches</code> (2) new batches; <code>extend_tz_points</code> (50) also in <code>tz_basis</code>, added to <code>data/well9d_tz.npz</code>. The old surface is tested at the new points (out of sample, by energy), saved as <code>models/well9d_pre_extend.npz</code>, and (<code>extend_refit</code>) refitted with the window at <code>extend_fit_window_eV</code> (1.5). Optional <code>fit_weight_eV</code> weights the fit by E0/(E0+E); <code>fit_low_eV</code> (0.8) reports the held-out error near the minimum. Selection saved and reused on rerun</td><td><code>results/well9d_extend.json</code>, <code>figures/W9X_extend.png</code>, <code>data/well9d_extend_design.npz</code>, refitted <code>models/well9d.npz</code></td></tr>
+<tr><td>dynamics_report</td><td><code>dynamics_report RUN</code></td><td>writes <code>dynamics_9d.html</code> (also written by <code>rpmd9d</code>): what the dynamics stages ran and cost (trajectories, time step, equilibration and recorded lengths, steps, resolution, force evaluations, wall time, time per step) and what the trajectories did. Classical <code>ir</code> runs: geometry and dipole along a sample trajectory, energy drift and fluctuation. TRPMD: centroid geometry, radius of gyration of the ring polymer on each atom, centroid temperature and potential energy against time, bead-geometry distributions against the classical ones, dipole autocorrelation functions, band centres per bead number and the friction scan (<code>[rpmd] lam_scan</code>). Sections appear for the stages whose results exist. Seconds</td><td><code>dynamics_9d.html</code>, <code>figures/DYN1_classical.png</code>, <code>DYN2_trpmd.png</code>, <code>DYN3_quantum_widths.png</code></td></tr>
+<tr><td>vci_report</td><td><code>vci_report RUN</code></td><td>rewrites <code>vci_9d.html</code> (also written by <code>well9d_bands</code>): figures, fundamentals against experiment, O–O band shape, and a full methods account (ORCA version, method, basis sets and number of calculations read from the outputs; sampling; surface, basis-set correction and dipole fits with their cross-validation; VCI Hamiltonian, basis and convergence; rotational band model; limitations; software and references), every number read from the run's own files. Seconds</td><td><code>vci_9d.html</code></td></tr>
+</table>
+<p>A reduced (3-D) surface gives only the O–O stretch, C–O stretch and COO bend (and their overtones and combinations); harmonic modes that are mostly H motion are the CH<sub>2</sub> restraint springs and are marked.</p>
+
+<!-- ====================================================================== recipes -->
+<h2 id="recipes">Recipes</h2>
+
+<h3 id="r-round">Next exploration round (the main loop)</h3>
+<pre><code><span class="c"># 1. new folder that starts from the previous round's data</span>
+python -m diabml.workflow.ch2oo init runs/20_md7 --template explore --refs ../19_md6_sc/data/refs.npz
+<span class="c">#    optional: edit runs/20_md7/config.toml  ([explore] force_max = 40.0, [active] epochs = 8000)</span>
+
+<span class="c"># 2. everything: refs, ladder, explore, compute (ORCA), merge, tables, report</span>
+caffeinate -i python -m diabml.workflow.ch2oo all runs/20_md7
+
+<span class="c">#    or stage by stage</span>
+python -m diabml.workflow.ch2oo refs    runs/20_md7
+python -m diabml.workflow.ch2oo explore runs/20_md7      <span class="c"># look at runs/20_md7/dynamics.html</span>
+python -m diabml.workflow.ch2oo compute runs/20_md7      <span class="c"># ORCA at the stopping geometries</span>
+python -m diabml.workflow.ch2oo merge   runs/20_md7      <span class="c"># → runs/20_md7/data/refs.npz</span>
+
+<span class="c"># 3. next round: runs/21_md8 with --refs ../20_md7/data/refs.npz</span></code></pre>
+<p>Watch per round: trajectories completed (<code>explore</code> log, <code>dynamics.html</code>), the committee error at the new points before training on them (<code>compute</code> log, A2), and how many points had several SA-CASSCF solutions (<code>compute_orca.csv</code>).</p>
+
+<h3 id="r-fill">Fill a region with a grid (e.g. the inner O–O wall)</h3>
+<pre><code>python -m diabml.workflow.ch2oo init    runs/22_wall --template explore --refs ../21_md8/data/refs.npz
+python -m diabml.workflow.ch2oo refs    runs/22_wall
+python -m diabml.workflow.ch2oo fill    runs/22_wall     <span class="c"># → proposed.npz (≈180 points with the default boxes)</span>
+caffeinate -i python -m diabml.workflow.ch2oo compute runs/22_wall   <span class="c"># ORCA, ≈15 min</span>
+python -m diabml.workflow.ch2oo merge   runs/22_wall
+<span class="c"># then the next explore round: --refs ../22_wall/data/refs.npz</span></code></pre>
+<p>Other boxes: add to <code>config.toml</code></p>
+<pre><code>[[fill.box]]
+r_OO  = [1.00, 1.05, 1.10, 1.15]
+a_COO = [95.0, 105.0, 115.0, 125.0, 135.0, 145.0]
+r_CO  = [1.10, 1.20, 1.30, 1.40, 1.50, 1.60]</code></pre>
+
+<h3 id="r-audit">Audit and repair a data set</h3>
+<pre><code>python -m diabml.workflow.ch2oo audit  runs/19_md6 --jobs 6      <span class="c"># → runs/19_md6/audit.html</span>
+python -m diabml.workflow.ch2oo repair runs/19_md6               <span class="c"># → runs/19_md6/data/repaired/</span>
+
+<span class="c"># continue from the repaired SC-NEVPT2 set (or qd_nevpt2 for QD-NEVPT2)</span>
+python -m diabml.workflow.ch2oo init runs/19_md6_sc --template explore --refs ../19_md6/data/repaired/nevpt2/refs.npz
+python -m diabml.workflow.ch2oo refs  runs/19_md6_sc
+python -m diabml.workflow.ch2oo merge runs/19_md6_sc</code></pre>
+<p>Data made by ORCA compute rounds do not need an audit: the compute stage already keeps the lowest solution of several starts.</p>
+
+<h3 id="r-prod">Production surface and dynamics</h3>
+<pre><code>python -m diabml.workflow.ch2oo production runs/20_md7          <span class="c"># → runs/20_md7/models/production.pt</span>
+python examples/ch2oo_nve.py runs/20_md7/models/production.pt \
+       --refs runs/20_md7/data/refs.npz --r_oo 1.6 --temperature 1500 --steps 3000 \
+       --out runs/20_md7/nve_1600_1500K                          <span class="c"># → .traj .csv .html</span>
+ase gui runs/20_md7/nve_1600_1500K.traj                          <span class="c"># animation</span></code></pre>
+
+<h3 id="r-ir">Hot-molecule IR spectrum</h3>
+<pre><code>python -m diabml.workflow.ch2oo production runs/23_md9            <span class="c"># energy surface (if not done)</span>
+caffeinate -i python -m diabml.workflow.ch2oo dipoles runs/23_md9 --jobs 6
+python -m diabml.workflow.ch2oo dipole_fit runs/23_md9
+caffeinate -i python -m diabml.workflow.ch2oo ir runs/23_md9 --jobs 6   <span class="c"># → runs/23_md9/ir.html</span></code></pre>
+<p>Settings in <code>[ir]</code>: <code>temperatures</code>, <code>trajectories</code> (per temperature), <code>run_fs</code> (resolution ≈ 33 000 / run_fs cm⁻¹), <code>dt</code>, <code>broaden_cm</code>.</p>
+
+<h3 id="r-scan">A new reference scan from scratch</h3>
+<pre><code>python -m diabml.workflow.ch2oo init runs/30_newscan --template cas_3d
+<span class="c">#    edit [refs] grid, basis, ncas, nelecas, nroots, dynamic in config.toml</span>
+caffeinate -i python -m diabml.workflow.ch2oo refs runs/30_newscan   <span class="c"># resumable: rerun after an interruption</span>
+python -m diabml.workflow.ch2oo status runs/30_newscan              <span class="c"># from another terminal</span>
+python -m diabml.workflow.ch2oo audit  runs/30_newscan              <span class="c"># PySCF scans can land on wrong solutions</span>
+python -m diabml.workflow.ch2oo repair runs/30_newscan
+python -m diabml.workflow.ch2oo all    runs/30_newscan              <span class="c"># ladder, train, figures, tables, report</span></code></pre>
+
+<!-- ====================================================================== models -->
+<h2 id="models">Trained models</h2>
+<p>Every model is two files in <code>RUN/models/</code>: <code>NAME.pt</code> (weights + the full specification, loads with <code>torch.load(weights_only=True)</code>, no pickled code) and <code>NAME.json</code> (a readable copy: architecture, frame, asymptote table, training metadata, parameter count).</p>
+<table>
+<tr><th>File</th><th>Written by</th><th>What it is</th><th>Use it for</th></tr>
+<tr><td><code>production.pt</code></td><td>production</td><td>averaged ensemble of 5 framed members (adiabatic averaging), trained on all usable points; meta holds test errors by region and the hole scans</td><td><b>dynamics and spectra</b>: the surface to use</td></tr>
+<tr><td><code>committee_0…4.pt</code></td><td>propose, explore</td><td>the committee of that round (bootstrap samples, shorter training)</td><td>diagnosing why a round stopped; not for production</td></tr>
+<tr><td><code>random_framed.pt</code>, <code>random_cdnn.pt</code></td><td>train</td><td>framed model and plain CDNN on a random split</td><td>comparing the frame against no frame (F5, T3)</td></tr>
+<tr><td><code>extrap_framed.pt</code>, <code>extrap_cdnn.pt</code></td><td>train</td><td>trained only on r_OO ≤ r_train_max</td><td>extrapolation test (F6)</td></tr>
+<tr><td><code>restraint_wW.pt</code></td><td>train</td><td>framed model with charge restraint weight W</td><td>diabatic character (F9, T5)</td></tr>
+<tr><td><code>dipole.pt</code></td><td>dipole_fit</td><td>S0 dipole surface: an ensemble of charge networks (<code>diabml.dipole.DipoleModel</code>; load with <code>DipoleModel.load</code>)</td><td>IR spectra (ir stage)</td></tr>
+<tr><td><code>coupfit_wW.pt</code></td><td>train</td><td>framed model fitted to ab initio couplings with weight W</td><td>couplings (F11, T8)</td></tr>
+</table>
+<pre><code>from diabml.models import load_model
+m = load_model('runs/20_md7/models/production.pt')
+m.meta['coord_names']                 <span class="c"># ['r_OO', 'a_COO', 'r_CO']</span>
+E = m.predict([[1.35, 117.7, 1.272]])   <span class="c"># adiabatic S0..S3 in eV (zero: CH2O + O(1D))</span>
+P = m.member_predictions(X)           <span class="c"># ensembles: every member, for the spread</span></code></pre>
+<div class="note">Models remember how they were built. Models trained before 31 Oct 2026 use the old straight-line CH<sub>2</sub>O baseline in r_CO and load exactly as trained; retrain (production) to get the smooth one.</div>
+
+<!-- ====================================================================== dynamics -->
+<h2 id="dynamics">Running dynamics (ASE)</h2>
+<table>
+<tr><th>Option of <code>examples/ch2oo_nve.py</code></th><th>Default</th><th>Meaning</th></tr>
+<tr><td><code>model</code></td><td>—</td><td>any <code>models/*.pt</code> (single model or ensemble)</td></tr>
+<tr><td><code>--state</code></td><td>0</td><td>adiabatic state to run on</td></tr>
+<tr><td><code>--temperature</code></td><td>1000</td><td>K, initial velocities</td></tr>
+<tr><td><code>--steps</code> / <code>--dt</code></td><td>2000 / 0.1</td><td>steps and fs per step</td></tr>
+<tr><td><code>--r_oo</code></td><td>1.35</td><td>starting O–O distance (Å)</td></tr>
+<tr><td><code>--seed</code></td><td>0</td><td>velocity seed</td></tr>
+<tr><td><code>--refs</code></td><td>—</td><td>the model's <code>refs.npz</code>: enables the distance-to-data check</td></tr>
+<tr><td><code>--max-spread</code></td><td>0.25</td><td>eV: stop when ensemble members disagree this much</td></tr>
+<tr><td><code>--no-stop</code></td><td>off</td><td>run to the end whatever the monitor says</td></tr>
+<tr><td><code>--out</code></td><td>ch2oo_nve</td><td>prefix for <code>.traj</code>, <code>.csv</code>, <code>.html</code></td></tr>
+</table>
+<p>The dynamics is Born–Oppenheimer on one adiabatic state; the HTML log marks nonadiabatic regions. <code>examples/ase_quickstart.py MODEL</code> shows a single point, a geometry optimisation and a short S1 trajectory with the same calculator.</p>
+
+<!-- ====================================================================== config -->
+<h2 id="config">Key settings in <code>config.toml</code></h2>
+<table>
+<tr><th>Section</th><th>Setting</th><th>Notes</th></tr>
+<tr><td><code>[run]</code></td><td><code>threads</code></td><td>PyTorch / PySCF threads</td></tr>
+<tr><td><code>[refs]</code></td><td><code>source</code>, <code>file</code>, <code>grid</code>, <code>basis</code>, <code>ncas</code>, <code>nelecas</code>, <code>nroots</code>, <code>dynamic</code>, <code>energy</code></td><td>file runs only need <code>file</code></td></tr>
+<tr><td><code>[frame]</code></td><td><code>asymptote = "spline"</code>, <code>asymptote_curv_min = 20</code></td><td>smooth CH<sub>2</sub>O energy in r_CO with a rising wall beyond the data (<code>"linear"</code> = old form)</td></tr>
+<tr><td><code>[train]</code></td><td><code>epochs</code>, <code>seeds</code>, <code>sort_states</code>, <code>restraint</code>, <code>coupling_fit</code></td><td>train stage</td></tr>
+<tr><td><code>[active]</code></td><td><code>committee</code>, <code>epochs</code>, <code>n_new</code>, <code>bounds</code>, <code>exclude</code>, <code>length_scales</code></td><td>committee for propose and explore; raise <code>epochs</code> to 8000 if members are uneven</td></tr>
+<tr><td><code>[explore]</code></td><td><code>r_oo</code>, <code>temperatures</code>, <code>seeds</code>, <code>steps</code>, <code>dt</code>, stop thresholds, <code>max_new</code>, <code>train_after</code></td><td>see <a href="#s-explore">Explore</a></td></tr>
+<tr><td><code>[compute]</code></td><td><code>engine</code>, <code>neighbours = 2</code>, <code>scratch = true</code>, <code>jobs = 6</code>, <code>orca</code></td><td>ORCA compute stage</td></tr>
+<tr><td><code>[audit]</code></td><td><code>jobs</code>, <code>tol_uEh = 50</code>, <code>retries = 2</code>, <code>qd</code>, <code>maxcore</code>, <code>timeout_s</code></td><td>same solution if every root agrees within tol</td></tr>
+<tr><td><code>[repair]</code></td><td><code>extras_tol_mEh = 1</code>, <code>keep_unverified = true</code></td><td></td></tr>
+<tr><td><code>[production]</code></td><td><code>members = 5</code>, <code>test_fraction</code>, <code>final</code>, <code>max_S0_eV</code>, <code>corner</code></td><td>regions for T10</td></tr>
+</table>
+<p>All defaults: <code>diabml/workflow/config.py</code> (DEFAULTS); a setting left out of <code>config.toml</code> takes its default.</p>
+
+<!-- ====================================================================== history -->
+<h2 id="history">This project's runs</h2>
+<table>
+<tr><th>Run</th><th>What it is</th></tr>
+<tr><td><code>02_nevpt2_2d</code>, <code>03_cas_3d</code></td><td>reference scans (2-D NEVPT2, 3-D with the C–O stretch)</td></tr>
+<tr><td>active-learning rounds → <code>19_md6</code></td><td>committee rounds, then explore rounds; 872 points (PySCF)</td></tr>
+<tr><td><code>19_md6</code></td><td>audited with ORCA (189 points on a wrong solution) and repaired: <code>data/repaired/nevpt2</code>, <code>data/repaired/qd_nevpt2</code></td></tr>
+<tr><td><code>19_md6_sc</code></td><td>repaired SC-NEVPT2 data; smooth-asymptote production model; explore 5/9 completed; first ORCA compute round</td></tr>
+<tr><td><code>19_md6_qd</code></td><td>the same with QD-NEVPT2 energies</td></tr>
+<tr><td><code>20_md7</code> …</td><td>next exploration rounds (ORCA compute)</td></tr>
+</table>
+
+<!-- ====================================================================== trouble -->
+<h2 id="trouble">Troubleshooting</h2>
+<table>
+<tr><th>Symptom</th><th>Cause and fix</th></tr>
+<tr><td><code>No module named 'ase'</code></td><td>wrong environment (prompt shows <code>(base)</code>): <code>conda activate diabml</code></td></tr>
+<tr><td><code>OpenMP is not available</code> warning</td><td>pip build of PySCF: harmless for training; PySCF compute runs on one core. <code>conda install -c conda-forge pyscf</code> fixes it</td></tr>
+<tr><td>“orca Not Opened” / <code>zsh: killed</code></td><td>macOS quarantine: <code>xattr -cr ~/Documents/Research/orca_6_1_1_macosx_arm64_openmpi411</code></td></tr>
+<tr><td><code>where is ORCA?</code></td><td>set <code>ORCA_PATH</code>, or <code>[compute] orca = "…"</code>, or <code>--orca</code></td></tr>
+<tr><td>trajectories stop on “jump”</td><td>a kink in the surface. Models trained before the smooth asymptote have kinks at the r_CO grid values: retrain</td></tr>
+<tr><td>trajectories stop on “force 25 eV/Å” at r_OO ≈ 1.1 Å</td><td>the real inner O–O wall: <code>[explore] force_max = 40.0</code></td></tr>
+<tr><td>“-&gt; HOLE” in the production log</td><td>read both numbers: a hole in one member only is a warning (no data there); a hole in the ensemble mean is a problem for dynamics</td></tr>
+<tr><td><code>refs.file … does not exist</code></td><td>the path is relative to the run folder: <code>../19_md6_sc/data/refs.npz</code></td></tr>
+<tr><td><code>data/refs.npz has changed since the audit</code></td><td>rerun the audit before repair (it reuses finished ORCA outputs)</td></tr>
+<tr><td>uneven committee members (one far worse)</td><td><code>[active] epochs = 8000</code> and rerun with <code>--force</code></td></tr>
+</table>
+
+<p class="c" style="margin-top:40px;color:var(--muted);font-size:13px">diabml workflow guide · generated 31 October 2026 from the code in <code>diabml/workflow/</code>.</p>
+</main>
+</div>
+</body>
+</html>

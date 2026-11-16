@@ -83,3 +83,23 @@ def test_refset_roundtrip(tmp_path):
     r.save(tmp_path / 't.npz')
     s = RefSet.load(tmp_path / 't.npz')
     assert np.allclose(s.coords, r.coords) and s.meta['zero'] == 'x' and np.allclose(s.extra['q'], [0, 1, 2])
+
+
+def test_asymptote_spline_is_smooth_and_bound():
+    import torch
+    from diabml.frames import AsymptoteTable
+    k = [1.2, 1.272, 1.35, 1.45]
+    V = np.array([[-0.12, -0.12, -0.11, 1.56], [0.0, 0.0, 0.01, 1.22], [0.47, 0.47, 0.47, 1.2], [1.38, 1.39, 1.47, 1.47]])
+    a = AsymptoteTable(k, V, j=0, extra=[(4, [0, 1, 2], 1.0)])
+    assert a.form == 'spline'
+    assert np.allclose(a(np.array(k)[:, None])[:, :4], V)                          # through the knots
+    x = torch.linspace(1.0, 2.0, 2001, dtype=torch.float64, requires_grad=True)
+    E = a(x[:, None])
+    g = torch.autograd.grad(E[:, 0].sum(), x)[0].numpy()
+    assert np.abs(np.diff(g)).max() < 0.1                                         # no force jumps (linear: ~4.6 eV/A)
+    assert np.allclose(E.detach().numpy(), a(x.detach().numpy()[:, None]))           # numpy == torch
+    assert E[-1, 0] > V[-1, 0] + 3 and g[-1] > 10                                     # the bond keeps a wall beyond the data
+    old = AsymptoteTable.from_spec({k_: v for k_, v in a.spec().items() if k_ not in ('form', 'curv_min')})
+    assert old.form == 'linear' and np.isclose(old(np.array([[1.9]]))[0, 0], V[-1, 0])   # old models load unchanged
+    b = AsymptoteTable.from_spec(a.spec())
+    assert b.form == 'spline' and np.allclose(b(np.array([[1.7]])), a(np.array([[1.7]])))

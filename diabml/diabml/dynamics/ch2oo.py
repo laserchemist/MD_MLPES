@@ -33,6 +33,10 @@ _COORD = {
     'r_OO': lambda R: torch.linalg.norm(R[O2] - R[O1]),
     'a_COO': lambda R: _angle(R[C], R[O1], R[O2]),
     'r_CO': lambda R: torch.linalg.norm(R[O1] - R[C]),
+    # symmetric CH2 coordinates (both H together, as diabml.dipole.ch2oo_positions builds them): the mean of the two
+    # H-C-O1 angles (CH2 scissor; H-C-H = 360 - 2 a_HCO in the plane) and of the two C-H bonds
+    'a_HCO': lambda R: 0.5 * (_angle(R[H1], R[C], R[O1]) + _angle(R[H2], R[C], R[O1])),
+    'r_CH': lambda R: 0.5 * (torch.linalg.norm(R[H1] - R[C]) + torch.linalg.norm(R[H2] - R[C])),
 }
 
 
@@ -53,6 +57,8 @@ def ch2oo_atoms(**geometry):
 
 def reduced_restraints(surface, positions, free=('r_OO', 'a_COO', 'r_CO'), k_bond=30.0, k_angle=4.0, k_dihedral=1.0):
     """Wrap a reduced CH2OO surface with stiff harmonic restraints on everything the model does not describe.
+    With a_HCO (or r_CH) among the model's coordinates the symmetric CH2 motion is free and only the difference
+    between the two angles (bonds) is restrained.
 
     Restrained around their values in `positions` (Angstrom): both C-H bonds, both H-C-O1 angles and the two
     H-C-O1-O2 dihedrals (a planar CH2O frame holding O2 in its plane); also the C-O1 bond and the C-O1-O2 angle
@@ -66,12 +72,20 @@ def reduced_restraints(surface, positions, free=('r_OO', 'a_COO', 'r_CO'), k_bon
     if 'r_OO' not in free:
         raise ValueError('r_OO must stay free')
     R0 = torch.as_tensor(np.asarray(positions, float))
-    bonds = [(C, H1), (C, H2)] + ([] if 'r_CO' in free else [(C, O1)])
-    angles = [(H1, C, O1), (H2, C, O1)] + ([] if 'a_COO' in free else [(C, O1, O2)])
+    # a symmetric CH2 coordinate the model describes (r_CH, a_HCO) frees the symmetric combination only: the
+    # antisymmetric one (the two bonds or angles differing; CH2 rock, antisymmetric C-H stretch) stays restrained
+    bonds = ([] if 'r_CH' in free else [(C, H1), (C, H2)]) + ([] if 'r_CO' in free else [(C, O1)])
+    angles = ([] if 'a_HCO' in free else [(H1, C, O1), (H2, C, O1)]) + ([] if 'a_COO' in free else [(C, O1, O2)])
     dihedrals = [(H1, C, O1, O2), (H2, C, O1, O2)]
     terms = ([('bond', b, float(torch.linalg.norm(R0[b[0]] - R0[b[1]])), k_bond) for b in bonds] +
              [('angle', a, float(torch.deg2rad(_angle(*(R0[i] for i in a)))), k_angle) for a in angles] +
              [('dihedral', d, float(_dihedral(*(R0[i] for i in d))), k_dihedral) for d in dihedrals])
+    if 'r_CH' in free:
+        terms.append(('bond_diff', ((C, H1), (C, H2)), float(torch.linalg.norm(R0[H1] - R0[C]) -
+                                                             torch.linalg.norm(R0[H2] - R0[C])), k_bond))
+    if 'a_HCO' in free:
+        terms.append(('angle_diff', ((H1, C, O1), (H2, C, O1)),
+                      float(torch.deg2rad(_angle(R0[H1], R0[C], R0[O1]) - _angle(R0[H2], R0[C], R0[O1]))), k_angle))
     return RestrainedSurface(surface, terms)
 
 
@@ -83,6 +97,13 @@ class RestrainedSurface:
         self.n_states = surface.n_states
         self.n_atoms = getattr(surface, 'n_atoms', None)
 
+    @property
+    def is_ensemble(self):
+        return getattr(self.surface, 'is_ensemble', False)
+
+    def member_surfaces(self):
+        return [RestrainedSurface(s, self.terms) for s in self.surface.member_surfaces()]
+
     def restraint_energy(self, R):
         U = torch.zeros((), dtype=R.dtype)
         for kind, idx, x0, k in self.terms:
@@ -90,6 +111,12 @@ class RestrainedSurface:
                 U = U + 0.5 * k * (torch.linalg.norm(R[idx[0]] - R[idx[1]]) - x0) ** 2
             elif kind == 'angle':
                 U = U + 0.5 * k * (torch.deg2rad(_angle(*(R[i] for i in idx))) - x0) ** 2
+            elif kind == 'bond_diff':
+                (a, b), (c, d) = idx
+                U = U + 0.5 * k * (torch.linalg.norm(R[a] - R[b]) - torch.linalg.norm(R[c] - R[d]) - x0) ** 2
+            elif kind == 'angle_diff':
+                a, b = idx
+                U = U + 0.5 * k * (torch.deg2rad(_angle(*(R[i] for i in a)) - _angle(*(R[i] for i in b))) - x0) ** 2
             else:
                 U = U + k * (1 - torch.cos(_dihedral(*(R[i] for i in idx)) - x0))
         return U

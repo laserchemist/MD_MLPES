@@ -12,6 +12,7 @@ Models
   IndependentNN  the paper's negative control: the same MLP predicting the adiabatic energies directly.
   FramedModel    a physics Frame (London, DIM, fragment channel, ...) whose slots are small MLPs, zero-initialised
                  so training starts from the physics prior.
+  EnsembleModel  several trained matrix models used as one production surface (averaged adiabatic energies).
 """
 from __future__ import annotations
 
@@ -162,11 +163,99 @@ class FramedModel(_Base):
             hook(self)
 
 
+class EnsembleModel(_Base):
+    """Several trained matrix models used as one production surface.
+
+    mode = 'adiabatic' (default): the ensemble's state k is the mean of the members' state-k eigenvalues, and its
+    forces the mean of their forces (so energy is conserved); the ASE calculator also averages structure weights and
+    phase-aligned derivative couplings, and reports each member's energies as an uncertainty. This is the safe
+    average: two equally good members can describe the same states with different matrices, because the three
+    CH2O + O(1D) structures share one asymptote and any rotation among them changes the matrix but no energy.
+    `matrix()` returns member 0's matrix (for figures of matrix elements and structure weights).
+
+    mode = 'matrix': the members' matrices are averaged after aligning structure signs (align_signs). Only
+    meaningful when every member uses the same diabatic representation; kept for comparison."""
+
+    def __init__(self, members, signs=None, mode='adiabatic'):
+        super().__init__()
+        self.members = torch.nn.ModuleList(members)
+        self.n_states = members[0].n_states
+        self.mode = mode
+        signs = np.ones((len(members), 1)) if signs is None else np.asarray(signs, float)
+        self.register_buffer('signs', torch.tensor(signs, dtype=torch.float64))
+
+    @property
+    def frame(self):
+        return getattr(self.members[0], 'frame', None)
+
+    def prepare(self, coords):
+        return np.atleast_2d(np.asarray(coords, float))
+
+    def _combine(self, Ms):
+        S = self.signs
+        if S.shape[1] == 1:
+            return torch.stack(Ms).mean(0)
+        out = 0
+        for k, M in enumerate(Ms):
+            out = out + S[k][None, :, None] * M * S[k][None, None, :]
+        return out / len(Ms)
+
+    def matrix_average(self, coords):
+        X = self.prepare(coords)
+        return self._combine([m.matrix(X) for m in self.members])
+
+    def matrix(self, coords):
+        if self.mode == 'matrix':
+            return self.matrix_average(coords)
+        return self.members[0].matrix(self.prepare(coords))
+
+    def matrix_t(self, coords):
+        if self.mode == 'matrix':
+            return self._combine([m.matrix_t(coords) for m in self.members])
+        return self.members[0].matrix_t(coords)
+
+    def forward(self, cache):
+        return torch.tensor(self.predict(cache))
+
+    def member_predictions(self, coords):
+        """(K, N, n_states): each member's own eigenvalues (their spread is the ensemble's uncertainty)."""
+        return np.stack([m.predict(coords) for m in self.members])
+
+    def predict(self, coords):
+        if self.mode == 'matrix':
+            with torch.no_grad():
+                return eigvals_sorted(self.matrix_average(coords))[:, :self.n_states].numpy()
+        return self.member_predictions(coords).mean(0)
+
+    def align_signs(self, coords):
+        """Choose each member's structure signs to agree best with member 0 over the given geometries."""
+        import itertools
+        with torch.no_grad():
+            Ms = [m.matrix(np.atleast_2d(coords)).numpy() for m in self.members]
+        n = Ms[0].shape[1]
+        iu = np.triu_indices(n, 1)
+        ref = Ms[0][:, iu[0], iu[1]]
+        S = [np.ones(n)]
+        for M in Ms[1:]:
+            best = (-np.inf, None)
+            for t in itertools.product([1.0, -1.0], repeat=n - 1):
+                s = np.r_[1.0, t]
+                score = float(np.sum(ref * (s[iu[0]] * s[iu[1]]) * M[:, iu[0], iu[1]]))
+                if score > best[0]:
+                    best = (score, s)
+            S.append(best[1])
+        self.signs = torch.tensor(np.array(S), dtype=torch.float64)
+        return self.signs.numpy()
+
+
 # ---------------------------------------------------------------------------------------------------- saving
 def model_spec(model) -> dict:
     """Plain-data description of a model (no code, no pickles): enough to rebuild it with load_model."""
     if isinstance(model, IndependentNN):
         raise TypeError('IndependentNN is a negative control and is not saved')
+    if isinstance(model, EnsembleModel):
+        return {'class': 'EnsembleModel', 'members': [model_spec(m) for m in model.members],
+                'signs': model.signs.numpy().tolist(), 'mode': model.mode}
     if isinstance(model, CDNN):
         return {'class': 'CDNN', 'n_in': model.n_in, 'n_states': model.n_states, 'n_matrix': model.n,
                 'hidden': list(model.hidden),
@@ -206,7 +295,16 @@ def save_model(model, path, meta=None):
 def load_model(path):
     """Rebuild a model saved with save_model. Returns the model (eval mode); its meta is in model.meta."""
     d = torch.load(path, weights_only=True)
-    spec = d['spec']['model']
+    m = _build(d['spec']['model'])
+    m.load_state_dict(d['state_dict'])
+    m.meta = d['spec'].get('meta', {})
+    return m.eval()
+
+
+def _build(spec):
+    if spec['class'] == 'EnsembleModel':
+        return EnsembleModel([_build(s) for s in spec['members']], signs=spec['signs'],
+                             mode=spec.get('mode', 'adiabatic'))
     if spec['class'] == 'CDNN':
         m = CDNN(spec['n_in'], spec['n_states'], n_matrix=spec['n_matrix'], hidden=tuple(spec['hidden']),
                  scaler=tuple(np.array(v) for v in spec['scaler']))
@@ -218,14 +316,12 @@ def load_model(path):
                         slot_bias=spec['slot_bias'])
     else:
         raise ValueError(spec['class'])
-    m.load_state_dict(d['state_dict'])
-    m.meta = d['spec'].get('meta', {})
-    return m.eval()
+    return m
 
 
 # ---------------------------------------------------------------------------------------------------- training
 def train(model, coords, energies, val_coords=None, val_energies=None, epochs=4000, lr=1e-3, alpha2=1e-6,
-          restarts=3, augment=None, log=None, weights=None, penalty=None):
+          restarts=3, augment=None, log=None, weights=None, penalty=None, sample_weights=None, val_sample_weights=None):
     """Adam + cosine schedule on the CDNN cost (Shu et al. eq. 5): mean squared eigenvalue error / 2
     + alpha2/2 * sum of squared weights. Keeps the restart and epoch with the lowest validation MUE.
 
@@ -246,6 +342,11 @@ def train(model, coords, energies, val_coords=None, val_energies=None, epochs=40
     if has_val:
         c_va, y_va = model.prepare(val_coords), torch.tensor(np.asarray(val_energies, float)[:, :model.n_states])
     w = torch.ones(model.n_states) if weights is None else torch.tensor(weights, dtype=torch.float64)
+    # per-point weights (normalised to mean 1): e.g. more weight near a minimum for spectroscopic accuracy
+    sw = None if sample_weights is None else torch.tensor(np.asarray(sample_weights, float) /
+                                                         np.mean(sample_weights))[:, None]
+    vw = None if val_sample_weights is None else torch.tensor(np.asarray(val_sample_weights, float) /
+                                                             np.mean(val_sample_weights))[:, None]
     best_all = (np.inf, None)
     for rs in range(restarts):
         model.reset(rs)
@@ -254,7 +355,8 @@ def train(model, coords, energies, val_coords=None, val_energies=None, epochs=40
         best = (np.inf, None)
         for ep in range(epochs):
             opt.zero_grad()
-            loss = (w * (model(c_tr) - y_tr) ** 2).mean() / 2
+            r2 = w * (model(c_tr) - y_tr) ** 2
+            loss = (r2 if sw is None else sw * r2).mean() / 2
             loss = loss + alpha2 / 2 * sum((p ** 2).sum() for n, p in model.named_parameters() if 'weight' in n)
             if penalty is not None:
                 loss = loss + penalty(model, c_tr)
@@ -262,7 +364,12 @@ def train(model, coords, energies, val_coords=None, val_energies=None, epochs=40
             opt.step(); sched.step()
             if ep % 50 == 0 or ep == epochs - 1:
                 with torch.no_grad():
-                    v = ((model(c_va) - y_va).abs().mean() if has_val else (model(c_tr) - y_tr).abs().mean()).item()
+                    if has_val:
+                        a = (model(c_va) - y_va).abs()
+                        v = (a if vw is None else vw * a).mean().item()
+                    else:
+                        a = (model(c_tr) - y_tr).abs()
+                        v = (a if sw is None else sw * a).mean().item()
                 if v < best[0]:
                     best = (v, {k: x.clone() for k, x in model.state_dict().items()})
         if log:

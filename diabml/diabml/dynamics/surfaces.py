@@ -45,6 +45,14 @@ class CoordinateSurface(Surface):
     def matrix(self, R):
         return self.model.matrix_t(self.coord_fn(R)[None, :])[0]
 
+    @property
+    def is_ensemble(self):
+        return getattr(self.model, 'mode', None) == 'adiabatic' and hasattr(self.model, 'members')
+
+    def member_surfaces(self):
+        """One surface per member of an adiabatic ensemble (the calculator averages their energies and forces)."""
+        return [CoordinateSurface(m, self.coord_fn, self.n_states, self.n_atoms) for m in self.model.members]
+
 
 class DistanceSurface(CoordinateSurface):
     """Full-dimensional surface whose model inputs are all interatomic distances (pair_distances order).
@@ -63,3 +71,7 @@ class DistanceSurface(CoordinateSurface):
     def matrix(self, R):
         Ms = [self.model.matrix_t(pair_distances(R if p is None else R[p])[None, :])[0] for p in self.perms]
         return torch.stack(Ms).mean(0)
+
+    def member_surfaces(self):
+        return [DistanceSurface(m, [None if p is None else p.tolist() for p in self.perms], self.n_states)
+                for m in self.model.members]

@@ -1,0 +1,19 @@
+{
+ "citation": "Y.-T. Su, Y.-H. Huang, H. A. Witek, Y.-P. Lee, Infrared Absorption Spectrum of the Simplest Criegee Intermediate CH2OO, Science 340 (6129), 174-176 (2013), doi:10.1126/science.1234369",
+ "spectrum": "su2013_ch2oo_fig2B.csv: Fig. 2B (expt., 0.0-12.5 us after photolysis of CH2I2/O2), digitized; sharp Q branches at 848, 908 and 1286 cm-1 reproduce the reported band centres to within 1 cm-1",
+ "columns": ["mode", "symmetry", "experiment", "nevpt2_avdz_harmonic", "nevpt2_avdz_anharmonic", "cas1412_vdz", "ccsdt_avtz", "description"],
+ "note": "experiment: band centre (relative intensity); computed: cm-1 (relative intensity where given). CAS(14,12)/VDZ and CCSD(T)/aVTZ columns are values cited in the paper (its refs. 18 and 12).",
+ "modes": [
+  ["v1", "A'", null, 3370, [3149, 5], 3215, 3290, "a-CH str."],
+  ["v2", "A'", null, 3197, [3030, 1], 3065, 3137, "s-CH str."],
+  ["v3", "A'", [1435, 33], 1500, [1458, 52], 1465, 1483, "CH2 scissor/CO str."],
+  ["v4", "A'", [1286, 42], 1338, [1302, 100], 1269, 1306, "CO str./CH2 scissor"],
+  ["v5", "A'", [1241, 39], 1235, [1220, 33], 1233, 1231, "CH2 rock"],
+  ["v6", "A'", [908, 100], 916, [892, 100], 849, 935, "OO str."],
+  ["v7", "A'", null, 536, [530, 1], 537, 529, "COO deform"],
+  ["v8", "A''", [848, 24], 856, [853, 31], 793, 862, "CH2 wag"],
+  ["v9", "A''", null, 620, [606, 2], 618, 632, "CH2 twist"]
+ ],
+ "in_3d_model": {"v4": "C-O stretch (mixed with CH2 scissor in the molecule; pure C-O in a model with a rigid CH2)",
+                 "v6": "O-O stretch", "v7": "COO deformation"}
+}

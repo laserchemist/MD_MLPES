@@ -1,0 +1,11 @@
+{
+ "citation": "Y.-P. Chang, A. J. Merer, H.-H. Chang, L.-J. Jhang, W. Chao, J. J.-M. Lin, High resolution quantum cascade laser spectroscopy of the simplest Criegee intermediate, CH2OO, between 1273 and 1290 cm-1 (arXiv:1706.03488); Table I (v = 0 constants as tabulated there from earlier millimetre-wave work)",
+ "units": "cm-1",
+ "states": {
+  "ground": {"A": 2.59342579, "B": 0.41579342, "C": 0.35762622},
+  "v4": {"origin": 1285.92797, "A": 2.5897027, "B": 0.4147254, "C": 0.3579765, "mode": "C-O",
+         "ratios": {"A": 0.99856, "B": 0.99744, "C": 1.00098}}
+ },
+ "band_origins": {"v3": 1434.1, "v4": 1285.92797, "v5": 1213.3, "v6": 909.26, "v8": 847.44, "2v9": 1234.2,
+                  "combination": 1485.5}
+}

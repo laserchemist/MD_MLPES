@@ -97,3 +97,34 @@ def test_no_hole_below_the_data():
     x = np.linspace(0.5, 1.2, 50)
     E0 = m.predict(np.c_[x, np.full_like(x, 117.7)])[:, 0]
     assert E0.min() > np.nanmin(REF.energies[:, 0]) - 0.5 and E0[0] > 5.0
+
+
+def test_model_couplings_match_calculator():
+    """Workflow couplings along r_OO (finite difference of the matrix) equal the calculator's Cartesian couplings
+    projected on the O1->O2 direction of the terminal O."""
+    pytest.importorskip('ase')
+    from diabml.dynamics import CoordinateSurface, DiabmlCalculator, ch2oo_atoms, ch2oo_coordinates
+    from diabml.workflow.ch2oo import model_couplings_r
+    m = framed_prior()
+    tau = model_couplings_r(m, [[1.6, 117.7]])[0]
+    atoms = ch2oo_atoms(r_oo=1.6, a_coo=117.7)
+    atoms.calc = DiabmlCalculator(CoordinateSurface(m, ch2oo_coordinates(['r_OO', 'a_COO'])))
+    atoms.get_potential_energy()
+    d = atoms.calc.results['couplings']
+    e = (atoms.positions[2] - atoms.positions[1]) / np.linalg.norm(atoms.positions[2] - atoms.positions[1])
+    assert np.allclose(np.abs(d[:, :, 2] @ e), np.abs(tau), atol=1e-5)
+
+
+def test_restraint_and_coupling_penalties_have_gradients():
+    from diabml.workflow.ch2oo import charge_targets, restraint_penalty, coupling_penalty, q_ion_auto
+    m = framed_prior()
+    idx = np.where(REF.coords[:, 0] <= 2.3)[0]
+    q_ion = q_ion_auto(REF, np.ones(len(REF), bool))
+    assert -1.0 < q_ion < -0.5
+    t, mk = charge_targets(REF, idx, q_ion, 0.1, 'all')
+    tau = np.full((len(idx), 1), 0.5)
+    for pen in (restraint_penalty(1.0, t, mk), coupling_penalty(1.0, REF.coords[idx], tau, np.ones_like(tau, bool), [(0, 1)])):
+        m.zero_grad()
+        v = pen(m, m.prepare(REF.coords[idx]))
+        v.backward()
+        assert float(v) > 0 and sum(float(p.grad.abs().sum()) for p in m.parameters() if p.grad is not None) > 0

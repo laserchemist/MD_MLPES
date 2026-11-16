@@ -1,0 +1,21 @@
+{
+ "note": "Ground-state rotational constants (MHz) of CH2OO isotopologues and the semi-experimental equilibrium structure. Atom order C, O1 (central), O2 (terminal), H1 (cis/syn to O-O), H2 (trans/anti).",
+ "sources": {
+  "NE2013": "M. Nakajima, Y. Endo, J. Chem. Phys. 139, 101103 (2013), Table III",
+  "McC2013": "M. C. McCarthy, L. Cheng, K. N. Crabtree, O. Martinez Jr., T. L. Nguyen, C. C. Womack, J. F. Stanton, J. Phys. Chem. Lett. 4, 4133 (2013); values as shown (rounded to 1 MHz) in talk WJ03, 69th Int. Symp. Mol. Spectrosc. (2014)"
+ },
+ "species": {
+  "CH2OO": {"atoms": ["12C", "16O", "16O", "H", "H"], "ABC": [77752.655, 12465.247, 10721.313], "source": "NE2013"},
+  "13CH2OO": {"atoms": ["13C", "16O", "16O", "H", "H"], "ABC": [77073, 12089, 10430], "source": "McC2013"},
+  "CH2(18O)O": {"atoms": ["12C", "18O", "16O", "H", "H"], "ABC": [73394, 12464, 10633], "source": "McC2013"},
+  "CH2O(18O)": {"atoms": ["12C", "16O", "18O", "H", "H"], "ABC": [76885, 11777, 10193], "source": "McC2013"},
+  "cis-CHDOO": {"atoms": ["12C", "16O", "16O", "D", "H"], "ABC": [61771, 12135, 10121], "source": "McC2013"},
+  "trans-CHDOO": {"atoms": ["12C", "16O", "16O", "H", "D"], "ABC": [76637, 11310, 9839], "source": "McC2013"},
+  "CH2(18O)(18O)": {"atoms": ["12C", "18O", "18O", "H", "H"], "ABC": [72495.023, 11771.158, 10106.460], "source": "NE2013"},
+  "CD2OO": {"atoms": ["12C", "16O", "16O", "D", "D"], "ABC": [60535.097, 11070.696, 9342.245], "source": "NE2013"},
+  "CD2(18O)(18O)": {"atoms": ["12C", "18O", "18O", "D", "D"], "ABC": [57044.307, 10465.211, 8827.088], "source": "NE2013"}
+ },
+ "masses": {"12C": 12.0, "13C": 13.0033548, "16O": 15.99491462, "18O": 17.9991596, "H": 1.00782503, "D": 2.01410178},
+ "structure_reSE": {"source": "McC2013 (hybrid semi-experimental equilibrium structure)",
+  "r_OO": 1.3405, "a_COO": 117.910, "r_CO": 1.2689, "r_CH1": 1.0806, "r_CH2": 1.0772, "a_HCO1": 118.65, "a_HCO2": 114.82, "d_H1": 0.0, "d_H2": 0.0}
+}

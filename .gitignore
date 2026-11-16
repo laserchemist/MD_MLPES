@@ -58,3 +58,8 @@ logs/
 
 # Track digitized experimental spectra (small, reference data)
 !outputs/mvko_experimental_ir_Chung2021.csv
+
+# computed runs, ORCA scratch, old copies
+diabml/runs/
+orca_tests/
+_old/

@@ -31,19 +31,19 @@ data/       cached reference data, so notebooks need no quantum chemistry
 
 ```bash
 pip install numpy scipy matplotlib torch jupyter ipywidgets   # pyscf only to generate new references
-python -m pytest -q tests                                     # 19 tests, under a minute
+python -m pytest -q tests                                     # 29 tests, about a minute
 cd notebooks && jupyter lab                                   # or: python build_notebooks.py --execute
 ```
 
 ## CH2OO workflow (run folders and config files)
 
 `diabml.workflow.ch2oo` runs the CH2OO study end to end from one `config.toml` per run folder:
-reference scans (SA-CASSCF, optional SC-NEVPT2; resumable), ladder anchors (delta-CCSD(T) IE and EA), training
-(framed CDNN vs CDNN: random split, extrapolation, learning curve, optional charge-based diabatic restraint), figures,
-tables and an HTML report.
+reference scans (SA-CASSCF, optional SC-NEVPT2; resumable), ladder anchors (delta-CCSD(T) IE and EA), ab initio
+derivative couplings along r_OO (SA-CASSCF, resumable), training (framed CDNN vs CDNN: random split, extrapolation,
+learning curve, all-state charge restraint, fitting the couplings), figures, tables and an HTML report.
 
 ```bash
-python -m diabml.workflow.ch2oo init runs/00_quick --template quick     # templates: quick baseline nevpt2_2d cas_3d restraint
+python -m diabml.workflow.ch2oo init runs/00_quick --template quick     # templates: quick baseline nevpt2_2d cas_3d restraint active explore
 python -m diabml.workflow.ch2oo all  runs/00_quick                      # refs, ladder, train, figures, tables, report
 python -m diabml.workflow.ch2oo status runs/02_nevpt2_2d                # progress of a running scan
 ```
@@ -51,6 +51,61 @@ python -m diabml.workflow.ch2oo status runs/02_nevpt2_2d                # progre
 Each run folder gets `data/ models/ results/ figures/ tables/ logs/` and `report.html`. Stages can be rerun one at a
 time; the scan writes a checkpoint after every geometry and continues where it stopped. See `RUNNING_CH2OO.html` for
 setup on macOS (Apple silicon), the recommended sequence of runs, and what every figure and table shows.
+
+### Active learning (`--template active`, `diabml/workflow/active.py`)
+
+One run folder per round. A committee of framed models (bootstrap samples, different seeds) is evaluated on random
+candidate geometries; new references are computed where they disagree most, at exactly the level of the base data
+(same CASSpec, same energy zero, orbitals started from the nearest computed geometry), merged, and the model retrained.
+
+```bash
+python -m diabml.workflow.ch2oo init runs/08_al1 --template active     # refs.file = the refs.npz to extend
+python -m diabml.workflow.ch2oo all  runs/08_al1     # refs, ladder, propose, compute, merge, train, figures, tables, report
+# next round: a new folder whose refs.file is ../08_al1/data/refs.npz
+```
+
+Outputs: `data/proposed.npz` and `results/proposed.csv` (the chosen geometries), `data/new_refs.npz`, the merged
+`data/refs.npz` (extra `al_round` records when each point was added; grid figures use round 0 only), `A1` (committee
+spread and proposals), `A2` (committee error at the new points before training on them) and table `T9`.
+
+### Production surface (`production` stage, `diabml/workflow/production.py`)
+
+```bash
+python -m diabml.workflow.ch2oo production runs/12_al5   # -> models/production.pt, T10, P1, P2
+```
+
+Trains `members` framed models (charge restraint + coupling fit) with different seeds, aligns their structure signs
+and averages their matrices into one `EnsembleModel`; it loads with `load_model` and drives the ASE calculator like any
+model. A fixed held-out test set gives the errors by region (T10): the dynamics region (S0 within `max_S0_eV` of
+CH2O + O(1D), outside the low-angle corner), high energy, and the corner; then the members are retrained on all data.
+
+Watched dynamics (`diabml/dynamics/monitor.py`, `report.py`): every step records all state energies, energy
+conservation, the ensemble members' spread, the distance to the reference data, gaps and |d.v| to neighbouring
+states. A trajectory stops (after a short look-ahead) where the surface becomes uncertain, and every run writes an
+HTML log (`examples/ch2oo_nve.py ... --refs data/refs.npz` -> `<out>.html`). An optional extrapolation guard
+(`[frame] guard = true`: networks frozen outside the data plus a repulsive wall) exists but is off by default; the
+data should come from active learning from dynamics instead.
+
+### Reference audit with ORCA (`audit` stage, `diabml/workflow/audit.py`)
+
+```bash
+python -m diabml.workflow.ch2oo audit runs/19_md6 --orca /path/to/orca_folder --jobs 6   # -> runs/19_md6/audit.html
+```
+
+Recomputes every reference geometry with ORCA at the same level (SA-CASSCF, plus SC-NEVPT2 and QD-NEVPT2), in
+parallel, and classifies each point: same SA-CASSCF solution, ours on a higher solution, ORCA on a higher solution
+(retried from a good neighbour's orbitals) or failed. Results: results/audit.npz and audit.csv, and audit.html.
+
+### Active learning from dynamics (`--template explore`, `diabml/workflow/explore.py`)
+
+```bash
+python -m diabml.workflow.ch2oo init runs/14_md1 --template explore     # refs.file = the refs.npz to extend
+python -m diabml.workflow.ch2oo all  runs/14_md1     # refs, ladder, explore, compute, merge, train, ... + dynamics.html
+```
+
+A committee runs watched trajectories from the starts in `[explore]`; the geometries where each trajectory found the
+surface uncertain are computed at the level of the base data and merged. Repeat (refs.file = previous round) until
+every trajectory completes.
 
 ## Models on disk and dynamics
 

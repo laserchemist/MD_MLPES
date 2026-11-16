@@ -17,6 +17,10 @@ Physics. With Omega(R) the learned matrix, eigenpairs (E_k, v_k) and G_kl = v_k^
 For a compatible matrix (CDNN without diabatic restraints) d_kl is a property of the matrix, not of the molecule;
 methods that need only energies and gradients (curvature-driven surface hopping, CSDM) are the safe choice until
 the matrix is restrained toward diabatic. d_kl is singular where E_k = E_l; near such points it is reported as is.
+
+Ensembles (EnsembleModel, mode 'adiabatic'): every member is solved separately and energies, forces, structure
+weights and phase-aligned couplings are averaged; results['member_energies'] (K, n_states) is the members' spread,
+a running uncertainty estimate along a trajectory.
 """
 from __future__ import annotations
 
@@ -45,39 +49,60 @@ class DiabmlCalculator(Calculator):
             self._state = int(k)
             self.reset()
 
-    def _jacobian(self, R):
-        f = self.surface.matrix
-        try:
-            return torch.autograd.functional.jacobian(f, R, vectorize=True)
-        except Exception:
-            return torch.autograd.functional.jacobian(f, R)
-
-    def calculate(self, atoms=None, properties=('energy',), system_changes=all_changes):
-        super().calculate(atoms, properties, system_changes)
-        R = torch.tensor(self.atoms.get_positions(), dtype=torch.float64)
+    def _solve(self, surface, R):
+        """Energies, forces, structure weights and couplings of every state for one matrix surface."""
         with torch.no_grad():
-            M = self.surface.matrix(R)
-        J = self._jacobian(R)                                        # (n, n, n_atoms, 3)
+            M = surface.matrix(R)
+        f = surface.matrix
+        try:
+            J = torch.autograd.functional.jacobian(f, R, vectorize=True)
+        except Exception:
+            J = torch.autograd.functional.jacobian(f, R)                # (n, n, n_atoms, 3)
         E, V = torch.linalg.eigh(M)
-        ns = min(self.surface.n_states, len(E))
+        ns = min(surface.n_states, len(E))
         Vs = V[:, :ns]
         G = torch.einsum('ik,ijab,jl->klab', Vs, J, Vs)              # (ns, ns, n_atoms, 3)
-        k = self._state
-        if not 0 <= k < ns:
-            raise ValueError(f'state {k} outside 0..{ns - 1}')
-        all_forces = -torch.stack([G[s, s] for s in range(ns)]).numpy()
-        self.results = {
-            'energy': float(E[k]), 'free_energy': float(E[k]), 'forces': all_forces[k].copy(),
-            'energies': E[:ns].numpy().copy(), 'all_forces': all_forces, 'matrix': M.numpy().copy(),
-            'eigenvectors': Vs.numpy().copy(), 'structure_weights': (Vs ** 2).numpy().T.copy(),
-        }
+        out = {'energies': E[:ns].numpy().copy(), 'all_forces': -torch.stack([G[s, s] for s in range(ns)]).numpy(),
+               'matrix': M.numpy().copy(), 'eigenvectors': Vs.numpy().copy(),
+               'structure_weights': (Vs ** 2).numpy().T.copy()}
         if self.couplings:
             dE = E[:ns][None, :] - E[:ns][:, None]                    # E_l - E_k
             with np.errstate(divide='ignore', invalid='ignore'):
                 d = G.numpy() / dE.numpy()[:, :, None, None]
             for s in range(ns):
                 d[s, s] = 0.0
-            self.results['couplings'] = d                             # (ns, ns, n_atoms, 3), 1/Angstrom
+            out['couplings'] = d                                      # (ns, ns, n_atoms, 3), 1/Angstrom
+        return out
+
+    def calculate(self, atoms=None, properties=('energy',), system_changes=all_changes):
+        super().calculate(atoms, properties, system_changes)
+        R = torch.tensor(self.atoms.get_positions(), dtype=torch.float64)
+        if getattr(self.surface, 'is_ensemble', False):
+            outs = [self._solve(s, R) for s in self.surface.member_surfaces()]
+            res = {'energies': np.mean([o['energies'] for o in outs], 0),
+                   'all_forces': np.mean([o['all_forces'] for o in outs], 0),
+                   'structure_weights': np.mean([o['structure_weights'] for o in outs], 0),
+                   'member_energies': np.array([o['energies'] for o in outs]),
+                   'matrix': outs[0]['matrix'], 'eigenvectors': outs[0]['eigenvectors']}
+            if self.couplings:
+                # eigenvector phases are arbitrary in each member: align every coupling vector with member 0's
+                ref = outs[0]['couplings']
+                acc = np.zeros_like(ref)
+                for o in outs:
+                    d = o['couplings']
+                    sgn = np.sign(np.nansum(d * ref, axis=(2, 3)))
+                    sgn[sgn == 0] = 1.0
+                    acc += sgn[:, :, None, None] * d
+                res['couplings'] = acc / len(outs)
+        else:
+            res = self._solve(self.surface, R)
+        ns = len(res['energies'])
+        k = self._state
+        if not 0 <= k < ns:
+            raise ValueError(f'state {k} outside 0..{ns - 1}')
+        res.update({'energy': float(res['energies'][k]), 'free_energy': float(res['energies'][k]),
+                    'forces': res['all_forces'][k].copy()})
+        self.results = res
 
     def state_energies(self, atoms):
         self.get_property('energy', atoms)
